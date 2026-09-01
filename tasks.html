@@ -68,7 +68,7 @@
 
         <div class="catalog-grid catalog-grid-seven">
           <a class="catalog-card task-blue" href="#task-1-1"><span class="catalog-card-id">TASK 1-1 · IMPLEMENTATION</span><span class="catalog-card-icon">↻</span><h3>Reasoning query rewrite</h3><p>Implement query rewriting for a professional search need expressed in everyday language.</p><span>Open task brief →</span></a>
-          <a class="catalog-card task-violet" href="#task-1-2"><span class="catalog-card-id">TASK 1-2 · OPTIMIZATION</span><span class="catalog-card-icon">◌</span><h3>Memory-constrained retrieval</h3><p>Optimize dense retrieval over 1.5M vectors within strict memory and latency constraints.</p><span>Open task brief →</span></a>
+          <a class="catalog-card task-violet" href="#task-1-2"><span class="catalog-card-id">TASK 1-2 · IMPLEMENTATION</span><span class="catalog-card-icon">◌</span><h3>Memory-constrained retrieval</h3><p>Build dense retrieval over 1.5M vectors within strict memory and latency constraints.</p><span>Open task brief →</span></a>
           <a class="catalog-card task-teal" href="#task-2-1"><span class="catalog-card-id">TASK 2-1 · OPTIMIZATION</span><span class="catalog-card-icon">↗</span><h3>Long-document reranking</h3><p>Improve reranking when relevant evidence lies beyond the model's first token window.</p><span>Open task brief →</span></a>
           <a class="catalog-card task-orange" href="#task-2-2"><span class="catalog-card-id">TASK 2-2 · OPTIMIZATION</span><span class="catalog-card-icon">◆</span><h3>Embedder training</h3><p>Improve a fixed-backbone code-retrieval embedder under supplied data and architecture constraints.</p><span>Open task brief →</span></a>
           <a class="catalog-card task-pink" href="#task-2-3"><span class="catalog-card-id">TASK 2-3 · OPTIMIZATION</span><span class="catalog-card-icon">⌘</span><h3>Query-side encoder</h3><p>Optimize a query encoder while document vectors stay fixed and a runtime gate applies.</p><span>Open task brief →</span></a>
@@ -96,9 +96,9 @@
         <article id="task-1-2" class="task-detail task-violet">
           <div class="detail-number">02</div>
           <div class="detail-main">
-            <div class="detail-kicker">TASK 1-2 · OPTIMIZATION · DENSE RETRIEVAL</div>
-            <h3>Memory-constrained retrieval over a huge corpus</h3>
-            <p class="detail-lede">Build and optimize a dense-vector search system when the complete corpus is larger than the available memory.</p>
+            <div class="detail-kicker">TASK 1-2 · IMPLEMENTATION · DENSE RETRIEVAL</div>
+            <h3>Build memory-constrained retrieval over a huge corpus</h3>
+            <p class="detail-lede">Build a dense-vector search system when the complete corpus is larger than the available memory.</p>
             <div class="detail-facts"><div><span>Corpus</span><b>1.5M vectors</b></div><div><span>Vector shape</span><b>1024-D float32</b></div><div><span>Memory budget</span><b>2 GiB</b></div><div><span>Metric</span><b>Accuracy@3</b></div></div>
             <div class="detail-columns"><div><b>Agent challenge</b><p>Choose an index and storage strategy while balancing recall, index size, memory use, disk access, and query latency.</p></div><div><b>Expected implementation</b><p>Use the supplied precomputed vectors with techniques such as ANN, quantization, memory mapping, chunking, candidate retrieval, and exact reranking.</p></div></div>          </div>
           <a class="detail-top" href="#top">Back to top ↑</a>
