@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Search-SWE is a benchmark for evaluating coding agents that autonomously build, run, and debug search systems."
+      content="Search-SWE is a benchmark for evaluating whether coding agents can engineer real-world search systems."
     />
     <meta name="theme-color" content="#071526" />
     <title>Search-SWE — Search-System Engineering for Agents</title>
@@ -34,7 +34,7 @@
         <a href="#motivation">Why</a>
         <a href="#search-swe">What</a>
         <a href="#construction">How</a>
-        <a class="nav-active" href="tasks.html">Tasks</a>
+        <a href="#tasks">Tasks</a>
         <a href="#evaluation">Evaluation</a>
         <a href="#results">Results</a>
         <a class="nav-button" href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">
@@ -47,18 +47,18 @@
       <section class="hero section-shell">
         <div class="hero-copy">
           <p class="eyebrow"><span class="eyebrow-dot"></span> Benchmark · Search-system engineering</p>
-          <h1>Search systems built by agents.<br /><em>Evaluated by execution.</em></h1>
+          <h1>Can coding agents engineer<br /><em>real search systems?</em></h1>
           <p class="hero-lede">
-            Search-SWE evaluates whether a coding agent can autonomously investigate an environment,
-            construct a search workflow, debug it, and deliver a working system under a fixed budget.
+            Search-SWE evaluates the engineering ability behind search-system development: can a coding agent
+            understand a real-world task, build, optimize, or repair the system, and deliver a working artifact?
           </p>
           <div class="hero-actions">
             <a class="button button-primary" href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">
               <span class="github-icon" aria-hidden="true">◖</span> View on GitHub
             </a>
-            <a class="button button-ghost" href="tasks.html">Browse representative tasks <span aria-hidden="true">→</span></a>
+            <a class="button button-ghost" href="#tasks">Browse representative tasks <span aria-hidden="true">→</span></a>
           </div>
-          <div class="hero-note"><span class="status-dot"></span> Open-ended methodology · Reproducible execution · Hidden tests</div>
+          <div class="hero-note"><span class="status-dot"></span> Real-world scenarios · Executable evaluation · Reproducible runs</div>
         </div>
 
         <div class="hero-visual" aria-label="Search-SWE evaluation loop diagram">
@@ -69,59 +69,62 @@
           <div class="visual-label label-output">04 · OUTPUT</div>
           <div class="visual-node node-input">
             <span class="node-icon">⌁</span>
-            <strong>Information task</strong>
-            <small>corpus · sources · constraints</small>
+            <strong>Search engineering task</strong>
+            <small>data · system · constraints</small>
           </div>
           <div class="visual-node node-agent">
             <span class="node-icon node-icon-agent">✦</span>
             <strong>Coding agent</strong>
-            <small>inspect · build · iterate</small>
+            <small>diagnose · build · improve</small>
           </div>
           <div class="visual-node node-output">
             <span class="node-icon node-icon-output">↗</span>
-            <strong>Executable search</strong>
-            <small>reproducible · scored</small>
+            <strong>Working search system</strong>
+            <small>executable · evaluated</small>
           </div>
           <div class="visual-arrow arrow-one">→</div>
           <div class="visual-arrow arrow-two">→</div>
-          <div class="visual-loop">fixed sandbox<br /><span>same budget</span></div>
+          <div class="visual-loop">realistic setting<br /><span>fixed budget</span></div>
         </div>
       </section>
 
       <section class="signal-strip">
         <div class="section-shell signal-grid">
-          <div class="signal-item"><span class="signal-mark">↯</span><span><b>Method agnostic</b><small>No prescribed retrieval recipe</small></span></div>
-          <div class="signal-item"><span class="signal-mark">▣</span><span><b>Execution first</b><small>Systems are rebuilt and run</small></span></div>
-          <div class="signal-item"><span class="signal-mark">◌</span><span><b>Resource aware</b><small>Time, memory, and network count</small></span></div>
-          <div class="signal-item"><span class="signal-mark">✓</span><span><b>Result grounded</b><small>Search quality meets hidden tests</small></span></div>
+          <div class="signal-item"><span class="signal-mark">↯</span><span><b>Engineering focused</b><small>Build, optimize, and repair</small></span></div>
+          <div class="signal-item"><span class="signal-mark">▣</span><span><b>Execution first</b><small>Artifacts are rebuilt and run</small></span></div>
+          <div class="signal-item"><span class="signal-mark">◌</span><span><b>Real-world constraints</b><small>Data, systems, and budgets matter</small></span></div>
+          <div class="signal-item"><span class="signal-mark">✓</span><span><b>Search outcome</b><small>Quality is verified by evaluation</small></span></div>
         </div>
       </section>
 
       <section id="motivation" class="section-shell content-section">
         <div class="section-heading">
           <p class="eyebrow">01 · Motivation · Why</p>
-          <h2>Search quality depends on more than a ranking formula.</h2>
+          <h2>Building search is an engineering problem, not a single-model choice.</h2>
         </div>
         <div class="reason-grid">
           <article class="reason-card">
             <span class="reason-number">01</span>
-            <h3>Real systems are assembled</h3>
-            <p>Useful search requires data inspection, indexing, retrieval, filtering, reranking, and output validation.</p>
+            <h3>Real systems have many parts</h3>
+            <p>Reliable search requires data inspection, indexing, retrieval, filtering, reranking, interfaces, and validation.</p>
           </article>
           <article class="reason-card">
             <span class="reason-number">02</span>
-            <h3>Agents face open environments</h3>
-            <p>The best solution is not always known in advance. Agents must discover packages, models, tools, and constraints.</p>
+            <h3>Expert choices must be engineered</h3>
+            <p>Agents must turn retrieval knowledge into robust choices about models, tools, data flow, and system constraints.</p>
           </article>
           <article class="reason-card">
             <span class="reason-number">03</span>
-            <h3>Plans are not deliverables</h3>
-            <p>A convincing explanation is not enough. The final artifact must build, run, and retrieve the right result.</p>
+            <h3>Working systems are the evidence</h3>
+            <p>A plausible plan is not enough. The final artifact must build, run, and produce useful search results.</p>
           </article>
         </div>
         <div class="statement-card">
-          <span class="statement-label">THE QUESTION</span>
-          <p>Can a coding agent turn an information need into a working, reproducible search system?</p>
+          <div class="statement-prompt">
+            <span class="statement-icon" aria-hidden="true">?</span>
+            <span class="statement-label">THE QUESTION</span>
+          </div>
+          <p>Can a coding agent build, optimize, and repair a real search system?</p>
         </div>
       </section>
 
@@ -129,65 +132,65 @@
         <div class="section-heading split-heading">
           <div>
             <p class="eyebrow">02 · Search-SWE · What</p>
-            <h2>A benchmark for search-system engineering agents.</h2>
+            <h2>A benchmark for coding agents that engineer search systems.</h2>
           </div>
           <p>
-            Given a task, data or information sources, a sandbox, public examples, and hidden tests, the agent
-            must deliver an executable search system.
+            Each task gives an agent a concrete search-system scenario, the relevant assets and constraints,
+            and an executable evaluator for the delivered change.
           </p>
         </div>
         <div class="what-grid">
           <div class="what-copy">
-            <p class="lead">Search-SWE treats every information need as an end-to-end software-engineering problem.</p>
+            <p class="lead">Search-SWE evaluates coding agents on the practical engineering work behind real search systems.</p>
             <p>
-              The benchmark does not pre-select BM25, dense retrieval, RAG, reranking, or an agentic workflow.
-              It evaluates the result produced by the agent under the same execution and resource conditions.
+              Its tasks span implementation, optimization, and repair. An agent may need to construct a missing
+              capability, improve a working pipeline under constraints, or identify and fix a broken integration.
             </p>
           </div>
           <div class="principle-card principle-large">
             <span class="principle-number">CORE PRINCIPLE</span>
-            <p>Do not score the plan.<br /><strong>Score the executable result.</strong></p>
+            <p>Do not score the rationale.<br /><strong>Score the working system.</strong></p>
           </div>
         </div>
         <div class="loop-strip">
-          <div><span>01</span><b>Explore</b><small>Discover the environment</small></div>
+          <div><span>01</span><b>Understand</b><small>Inspect the task and system</small></div>
           <i>→</i>
-          <div><span>02</span><b>Construct</b><small>Build the search system</small></div>
+          <div><span>02</span><b>Engineer</b><small>Implement, optimize, or repair</small></div>
           <i>→</i>
-          <div><span>03</span><b>Validate</b><small>Test and iterate</small></div>
+          <div><span>03</span><b>Validate</b><small>Run, test, and iterate</small></div>
           <i>→</i>
-          <div class="loop-final"><span>04</span><b>Deliver</b><small>Submit a reproducible artifact</small></div>
+          <div class="loop-final"><span>04</span><b>Deliver</b><small>Submit a working artifact</small></div>
         </div>
       </section>
 
       <section id="construction" class="section-shell content-section">
         <div class="section-heading">
           <p class="eyebrow">03 · Task construction · How</p>
-          <h2>Make the task open-ended for the agent, precise for the grader.</h2>
+          <h2>Ground each task in a real search-system engineering scenario.</h2>
         </div>
         <div class="construction-grid">
           <article class="construction-card">
             <div class="construction-icon">⌁</div>
-            <span class="construction-label">TASK INSTANCE</span>
-            <h3>Information need</h3>
-            <p>A realistic query, corpus, source collection, or multi-step information requirement.</p>
+            <span class="construction-label">TASK CONTEXT</span>
+            <h3>Real-world problem</h3>
+            <p>A concrete search-system need: a missing feature, a quality bottleneck, or a faulty production path.</p>
           </article>
           <article class="construction-card">
             <div class="construction-icon">▣</div>
-            <span class="construction-label">EXECUTION CONTRACT</span>
-            <h3>Fixed sandbox</h3>
-            <p>The same compute, storage, software, model, and network budget is available to every run.</p>
+            <span class="construction-label">ENGINEERING CONSTRAINTS</span>
+            <h3>Fixed environment</h3>
+            <p>Every agent works with the same data, compute, storage, software, model, and network budget.</p>
           </article>
           <article class="construction-card">
             <div class="construction-icon">✓</div>
-            <span class="construction-label">GRADING SIGNAL</span>
-            <h3>Public and hidden tests</h3>
-            <p>Examples support iteration while hidden queries measure whether the delivered system generalizes.</p>
+            <span class="construction-label">EXECUTABLE EVALUATION</span>
+            <h3>Public and hidden checks</h3>
+            <p>Public cases support iteration; hidden checks assess correctness, search quality, and system behavior.</p>
           </article>
         </div>
         <div class="construction-note">
           <span class="status-dot"></span>
-          The homepage highlights six selected tasks. The complete catalog contains seven defined tasks, including Task 2-3.
+          Tasks are organized as implementation, optimization, and repair problems. The homepage highlights six; the catalog contains seven defined scenarios.
         </div>
       </section>
 
@@ -195,11 +198,11 @@
         <div class="section-heading split-heading">
           <div>
             <p class="eyebrow">04 · Tasks</p>
-            <h2>Six representative Search-SWE tasks.</h2>
+            <h2>Representative tasks across three engineering modes.</h2>
           </div>
           <p>
-            The homepage gives a quick view of six selected tasks across implementation, optimization, and repair.
-            Select any card to open its detailed task brief.
+            Each task is a realistic search-system scenario that tests both domain knowledge and the ability to make an engineering change work.
+            Select a card to read its task brief.
           </p>
         </div>
         <div class="task-grid task-grid-six">
@@ -207,42 +210,42 @@
             <div class="task-index">TASK 1-1 <span class="type-chip type-implementation">IMPLEMENTATION</span></div>
             <div class="task-icon">↻</div>
             <h3>Reasoning query rewrite</h3>
-            <p>Recognize when query rewriting is needed and turn noisy natural language into a retrieval-ready query.</p>
+            <p>Implement a rewrite component that turns a complex user need into a retrieval-ready query.</p>
             <span class="task-tag">query understanding <b>→</b></span>
           </a>
           <a class="task-card task-violet" href="tasks.html#task-1-2">
             <div class="task-index">TASK 1-2 <span class="type-chip type-optimization">OPTIMIZATION</span></div>
             <div class="task-icon">◌</div>
             <h3>Memory-constrained retrieval</h3>
-            <p>Search a 1.5M-vector corpus while balancing memory, index size, quality, and query latency.</p>
+            <p>Optimize dense retrieval over 1.5M vectors while balancing memory, index size, quality, and latency.</p>
             <span class="task-tag">large-scale dense search <b>→</b></span>
           </a>
           <a class="task-card task-teal" href="tasks.html#task-2-1">
             <div class="task-index">TASK 2-1 <span class="type-chip type-optimization">OPTIMIZATION</span></div>
             <div class="task-icon">↗</div>
             <h3>Long-document reranking</h3>
-            <p>Improve Cross-Encoder reranking when the relevant evidence lies beyond the first 512 tokens.</p>
+            <p>Improve a long-document reranker when the most useful evidence lies beyond its first token window.</p>
             <span class="task-tag">reranking <b>→</b></span>
           </a>
           <a class="task-card task-orange" href="tasks.html#task-2-2">
             <div class="task-index">TASK 2-2 <span class="type-chip type-optimization">OPTIMIZATION</span></div>
             <div class="task-icon">◆</div>
             <h3>Embedder training</h3>
-            <p>Improve a fixed-backbone code-retrieval embedder on supplied training data.</p>
+            <p>Improve a fixed-backbone code-retrieval embedder with the supplied data and evaluation constraints.</p>
             <span class="task-tag">representation learning <b>→</b></span>
           </a>
           <a class="task-card task-pink" href="tasks.html#task-3-1">
             <div class="task-index">TASK 3-1 <span class="type-chip type-repair">REPAIR</span></div>
             <div class="task-icon">⌁</div>
             <h3>Multilingual BM25 tokenizer</h3>
-            <p>Repair the Pyserini BM25 pipeline so a Korean corpus is indexed and queried correctly.</p>
+            <p>Diagnose and repair a Pyserini BM25 pipeline so a Korean corpus is indexed and searched correctly.</p>
             <span class="task-tag">retrieval debugging <b>→</b></span>
           </a>
           <a class="task-card task-blue" href="tasks.html#task-3-2">
             <div class="task-index">TASK 3-2 <span class="type-chip type-repair type-chip-dark">REPAIR</span></div>
             <div class="task-icon">✓</div>
             <h3>Embedding inference repair</h3>
-            <p>Fix the local FlagEmbedding integration so automatic model loading produces valid retrieval embeddings.</p>
+            <p>Repair a local FlagEmbedding integration so automatic loading produces valid retrieval embeddings.</p>
             <span class="task-tag">integration debugging <b>→</b></span>
           </a>
         </div>
@@ -252,14 +255,14 @@
       <section id="evaluation" class="section-shell content-section">
         <div class="section-heading">
           <p class="eyebrow">05 · Evaluation setting</p>
-          <h2>Every submission has to survive four checks.</h2>
+          <h2>Evaluate the engineering artifact, not a proposed solution.</h2>
         </div>
         <div class="evaluation-layout evaluation-only">
           <div class="evaluation-list">
-            <article class="eval-row"><span class="eval-number">01</span><div><h3>Build</h3><p>Can the system build its index or required assets in a clean sandbox?</p></div><span class="eval-symbol">⌘</span></article>
-            <article class="eval-row"><span class="eval-number">02</span><div><h3>Function</h3><p>Are inputs, outputs, IDs, ordering, and edge cases handled correctly?</p></div><span class="eval-symbol">✓</span></article>
-            <article class="eval-row"><span class="eval-number">03</span><div><h3>Search quality</h3><p>Does the returned Top-k list contain a verified positive result?</p></div><span class="eval-symbol">↗</span></article>
-            <article class="eval-row"><span class="eval-number">04</span><div><h3>Resources</h3><p>Does the run stay within the time, memory, disk, GPU, and network budget?</p></div><span class="eval-symbol">◌</span></article>
+            <article class="eval-row"><span class="eval-number">01</span><div><h3>Build</h3><p>Can the agent's artifact build its index, model assets, or required resources in a clean environment?</p></div><span class="eval-symbol">⌘</span></article>
+            <article class="eval-row"><span class="eval-number">02</span><div><h3>Function</h3><p>Does the system handle the required inputs, outputs, identifiers, ordering, and edge cases?</p></div><span class="eval-symbol">✓</span></article>
+            <article class="eval-row"><span class="eval-number">03</span><div><h3>Search outcome</h3><p>Does the delivered system return useful results on held-out search cases?</p></div><span class="eval-symbol">↗</span></article>
+            <article class="eval-row"><span class="eval-number">04</span><div><h3>Engineering budget</h3><p>Does the run stay within the task's time, memory, disk, GPU, and network constraints?</p></div><span class="eval-symbol">◌</span></article>
           </div>
         </div>
         <div class="setting-strip">
@@ -271,15 +274,15 @@
       <section id="results" class="section-shell content-section section-dark results-section">
         <div class="dark-heading">
           <p class="eyebrow eyebrow-light">06 · Results</p>
-          <h2>The leaderboard starts with a reproducible run.</h2>
-          <p>Results will be added as public tasks and baseline submissions become available.</p>
+          <h2>The leaderboard begins with a reproducible working system.</h2>
+          <p>Results will be published as task specifications and baseline agent submissions become available.</p>
         </div>
         <div class="results-panel">
           <div class="results-panel-head"><span>RESULTS BOARD</span><span class="results-status">● preparing</span></div>
           <div class="results-empty">
             <div class="empty-mark">↗</div>
             <h3>Benchmark release in preparation</h3>
-            <p>The first release will include task specifications, baseline systems, and reproducible evaluation reports.</p>
+            <p>The first release will include realistic task scenarios, baseline agents, and reproducible evaluation reports.</p>
             <a class="button button-light" href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">Follow development <span aria-hidden="true">↗</span></a>
           </div>
         </div>
@@ -288,7 +291,7 @@
       <section class="section-shell cta-section">
         <div>
           <p class="eyebrow">Search-SWE</p>
-          <h2>Measure the system that gets built.</h2>
+          <h2>Evaluate the search system an agent actually engineers.</h2>
         </div>
         <a class="button button-primary" href="tasks.html">Explore the task catalog <span aria-hidden="true">↗</span></a>
       </section>
@@ -296,7 +299,7 @@
 
     <footer class="footer section-shell">
       <span>Search-SWE · VectorSpaceLab</span>
-      <span>Built for executable search-system evaluation</span>
+      <span>Benchmarking executable search-system engineering</span>
     </footer>
 
     <script src="script.js"></script>
