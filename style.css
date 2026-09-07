@@ -112,6 +112,7 @@ h1 em { color: var(--blue); font-style: normal; }
 .task-card:hover { transform: translateY(-4px); border-color: #b8cce9; box-shadow: var(--shadow); }
 .task-index, .resource-label { color: var(--muted); font-family: var(--mono); font-size: .8rem; letter-spacing: .065em; }
 .task-card-heading { display: flex; align-items: center; gap: 12px; min-height: 46px; margin: 22px 0 14px; }
+.task-icon svg,.catalog-card-icon svg { display:block; flex:none; }
 .task-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 36px; width: 36px; height: 36px; margin: 0; color: var(--white); border-radius: 10px; background: var(--blue); font-size: 1rem; font-weight: 800; }
 .task-violet .task-icon { background: var(--violet); }
 .task-teal .task-icon { background: var(--teal); }

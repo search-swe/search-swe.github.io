@@ -15,6 +15,20 @@ MODES = {
     "optimization": "Optimization",
     "repair": "Repair",
 }
+MODE_VISUALS = {
+    "implementation": {
+        "color": "blue",
+        "icon": '<rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/><path d="M17.5 3v7M14 6.5h7"/>',
+    },
+    "optimization": {
+        "color": "violet",
+        "icon": '<path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/>',
+    },
+    "repair": {
+        "color": "teal",
+        "icon": '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94Z"/>',
+    },
+}
 STATUSES = {"setting", "draft", "planned"}
 META_PATTERN = re.compile(r"^\* \*\*([^*]+)\*\*: (.*)$")
 TOKEN_PATTERN = re.compile(
@@ -192,11 +206,16 @@ def task_label(task: dict) -> str:
     return "TASK " + task["id"].removeprefix("task-")
 
 
+def mode_icon(task: dict) -> str:
+    shapes = MODE_VISUALS[task["mode"]]["icon"]
+    return f'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">{shapes}</svg>'
+
+
 def home_card(task: dict) -> str:
-    return f"""          <a class="task-card task-{task['color']}" href="tasks/{task['id']}/">
+    return f"""          <a class="task-card task-{MODE_VISUALS[task['mode']]['color']}" href="tasks/{task['id']}/">
             <div class="task-index">{task_label(task)} <span class="type-chip type-{task['mode']}">{MODES[task['mode']].upper()}</span></div>
             <div class="task-card-heading">
-              <span class="task-icon" aria-hidden="true">{task['icon']}</span>
+              <span class="task-icon" aria-hidden="true">{mode_icon(task)}</span>
               <h3>{esc(task['title'])}</h3>
             </div>
             <p>{esc(task['summary'])}</p>
@@ -205,10 +224,10 @@ def home_card(task: dict) -> str:
 
 
 def catalog_card(task: dict) -> str:
-    return f"""<a id="{task['id']}" class="catalog-card task-{task['color']}" href="tasks/{task['id']}/">
+    return f"""<a id="{task['id']}" class="catalog-card task-{MODE_VISUALS[task['mode']]['color']}" href="tasks/{task['id']}/">
   <span class="catalog-card-id">{task_label(task)} · {MODES[task['mode']].upper()}</span>
   <div class="task-card-heading">
-    <span class="catalog-card-icon" aria-hidden="true">{task['icon']}</span>
+    <span class="catalog-card-icon" aria-hidden="true">{mode_icon(task)}</span>
     <h2>{esc(task['title'])}</h2>
   </div>
   <p>{esc(task['summary'])}</p>
