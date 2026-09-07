@@ -1,0 +1,110 @@
+[
+  {
+    "id": "task-1-1",
+    "mode": "implementation",
+    "title": "Reasoning query rewrite",
+    "navTitle": "Query rewriting",
+    "summary": "Build retrieval over a biology corpus by rewriting natural-language queries into precise search intent.",
+    "tag": "query understanding",
+    "color": "blue",
+    "icon": "↻",
+    "status": "setting",
+    "featured": true
+  },
+  {
+    "id": "task-1-2",
+    "mode": "implementation",
+    "title": "Memory-constrained retrieval",
+    "navTitle": "Memory-constrained retrieval",
+    "summary": "Search 1.5M document vectors while balancing retrieval quality, memory, index size, and latency.",
+    "tag": "large-scale dense search",
+    "color": "violet",
+    "icon": "◌",
+    "status": "setting",
+    "featured": true
+  },
+  {
+    "id": "task-2-1",
+    "mode": "optimization",
+    "title": "Long-document reranking",
+    "navTitle": "Long-document reranking",
+    "summary": "Improve a fixed reranker when relevant evidence lies beyond the first token window of a document.",
+    "tag": "reranking",
+    "color": "teal",
+    "icon": "↗",
+    "status": "setting",
+    "featured": true
+  },
+  {
+    "id": "task-2-2",
+    "mode": "optimization",
+    "title": "Embedder training",
+    "navTitle": "Code embedder training",
+    "summary": "Improve a fixed-backbone code-retrieval embedder using the supplied training data and constraints.",
+    "tag": "representation learning",
+    "color": "orange",
+    "icon": "◆",
+    "status": "setting",
+    "featured": true
+  },
+  {
+    "id": "task-2-3",
+    "mode": "optimization",
+    "title": "Query-side encoder",
+    "navTitle": "Query-side encoder",
+    "summary": "Improve query representations with a compact encoder while document vectors stay fixed and a runtime gate applies.",
+    "tag": "query encoder optimization",
+    "color": "pink",
+    "icon": "⌘",
+    "status": "setting",
+    "featured": true
+  },
+  {
+    "id": "task-2-4",
+    "mode": "optimization",
+    "title": "Multimodal paper search",
+    "navTitle": "Multimodal paper search",
+    "summary": "Build search over a large research-paper PDF corpus using both textual and visual content.",
+    "tag": "multimodal PDF retrieval",
+    "color": "violet",
+    "icon": "▧",
+    "status": "planned",
+    "featured": false
+  },
+  {
+    "id": "task-2-5",
+    "mode": "optimization",
+    "title": "Natural-language Ctrl+F",
+    "navTitle": "Natural-language Ctrl+F",
+    "summary": "Locate the specific passage in a long book PDF that matches a natural-language query.",
+    "tag": "in-document search",
+    "color": "teal",
+    "icon": "⌕",
+    "status": "planned",
+    "featured": false
+  },
+  {
+    "id": "task-2-6",
+    "mode": "optimization",
+    "title": "Multi-constraint retrieval",
+    "navTitle": "Multi-constraint retrieval",
+    "summary": "Build a search engine for BrowseComp-Plus queries that require satisfying multiple conditions.",
+    "tag": "constraint-aware search",
+    "color": "orange",
+    "icon": "⋈",
+    "status": "planned",
+    "featured": false
+  },
+  {
+    "id": "task-3-1",
+    "mode": "repair",
+    "title": "Sparse retrieval index repair",
+    "navTitle": "Sparse index repair",
+    "summary": "Repair vocabulary mappings and unsafe pruning, then reduce bloated postings while preserving retrieval quality.",
+    "tag": "postings · vocabulary · pruning",
+    "color": "teal",
+    "icon": "⌁",
+    "status": "draft",
+    "featured": true
+  }
+]

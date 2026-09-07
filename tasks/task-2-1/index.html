@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Improve a fixed reranker when relevant evidence lies beyond the first token window of a document." />
+  <title>Long-Document Reranking — Search-SWE</title>
+  <link rel="icon" type="image/png" href="../../assests/logo.png" />
+  <link rel="apple-touch-icon" href="../../assests/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../style.css" />
+  <link rel="stylesheet" href="../../task-pages.css" />
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../../index.html#top" aria-label="Search-SWE home">
+    <span class="brand-mark" aria-hidden="true"><img src="../../assests/logo.png" width="36" height="36" alt="" /></span>
+    <span>Search-SWE</span>
+  </a>
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+    <span></span><span></span><span></span><span class="sr-only">Toggle navigation</span>
+  </button>
+  <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+    <a href="../../index.html#motivation">Why</a>
+    <a href="../../index.html#search-swe">What &amp; How</a>
+    <a class="nav-active" href="../../tasks.html">Tasks</a>
+    <a href="../../index.html#evaluation">Evaluation &amp; Results</a>
+    <a class="nav-button" href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+  </nav>
+</header>
+
+<main id="main-content" class="section-shell task-reader">
+  <nav class="task-breadcrumbs" aria-label="Breadcrumb"><a href="../../index.html">Home</a><span aria-hidden="true">/</span><a href="../../tasks.html">Tasks</a><span aria-hidden="true">/</span><span aria-current="page">TASK 2-1</span></nav>
+  <div class="task-reader-layout">
+    <aside class="task-directory"><a class="all-tasks-link" href="../../tasks.html">← All tasks</a><nav aria-label="Task directory"><div class="task-directory-group"><p>Implementation</p><a href="../task-1-1/"><span>1-1</span>Query rewriting</a><a href="../task-1-2/"><span>1-2</span>Memory-constrained retrieval</a></div><div class="task-directory-group"><p>Optimization</p><a href="../task-2-1/" aria-current="page"><span>2-1</span>Long-document reranking</a><a href="../task-2-2/"><span>2-2</span>Code embedder training</a><a href="../task-2-3/"><span>2-3</span>Query-side encoder</a><a href="../task-2-4/"><span>2-4</span>Multimodal paper search</a><a href="../task-2-5/"><span>2-5</span>Natural-language Ctrl+F</a><a href="../task-2-6/"><span>2-6</span>Multi-constraint retrieval</a></div><div class="task-directory-group"><p>Repair</p><a href="../task-3-1/"><span>3-1</span>Sparse index repair</a></div></nav></aside>
+    <article class="task-article">
+      <header id="overview" class="task-article-header">
+        <div class="task-article-kicker"><span>TASK 2-1</span><span class="type-chip type-optimization">OPTIMIZATION</span></div>
+        <h1>Long-Document Reranking</h1>
+        <div class="task-summary"><p>Improve a fixed reranking pipeline for NarrativeQA-style long documents. Each query comes with a frozen BM25 Top-100 candidate pool, and the task focuses on reranking those candidates when relevant evidence may occur beyond the first 512 model tokens.</p></div>
+        <dl class="task-specs"><div><dt>Domain</dt><dd><code>information retrieval</code></dd></div><div><dt>Primary focus</dt><dd><code>long-document reranking</code></dd></div><div><dt>Primary metric</dt><dd><code>Accuracy@5</code></dd></div></dl>
+        <div class="task-tags" aria-label="Task topics"><span>search</span><span>reranking</span><span>cross-encoder</span><span>long-document</span><span>BM25</span><span>NarrativeQA</span></div>
+      </header>
+      <details class="task-mobile-toc"><summary>On this page</summary><nav aria-label="Page contents"><a href="#overview">Overview</a><a href="#runtime-and-requirements">Runtime and requirements</a><a href="#public-input-and-output-contract">Public input and output contract</a><a href="#inputs" class="toc-subsection">Inputs</a><a href="#outputs" class="toc-subsection">Outputs</a><a href="#evaluation">Evaluation</a></nav></details>
+      <div class="task-prose"><h2 id="runtime-and-requirements">Runtime and requirements</h2>
+<ul><li><strong>Agent time budget</strong>: up to <code>120 minutes</code></li><li><strong>Python</strong>: <code>3.12</code></li><li><strong>Compute</strong>: <code>16</code> CPU cores, <code>64 GiB</code> memory, <code>100 GiB</code> storage</li><li><strong>GPU required</strong>: <code>no</code></li><li><strong>Network</strong>: <code>restricted</code> — the supplied local model only</li></ul>
+<h2 id="public-input-and-output-contract">Public input and output contract</h2>
+<h3 id="inputs">Inputs</h3>
+<ul><li><code>/task/data/corpus.jsonl</code> — a 355-document long-document corpus.</li><li><code>/task/data/validation/queries.jsonl</code> — 100 public queries, each with a fixed BM25 Top-100 candidate list.</li><li><code>/task/data/validation/ground_truth.jsonl</code> — relevance labels for the public queries.</li></ul>
+<p>The submission must use the candidate documents supplied with each query and the local <code>BAAI/bge-reranker-large</code> model. It may optimize preprocessing, document-window selection, score aggregation, and inference, but may not retrieve additional candidates or replace the model.</p>
+<h3 id="outputs">Outputs</h3>
+<p>The submission must provide executable <code>build.sh</code> and <code>run.sh</code> entry points under <code>/app</code> and return the top five reranked candidates for every query in JSONL format.</p>
+<h2 id="evaluation">Evaluation</h2>
+<p>The hidden split contains 100 disjoint queries. A query passes when its relevant document appears in the first five reranked candidates. The task score is the average held-out <code>Accuracy@5</code>; invalid output, candidate-set violations, unauthorized retrieval, or model replacement results in a score of <code>0</code>.</p></div>
+      <nav class="task-adjacent" aria-label="Adjacent tasks"><a href="../task-1-2/"><span>Previous task · TASK 1-2</span><strong>Memory-constrained retrieval</strong></a><a href="../task-2-2/"><span>Next task · TASK 2-2</span><strong>Embedder training</strong></a></nav>
+    </article>
+    <aside class="task-toc"><nav aria-label="On this page"><p>On this page</p><a href="#overview">Overview</a><a href="#runtime-and-requirements">Runtime and requirements</a><a href="#public-input-and-output-contract">Public input and output contract</a><a href="#inputs" class="toc-subsection">Inputs</a><a href="#outputs" class="toc-subsection">Outputs</a><a href="#evaluation">Evaluation</a></nav></aside>
+  </div>
+</main>
+<footer class="footer section-shell">
+  <span>Search-SWE · VectorSpaceLab</span>
+  <a href="../../tasks.html">Browse all tasks <span aria-hidden="true">↗</span></a>
+</footer>
+<script src="../../script.js"></script>
+</body>
+</html>

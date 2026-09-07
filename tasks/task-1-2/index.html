@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Search 1.5M document vectors while balancing retrieval quality, memory, index size, and latency." />
+  <title>Memory-Constrained Dense Retrieval — Search-SWE</title>
+  <link rel="icon" type="image/png" href="../../assests/logo.png" />
+  <link rel="apple-touch-icon" href="../../assests/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../style.css" />
+  <link rel="stylesheet" href="../../task-pages.css" />
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../../index.html#top" aria-label="Search-SWE home">
+    <span class="brand-mark" aria-hidden="true"><img src="../../assests/logo.png" width="36" height="36" alt="" /></span>
+    <span>Search-SWE</span>
+  </a>
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+    <span></span><span></span><span></span><span class="sr-only">Toggle navigation</span>
+  </button>
+  <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+    <a href="../../index.html#motivation">Why</a>
+    <a href="../../index.html#search-swe">What &amp; How</a>
+    <a class="nav-active" href="../../tasks.html">Tasks</a>
+    <a href="../../index.html#evaluation">Evaluation &amp; Results</a>
+    <a class="nav-button" href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+  </nav>
+</header>
+
+<main id="main-content" class="section-shell task-reader">
+  <nav class="task-breadcrumbs" aria-label="Breadcrumb"><a href="../../index.html">Home</a><span aria-hidden="true">/</span><a href="../../tasks.html">Tasks</a><span aria-hidden="true">/</span><span aria-current="page">TASK 1-2</span></nav>
+  <div class="task-reader-layout">
+    <aside class="task-directory"><a class="all-tasks-link" href="../../tasks.html">← All tasks</a><nav aria-label="Task directory"><div class="task-directory-group"><p>Implementation</p><a href="../task-1-1/"><span>1-1</span>Query rewriting</a><a href="../task-1-2/" aria-current="page"><span>1-2</span>Memory-constrained retrieval</a></div><div class="task-directory-group"><p>Optimization</p><a href="../task-2-1/"><span>2-1</span>Long-document reranking</a><a href="../task-2-2/"><span>2-2</span>Code embedder training</a><a href="../task-2-3/"><span>2-3</span>Query-side encoder</a><a href="../task-2-4/"><span>2-4</span>Multimodal paper search</a><a href="../task-2-5/"><span>2-5</span>Natural-language Ctrl+F</a><a href="../task-2-6/"><span>2-6</span>Multi-constraint retrieval</a></div><div class="task-directory-group"><p>Repair</p><a href="../task-3-1/"><span>3-1</span>Sparse index repair</a></div></nav></aside>
+    <article class="task-article">
+      <header id="overview" class="task-article-header">
+        <div class="task-article-kicker"><span>TASK 1-2</span><span class="type-chip type-implementation">IMPLEMENTATION</span></div>
+        <h1>Memory-Constrained Dense Retrieval</h1>
+        <div class="task-summary"><p>Build an executable dense-vector search engine over 1.5 million precomputed NaturalQuestions document vectors. The task tests how an agent balances retrieval quality, memory usage, index size, and query latency when the raw vector collection is substantially larger than available memory.</p></div>
+        <dl class="task-specs"><div><dt>Domain</dt><dd><code>information retrieval</code></dd></div><div><dt>Primary focus</dt><dd><code>memory-constrained vector search</code></dd></div><div><dt>Primary metric</dt><dd><code>Accuracy@3</code></dd></div></dl>
+        <div class="task-tags" aria-label="Task topics"><span>dense-retrieval</span><span>vector-search</span><span>NaturalQuestions</span><span>ANN</span><span>indexing</span><span>memory-constrained</span></div>
+      </header>
+      <details class="task-mobile-toc"><summary>On this page</summary><nav aria-label="Page contents"><a href="#overview">Overview</a><a href="#runtime-and-requirements">Runtime and requirements</a><a href="#public-input-and-output-contract">Public input and output contract</a><a href="#inputs" class="toc-subsection">Inputs</a><a href="#outputs" class="toc-subsection">Outputs</a><a href="#evaluation">Evaluation</a></nav></details>
+      <div class="task-prose"><h2 id="runtime-and-requirements">Runtime and requirements</h2>
+<ul><li><strong>Agent time budget</strong>: up to <code>120 minutes</code></li><li><strong>Python</strong>: <code>3.12</code></li><li><strong>Compute</strong>: <code>16</code> CPU cores, <code>2 GiB</code> memory, <code>100 GiB</code> storage</li><li><strong>GPU required</strong>: <code>no</code></li><li><strong>Network</strong>: <code>no</code></li><li><strong>Build limit</strong>: <code>120 seconds</code></li><li><strong>Per-query limit</strong>: <code>0.5 seconds</code></li></ul>
+<h2 id="public-input-and-output-contract">Public input and output contract</h2>
+<h3 id="inputs">Inputs</h3>
+<ul><li><code>/task/data/vectors.f32</code> — 1,500,000 normalized float32 vectors with dimension 1,024.</li><li><code>/task/data/metadata.jsonl</code> — document metadata aligned with the vector rows.</li><li><code>/task/data/vector_config.json</code> — vector collection configuration.</li><li><code>/task/data/validation/</code> — five public development queries and relevance labels.</li></ul>
+<h3 id="outputs">Outputs</h3>
+<p>The submission must provide executable <code>build.sh</code> and <code>run.sh</code> entry points under <code>/app</code> and return the top three corpus documents for each query in JSONL format.</p>
+<h2 id="evaluation">Evaluation</h2>
+<p>The verifier evaluates five hidden quality queries and a separate hidden performance workload. A quality query passes when a relevant document appears in the top three results. <strong>All five quality queries must pass, while the build, latency, memory, index-size, and output checks must also succeed, to receive a score of <code>1</code>; otherwise the score is <code>0</code>.</strong></p>
+<p>The implementation may use exact or approximate search, quantization, memory mapping, block-wise computation, or other indexing strategies, but must use the supplied vectors and operate without external retrieval resources.</p></div>
+      <nav class="task-adjacent" aria-label="Adjacent tasks"><a href="../task-1-1/"><span>Previous task · TASK 1-1</span><strong>Reasoning query rewrite</strong></a><a href="../task-2-1/"><span>Next task · TASK 2-1</span><strong>Long-document reranking</strong></a></nav>
+    </article>
+    <aside class="task-toc"><nav aria-label="On this page"><p>On this page</p><a href="#overview">Overview</a><a href="#runtime-and-requirements">Runtime and requirements</a><a href="#public-input-and-output-contract">Public input and output contract</a><a href="#inputs" class="toc-subsection">Inputs</a><a href="#outputs" class="toc-subsection">Outputs</a><a href="#evaluation">Evaluation</a></nav></aside>
+  </div>
+</main>
+<footer class="footer section-shell">
+  <span>Search-SWE · VectorSpaceLab</span>
+  <a href="../../tasks.html">Browse all tasks <span aria-hidden="true">↗</span></a>
+</footer>
+<script src="../../script.js"></script>
+</body>
+</html>

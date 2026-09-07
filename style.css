@@ -111,13 +111,14 @@ h1 em { color: var(--blue); font-style: normal; }
 .task-card { position: relative; min-height: 256px; overflow: hidden; padding: 24px; border: 1px solid var(--line); border-radius: 17px; background: var(--white); transition: transform .18s, box-shadow .18s, border-color .18s; }
 .task-card:hover { transform: translateY(-4px); border-color: #b8cce9; box-shadow: var(--shadow); }
 .task-index, .resource-label { color: var(--muted); font-family: var(--mono); font-size: .8rem; letter-spacing: .065em; }
-.task-icon { display: flex; align-items: center; justify-content: center; width: 39px; height: 39px; margin: 26px 0 16px; color: var(--white); border-radius: 11px; background: var(--blue); font-size: 1rem; font-weight: 800; }
+.task-card-heading { display: flex; align-items: center; gap: 12px; min-height: 46px; margin: 22px 0 14px; }
+.task-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 36px; width: 36px; height: 36px; margin: 0; color: var(--white); border-radius: 10px; background: var(--blue); font-size: 1rem; font-weight: 800; }
 .task-violet .task-icon { background: var(--violet); }
 .task-teal .task-icon { background: var(--teal); }
 .task-orange .task-icon { background: var(--orange); }
 .task-pink .task-icon { background: var(--pink); }
-.task-card h3 { margin-bottom: 8px; font-size: 1.1rem; letter-spacing: -.035em; }
-.task-card p { max-width: 260px; margin-bottom: 18px; color: var(--muted); font-size: .9rem; line-height: 1.62; }
+.task-card h3 { min-width: 0; margin: 0; font-size: 1.06rem; line-height: 1.35; letter-spacing: -.035em; }
+.task-card p { margin-bottom: 18px; color: var(--muted); font-size: .9rem; line-height: 1.62; }
 .task-tag { display: inline-flex; padding: 7px 10px; color: var(--blue-dark); border-radius: 6px; background: #edf4ff; font-family: var(--mono); font-size: .8rem; }
 .task-dark { display: flex; flex-direction: column; justify-content: center; color: var(--white); border-color: var(--ink); background: var(--ink); }
 .task-dark .quote-mark { color: var(--cyan); font-size: 2.4rem; line-height: .95; }
@@ -197,29 +198,6 @@ h1 em { color: var(--blue); font-style: normal; }
 .type-repair { color: #008b76; background: #e7faf7; }
 .type-chip-dark { color: #63d9dd; background: rgba(99,217,221,.15); }
 
-/* ---------- Motivation / What / How ---------- */
-.reason-grid, .construction-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.reason-card, .construction-card { padding: 25px; border: 1px solid var(--line); border-radius: 17px; background: var(--white); }
-.reason-card { min-height: 215px; }
-.reason-number { display: inline-flex; align-items: center; justify-content: center; width: 31px; height: 31px; margin-bottom: 37px; color: var(--blue-dark); border-radius: 8px; background: #edf4ff; font-family: var(--mono); font-size: .8rem; }
-.reason-card:nth-child(2) .reason-number { color: var(--violet); background: #f0edff; }
-.reason-card:nth-child(3) .reason-number { color: var(--teal); background: #e7faf7; }
-.reason-card h3, .construction-card h3 { margin-bottom: 8px; font-size: 1rem; letter-spacing: -.035em; }
-.reason-card p, .construction-card p { margin: 0; color: var(--muted); font-size: .88rem; line-height: 1.62; }
-.statement-card { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; justify-content: start; gap: 24px; margin-top: 16px; padding: 24px 28px; border-radius: 17px; background: var(--ink); }
-.statement-prompt { display: inline-flex; align-items: center; gap: 11px; padding-right: 23px; border-right: 1px solid rgba(159, 177, 199, .32); }
-.statement-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; color: var(--white); border: 1px solid rgba(99, 217, 221, .48); border-radius: 10px; background: rgba(99, 217, 221, .12); font-family: var(--mono); font-size: 1.18rem; font-weight: 500; line-height: 1; }
-.statement-label { color: var(--cyan); font-family: var(--mono); font-size: 1rem; font-weight: 500; letter-spacing: .065em; white-space: nowrap; }
-.statement-card p { max-width: none; margin: 0; color: var(--white); font-size: 1.12rem; font-weight: 700; letter-spacing: -.035em; line-height: 1.45; white-space: nowrap; }
-.construction-card { min-height: 220px; }
-.construction-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; margin-bottom: 24px; color: var(--white); border-radius: 11px; background: var(--blue); font-size: 1.1rem; font-weight: 800; }
-.construction-card:nth-child(2) .construction-icon { background: var(--violet); }
-.construction-card:nth-child(3) .construction-icon { background: var(--teal); }
-.construction-label { display: block; margin-bottom: 8px; color: var(--muted); font-family: var(--mono); font-size: .8rem; letter-spacing: .065em; }
-.benchmark-principle { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 16px; padding: 18px 22px; color: var(--white); border-radius: 14px; background: var(--ink); }
-.benchmark-principle span { color: var(--cyan); font-family: var(--mono); font-size: .8rem; letter-spacing: .085em; }
-.benchmark-principle p { margin: 0; font-size: 1.05rem; font-weight: 800; letter-spacing: -.03em; }
-
 /* ---------- Task cards / setting / results ---------- */
 .task-grid-six { grid-template-columns: repeat(3, 1fr); }
 .task-card { display: flex; flex-direction: column; }
@@ -242,7 +220,7 @@ h1 em { color: var(--blue); font-style: normal; }
 .catalog-card { display: flex; min-height: 245px; flex-direction: column; padding: 23px; border: 1px solid var(--line); border-radius: 16px; background: var(--white); transition: transform .18s, box-shadow .18s, border-color .18s; }
 .catalog-card:hover { transform: translateY(-4px); border-color: #adc6ef; box-shadow: var(--shadow); }
 .catalog-card-id { color: var(--muted); font-family: var(--mono); font-size: .8rem; letter-spacing: .06em; }
-.catalog-card-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; margin: 27px 0 16px; color: var(--white); border-radius: 11px; background: var(--blue); font-size: 1rem; font-weight: 800; }
+.catalog-card-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 36px; width: 36px; height: 36px; margin: 0; color: var(--white); border-radius: 10px; background: var(--blue); font-size: 1rem; font-weight: 800; }
 .catalog-card.task-violet .catalog-card-icon { background: var(--violet); }
 .catalog-card.task-teal .catalog-card-icon { background: var(--teal); }
 .catalog-card.task-orange .catalog-card-icon { background: var(--orange); }
@@ -301,7 +279,7 @@ h1 em { color: var(--blue); font-style: normal; }
   .split-heading { grid-template-columns: 1fr; gap: 13px; align-items: start; }
   .task-grid { grid-template-columns: repeat(2, 1fr); }
   .submission-layout { max-width: 680px; }
-  .reason-grid, .construction-grid, .catalog-grid { grid-template-columns: repeat(2, 1fr); }
+  .catalog-grid { grid-template-columns: repeat(2, 1fr); }
   .catalog-intro { grid-template-columns: 1fr; gap: 35px; }
   .evaluation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .evaluation-item:nth-child(2) { border-right: 0; }
@@ -309,12 +287,6 @@ h1 em { color: var(--blue); font-style: normal; }
   .task-detail { grid-template-columns: 44px 1fr; }
   .detail-top { grid-column: 2; justify-self: start; }
   .detail-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-@media (max-width: 820px) {
-  .statement-card { grid-template-columns: 1fr; gap: 14px; }
-  .statement-prompt { padding-right: 0; border-right: 0; }
-  .statement-card p { white-space: normal; }
 }
 
 @media (max-width: 680px) {
@@ -346,15 +318,13 @@ h1 em { color: var(--blue); font-style: normal; }
   .section-heading h2 { font-size: clamp(1.65rem, 7vw, 1.95rem); }
   .overview-copy .lead { font-size: 1.04rem; }
   .task-grid, .resource-grid { grid-template-columns: 1fr; }
-  .reason-grid, .construction-grid, .catalog-grid { grid-template-columns: 1fr; }
+  .catalog-grid { grid-template-columns: 1fr; }
   .task-card { min-height: 220px; }
   .submission-layout { gap: 31px; }
   .terminal-card pre { font-size: .8rem; }
   .cta-section { align-items: flex-start; flex-direction: column; margin-top: 32px; margin-bottom: 48px; padding: 28px 24px; }
   .footer { align-items: flex-start; flex-direction: column; padding-bottom: 24px; font-size: .8rem; }
-  .statement-card, .catalog-cta { align-items: flex-start; flex-direction: column; padding: 25px 23px; }
-  .statement-card p { font-size: 1rem; }
-  .benchmark-principle { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .catalog-cta { align-items: flex-start; flex-direction: column; padding: 25px 23px; }
   .evaluation-grid { grid-template-columns: 1fr; }
   .evaluation-item, .evaluation-item:nth-child(2) { border-right: 0; }
   .evaluation-item:nth-child(-n + 3) { border-bottom: 1px solid var(--line); }
@@ -386,8 +356,6 @@ h1 em { color: var(--blue); font-style: normal; }
 .evaluation-item p,
 .submission-copy,
 .resource-card p,
-.reason-card p,
-.construction-card p,
 .evaluation-setting p,
 .key-findings li,
 .catalog-card p,
@@ -412,9 +380,6 @@ h1 em { color: var(--blue); font-style: normal; }
 .resource-arrow,
 .footer,
 .type-chip,
-.reason-number,
-.construction-label,
-.benchmark-principle span,
 .task-card .task-tag b,
 .evaluation-setting span,
 .results-board-head,
@@ -433,3 +398,8 @@ h1 em { color: var(--blue); font-style: normal; }
 .detail-top {
   font-size: .92rem;
 }
+
+.task-card .task-index,.catalog-card .catalog-card-id { font-size:12px; line-height:1.5; }
+.task-card .type-chip { font-size:11px; }
+.task-card .task-tag { font-size:11px; }
+.task-card:focus-visible { outline:3px solid #77a8f5; outline-offset:4px; }
