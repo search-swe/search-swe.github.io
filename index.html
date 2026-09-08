@@ -3,364 +3,168 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Search-SWE is a benchmark for evaluating whether coding agents can engineer real-world search systems."
-    />
-    <meta name="theme-color" content="#071526" />
+    <meta name="description" content="Search-SWE evaluates coding agents on implementing, optimizing, and repairing real search systems under fixed resource constraints." />
+    <meta name="theme-color" content="#ffffff" />
     <title>Search-SWE — Search-System Engineering for Agents</title>
     <link rel="icon" type="image/png" href="assests/logo.png" />
     <link rel="apple-touch-icon" href="assests/logo.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="hero-demo.css" />
-    <link rel="stylesheet" href="home-sections.css" />
+    <link rel="stylesheet" href="home-sections.css?v=2" />
   </head>
-
-  <body>
-    <header class="topbar">
-      <a class="brand" href="#top" aria-label="Search-SWE home">
-        <span class="brand-mark" aria-hidden="true"><img src="assests/logo.png" width="36" height="36" alt="" /></span>
-        <span>Search-SWE</span>
-      </a>
-
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-        <span></span><span></span><span></span>
-        <span class="sr-only">Toggle navigation</span>
-      </button>
-
-      <nav id="site-nav" class="site-nav" aria-label="Main navigation">
-        <a href="#motivation">Why</a>
-        <a href="#search-swe">What &amp; How</a>
-        <a href="#tasks">Tasks</a>
-        <a href="#evaluation">Evaluation &amp; Results</a>
-        <a class="nav-button" href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">
-          GitHub <span aria-hidden="true">↗</span>
+  <body id="top">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="home-header">
+      <div class="home-header-inner">
+        <a class="home-brand" href="#top" aria-label="Search-SWE home">
+          <img src="assests/logo.png" width="32" height="32" alt="" />
+          <span>Search-SWE</span>
         </a>
-      </nav>
+        <nav class="home-nav" aria-label="Main navigation">
+          <a href="index.html" aria-current="page">Overview</a>
+          <a href="tasks.html">Tasks</a>
+          <a href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
     </header>
 
-    <main id="top">
-      <section class="hero section-shell">
-        <div class="hero-copy">
-          <p class="eyebrow"><span class="eyebrow-dot"></span> Benchmark · Search-system engineering</p>
-          <h1>Can coding agents engineer<br /><em>real search systems?</em></h1>
-          <p class="hero-lede">
-            Search-SWE benchmarks whether coding agents can build, optimize, and repair executable search systems
-            under real-world constraints.
-          </p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">
-              <span class="github-icon" aria-hidden="true">◖</span> View on GitHub
-            </a>
-            <a class="button button-ghost" href="#tasks">Explore Tasks <span aria-hidden="true">→</span></a>
+    <div class="home-layout">
+      <aside class="home-sidebar">
+        <nav aria-label="On this page">
+          <p>On this page</p>
+          <a href="#motivation">Overview</a>
+          <a href="#search-swe">Engineering modes</a>
+          <a href="#tasks">Tasks</a>
+          <a href="#evaluation">Evaluation</a>
+          <a href="#findings">Key findings</a>
+        </nav>
+      </aside>
+
+      <main id="main-content" class="home-document">
+        <header class="home-intro">
+          <h1>Search-SWE</h1>
+          <p class="home-subtitle">Benchmarking coding agents on search-system engineering.</p>
+          <p>Search-SWE evaluates whether coding agents can <strong>implement, optimize, and repair</strong> real search systems under fixed resource constraints.</p>
+          <div class="home-links">
+            <a href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+            <a href="tasks.html">Browse tasks <span aria-hidden="true">→</span></a>
           </div>
-        </div>
+        </header>
 
-        <div class="hero-demo" data-mode="build" data-phase="0" data-playing="false" role="region" aria-label="Interactive Search-SWE demonstration" aria-describedby="demo-description">
-          <p class="sr-only" id="demo-description">Three illustrative search-engine workflows. Build connects documents, an index, retrieval and ranking. Optimize diagnoses missed candidates and poorly ranked relevant documents. Repair traces a search error, patches the failing retrieval stage and reruns queries. The animations explain general capabilities, not measured benchmark runs. Choose a mode and stage, or use the slider to explore.</p>
-          <div class="demo-header">
-            <div class="demo-topline"><span class="demo-live-dot"></span> SEARCH-SWE <span class="demo-counter" aria-hidden="true">01 / 03</span></div>
-            <div class="demo-modes" role="group" aria-label="Engineering mode" hidden>
-              <button type="button" data-mode-choice="build" aria-pressed="true">Build</button>
-              <button type="button" data-mode-choice="optimize" aria-pressed="false">Optimize</button>
-              <button type="button" data-mode-choice="repair" aria-pressed="false">Repair</button>
-            </div>
+        <section id="motivation" class="home-section">
+          <h2>Overview</h2>
+          <p>Search involves more than choosing a model. Data processing, indexing, retrieval, and ranking must work together within latency, memory, and storage limits.</p>
+          <div id="search-swe">
+            <h3>Three engineering modes</h3>
+            <dl class="mode-definitions">
+              <div><dt>Implementation</dt><dd>Build a search capability from a task specification.</dd></div>
+              <div><dt>Optimization</dt><dd>Improve an existing system within fixed constraints.</dd></div>
+              <div><dt>Repair</dt><dd>Diagnose and fix failures in a search system.</dd></div>
+            </dl>
           </div>
-          <div class="demo-scene">
-            <div class="demo-light" aria-hidden="true"></div>
+        </section>
 
-            <svg class="demo-drawing" viewBox="0 0 520 274" role="img" aria-labelledby="demo-svg-title demo-svg-description">
-<title id="demo-svg-title">Build: make documents searchable</title>
-<desc id="demo-svg-description">An agent connects indexing, retrieval and ranking. Documents enter the index; a query finds matching documents and returns ranked search results. This is an illustrative workflow.</desc>
-<defs>
-  <linearGradient id="search-paper" x2=".5" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#f4f8ff"/></linearGradient>
-  <linearGradient id="search-module" x2="1" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#eaf3ff"/></linearGradient>
-  <linearGradient id="search-field" x2="1" y2="1"><stop stop-color="#edf4ff" stop-opacity=".9"/><stop offset="1" stop-color="#f5f3ff" stop-opacity=".25"/></linearGradient>
-  <filter id="search-shadow" x="-40%" y="-40%" width="180%" height="190%"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#315586" flood-opacity=".1"/></filter>
-  <pattern id="search-grid" width="19" height="19" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".65" fill="#c7d5e6"/></pattern>
-  <symbol id="search-icon" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></symbol>
-  <symbol id="index-icon" viewBox="0 0 24 24"><path d="M3 4h4v4H3Zm7 0h4v4h-4Zm7 0h4v4h-4ZM3 11h4v4H3Zm7 0h4v4h-4Zm7 0h4v4h-4ZM3 18h4v3H3Zm7 0h4v3h-4Zm7 0h4v3h-4Z"/></symbol>
-  <symbol id="rank-icon" viewBox="0 0 24 24"><path d="M4 5h16M4 12h11M4 19h6"/></symbol>
-  <symbol id="parse-icon" viewBox="0 0 24 24"><path d="M3 5h18M12 5v7M5 19v-7h14v7M2 19h6m8 0h6"/></symbol>
-</defs>
-<rect class="scene-grid" x="15" y="9" width="490" height="256" rx="18" fill="url(#search-grid)"/>
-
-<g class="story story-build" data-story="build">
-  <g class="search-query"><rect x="28" y="15" width="174" height="36" rx="12"/><use href="#search-icon" x="39" y="24" width="18" height="18"/><text x="66" y="38">Query</text><rect class="query-token" x="113" y="27" width="32" height="11" rx="4"/><rect class="query-token token-light" x="151" y="27" width="35" height="11" rx="4"/></g>
-  <path class="build-query-route route" d="M202 33H343Q352 33 352 42V138Q352 147 343 147H325"/>
-  <path class="build-corpus-route route" d="M121 149H148Q157 149 157 140V112Q157 103 166 103H181"/>
-  <path class="build-engine-route route" d="M253 120v10m0 34v10"/>
-  <path class="build-result-route route" d="M325 191H354Q365 191 365 180V110Q365 100 376 100H391"/>
-  <g class="build-corpus" filter="url(#search-shadow)">
-    <rect class="corpus-back" x="34" y="84" width="78" height="113" rx="10" transform="rotate(-10 73 141)"/>
-    <rect class="corpus-middle" x="37" y="94" width="79" height="113" rx="10" transform="rotate(5 77 151)"/>
-    <rect class="corpus-front" x="34" y="104" width="80" height="111" rx="10"/>
-    <path class="corpus-ink" d="M47 121h44m-44 9h52m-52 26h51m-51 9h38m-38 28h48m-48 9h30"/>
-    <rect class="corpus-match" x="46" y="138" width="30" height="9" rx="3"/><rect class="corpus-match light-match" x="81" y="138" width="21" height="9" rx="3"/>
-    <rect class="corpus-match light-match" x="46" y="174" width="21" height="9" rx="3"/><rect class="corpus-match" x="73" y="174" width="29" height="9" rx="3"/>
-  </g>
-  <text class="scene-label" x="33" y="239">Documents</text>
-  <text class="scene-label" x="182" y="70">Search engine</text>
-  <g class="build-slot" transform="translate(181 86)"><rect width="144" height="34" rx="10"/><text x="72" y="22" text-anchor="middle">Index</text></g><g class="build-module" data-module="0" transform="translate(181 86)"><rect class="module-paper" width="144" height="34" rx="10"/><use href="#index-icon" x="13" y="9" width="17" height="17"/><text x="42" y="22">Index</text><circle class="module-dot" cx="128" cy="17" r="3"/></g>
-<g class="build-slot" transform="translate(181 130)"><rect width="144" height="34" rx="10"/><text x="72" y="22" text-anchor="middle">Retrieve</text></g><g class="build-module" data-module="1" transform="translate(181 130)"><rect class="module-paper" width="144" height="34" rx="10"/><use href="#search-icon" x="13" y="9" width="17" height="17"/><text x="42" y="22">Retrieve</text><circle class="module-dot" cx="128" cy="17" r="3"/></g>
-<g class="build-slot" transform="translate(181 174)"><rect width="144" height="34" rx="10"/><text x="72" y="22" text-anchor="middle">Rank</text></g><g class="build-module" data-module="2" transform="translate(181 174)"><rect class="module-paper" width="144" height="34" rx="10"/><use href="#rank-icon" x="13" y="9" width="17" height="17"/><text x="42" y="22">Rank</text><circle class="module-dot" cx="128" cy="17" r="3"/></g>
-  <g class="index-fragments" aria-hidden="true"><rect class="index-fragment" data-fragment="0" x="-4" y="-5" width="8" height="11" rx="2"/><rect class="index-fragment" data-fragment="1" x="-4" y="-5" width="8" height="11" rx="2"/><rect class="index-fragment" data-fragment="2" x="-4" y="-5" width="8" height="11" rx="2"/><rect class="index-fragment" data-fragment="3" x="-4" y="-5" width="8" height="11" rx="2"/><rect class="index-fragment" data-fragment="4" x="-4" y="-5" width="8" height="11" rx="2"/><rect class="index-fragment" data-fragment="5" x="-4" y="-5" width="8" height="11" rx="2"/><rect class="index-fragment" data-fragment="6" x="-4" y="-5" width="8" height="11" rx="2"/></g>
-  <text class="scene-label" x="391" y="70">Results</text>
-  <rect class="build-results-outline" x="384" y="84" width="108" height="132" rx="12"/>
-  <g class="build-no-results"><use href="#search-icon" x="427" y="128" width="23" height="23"/><path d="M411 166h55m-46 9h37"/></g>
-  <g class="build-hit" transform="translate(391 91)"><rect class="hit-paper" width="95" height="29" rx="7"/><path class="hit-icon" d="M9 7h8l4 4v12H9Zm8 0v4h4"/><path class="hit-line" d="M29 10h54m-54 11h40"/><path class="hit-match" d="M29 16h15m5 0h20"/></g><g class="build-hit" transform="translate(391 132)"><rect class="hit-paper" width="95" height="29" rx="7"/><path class="hit-icon" d="M9 7h8l4 4v12H9Zm8 0v4h4"/><path class="hit-line" d="M29 10h54m-54 11h40"/><path class="hit-match" d="M29 16h15m5 0h20"/></g><g class="build-hit" transform="translate(391 173)"><rect class="hit-paper" width="95" height="29" rx="7"/><path class="hit-icon" d="M9 7h8l4 4v12H9Zm8 0v4h4"/><path class="hit-line" d="M29 10h54m-54 11h40"/><path class="hit-match" d="M29 16h15m5 0h20"/></g>
-  <circle class="build-query-probe query-probe" r="4"/>
-  <g class="build-ready"><path d="m394 236 4 4 7-8"/><text x="412" y="241">Search ready</text></g>
-  <g class="search-agent build-agent"><rect width="58" height="23" rx="8"/><path d="m12 7-4 4 4 4m7-8 4 4-4 4"/><text x="29" y="15">Agent</text></g>
-</g>
-
-<g class="story story-optimize" data-story="optimize" aria-hidden="true">
-  <g class="search-query"><rect x="28" y="15" width="174" height="36" rx="12"/><use href="#search-icon" x="39" y="24" width="18" height="18"/><text x="66" y="38">Query</text><rect class="query-token" x="113" y="27" width="32" height="11" rx="4"/><rect class="query-token token-light" x="151" y="27" width="35" height="11" rx="4"/></g>
-  <g class="relevance-legend"><circle cx="417" cy="33" r="4"/><text x="428" y="37">Relevant</text></g>
-  <path class="opt-query-route route" d="M113 51V91"/>
-  <path class="opt-results-route route" d="M231 154H321"/><path class="route-arrow" d="m315 149 6 5-6 5"/>
-  <text class="scene-label" x="31" y="78">Candidate set</text>
-  <ellipse class="candidate-field" cx="133" cy="151" rx="98" ry="61"/>
-  <ellipse class="candidate-orbit" cx="133" cy="151" rx="77" ry="47"/>
-  <g class="candidate-document" transform="translate(68 126)"><path class="document-paper" d="M-10-15H3l8 8v21h-21Z"/><path class="document-fold" d="M3-15v8h8"/><path class="document-ink" d="M-5-3H6M-5 2H6M-5 7H2"/></g><g class="candidate-document" transform="translate(101 116)"><path class="document-paper" d="M-10-15H3l8 8v21h-21Z"/><path class="document-fold" d="M3-15v8h8"/><path class="document-ink" d="M-5-3H6M-5 2H6M-5 7H2"/></g><g class="candidate-document" transform="translate(201 137)"><path class="document-paper" d="M-10-15H3l8 8v21h-21Z"/><path class="document-fold" d="M3-15v8h8"/><path class="document-ink" d="M-5-3H6M-5 2H6M-5 7H2"/></g><g class="candidate-document" transform="translate(64 177)"><path class="document-paper" d="M-10-15H3l8 8v21h-21Z"/><path class="document-fold" d="M3-15v8h8"/><path class="document-ink" d="M-5-3H6M-5 2H6M-5 7H2"/></g><g class="candidate-document" transform="translate(171 181)"><path class="document-paper" d="M-10-15H3l8 8v21h-21Z"/><path class="document-fold" d="M3-15v8h8"/><path class="document-ink" d="M-5-3H6M-5 2H6M-5 7H2"/></g><g class="candidate-document" transform="translate(114 183)"><path class="document-paper" d="M-10-15H3l8 8v21h-21Z"/><path class="document-fold" d="M3-15v8h8"/><path class="document-ink" d="M-5-3H6M-5 2H6M-5 7H2"/></g>
-  <g class="candidate-document relevant-document" transform="translate(141 149)"><path class="document-paper" d="M-10-15H3l8 8v21h-21Z"/><path class="document-fold" d="M3-15v8h8"/><path class="document-ink" d="M-5-3H6M-5 2H6M-5 7H2"/></g>
-  <g class="missed-document"><g class="relevant-document" transform="translate(0 0)"><path class="document-paper" d="M-10-15H3l8 8v21h-21Z"/><path class="document-fold" d="M3-15v8h8"/><path class="document-ink" d="M-5-3H6M-5 2H6M-5 7H2"/></g></g>
-  <g class="missed-note"><path d="M250 204h27"/><text x="252" y="221">Missed</text></g>
-  <g class="quality-control recall-control" transform="translate(41 234)"><rect width="88" height="26" rx="8"/><use href="#search-icon" x="8" y="6" width="14" height="14"/><text x="30" y="17">Retrieve</text></g>
-  <g class="quality-control rank-control" transform="translate(155 234)"><rect width="71" height="26" rx="8"/><use href="#rank-icon" x="8" y="6" width="14" height="14"/><text x="29" y="17">Rank</text></g>
-  <g class="quality-diagnosis"><path d="M43 93V84h15m157 0h15v9m0 112v10h-15M326 197h-8v32h8"/><path class="analysis-return" d="M315 219Q284 249 233 247"/></g>
-  <text class="scene-label" x="326" y="72">Ranked results</text>
-  <rect class="ranking-sheet" x="324" y="82" width="172" height="154" rx="12"/>
-  <text class="rank-position" x="334" y="110">1</text><text class="rank-position" x="334" y="145">2</text><text class="rank-position" x="334" y="180">3</text><text class="rank-position" x="334" y="215">4</text>
-  <g class="ranking-row " data-rank-row="0"><rect class="rank-paper" width="135" height="28" rx="7"/><path class="rank-document" d="M9 6h8l4 4v12H9Zm8 0v4h4"/><path class="rank-title" d="M30 9h82"/><path class="rank-snippet" d="M30 20h64"/><path class="rank-match" d="M30 15h24m7 0h28"/></g><g class="ranking-row " data-rank-row="1"><rect class="rank-paper" width="135" height="28" rx="7"/><path class="rank-document" d="M9 6h8l4 4v12H9Zm8 0v4h4"/><path class="rank-title" d="M30 9h82"/><path class="rank-snippet" d="M30 20h64"/><path class="rank-match" d="M30 15h24m7 0h28"/></g><g class="ranking-row " data-rank-row="2"><rect class="rank-paper" width="135" height="28" rx="7"/><path class="rank-document" d="M9 6h8l4 4v12H9Zm8 0v4h4"/><path class="rank-title" d="M30 9h82"/><path class="rank-snippet" d="M30 20h64"/><path class="rank-match" d="M30 15h24m7 0h28"/></g><g class="ranking-row relevant-row" data-rank-row="3"><rect class="rank-paper" width="135" height="28" rx="7"/><path class="rank-document" d="M9 6h8l4 4v12H9Zm8 0v4h4"/><path class="rank-title" d="M30 9h82"/><path class="rank-snippet" d="M30 20h64"/><path class="rank-match" d="M30 15h24m7 0h28"/><circle class="relevant-mark" cx="123" cy="14" r="3"/></g><g class="ranking-row relevant-row" data-rank-row="4"><rect class="rank-paper" width="135" height="28" rx="7"/><path class="rank-document" d="M9 6h8l4 4v12H9Zm8 0v4h4"/><path class="rank-title" d="M30 9h82"/><path class="rank-snippet" d="M30 20h64"/><path class="rank-match" d="M30 15h24m7 0h28"/><circle class="relevant-mark" cx="123" cy="14" r="3"/></g>
-  <g class="ranking-before"><text x="400" y="257">Buried</text><path d="M410 240v5"/></g>
-  <g class="ranking-after"><path d="m352 251 4 4 7-8"/><text x="370" y="256">Relevant first</text></g>
-  <g class="search-agent optimize-agent"><rect width="58" height="23" rx="8"/><path d="m12 7-4 4 4 4m7-8 4 4-4 4"/><text x="29" y="15">Agent</text></g>
-</g>
-
-<g class="story story-repair" data-story="repair" aria-hidden="true">
-  <g class="search-query"><rect x="28" y="15" width="174" height="36" rx="12"/><use href="#search-icon" x="39" y="24" width="18" height="18"/><text x="66" y="38">Query</text><rect class="query-token" x="113" y="27" width="32" height="11" rx="4"/><rect class="query-token token-light" x="151" y="27" width="35" height="11" rx="4"/></g>
-  <path class="repair-before-path route" d="M115 51V73Q115 83 105 83H76Q67 83 67 92V105M105 134H147"/>
-  <path class="repair-after-path route" d="M235 134H277M353 134H390"/>
-  <path class="repair-index-path route" d="M191 206V162"/>
-  <g class="repair-node repair-node-0" transform="translate(29 105)"><rect class="repair-node-body" width="76" height="57" rx="13"/><use class="repair-node-icon" href="#parse-icon" x="26" y="16" width="24" height="24"/><text class="scene-label" x="38" y="77" text-anchor="middle">Parse</text></g><g class="repair-node repair-node-1" transform="translate(147 105)"><rect class="repair-node-body" width="88" height="57" rx="13"/><use class="repair-node-icon" href="#search-icon" x="32" y="16" width="24" height="24"/><text class="scene-label" x="44" y="77" text-anchor="middle">Retrieve</text></g><g class="repair-node repair-node-2" transform="translate(277 105)"><rect class="repair-node-body" width="76" height="57" rx="13"/><use class="repair-node-icon" href="#rank-icon" x="26" y="16" width="24" height="24"/><text class="scene-label" x="38" y="77" text-anchor="middle">Rank</text></g>
-  <g class="repair-fault"><circle cx="229" cy="107" r="9"/><path d="M229 102v6m0 3v1"/><path class="fault-break" d="m257 126-5 7 8 3-6 7"/></g>
-  <g class="repair-locator"><rect x="140" y="98" width="102" height="71" rx="17"/><path class="locator-scan" d="M142 112h98"/></g>
-  <g class="repair-patch"><path d="m183 123-9 10 9 10m16-20 9 10-9 10m-7-24-4 28"/></g>
-  <g class="source-index"><rect x="151" y="206" width="81" height="29" rx="9"/><use href="#index-icon" x="161" y="214" width="14" height="14"/><text x="183" y="225">Index</text></g>
-  <g class="index-source-document" transform="translate(118 221)"><path class="document-paper" d="M-10-15H3l8 8v21h-21Z"/><path class="document-fold" d="M3-15v8h8"/><path class="document-ink" d="M-5-3H6M-5 2H6M-5 7H2"/></g><path class="index-source-link route" d="M131 221h20"/>
-  <text class="scene-label" x="391" y="74">Results</text>
-  <rect class="repair-result-sheet" x="390" y="88" width="105" height="127" rx="12"/>
-  <g class="search-error"><circle cx="442" cy="135" r="16"/><path d="m436 129 12 12m0-12-12 12"/><text x="442" y="182" text-anchor="middle">Search error</text></g>
-  <g class="repaired-hit" transform="translate(395 95)"><rect class="hit-paper" width="95" height="29" rx="7"/><path class="hit-icon" d="M9 7h8l4 4v12H9Zm8 0v4h4"/><path class="hit-line" d="M29 10h54m-54 11h40"/><path class="hit-match" d="M29 16h15m5 0h20"/></g><g class="repaired-hit" transform="translate(395 135)"><rect class="hit-paper" width="95" height="29" rx="7"/><path class="hit-icon" d="M9 7h8l4 4v12H9Zm8 0v4h4"/><path class="hit-line" d="M29 10h54m-54 11h40"/><path class="hit-match" d="M29 16h15m5 0h20"/></g><g class="repaired-hit" transform="translate(395 175)"><rect class="hit-paper" width="95" height="29" rx="7"/><path class="hit-icon" d="M9 7h8l4 4v12H9Zm8 0v4h4"/><path class="hit-line" d="M29 10h54m-54 11h40"/><path class="hit-match" d="M29 16h15m5 0h20"/></g>
-  <g class="repair-ready"><path d="m394 234 4 4 7-8"/><text x="412" y="239">Restored</text></g>
-  <g class="query-checks"><text x="31" y="260">Query checks</text><g class="query-check" style="--check:0" transform="translate(130 255)"><circle r="9"/><path d="m-4 0 3 3 5-6"/></g><g class="query-check" style="--check:1" transform="translate(158 255)"><circle r="9"/><path d="m-4 0 3 3 5-6"/></g><g class="query-check" style="--check:2" transform="translate(186 255)"><circle r="9"/><path d="m-4 0 3 3 5-6"/></g></g>
-  <g class="search-agent repair-agent"><rect width="58" height="23" rx="8"/><path d="m12 7-4 4 4 4m7-8 4 4-4 4"/><text x="29" y="15">Agent</text></g>
-  <path class="repair-probe-path" d="M115 51V73Q115 83 105 83H76Q67 83 67 92V125Q67 134 76 134H442" visibility="hidden" aria-hidden="true"/>
-  <circle class="repair-query-probe query-probe" r="3.5" aria-hidden="true"/>
-  <circle class="query-failure-ring" cx="191" cy="134" r="16" aria-hidden="true"/>
-</g>
-</svg>
+        <section id="tasks" class="home-section">
+          <div class="home-section-heading">
+            <h2>Tasks</h2>
+            <a href="tasks.html">View all tasks <span aria-hidden="true">→</span></a>
           </div>
-          <div class="demo-caption"><span class="demo-caption-number" aria-hidden="true">01</span><p id="demo-caption-text">Documents in. Search still to build.</p><button class="demo-play" type="button" aria-label="Play animation" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><path class="demo-pause-icon" d="M7 5v10M13 5v10"/><path class="demo-play-icon" d="m7 5 8 5-8 5Z"/></svg></button></div>
-          <div class="demo-transport" hidden>
-            <input class="demo-scrubber" type="range" min="0" max="1000" step="1" value="0" aria-label="Animation progress" aria-valuetext="Define, start"/>
-            <div class="demo-timeline" role="group" aria-label="Animation stage">
-              <button type="button" data-stage="0" aria-current="step">Define</button><button type="button" data-stage="1">Assemble</button><button type="button" data-stage="2">Search</button><button type="button" data-stage="3">Verify</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="signal-strip">
-        <div class="section-shell signal-grid">
-          <div class="signal-item"><span class="signal-mark">↯</span><span><b>Engineering focused</b><small>Build, optimize, and repair</small></span></div>
-          <div class="signal-item"><span class="signal-mark">▣</span><span><b>Execution first</b><small>Artifacts are rebuilt and run</small></span></div>
-          <div class="signal-item"><span class="signal-mark">◌</span><span><b>Real-world constraints</b><small>Data, systems, and budgets matter</small></span></div>
-          <div class="signal-item"><span class="signal-mark">✓</span><span><b>Search outcome</b><small>Quality is verified by evaluation</small></span></div>
-        </div>
-      </section>
-
-      <section id="motivation" class="section-shell motivation-section">
-        <div class="motivation-heading">
-          <p class="eyebrow">01 · Motivation</p>
-          <h2>Search is an engineering problem.</h2>
-        </div>
-        <div class="motivation-points">
-          <article>
-            <h3>Many moving parts</h3>
-            <p>Data, indexing, retrieval, and ranking must work together.</p>
-          </article>
-          <article>
-            <h3>Coupled trade-offs</h3>
-            <p>Search quality competes with latency, memory, and storage.</p>
-          </article>
-          <article>
-            <h3>Executable evidence</h3>
-            <p>The system must build, run, and return useful results.</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="search-swe" class="benchmark-section">
-        <div class="section-shell benchmark-layout">
-          <div class="benchmark-heading">
-            <p class="eyebrow">02 · What &amp; How</p>
-            <h2>Real search problems.<br /><em>Working systems.</em></h2>
-          </div>
-          <ol id="construction" class="benchmark-steps" aria-label="Search-SWE benchmark process">
+          <p>Selected tasks across query understanding, retrieval, ranking, and indexing.</p>
+          <!-- TASK_CARDS:START -->
+          <ul class="home-task-list" aria-label="Selected tasks">
             <li>
-              <span class="step-number" aria-hidden="true">01</span>
-              <div><h3>Define the task</h3><p>A search objective, data, and fixed resource limits.</p></div>
+              <a class="home-task task-blue" href="tasks/task-1-1/">
+                <span class="home-task-id"><span class="sr-only">Task </span>1-1</span>
+                <span class="home-task-copy">
+                  <span class="home-task-title">Reasoning query rewrite</span>
+                  <span class="home-task-summary">Rewrite reasoning queries for a biology corpus.</span>
+                </span>
+                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/><path d="M17.5 3v7M14 6.5h7"/></svg><span>Implementation</span></span>
+              </a>
             </li>
             <li>
-              <span class="step-number" aria-hidden="true">02</span>
-              <div><h3>Engineer the solution</h3><p>Implement, optimize, or repair. Iterate with public checks.</p></div>
+              <a class="home-task task-blue" href="tasks/task-1-2/">
+                <span class="home-task-id"><span class="sr-only">Task </span>1-2</span>
+                <span class="home-task-copy">
+                  <span class="home-task-title">Memory-constrained retrieval</span>
+                  <span class="home-task-summary">Retrieve from 1.5M vectors within a memory budget.</span>
+                </span>
+                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/><path d="M17.5 3v7M14 6.5h7"/></svg><span>Implementation</span></span>
+              </a>
             </li>
             <li>
-              <span class="step-number" aria-hidden="true">03</span>
-              <div><h3>Evaluate the system</h3><p>Rebuild the submission and test on hidden queries.</p></div>
+              <a class="home-task task-violet" href="tasks/task-2-1/">
+                <span class="home-task-id"><span class="sr-only">Task </span>2-1</span>
+                <span class="home-task-copy">
+                  <span class="home-task-title">Long-document reranking</span>
+                  <span class="home-task-summary">Find relevant evidence beyond the first token window.</span>
+                </span>
+                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg><span>Optimization</span></span>
+              </a>
             </li>
-          </ol>
-        </div>
-      </section>
-
-      <section id="tasks" class="section-shell content-section">
-        <div class="section-heading split-heading">
-          <div>
-            <p class="eyebrow">03 · Tasks</p>
-            <h2>Real tasks. Three ways to engineer search.</h2>
-          </div>
-          <p>
-            Explore the search problem, constraints, and evaluation behind each task.
-          </p>
-        </div>
-        <!-- TASK_CARDS:START -->
-        <div class="task-grid task-grid-six">
-          <a class="task-card task-blue" href="tasks/task-1-1/">
-            <div class="task-index">TASK 1-1 <span class="type-chip type-implementation">IMPLEMENTATION</span></div>
-            <div class="task-card-heading">
-              <span class="task-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/><path d="M17.5 3v7M14 6.5h7"/></svg></span>
-              <h3>Reasoning query rewrite</h3>
-            </div>
-            <p>Build retrieval over a biology corpus by rewriting natural-language queries into precise search intent.</p>
-            <span class="task-tag">query understanding <b aria-hidden="true">→</b></span>
-          </a>
-          <a class="task-card task-blue" href="tasks/task-1-2/">
-            <div class="task-index">TASK 1-2 <span class="type-chip type-implementation">IMPLEMENTATION</span></div>
-            <div class="task-card-heading">
-              <span class="task-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/><path d="M17.5 3v7M14 6.5h7"/></svg></span>
-              <h3>Memory-constrained retrieval</h3>
-            </div>
-            <p>Search 1.5M document vectors while balancing retrieval quality, memory, index size, and latency.</p>
-            <span class="task-tag">large-scale dense search <b aria-hidden="true">→</b></span>
-          </a>
-          <a class="task-card task-violet" href="tasks/task-2-1/">
-            <div class="task-index">TASK 2-1 <span class="type-chip type-optimization">OPTIMIZATION</span></div>
-            <div class="task-card-heading">
-              <span class="task-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg></span>
-              <h3>Long-document reranking</h3>
-            </div>
-            <p>Improve a fixed reranker when relevant evidence lies beyond the first token window of a document.</p>
-            <span class="task-tag">reranking <b aria-hidden="true">→</b></span>
-          </a>
-          <a class="task-card task-violet" href="tasks/task-2-2/">
-            <div class="task-index">TASK 2-2 <span class="type-chip type-optimization">OPTIMIZATION</span></div>
-            <div class="task-card-heading">
-              <span class="task-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg></span>
-              <h3>Embedder training</h3>
-            </div>
-            <p>Improve a fixed-backbone code-retrieval embedder using the supplied training data and constraints.</p>
-            <span class="task-tag">representation learning <b aria-hidden="true">→</b></span>
-          </a>
-          <a class="task-card task-violet" href="tasks/task-2-3/">
-            <div class="task-index">TASK 2-3 <span class="type-chip type-optimization">OPTIMIZATION</span></div>
-            <div class="task-card-heading">
-              <span class="task-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg></span>
-              <h3>Query-side encoder</h3>
-            </div>
-            <p>Improve query representations with a compact encoder while document vectors stay fixed and a runtime gate applies.</p>
-            <span class="task-tag">query encoder optimization <b aria-hidden="true">→</b></span>
-          </a>
-          <a class="task-card task-teal" href="tasks/task-3-1/">
-            <div class="task-index">TASK 3-1 <span class="type-chip type-repair">REPAIR</span></div>
-            <div class="task-card-heading">
-              <span class="task-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94Z"/></svg></span>
-              <h3>Sparse retrieval index repair</h3>
-            </div>
-            <p>Repair vocabulary mappings and unsafe pruning, then reduce bloated postings while preserving retrieval quality.</p>
-            <span class="task-tag">postings · vocabulary · pruning <b aria-hidden="true">→</b></span>
-          </a>
-        </div>
-        <!-- TASK_CARDS:END -->
-        <div class="section-action"><a class="text-link" href="tasks.html">Open the complete task catalog <span aria-hidden="true">↗</span></a></div>
-      </section>
-
-      <section id="evaluation" class="section-shell content-section section-tinted">
-        <div class="section-heading evaluation-heading">
-          <p class="eyebrow">04 · Evaluation &amp; Results</p>
-          <h2>Working systems, measured reproducibly.</h2>
-          <p>Every submission is rebuilt and tested in the same clean environment.</p>
-        </div>
-        <div class="evaluation-board">
-          <div class="evaluation-grid">
-            <article class="evaluation-item"><span class="evaluation-number">01</span><h3>Build</h3><p>Rebuilds cleanly from the submitted artifact.</p></article>
-            <article class="evaluation-item"><span class="evaluation-number">02</span><h3>Function</h3><p>Handles required inputs, outputs, and edge cases.</p></article>
-            <article class="evaluation-item"><span class="evaluation-number">03</span><h3>Search quality</h3><p>Returns useful results on held-out queries.</p></article>
-            <article class="evaluation-item"><span class="evaluation-number">04</span><h3>Budget</h3><p>Stays within time, memory, disk, GPU, and network limits.</p></article>
-          </div>
-          <div class="evaluation-setting">
-            <span>CLEAN RUN</span>
-            <p>Same sandbox · Rebuilt submission · Hidden queries</p>
-          </div>
-          <div id="results" class="results-board">
-            <div class="results-board-head">
-              <span>RESULTS BOARD</span>
-              <span class="results-state">● PREPARING</span>
-            </div>
-            <div class="leaderboard-placeholder" aria-label="Leaderboard awaiting evaluated submissions">
-              <div class="leaderboard-row leaderboard-header">
-                <span>RANK</span><span>AGENT</span><span class="leaderboard-score">SCORE</span><span>STATUS</span>
-              </div>
-              <div class="leaderboard-row leaderboard-empty-row">
-                <span>—</span><strong>Awaiting evaluated submissions</strong><span class="leaderboard-score">—</span><span>COMING SOON</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="key-findings">
-          <h3>Key findings</h3>
-          <ul>
-            <li>Agents are markedly stronger at locally verifiable search repairs than at open-ended search-system design.</li>
-            <li>Agents can use and combine different search components, but often struggle to understand the task's core objective.</li>
-            <li>Agents struggle to optimize search quality, latency, memory, and engineering completeness simultaneously.</li>
-            <li>Public test sets strongly steer agent behavior and readily induce heuristic overfitting.</li>
-            <li>Major gains often come from discovering the structure of the data, not from improving a general-purpose search algorithm.</li>
+            <li>
+              <a class="home-task task-violet" href="tasks/task-2-2/">
+                <span class="home-task-id"><span class="sr-only">Task </span>2-2</span>
+                <span class="home-task-copy">
+                  <span class="home-task-title">Embedder training</span>
+                  <span class="home-task-summary">Train a code-retrieval embedder with a fixed backbone.</span>
+                </span>
+                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg><span>Optimization</span></span>
+              </a>
+            </li>
+            <li>
+              <a class="home-task task-violet" href="tasks/task-2-3/">
+                <span class="home-task-id"><span class="sr-only">Task </span>2-3</span>
+                <span class="home-task-copy">
+                  <span class="home-task-title">Query-side encoder</span>
+                  <span class="home-task-summary">Improve query embeddings while document vectors stay fixed.</span>
+                </span>
+                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg><span>Optimization</span></span>
+              </a>
+            </li>
+            <li>
+              <a class="home-task task-teal" href="tasks/task-3-1/">
+                <span class="home-task-id"><span class="sr-only">Task </span>3-1</span>
+                <span class="home-task-copy">
+                  <span class="home-task-title">Sparse retrieval index repair</span>
+                  <span class="home-task-summary">Fix vocabulary mappings, postings bloat, and unsafe pruning.</span>
+                </span>
+                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94Z"/></svg><span>Repair</span></span>
+              </a>
+            </li>
           </ul>
-        </div>
-      </section>
+          <!-- TASK_CARDS:END -->
+        </section>
 
-      <section class="section-shell cta-section">
-        <div>
-          <p class="eyebrow">Search-SWE</p>
-          <h2>Evaluate the search system an agent actually engineers.</h2>
-        </div>
-        <a class="button button-primary" href="tasks.html">Explore the task catalog <span aria-hidden="true">↗</span></a>
-      </section>
-    </main>
+        <section id="evaluation" class="home-section">
+          <h2>Evaluation</h2>
+          <p id="construction">Agents develop a solution using the supplied data and public checks. Each submission is then rebuilt in a clean sandbox and tested on hidden queries.</p>
+          <table class="evaluation-table">
+            <caption class="sr-only">What Search-SWE evaluates</caption>
+            <thead><tr><th scope="col">Dimension</th><th scope="col">What is measured</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Build &amp; function</th><td>Reproducible builds, required inputs and outputs, and edge cases.</td></tr>
+              <tr><th scope="row">Search quality</th><td>Retrieval performance on held-out queries using task-specific metrics.</td></tr>
+              <tr><th scope="row">Resource use</th><td>Compliance with time, memory, storage, GPU, and network limits.</td></tr>
+            </tbody>
+          </table>
+          <p id="results" class="results-note"><strong>Results.</strong> The leaderboard is being prepared.</p>
+        </section>
 
-    <footer class="footer section-shell">
-      <span>Search-SWE · VectorSpaceLab</span>
-      <span>Benchmarking executable search-system engineering</span>
-    </footer>
+        <section id="findings" class="home-section">
+          <h2>Key findings</h2>
+          <ul class="findings-list">
+            <li>Agents are stronger at locally verifiable repairs than at open-ended search-system design.</li>
+            <li>Combining search components does not ensure agents understand the task objective.</li>
+            <li>Quality, latency, memory, and completeness remain difficult to optimize together.</li>
+            <li>Public checks can encourage heuristic overfitting.</li>
+            <li>Large gains often come from understanding the structure of the data.</li>
+          </ul>
+        </section>
 
-    <script src="script.js"></script>
-    <script src="hero-demo.js"></script>
+        <footer class="home-footer">
+          <span>Search-SWE · VectorSpaceLab</span>
+          <a href="#top">Back to top ↑</a>
+        </footer>
+      </main>
+    </div>
   </body>
 </html>

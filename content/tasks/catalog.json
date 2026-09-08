@@ -7,7 +7,8 @@
     "summary": "Build retrieval over a biology corpus by rewriting natural-language queries into precise search intent.",
     "tag": "query understanding",
     "status": "setting",
-    "featured": true
+    "featured": true,
+    "homepageSummary": "Rewrite reasoning queries for a biology corpus."
   },
   {
     "id": "task-1-2",
@@ -17,7 +18,8 @@
     "summary": "Search 1.5M document vectors while balancing retrieval quality, memory, index size, and latency.",
     "tag": "large-scale dense search",
     "status": "setting",
-    "featured": true
+    "featured": true,
+    "homepageSummary": "Retrieve from 1.5M vectors within a memory budget."
   },
   {
     "id": "task-2-1",
@@ -27,7 +29,8 @@
     "summary": "Improve a fixed reranker when relevant evidence lies beyond the first token window of a document.",
     "tag": "reranking",
     "status": "setting",
-    "featured": true
+    "featured": true,
+    "homepageSummary": "Find relevant evidence beyond the first token window."
   },
   {
     "id": "task-2-2",
@@ -37,7 +40,8 @@
     "summary": "Improve a fixed-backbone code-retrieval embedder using the supplied training data and constraints.",
     "tag": "representation learning",
     "status": "setting",
-    "featured": true
+    "featured": true,
+    "homepageSummary": "Train a code-retrieval embedder with a fixed backbone."
   },
   {
     "id": "task-2-3",
@@ -47,7 +51,8 @@
     "summary": "Improve query representations with a compact encoder while document vectors stay fixed and a runtime gate applies.",
     "tag": "query encoder optimization",
     "status": "setting",
-    "featured": true
+    "featured": true,
+    "homepageSummary": "Improve query embeddings while document vectors stay fixed."
   },
   {
     "id": "task-2-4",
@@ -87,6 +92,7 @@
     "summary": "Repair vocabulary mappings and unsafe pruning, then reduce bloated postings while preserving retrieval quality.",
     "tag": "postings · vocabulary · pruning",
     "status": "draft",
-    "featured": true
+    "featured": true,
+    "homepageSummary": "Fix vocabulary mappings, postings bloat, and unsafe pruning."
   }
 ]

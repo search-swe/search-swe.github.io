@@ -4,41 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Build retrieval over a biology corpus by rewriting natural-language queries into precise search intent." />
+  <meta name="theme-color" content="#ffffff" />
   <title>Reasoning-Intensive Retrieval — Search-SWE</title>
   <link rel="icon" type="image/png" href="../../assests/logo.png" />
   <link rel="apple-touch-icon" href="../../assests/logo.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../../style.css" />
-  <link rel="stylesheet" href="../../task-pages.css" />
+  <link rel="stylesheet" href="../../home-sections.css?v=2" />
+  <link rel="stylesheet" href="../../task-pages.css?v=2" />
 </head>
-<body>
+<body id="top">
 <a class="skip-link" href="#main-content">Skip to content</a>
-<header class="topbar">
-  <a class="brand" href="../../index.html#top" aria-label="Search-SWE home">
-    <span class="brand-mark" aria-hidden="true"><img src="../../assests/logo.png" width="36" height="36" alt="" /></span>
-    <span>Search-SWE</span>
-  </a>
-  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-    <span></span><span></span><span></span><span class="sr-only">Toggle navigation</span>
-  </button>
-  <nav id="site-nav" class="site-nav" aria-label="Main navigation">
-    <a href="../../index.html#motivation">Why</a>
-    <a href="../../index.html#search-swe">What &amp; How</a>
-    <a class="nav-active" href="../../tasks.html">Tasks</a>
-    <a href="../../index.html#evaluation">Evaluation &amp; Results</a>
-    <a class="nav-button" href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-  </nav>
+<header class="home-header">
+  <div class="home-header-inner">
+    <a class="home-brand" href="../../index.html#top" aria-label="Search-SWE home">
+      <img src="../../assests/logo.png" width="32" height="32" alt="" />
+      <span>Search-SWE</span>
+    </a>
+    <nav class="home-nav" aria-label="Main navigation">
+      <a href="../../index.html">Overview</a>
+      <a href="../../tasks.html" aria-current="true">Tasks</a>
+      <a href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
 </header>
 
-<main id="main-content" class="section-shell task-reader">
+<main id="main-content" class="task-reader">
   <nav class="task-breadcrumbs" aria-label="Breadcrumb"><a href="../../index.html">Home</a><span aria-hidden="true">/</span><a href="../../tasks.html">Tasks</a><span aria-hidden="true">/</span><span aria-current="page">TASK 1-1</span></nav>
   <div class="task-reader-layout">
     <aside class="task-directory"><a class="all-tasks-link" href="../../tasks.html">← All tasks</a><nav aria-label="Task directory"><div class="task-directory-group"><p>Implementation</p><a href="../task-1-1/" aria-current="page"><span>1-1</span>Query rewriting</a><a href="../task-1-2/"><span>1-2</span>Memory-constrained retrieval</a></div><div class="task-directory-group"><p>Optimization</p><a href="../task-2-1/"><span>2-1</span>Long-document reranking</a><a href="../task-2-2/"><span>2-2</span>Code embedder training</a><a href="../task-2-3/"><span>2-3</span>Query-side encoder</a><a href="../task-2-4/"><span>2-4</span>Multimodal paper search</a><a href="../task-2-5/"><span>2-5</span>Natural-language Ctrl+F</a><a href="../task-2-6/"><span>2-6</span>Multi-constraint retrieval</a></div><div class="task-directory-group"><p>Repair</p><a href="../task-3-1/"><span>3-1</span>Sparse index repair</a></div></nav></aside>
     <article class="task-article">
       <header id="overview" class="task-article-header">
-        <div class="task-article-kicker"><span>TASK 1-1</span><span class="type-chip type-implementation">IMPLEMENTATION</span></div>
+        <div class="task-article-kicker task-blue"><span>TASK 1-1</span><span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/><path d="M17.5 3v7M14 6.5h7"/></svg><span>Implementation</span></span></div>
         <h1>Reasoning-Intensive Retrieval</h1>
         <div class="task-summary"><p>Build an executable retrieval system over a 57,359-document biology corpus. The task primarily tests query rewriting and expansion: natural-language queries must be transformed to better align with relevant documents, even when they use different terminology or describe the underlying biological mechanism indirectly.</p></div>
         <dl class="task-specs"><div><dt>Domain</dt><dd><code>biology</code></dd></div><div><dt>Primary focus</dt><dd><code>query rewriting</code></dd></div><div><dt>Primary metric</dt><dd><code>Accuracy@3</code></dd></div></dl>
@@ -58,14 +53,13 @@
 <p><strong>All hidden queries must pass for the submission to receive a score of <code>1</code>; otherwise the score is <code>0</code>.</strong></p>
 <p>Submissions that fail the integrity or jailbreak checks also receive a score of <code>0</code>.</p></div>
       <nav class="task-adjacent" aria-label="Adjacent tasks"><a href="../task-1-2/"><span>Next task · TASK 1-2</span><strong>Memory-constrained retrieval</strong></a></nav>
+      <footer class="home-footer">
+  <span>Search-SWE · VectorSpaceLab</span>
+  <a href="#top">Back to top ↑</a>
+</footer>
     </article>
     <aside class="task-toc"><nav aria-label="On this page"><p>On this page</p><a href="#overview">Overview</a><a href="#runtime-and-requirements">Runtime and requirements</a><a href="#public-input-and-output-contract">Public input and output contract</a><a href="#inputs" class="toc-subsection">Inputs</a><a href="#outputs" class="toc-subsection">Outputs</a><a href="#evaluation">Evaluation</a></nav></aside>
   </div>
 </main>
-<footer class="footer section-shell">
-  <span>Search-SWE · VectorSpaceLab</span>
-  <a href="../../tasks.html">Browse all tasks <span aria-hidden="true">↗</span></a>
-</footer>
-<script src="../../script.js"></script>
 </body>
 </html>

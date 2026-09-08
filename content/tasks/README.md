@@ -7,6 +7,7 @@ The website is static. Each task has a standalone page under `tasks/task-N-N/ind
 - Edit its Markdown setting in this directory.
 - Edit `catalog.json` for the card title, summary, category, status, and homepage selection.
 - Keep `featured: true` on the six tasks shown on the homepage.
+- Use `homepageSummary` for a shorter description in the homepage and catalog task lists; otherwise they use `summary`. Detail-page prose comes from the Markdown setting.
 - Icons and colors are assigned by engineering mode in `MODE_VISUALS` in `scripts/build_tasks.py`: implementation uses blue modules, optimization a violet growth chart, and repair a teal wrench. Tasks of the same mode share a visual identity across the homepage and catalog.
 - Use `setting` for an available setting, `draft` for provisional specifications, and `planned` for a scope-only placeholder. These statuses are editorial metadata and are not displayed on the site.
 
@@ -21,7 +22,7 @@ python scripts/build_tasks.py
 python scripts/build_tasks.py --check
 ~~~
 
-Only the Python standard library is required. The generator reads paths relative to its own repository location. It writes the task catalog, standalone detail pages, and the homepage cards between the `TASK_CARDS` markers. It preserves the rest of the homepage.
+Only the Python standard library is required. The generator reads paths relative to its own repository location. It writes the task catalog, standalone detail pages, and the homepage task list between the `TASK_CARDS` markers. It preserves the rest of the homepage. All pages share document typography and navigation styles from `home-sections.css`; `task-pages.css` adds the grouped catalog and detail-reader layouts.
 
 Commit the Markdown, catalog metadata, generator, stylesheet, and generated HTML together. Serving the site does not require Python.
 

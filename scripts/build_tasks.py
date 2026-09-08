@@ -155,22 +155,26 @@ def markdown(source: str) -> tuple[str, list[tuple[int, str, str]]]:
 
 def header(prefix: str) -> str:
     return f"""<a class="skip-link" href="#main-content">Skip to content</a>
-<header class="topbar">
-  <a class="brand" href="{prefix}index.html#top" aria-label="Search-SWE home">
-    <span class="brand-mark" aria-hidden="true"><img src="{prefix}assests/logo.png" width="36" height="36" alt="" /></span>
-    <span>Search-SWE</span>
-  </a>
-  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-    <span></span><span></span><span></span><span class="sr-only">Toggle navigation</span>
-  </button>
-  <nav id="site-nav" class="site-nav" aria-label="Main navigation">
-    <a href="{prefix}index.html#motivation">Why</a>
-    <a href="{prefix}index.html#search-swe">What &amp; How</a>
-    <a class="nav-active" href="{prefix}tasks.html">Tasks</a>
-    <a href="{prefix}index.html#evaluation">Evaluation &amp; Results</a>
-    <a class="nav-button" href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-  </nav>
+<header class="home-header">
+  <div class="home-header-inner">
+    <a class="home-brand" href="{prefix}index.html#top" aria-label="Search-SWE home">
+      <img src="{prefix}assests/logo.png" width="32" height="32" alt="" />
+      <span>Search-SWE</span>
+    </a>
+    <nav class="home-nav" aria-label="Main navigation">
+      <a href="{prefix}index.html">Overview</a>
+      <a href="{prefix}tasks.html" aria-current="{('page' if not prefix else 'true')}">Tasks</a>
+      <a href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
 </header>"""
+
+
+def footer() -> str:
+    return """<footer class="home-footer">
+  <span>Search-SWE · VectorSpaceLab</span>
+  <a href="#top">Back to top ↑</a>
+</footer>"""
 
 
 def document(title: str, description: str, prefix: str, body: str) -> str:
@@ -180,23 +184,16 @@ def document(title: str, description: str, prefix: str, body: str) -> str:
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="{esc(description)}" />
+  <meta name="theme-color" content="#ffffff" />
   <title>{esc(title)} — Search-SWE</title>
   <link rel="icon" type="image/png" href="{prefix}assests/logo.png" />
   <link rel="apple-touch-icon" href="{prefix}assests/logo.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="{prefix}style.css" />
-  <link rel="stylesheet" href="{prefix}task-pages.css" />
+  <link rel="stylesheet" href="{prefix}home-sections.css?v=2" />
+  <link rel="stylesheet" href="{prefix}task-pages.css?v=2" />
 </head>
-<body>
+<body id="top">
 {header(prefix)}
 {body}
-<footer class="footer section-shell">
-  <span>Search-SWE · VectorSpaceLab</span>
-  <a href="{prefix}tasks.html">Browse all tasks <span aria-hidden="true">↗</span></a>
-</footer>
-<script src="{prefix}script.js"></script>
 </body>
 </html>
 """
@@ -212,47 +209,54 @@ def mode_icon(task: dict) -> str:
 
 
 def home_card(task: dict) -> str:
-    return f"""          <a class="task-card task-{MODE_VISUALS[task['mode']]['color']}" href="tasks/{task['id']}/">
-            <div class="task-index">{task_label(task)} <span class="type-chip type-{task['mode']}">{MODES[task['mode']].upper()}</span></div>
-            <div class="task-card-heading">
-              <span class="task-icon" aria-hidden="true">{mode_icon(task)}</span>
-              <h3>{esc(task['title'])}</h3>
-            </div>
-            <p>{esc(task['summary'])}</p>
-            <span class="task-tag">{esc(task['tag'])} <b aria-hidden="true">→</b></span>
-          </a>"""
+    return f"""            <li>
+              <a class="home-task task-{MODE_VISUALS[task['mode']]['color']}" href="tasks/{task['id']}/">
+                <span class="home-task-id"><span class="sr-only">Task </span>{task['id'].removeprefix('task-')}</span>
+                <span class="home-task-copy">
+                  <span class="home-task-title">{esc(task['title'])}</span>
+                  <span class="home-task-summary">{esc(task.get('homepageSummary', task['summary']))}</span>
+                </span>
+                <span class="home-task-mode">{mode_icon(task)}<span>{MODES[task['mode']]}</span></span>
+              </a>
+            </li>"""
 
 
 def catalog_card(task: dict) -> str:
-    return f"""<a id="{task['id']}" class="catalog-card task-{MODE_VISUALS[task['mode']]['color']}" href="tasks/{task['id']}/">
-  <span class="catalog-card-id">{task_label(task)} · {MODES[task['mode']].upper()}</span>
-  <div class="task-card-heading">
-    <span class="catalog-card-icon" aria-hidden="true">{mode_icon(task)}</span>
-    <h2>{esc(task['title'])}</h2>
-  </div>
-  <p>{esc(task['summary'])}</p>
-  <div class="catalog-card-end"><span class="card-open" aria-label="Open task">↗</span></div>
-</a>"""
+    return f"""<li id="{task['id']}">
+  <a class="catalog-task task-{MODE_VISUALS[task['mode']]['color']}" href="tasks/{task['id']}/">
+    <span class="home-task-id"><span class="sr-only">Task </span>{task['id'].removeprefix('task-')}</span>
+    <span class="catalog-task-icon" aria-hidden="true">{mode_icon(task)}</span>
+    <span class="home-task-copy">
+      <span class="home-task-title">{esc(task['title'])}</span>
+      <span class="home-task-summary">{esc(task.get('homepageSummary', task['summary']))}</span>
+    </span>
+  </a>
+</li>"""
 
 
 def catalog_page(tasks: list[dict]) -> str:
-    cards = "\n".join(catalog_card(task) for task in tasks)
+    groups, links = [], []
+    for key, title in MODES.items():
+        members = [task for task in tasks if task["mode"] == key]
+        cards = "\n".join(catalog_card(task) for task in members)
+        links.append(f'<a href="#{key}">{title}</a>')
+        count = f'{len(members)} task' + ('s' if len(members) != 1 else '')
+        groups.append(f"""<section id="{key}" class="home-section catalog-group" aria-labelledby="{key}-title">
+  <div class="home-section-heading"><h2 id="{key}-title">{title}</h2><span class="catalog-count">{count}</span></div>
+  <ul class="home-task-list">{cards}</ul>
+</section>""")
     return document("Task catalog", "Browse Search-SWE task settings for implementation, optimization, and repair.", "", f"""
-<main id="main-content">
-  <section class="catalog-hero task-catalog-heading">
-    <div class="section-shell catalog-hero-inner">
-      <p class="eyebrow"><span class="eyebrow-dot"></span> Search-SWE · Task catalog</p>
-      <h1>Engineer better <em>search.</em></h1>
-      <p>Build new search capabilities, improve retrieval, and repair search systems. Open a task for its setting, input and output contract, and evaluation.</p>
-      <div class="catalog-meta"><span>{len(tasks):02d} task scenarios</span><i aria-hidden="true">·</i><span>{len(MODES):02d} engineering modes</span></div>
-    </div>
-  </section>
-  <section class="section-shell catalog-section task-catalog-cards" aria-label="All task scenarios">
-    <div class="catalog-grid">
-      {cards}
-    </div>
-  </section>
-</main>""")
+<div class="home-layout">
+  <aside class="home-sidebar"><nav aria-label="Task categories"><p>Task categories</p>{''.join(links)}</nav></aside>
+  <main id="main-content" class="home-document">
+    <header class="home-intro catalog-intro">
+      <h1>Tasks</h1>
+      <p>Open a task for its objective, constraints, and evaluation.</p>
+    </header>
+    {''.join(groups)}
+    {footer()}
+  </main>
+</div>""")
 
 
 def directory(tasks: list[dict], current: dict) -> str:
@@ -293,13 +297,13 @@ def detail_page(task: dict, tasks: list[dict], setting: dict) -> str:
             neighbor = tasks[index]
             adjacent.append(f'<a href="../{neighbor["id"]}/"><span>{label} · {task_label(neighbor)}</span><strong>{esc(neighbor["title"])}</strong></a>')
     return document(setting["title"], task["summary"], "../../", f"""
-<main id="main-content" class="section-shell task-reader">
+<main id="main-content" class="task-reader">
   <nav class="task-breadcrumbs" aria-label="Breadcrumb"><a href="../../index.html">Home</a><span aria-hidden="true">/</span><a href="../../tasks.html">Tasks</a><span aria-hidden="true">/</span><span aria-current="page">{task_label(task)}</span></nav>
   <div class="task-reader-layout">
     <aside class="task-directory"><a class="all-tasks-link" href="../../tasks.html">← All tasks</a>{directory(tasks, task)}</aside>
     <article class="task-article">
       <header id="overview" class="task-article-header">
-        <div class="task-article-kicker"><span>{task_label(task)}</span><span class="type-chip type-{task['mode']}">{MODES[task['mode']].upper()}</span></div>
+        <div class="task-article-kicker task-{MODE_VISUALS[task['mode']]['color']}"><span>{task_label(task)}</span><span class="home-task-mode">{mode_icon(task)}<span>{MODES[task['mode']]}</span></span></div>
         <h1>{esc(setting['title'])}</h1>
         <div class="task-summary">{setting['intro']}</div>
         <dl class="task-specs">{facts}</dl>
@@ -308,6 +312,7 @@ def detail_page(task: dict, tasks: list[dict], setting: dict) -> str:
       <details class="task-mobile-toc"><summary>On this page</summary><nav aria-label="Page contents">{page_toc}</nav></details>
       <div class="task-prose">{setting['body']}</div>
       <nav class="task-adjacent" aria-label="Adjacent tasks">{"".join(adjacent)}</nav>
+      {footer()}
     </article>
     <aside class="task-toc"><nav aria-label="On this page"><p>On this page</p>{page_toc}</nav></aside>
   </div>
@@ -332,7 +337,7 @@ def generate() -> dict[Path, str]:
     if homepage.count(start) != 1 or homepage.count(end) != 1:
         raise ValueError("Homepage must have one TASK_CARDS marker pair")
     cards = "\n".join(home_card(task) for task in tasks if task.get("featured"))
-    block = start + '\n        <div class="task-grid task-grid-six">\n' + cards + "\n        </div>\n        " + end
+    block = start + '\n          <ul class="home-task-list" aria-label="Selected tasks">\n' + cards + "\n          </ul>\n          " + end
     outputs[ROOT / "index.html"] = homepage[:homepage.index(start)] + block + homepage[homepage.index(end) + len(end):]
     return {path: "\n".join(line.rstrip() for line in content.splitlines()) + "\n" for path, content in outputs.items()}
 
