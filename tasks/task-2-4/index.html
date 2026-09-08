@@ -36,22 +36,28 @@
         <div class="task-article-kicker task-violet"><span>TASK 2-4</span><span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg><span>Optimization</span></span></div>
         <h1>Multimodal Search over a Paper Corpus</h1>
         <div class="task-summary"><p>Build a search engine over a large collection of research-paper PDFs. Given a query, the system should find relevant material using both the textual and visual content of the papers.</p></div>
-        <dl class="task-specs"><div><dt>Domain</dt><dd><code>research-paper search</code></dd></div><div><dt>Primary focus</dt><dd><code>multimodal and text retrieval</code></dd></div><div><dt>Primary metric</dt><dd><code>To be specified</code></dd></div></dl>
+        <dl class="task-specs"><div><dt>Domain</dt><dd><code>research-paper search</code></dd></div><div><dt>Primary focus</dt><dd><code>multimodal and text retrieval</code></dd></div><div><dt>Primary metric</dt><dd><code>Accuracy</code></dd></div></dl>
         <div class="task-tags" aria-label="Task topics"><span>PDF</span><span>multimodal-retrieval</span><span>scientific-documents</span></div>
       </header>
-      <details class="task-mobile-toc"><summary>On this page</summary><nav aria-label="Page contents"><a href="#overview">Overview</a><a href="#task-objective">Task objective</a><a href="#setting-in-preparation">Setting in preparation</a></nav></details>
-      <div class="task-prose"><h2 id="task-objective">Task objective</h2>
-<p>Connect a user&#x27;s query to relevant material across a large paper corpus. The task covers search over the PDFs&#x27; textual and visual information.</p>
-<h2 id="setting-in-preparation">Setting in preparation</h2>
-<p>The corpus release, supported query format, output schema, baseline, runtime environment, resource limits, and evaluation metric have not yet been specified.</p>
-<p>This page records the task&#x27;s scope. A complete executable setting will be added here when available.</p></div>
+      <details class="task-mobile-toc"><summary>On this page</summary><nav aria-label="Page contents"><a href="#overview">Overview</a><a href="#runtime-and-requirements">Runtime and requirements</a><a href="#public-input-and-output-contract">Public input and output contract</a><a href="#inputs" class="toc-subsection">Inputs</a><a href="#outputs" class="toc-subsection">Outputs</a><a href="#evaluation">Evaluation</a></nav></details>
+      <div class="task-prose"><h2 id="runtime-and-requirements">Runtime and requirements</h2>
+<ul><li><strong>Agent time budget</strong>: up to <code>120 minutes</code></li><li><strong>Python</strong>: <code>3.12</code></li><li><strong>Compute</strong>: <code>16</code> CPU cores, <code>32 GiB</code> memory, <code>100 GiB</code> storage</li><li><strong>GPU required</strong>: <code>no</code></li><li><strong>Network</strong>: <code>restricted</code> — allowlisted resources only</li></ul>
+<h2 id="public-input-and-output-contract">Public input and output contract</h2>
+<h3 id="inputs">Inputs</h3>
+<ul><li><code>/task/data/corpus/</code> — a directory containing research-paper PDFs, including text, figures, and tables.</li><li><code>/task/data/validation/queries.jsonl</code> — public development queries.</li><li><code>/task/data/validation/ground_truth.jsonl</code> — relevance labels for the public queries.</li></ul>
+<h3 id="outputs">Outputs</h3>
+<ul><li>JSONL retrieval results — one highest-ranked paper per query, with its document identifier, PDF page number, and supporting evidence.</li></ul>
+<p>The submission must provide executable <code>build.sh</code> and <code>run.sh</code> entry points under <code>/app</code>.</p>
+<h2 id="evaluation">Evaluation</h2>
+<p>A hidden query passes when the returned paper is relevant and its cited evidence is grounded in the PDF. The task score is the average held-out <strong>Accuracy</strong>.</p>
+<p>Missing results count as incorrect queries. Invalid output or integrity violations result in a score of <code>0</code>.</p></div>
       <nav class="task-adjacent" aria-label="Adjacent tasks"><a href="../task-2-3/"><span>Previous task · TASK 2-3</span><strong>Query-side encoder</strong></a><a href="../task-2-5/"><span>Next task · TASK 2-5</span><strong>Natural-language Ctrl+F</strong></a></nav>
       <footer class="home-footer">
   <span>Search-SWE · VectorSpaceLab</span>
   <a href="#top">Back to top ↑</a>
 </footer>
     </article>
-    <aside class="task-toc"><nav aria-label="On this page"><p>On this page</p><a href="#overview">Overview</a><a href="#task-objective">Task objective</a><a href="#setting-in-preparation">Setting in preparation</a></nav></aside>
+    <aside class="task-toc"><nav aria-label="On this page"><p>On this page</p><a href="#overview">Overview</a><a href="#runtime-and-requirements">Runtime and requirements</a><a href="#public-input-and-output-contract">Public input and output contract</a><a href="#inputs" class="toc-subsection">Inputs</a><a href="#outputs" class="toc-subsection">Outputs</a><a href="#evaluation">Evaluation</a></nav></aside>
   </div>
 </main>
 </body>

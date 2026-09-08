@@ -36,22 +36,28 @@
         <div class="task-article-kicker task-violet"><span>TASK 2-5</span><span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg><span>Optimization</span></span></div>
         <h1>Natural-Language Ctrl+F</h1>
         <div class="task-summary"><p>Build search within a long book PDF. A user describes what they are looking for in natural language, and the search engine locates the specific place in the book that matches the query.</p></div>
-        <dl class="task-specs"><div><dt>Domain</dt><dd><code>in-document search</code></dd></div><div><dt>Primary focus</dt><dd><code>passage localization in long PDFs</code></dd></div><div><dt>Primary metric</dt><dd><code>To be specified</code></dd></div></dl>
+        <dl class="task-specs"><div><dt>Domain</dt><dd><code>in-document search</code></dd></div><div><dt>Primary focus</dt><dd><code>passage localization in long PDFs</code></dd></div><div><dt>Primary metric</dt><dd><code>Accuracy</code></dd></div></dl>
         <div class="task-tags" aria-label="Task topics"><span>PDF</span><span>natural-language-search</span><span>long-document</span><span>localization</span></div>
       </header>
-      <details class="task-mobile-toc"><summary>On this page</summary><nav aria-label="Page contents"><a href="#overview">Overview</a><a href="#task-objective">Task objective</a><a href="#setting-in-preparation">Setting in preparation</a></nav></details>
-      <div class="task-prose"><h2 id="task-objective">Task objective</h2>
-<p>Turn a natural-language information need into a precise location within a long PDF. The returned location should let the user find the relevant material in the original book.</p>
-<h2 id="setting-in-preparation">Setting in preparation</h2>
-<p>The book corpus, query set, location representation, output schema, baseline, runtime limits, and localization metric have not yet been specified.</p>
-<p>This page records the task&#x27;s scope. A complete executable setting will be added here when available.</p></div>
+      <details class="task-mobile-toc"><summary>On this page</summary><nav aria-label="Page contents"><a href="#overview">Overview</a><a href="#runtime-and-requirements">Runtime and requirements</a><a href="#public-input-and-output-contract">Public input and output contract</a><a href="#inputs" class="toc-subsection">Inputs</a><a href="#outputs" class="toc-subsection">Outputs</a><a href="#evaluation">Evaluation</a></nav></details>
+      <div class="task-prose"><h2 id="runtime-and-requirements">Runtime and requirements</h2>
+<ul><li><strong>Agent time budget</strong>: up to <code>120 minutes</code></li><li><strong>Python</strong>: <code>3.12</code></li><li><strong>Compute</strong>: <code>16</code> CPU cores, <code>32 GiB</code> memory, <code>100 GiB</code> storage</li><li><strong>GPU required</strong>: <code>no</code></li><li><strong>Network</strong>: <code>restricted</code> — allowlisted resources only</li></ul>
+<h2 id="public-input-and-output-contract">Public input and output contract</h2>
+<h3 id="inputs">Inputs</h3>
+<ul><li><code>/task/data/corpus/</code> — a directory containing one long book PDF.</li><li><code>/task/data/validation/queries.jsonl</code> — public natural-language queries.</li><li><code>/task/data/validation/ground_truth.jsonl</code> — target passage locations for the public queries.</li></ul>
+<h3 id="outputs">Outputs</h3>
+<ul><li>JSONL localization results — one matched passage per query, with its PDF page number, position on the page, and source excerpt.</li></ul>
+<p>The submission must provide executable <code>build.sh</code> and <code>run.sh</code> entry points under <code>/app</code>. Page numbers use one-based PDF page positions, not printed page labels.</p>
+<h2 id="evaluation">Evaluation</h2>
+<p>A hidden query passes when the returned location identifies an accepted target passage in the book. The task score is the average held-out <strong>Accuracy</strong>; returning only a chapter or page without locating the passage is insufficient.</p>
+<p>Missing results count as incorrect queries. Invalid output or integrity violations result in a score of <code>0</code>.</p></div>
       <nav class="task-adjacent" aria-label="Adjacent tasks"><a href="../task-2-4/"><span>Previous task · TASK 2-4</span><strong>Multimodal paper search</strong></a><a href="../task-2-6/"><span>Next task · TASK 2-6</span><strong>Multi-constraint retrieval</strong></a></nav>
       <footer class="home-footer">
   <span>Search-SWE · VectorSpaceLab</span>
   <a href="#top">Back to top ↑</a>
 </footer>
     </article>
-    <aside class="task-toc"><nav aria-label="On this page"><p>On this page</p><a href="#overview">Overview</a><a href="#task-objective">Task objective</a><a href="#setting-in-preparation">Setting in preparation</a></nav></aside>
+    <aside class="task-toc"><nav aria-label="On this page"><p>On this page</p><a href="#overview">Overview</a><a href="#runtime-and-requirements">Runtime and requirements</a><a href="#public-input-and-output-contract">Public input and output contract</a><a href="#inputs" class="toc-subsection">Inputs</a><a href="#outputs" class="toc-subsection">Outputs</a><a href="#evaluation">Evaluation</a></nav></aside>
   </div>
 </main>
 </body>
