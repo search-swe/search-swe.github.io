@@ -1,4 +1,4 @@
-# Memory-Constrained Dense Retrieval
+# Memory-constrained Dense Retrieval
 
 Build an executable dense-vector search engine over 1.5 million precomputed NaturalQuestions document vectors. The task tests how an agent balances retrieval quality, memory usage, index size, and query latency when the raw vector collection is substantially larger than available memory.
 

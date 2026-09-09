@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Build search over a large research-paper PDF corpus using both textual and visual content." />
+  <meta name="description" content="Retrieve relevant content from research-paper PDFs using both text and visual information." />
   <meta name="theme-color" content="#ffffff" />
-  <title>Multimodal Search over a Paper Corpus — Search-SWE</title>
+  <title>Multimodal Paper Search — Search-SWE</title>
   <link rel="icon" type="image/png" href="../../assests/logo.png" />
   <link rel="apple-touch-icon" href="../../assests/logo.png" />
   <link rel="stylesheet" href="../../home-sections.css?v=2" />
-  <link rel="stylesheet" href="../../task-pages.css?v=2" />
+  <link rel="stylesheet" href="../../task-pages.css?v=3" />
 </head>
 <body id="top">
 <a class="skip-link" href="#main-content">Skip to content</a>
 <header class="home-header">
   <div class="home-header-inner">
-    <a class="home-brand" href="../../index.html#top" aria-label="Search-SWE home">
+    <a class="home-brand" href="../../" aria-label="Search-SWE home">
       <img src="../../assests/logo.png" width="32" height="32" alt="" />
       <span>Search-SWE</span>
     </a>
     <nav class="home-nav" aria-label="Main navigation">
-      <a href="../../index.html">Overview</a>
+      <a href="../../">Overview</a>
       <a href="../../tasks.html" aria-current="true">Tasks</a>
       <a href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
     </nav>
@@ -28,13 +28,13 @@
 </header>
 
 <main id="main-content" class="task-reader">
-  <nav class="task-breadcrumbs" aria-label="Breadcrumb"><a href="../../index.html">Home</a><span aria-hidden="true">/</span><a href="../../tasks.html">Tasks</a><span aria-hidden="true">/</span><span aria-current="page">TASK 2-4</span></nav>
+  <nav class="task-breadcrumbs" aria-label="Breadcrumb"><a href="../../">Home</a><span aria-hidden="true">/</span><a href="../../tasks.html">Tasks</a><span aria-hidden="true">/</span><span aria-current="page">TASK 2-4</span></nav>
   <div class="task-reader-layout">
-    <aside class="task-directory"><a class="all-tasks-link" href="../../tasks.html">← All tasks</a><nav aria-label="Task directory"><div class="task-directory-group"><p>Implementation</p><a href="../task-1-1/"><span>1-1</span>Query rewriting</a><a href="../task-1-2/"><span>1-2</span>Memory-constrained retrieval</a></div><div class="task-directory-group"><p>Optimization</p><a href="../task-2-1/"><span>2-1</span>Long-document reranking</a><a href="../task-2-2/"><span>2-2</span>Code embedder training</a><a href="../task-2-3/"><span>2-3</span>Query-side encoder</a><a href="../task-2-4/" aria-current="page"><span>2-4</span>Multimodal paper search</a><a href="../task-2-5/"><span>2-5</span>Natural-language Ctrl+F</a><a href="../task-2-6/"><span>2-6</span>Multi-constraint retrieval</a></div><div class="task-directory-group"><p>Repair</p><a href="../task-3-1/"><span>3-1</span>Sparse index repair</a></div></nav></aside>
+    <aside class="task-directory"><a class="all-tasks-link" href="../../tasks.html">← All tasks</a><nav aria-label="Task directory"><div class="task-directory-group"><p>Implementation</p><a href="../task-1-1/"><span class="task-directory-id">1-1</span><span class="task-directory-title">Reasoning-intensive Query Rewriting</span></a><a href="../task-1-2/"><span class="task-directory-id">1-2</span><span class="task-directory-title">Memory-constrained Dense Retrieval</span></a></div><div class="task-directory-group"><p>Optimization</p><a href="../task-2-1/"><span class="task-directory-id">2-1</span><span class="task-directory-title">Constrained Long-document Reranking</span></a><a href="../task-2-2/"><span class="task-directory-id">2-2</span><span class="task-directory-title">Domain-specific Embedder Fine-tuning</span></a><a href="../task-2-3/"><span class="task-directory-id">2-3</span><span class="task-directory-title">Query-side Encoder Alignment</span></a><a href="../task-2-4/" aria-current="page"><span class="task-directory-id">2-4</span><span class="task-directory-title">Multimodal Paper Search</span></a><a href="../task-2-5/"><span class="task-directory-id">2-5</span><span class="task-directory-title">Natural-language Ctrl+F</span></a><a href="../task-2-6/"><span class="task-directory-id">2-6</span><span class="task-directory-title">Agentic Search Optimization</span></a></div><div class="task-directory-group"><p>Repair</p><a href="../task-3-1/"><span class="task-directory-id">3-1</span><span class="task-directory-title">Sparse Retrieval Index Repair</span></a></div></nav></aside>
     <article class="task-article">
       <header id="overview" class="task-article-header">
         <div class="task-article-kicker task-violet"><span>TASK 2-4</span><span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg><span>Optimization</span></span></div>
-        <h1>Multimodal Search over a Paper Corpus</h1>
+        <h1>Multimodal Paper Search</h1>
         <div class="task-summary"><p>Build a search engine over a large collection of research-paper PDFs. Given a query, the system should find relevant material using both the textual and visual content of the papers.</p></div>
         <dl class="task-specs"><div><dt>Domain</dt><dd><code>research-paper search</code></dd></div><div><dt>Primary focus</dt><dd><code>multimodal and text retrieval</code></dd></div><div><dt>Primary metric</dt><dd><code>Accuracy</code></dd></div></dl>
         <div class="task-tags" aria-label="Task topics"><span>PDF</span><span>multimodal-retrieval</span><span>scientific-documents</span></div>
@@ -51,7 +51,7 @@
 <h2 id="evaluation">Evaluation</h2>
 <p>A hidden query passes when the returned paper is relevant and its cited evidence is grounded in the PDF. The task score is the average held-out <strong>Accuracy</strong>.</p>
 <p>Missing results count as incorrect queries. Invalid output or integrity violations result in a score of <code>0</code>.</p></div>
-      <nav class="task-adjacent" aria-label="Adjacent tasks"><a href="../task-2-3/"><span>Previous task · TASK 2-3</span><strong>Query-side encoder</strong></a><a href="../task-2-5/"><span>Next task · TASK 2-5</span><strong>Natural-language Ctrl+F</strong></a></nav>
+      <nav class="task-adjacent" aria-label="Adjacent tasks"><a href="../task-2-3/"><span>Previous task · TASK 2-3</span><strong>Query-side Encoder Alignment</strong></a><a href="../task-2-5/"><span>Next task · TASK 2-5</span><strong>Natural-language Ctrl+F</strong></a></nav>
       <footer class="home-footer">
   <span>Search-SWE · VectorSpaceLab</span>
   <a href="#top">Back to top ↑</a>

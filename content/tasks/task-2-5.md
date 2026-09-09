@@ -1,4 +1,4 @@
-# Natural-Language Ctrl+F
+# Natural-language Ctrl+F
 
 Build search within a long book PDF. A user describes what they are looking for in natural language, and the search engine locates the specific place in the book that matches the query.
 

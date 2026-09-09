@@ -1,4 +1,4 @@
-# Reasoning-Intensive Retrieval
+# Reasoning-intensive Query Rewriting
 
 * **Task ID**: `search-swe/task-1-1`
 * **Task type**: `create`

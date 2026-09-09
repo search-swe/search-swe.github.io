@@ -1,4 +1,4 @@
-# Multi-Constraint Query Retrieval
+# Agentic Search Optimization
 
 Build a search engine for BrowseComp-Plus queries with multiple conditions. The system should retrieve material that satisfies the combined requirements of a query.
 

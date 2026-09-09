@@ -24,6 +24,15 @@ python scripts/build_tasks.py --check
 
 Only the Python standard library is required. The generator reads paths relative to its own repository location. It writes the task catalog, standalone detail pages, and the homepage task list between the `TASK_CARDS` markers. It preserves the rest of the homepage. All pages share document typography and navigation styles from `home-sections.css`; `task-pages.css` adds the grouped catalog and detail-reader layouts.
 
+For catalog titles, summaries, or catalog layout changes, update only the catalog and homepage cards:
+
+~~~sh
+python scripts/build_tasks.py --catalog-only
+python scripts/build_tasks.py --catalog-only --check
+~~~
+
+This leaves task detail pages unchanged. The current detail HTML for tasks 2-4, 2-5, and 2-6 contains specifications not yet reflected in its Markdown source; reconcile those sources before regenerating all detail pages.
+
 Commit the Markdown, catalog metadata, generator, stylesheet, and generated HTML together. Serving the site does not require Python.
 
 The supported Markdown constructs are level-two/three headings, paragraphs, flat ordered/unordered lists, inline code, bold text, HTTP(S)/relative links, and fenced code blocks. Raw HTML is escaped. Markdown setting files are maintained here as the source for the generated task pages.

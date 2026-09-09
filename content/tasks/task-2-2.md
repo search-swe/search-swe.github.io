@@ -1,4 +1,4 @@
-# Code Retrieval Embedder Optimization
+# Domain-specific Embedder Fine-tuning
 
 Improve a code-retrieval embedding model using supplied training data. The task starts from the fixed `BAAI/bge-base-en-v1.5` backbone and evaluates whether the submitted checkpoint can place the relevant code document at rank one on unseen queries.
 

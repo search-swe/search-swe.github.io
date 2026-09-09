@@ -157,12 +157,12 @@ def header(prefix: str) -> str:
     return f"""<a class="skip-link" href="#main-content">Skip to content</a>
 <header class="home-header">
   <div class="home-header-inner">
-    <a class="home-brand" href="{prefix}index.html#top" aria-label="Search-SWE home">
+    <a class="home-brand" href="{prefix or './'}" aria-label="Search-SWE home">
       <img src="{prefix}assests/logo.png" width="32" height="32" alt="" />
       <span>Search-SWE</span>
     </a>
     <nav class="home-nav" aria-label="Main navigation">
-      <a href="{prefix}index.html">Overview</a>
+      <a href="{prefix or './'}">Overview</a>
       <a href="{prefix}tasks.html" aria-current="{('page' if not prefix else 'true')}">Tasks</a>
       <a href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
     </nav>
@@ -189,7 +189,7 @@ def document(title: str, description: str, prefix: str, body: str) -> str:
   <link rel="icon" type="image/png" href="{prefix}assests/logo.png" />
   <link rel="apple-touch-icon" href="{prefix}assests/logo.png" />
   <link rel="stylesheet" href="{prefix}home-sections.css?v=2" />
-  <link rel="stylesheet" href="{prefix}task-pages.css?v=2" />
+  <link rel="stylesheet" href="{prefix}task-pages.css?v=3" />
 </head>
 <body id="top">
 {header(prefix)}
@@ -251,7 +251,7 @@ def catalog_page(tasks: list[dict]) -> str:
   <main id="main-content" class="home-document">
     <header class="home-intro catalog-intro">
       <h1>Tasks</h1>
-      <p>Open a task for its objective, constraints, and evaluation.</p>
+      <p>Explore search-system engineering tasks across implementation, optimization, and repair under fixed resource constraints. Each task details its objective, requirements, and evaluation.</p>
     </header>
     {''.join(groups)}
     {footer()}
@@ -267,7 +267,7 @@ def directory(tasks: list[dict], current: dict) -> str:
             if task["mode"] != key:
                 continue
             active = ' aria-current="page"' if task["id"] == current["id"] else ""
-            links.append(f'<a href="../{task["id"]}/"{active}><span>{task["id"].removeprefix("task-")}</span>{esc(task["navTitle"])}</a>')
+            links.append(f'<a href="../{task["id"]}/"{active}><span class="task-directory-id">{task["id"].removeprefix("task-")}</span><span class="task-directory-title">{esc(task["title"])}</span></a>')
         groups.append(f'<div class="task-directory-group"><p>{title}</p>{"".join(links)}</div>')
     return '<nav aria-label="Task directory">' + "".join(groups) + "</nav>"
 
@@ -298,7 +298,7 @@ def detail_page(task: dict, tasks: list[dict], setting: dict) -> str:
             adjacent.append(f'<a href="../{neighbor["id"]}/"><span>{label} · {task_label(neighbor)}</span><strong>{esc(neighbor["title"])}</strong></a>')
     return document(setting["title"], task["summary"], "../../", f"""
 <main id="main-content" class="task-reader">
-  <nav class="task-breadcrumbs" aria-label="Breadcrumb"><a href="../../index.html">Home</a><span aria-hidden="true">/</span><a href="../../tasks.html">Tasks</a><span aria-hidden="true">/</span><span aria-current="page">{task_label(task)}</span></nav>
+  <nav class="task-breadcrumbs" aria-label="Breadcrumb"><a href="../../">Home</a><span aria-hidden="true">/</span><a href="../../tasks.html">Tasks</a><span aria-hidden="true">/</span><span aria-current="page">{task_label(task)}</span></nav>
   <div class="task-reader-layout">
     <aside class="task-directory"><a class="all-tasks-link" href="../../tasks.html">← All tasks</a>{directory(tasks, task)}</aside>
     <article class="task-article">
@@ -345,9 +345,13 @@ def generate() -> dict[Path, str]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="Fail if generated pages need updating.")
+    parser.add_argument("--catalog-only", action="store_true", help="Update or check only the task catalog and homepage cards.")
     args = parser.parse_args()
     changed = []
-    for path, content in generate().items():
+    outputs = generate()
+    if args.catalog_only:
+        outputs = {path: content for path, content in outputs.items() if path in (ROOT / "tasks.html", ROOT / "index.html")}
+    for path, content in outputs.items():
         existing = path.read_text(encoding="utf-8") if path.exists() else None
         if existing == content:
             continue

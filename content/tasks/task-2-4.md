@@ -1,4 +1,4 @@
-# Multimodal Search over a Paper Corpus
+# Multimodal Paper Search
 
 Build a search engine over a large collection of research-paper PDFs. Given a query, the system should find relevant material using both the textual and visual content of the papers.
 
