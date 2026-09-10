@@ -87,12 +87,12 @@
   {
     "id": "task-3-1",
     "mode": "repair",
-    "title": "Sparse Retrieval Index Repair",
-    "navTitle": "Sparse Retrieval Index Repair",
-    "summary": "Repair vocabulary mappings and unsafe pruning, then reduce bloated postings while preserving retrieval quality.",
-    "tag": "postings · vocabulary · pruning",
+    "title": "Sparse Retrieval Postings Pruning",
+    "navTitle": "Sparse retrieval postings pruning",
+    "summary": "Optimize candidate generation and postings pruning for opaque, unweighted sparse retrieval while preserving ranking quality.",
+    "tag": "sparse postings · pruning · latency",
     "status": "draft",
     "featured": true,
-    "homepageSummary": "Repair a sparse index to restore retrieval correctness and reduce storage and query costs."
+    "homepageSummary": "Preserve NDCG and recall while cutting search time to 30% of an unpruned starter."
   }
 ]

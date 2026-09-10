@@ -1,4 +1,4 @@
-# Sparse Retrieval Index Repair
+# Sparse Retrieval Postings Pruning
 
 Optimize a Python-only sparse retrieval system over a large corpus of opaque,
 unweighted term IDs. Preserve retrieval quality while reducing search wall time
