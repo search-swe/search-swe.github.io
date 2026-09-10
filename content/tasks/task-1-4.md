@@ -2,8 +2,8 @@
 
 Build search within a long book PDF. A user describes what they are looking for in natural language, and the search engine locates the specific place in the book that matches the query.
 
-* **Task ID**: `search-swe/task-2-5`
-* **Task type**: `optimize`
+* **Task ID**: `search-swe/task-1-4`
+* **Task type**: `create`
 * **Domain**: `in-document search`
 * **Primary focus**: `passage localization in long PDFs`
 * **Primary metric**: `To be specified`

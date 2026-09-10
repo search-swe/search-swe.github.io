@@ -1,20 +1,20 @@
-# Multimodal Paper Search
+# Agentic Search Optimization
 
-Build a search engine over a large collection of research-paper PDFs. Given a query, the system should find relevant material using both the textual and visual content of the papers.
+Build a search engine for BrowseComp-Plus queries with multiple conditions. The system should retrieve material that satisfies the combined requirements of a query.
 
 * **Task ID**: `search-swe/task-2-4`
 * **Task type**: `optimize`
-* **Domain**: `research-paper search`
-* **Primary focus**: `multimodal and text retrieval`
+* **Domain**: `multi-constraint search`
+* **Primary focus**: `retrieval under combined query constraints`
 * **Primary metric**: `To be specified`
-* **Tags**: `PDF`, `multimodal-retrieval`, `scientific-documents`
+* **Tags**: `BrowseComp-Plus`, `multi-constraint-retrieval`, `query-understanding`
 
 ## Task objective
 
-Connect a user's query to relevant material across a large paper corpus. The task covers search over the PDFs' textual and visual information.
+Account for the conditions expressed in a query when searching the supplied corpus. A useful result must address the combined information need, including the constraints that distinguish it from partial matches.
 
 ## Setting in preparation
 
-The corpus release, supported query format, output schema, baseline, runtime environment, resource limits, and evaluation metric have not yet been specified.
+The dataset version and split, input and output contract, baseline, allowed resources, runtime limits, and evaluation metric have not yet been specified.
 
 This page records the task's scope. A complete executable setting will be added here when available.

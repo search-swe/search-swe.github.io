@@ -22,6 +22,26 @@
     "homepageSummary": "Search 1.5M dense vectors within 2 GiB of memory while meeting accuracy and latency requirements."
   },
   {
+    "id": "task-1-3",
+    "mode": "implementation",
+    "title": "Multimodal Paper Search",
+    "navTitle": "Multimodal Paper Search",
+    "summary": "Retrieve relevant content from research-paper PDFs using both text and visual information.",
+    "tag": "multimodal PDF retrieval",
+    "status": "planned",
+    "featured": false
+  },
+  {
+    "id": "task-1-4",
+    "mode": "implementation",
+    "title": "Natural-language Ctrl+F",
+    "navTitle": "Natural-language Ctrl+F",
+    "summary": "Locate passages in long book PDFs that match a natural-language information need.",
+    "tag": "in-document search",
+    "status": "planned",
+    "featured": false
+  },
+  {
     "id": "task-2-1",
     "mode": "optimization",
     "title": "Constrained Long-document Reranking",
@@ -56,26 +76,6 @@
   },
   {
     "id": "task-2-4",
-    "mode": "optimization",
-    "title": "Multimodal Paper Search",
-    "navTitle": "Multimodal Paper Search",
-    "summary": "Retrieve relevant content from research-paper PDFs using both text and visual information.",
-    "tag": "multimodal PDF retrieval",
-    "status": "planned",
-    "featured": false
-  },
-  {
-    "id": "task-2-5",
-    "mode": "optimization",
-    "title": "Natural-language Ctrl+F",
-    "navTitle": "Natural-language Ctrl+F",
-    "summary": "Locate passages in long book PDFs that match a natural-language information need.",
-    "tag": "in-document search",
-    "status": "planned",
-    "featured": false
-  },
-  {
-    "id": "task-2-6",
     "mode": "optimization",
     "title": "Agentic Search Optimization",
     "navTitle": "Agentic Search Optimization",
