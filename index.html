@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Search-SWE evaluates coding agents on implementing, optimizing, and repairing real search systems under fixed resource constraints." />
+    <meta name="description" content="Search-SWE evaluates coding agents on implementing and optimizing real search systems under fixed resource constraints." />
     <meta name="theme-color" content="#ffffff" />
     <title>Search-SWE — Search-System Engineering for Agents</title>
     <link rel="icon" type="image/png" href="assests/logo.png" />
@@ -40,7 +40,7 @@
         <header class="home-intro">
           <h1>Search-SWE</h1>
           <p class="home-subtitle">Benchmarking coding agents on search-system engineering.</p>
-          <p>Search-SWE evaluates whether coding agents can <strong>implement, optimize, and repair</strong> real search systems under fixed resource constraints.</p>
+          <p>Search-SWE evaluates whether coding agents can <strong>implement and optimize</strong> real search systems under fixed resource constraints.</p>
           <div class="home-links">
             <a href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
             <a href="tasks.html">Browse tasks <span aria-hidden="true">→</span></a>
@@ -49,13 +49,12 @@
 
         <section id="motivation" class="home-section">
           <h2>Overview</h2>
-          <p>Building an effective search system requires coordinating data processing, query understanding, indexing, retrieval, and ranking. Choices at one stage affect the others: richer representations can increase memory and storage costs, while deeper retrieval and reranking can improve relevance at the expense of latency. Search-SWE tests whether coding agents can navigate these trade-offs to build, improve, and repair working systems under fixed resource budgets.</p>
+          <p>Building an effective search system requires coordinating data processing, query understanding, indexing, retrieval, and ranking. Choices at one stage affect the others: richer representations can increase memory and storage costs, while deeper retrieval and reranking can improve relevance at the expense of latency. Search-SWE tests whether coding agents can navigate these trade-offs to build and improve working systems under fixed resource budgets.</p>
           <div id="search-swe">
-            <h3>Three engineering modes</h3>
+            <h3>Two engineering modes</h3>
             <dl class="mode-definitions">
               <div><dt>Implementation</dt><dd>Build a working search capability from a task specification.</dd></div>
               <div><dt>Optimization</dt><dd>Improve search quality or efficiency within fixed constraints.</dd></div>
-              <div><dt>Repair</dt><dd>Restore correctness and efficiency in a faulty search system.</dd></div>
             </dl>
           </div>
         </section>
@@ -119,13 +118,13 @@
               </a>
             </li>
             <li>
-              <a class="home-task task-teal" href="tasks/task-3-1/">
-                <span class="home-task-id"><span class="sr-only">Task </span>3-1</span>
+              <a class="home-task task-violet" href="tasks/task-2-5/">
+                <span class="home-task-id"><span class="sr-only">Task </span>2-5</span>
                 <span class="home-task-copy">
                   <span class="home-task-title">Sparse Retrieval Postings Pruning</span>
-                  <span class="home-task-summary">Preserve NDCG and recall while cutting search time to 30% of an unpruned starter.</span>
+                  <span class="home-task-summary">Preserve NDCG and recall while optimizing search time against an unpruned starter.</span>
                 </span>
-                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94Z"/></svg><span>Repair</span></span>
+                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg><span>Optimization</span></span>
               </a>
             </li>
           </ul>

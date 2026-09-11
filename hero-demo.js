@@ -15,12 +15,6 @@
       stages: ['Inspect', 'Diagnose', 'Improve', 'Compare'],
       captions: ['Results return. Relevance falls short.', 'Trace misses and weak rankings.', 'Improve retrieval and ranking.', 'Bring relevant documents to the top.'],
     },
-    repair: {
-      title: 'Repair: locate and fix a search execution error',
-      description: 'A query is parsed but a fault in the retrieval stage prevents search results from returning. The index remains available. The agent traces the query path, isolates the failing stage, patches it and reruns queries. Search results and query checks return. This illustrates a general search execution failure rather than a particular language or implementation bug.',
-      stages: ['Reproduce', 'Trace', 'Patch', 'Replay'],
-      captions: ['A query fails to return results.', 'Trace the error through the search path.', 'Patch the failing retrieval stage.', 'Replay queries. Results restored.'],
-    },
   };
   const names = Object.keys(modes);
   const modeButtons = [...demo.querySelectorAll('[data-mode-choice]')];
@@ -53,11 +47,6 @@
   const missedDocument = demo.querySelector('.missed-document');
   const rankingRows = [...demo.querySelectorAll('.ranking-row')];
   const targetRanks = [2, 3, 4, 0, 1];
-  const repairProbe = demo.querySelector('.repair-query-probe');
-  const repairProbePath = demo.querySelector('.repair-probe-path');
-  const repairProbeLength = repairProbePath.getTotalLength();
-  const failureRing = demo.querySelector('.query-failure-ring');
-  const repairedHits = [...demo.querySelectorAll('.repaired-hit')];
 
   const clamp = value => Math.max(0, Math.min(1, value));
   const ease = value => 1 - Math.pow(1 - clamp(value), 3);
@@ -101,24 +90,6 @@
     });
   }
 
-  function renderRepair(position) {
-    // The failing query stops at retrieval; replayed queries reach the result list.
-    const failedLength = repairProbeLength - (442 - 191);
-    const travel = stage === 0
-      ? failedLength * ease(position / 0.7)
-      : repairProbeLength * clamp((position * 3) % 1 / 0.8);
-    const point = repairProbePath.getPointAtLength(travel);
-    repairProbe.setAttribute('cx', point.x);
-    repairProbe.setAttribute('cy', point.y);
-    repairProbe.style.opacity = (stage === 0 && position < 0.7) || (stage === 3 && position < 0.92) ? '1' : '0';
-    const impact = clamp((position - 0.55) / 0.4);
-    failureRing.setAttribute('r', String(12 + impact * 12));
-    failureRing.style.opacity = stage === 0 ? String(Math.sin(impact * Math.PI) * 0.65) : '0';
-    repairedHits.forEach((node, index) => {
-      node.style.opacity = stage === 3 ? String(ease((position - index * 0.24 - 0.12) / 0.22)) : '0';
-    });
-  }
-
   function renderFrame() {
     const position = elapsed / stageDuration;
     const total = (stage + position) / 4;
@@ -130,7 +101,6 @@
     }
     if (mode === 'build') renderBuild(position);
     if (mode === 'optimize') renderOptimization(position);
-    if (mode === 'repair') renderRepair(position);
   }
 
   function renderStage() {
@@ -153,7 +123,7 @@
     lastTime = null;
     lastProgress = -1;
     demo.dataset.mode = mode;
-    demo.querySelector('.demo-counter').textContent = '0' + (names.indexOf(mode) + 1) + ' / 03';
+    demo.querySelector('.demo-counter').textContent = '0' + (names.indexOf(mode) + 1) + ' / 02';
     demo.querySelector('#demo-svg-title').textContent = modes[mode].title;
     demo.querySelector('#demo-svg-description').textContent = modes[mode].description;
     demo.querySelectorAll('[data-story]').forEach(story => story.setAttribute('aria-hidden', String(story.dataset.story !== mode)));

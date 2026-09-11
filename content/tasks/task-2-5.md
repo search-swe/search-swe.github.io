@@ -4,8 +4,8 @@ Optimize a Python-only sparse retrieval system over a large corpus of opaque,
 unweighted term IDs. Preserve retrieval quality while reducing search wall time
 relative to a corrected, unpruned starter baseline.
 
-* **Task ID**: `search-swe/task-3-1`
-* **Task type**: `repair`
+* **Task ID**: `search-swe/task-2-5`
+* **Task type**: `optimize`
 * **Domain**: `learned sparse retrieval`
 * **Primary focus**: `candidate generation, sparse scoring, and safe query-time pruning`
 * **Primary metric**: `NDCG@10, Recall@100, and starter-relative wall time`

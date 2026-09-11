@@ -60,7 +60,6 @@ strong { font-weight: 600; }
 .home-task-mode { display: flex; align-items: center; gap: 8px; padding-top: 3px; font-size: 12px; line-height: 20px; color: #505864; white-space: nowrap; }
 .home-task-mode svg { display: block; flex: 0 0 16px; width: 16px; height: 16px; color: #426bb4; }
 .task-violet .home-task-mode svg { color: #8064a4; }
-.task-teal .home-task-mode svg { color: #3c8178; }
 .evaluation-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; text-align: left; }
 .evaluation-table th, .evaluation-table td { padding: 12px 14px; border-bottom: 1px solid var(--home-line); vertical-align: top; }
 .evaluation-table thead th { border-top: 1px solid var(--home-line); background: #f8f9fa; font-size: 13px; font-weight: 600; }

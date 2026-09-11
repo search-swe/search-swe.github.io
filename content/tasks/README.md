@@ -8,10 +8,10 @@ The website is static. Each task has a standalone page under `tasks/task-N-N/ind
 - Edit `catalog.json` for the card title, summary, category, status, and homepage selection.
 - Keep `featured: true` on the six tasks shown on the homepage.
 - Use `homepageSummary` for a shorter description in the homepage and catalog task lists; otherwise they use `summary`. Detail-page prose comes from the Markdown setting.
-- Icons and colors are assigned by engineering mode in `MODE_VISUALS` in `scripts/build_tasks.py`: implementation uses blue modules, optimization a violet growth chart, and repair a teal wrench. Tasks of the same mode share a visual identity across the homepage and catalog.
+- Icons and colors are assigned by engineering mode in `MODE_VISUALS` in `scripts/build_tasks.py`: implementation uses blue modules and optimization a violet growth chart. Tasks of the same mode share a visual identity across the homepage and catalog.
 - Use `setting` for an available setting, `draft` for provisional specifications, and `planned` for a scope-only placeholder. These statuses are editorial metadata and are not displayed on the site.
 
-The five initial settings (1-1, 1-2, 2-1, 2-2, 2-3) were copied unchanged from the supplied task materials. Task 3-1 summarizes the supplied sparse-index repair proposal in English; its numeric thresholds are explicitly provisional. Tasks 2-4 through 2-6 contain the requested scope and mark missing specifications as pending.
+The five initial settings (1-1, 1-2, 2-1, 2-2, 2-3) were copied unchanged from the supplied task materials. Task 2-5 describes sparse-index optimization. Other planned tasks contain the requested scope and mark missing specifications as pending.
 
 ## Generate pages
 

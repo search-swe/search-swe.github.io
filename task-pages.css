@@ -9,7 +9,6 @@
 .catalog-task-icon { display: flex; align-items: center; height: 24px; color: #426bb4; }
 .catalog-task-icon svg { display: block; width: 17px; height: 17px; flex: none; }
 .task-violet .catalog-task-icon { color: #8064a4; }
-.task-teal .catalog-task-icon { color: #3c8178; }
 
 .task-reader { width: min(1240px, calc(100% - 64px)); margin: 0 auto; padding-top: 28px; }
 .task-breadcrumbs { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; font-size: 12px; color: var(--home-muted); }

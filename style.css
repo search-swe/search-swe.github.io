@@ -115,7 +115,6 @@ h1 em { color: var(--blue); font-style: normal; }
 .task-icon svg,.catalog-card-icon svg { display:block; flex:none; }
 .task-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 36px; width: 36px; height: 36px; margin: 0; color: var(--white); border-radius: 10px; background: var(--blue); font-size: 1rem; font-weight: 800; }
 .task-violet .task-icon { background: var(--violet); }
-.task-teal .task-icon { background: var(--teal); }
 .task-orange .task-icon { background: var(--orange); }
 .task-pink .task-icon { background: var(--pink); }
 .task-card h3 { min-width: 0; margin: 0; font-size: 1.06rem; line-height: 1.35; letter-spacing: -.035em; }
@@ -196,7 +195,6 @@ h1 em { color: var(--blue); font-style: normal; }
 .type-chip { display: inline-flex; align-items: center; padding: 5px 8px; border-radius: 5px; font-family: var(--mono); font-size: .8rem; letter-spacing: .03em; line-height: 1.2; }
 .type-implementation { color: #2168d7; background: #edf4ff; }
 .type-optimization { color: #7751d8; background: #f0edff; }
-.type-repair { color: #008b76; background: #e7faf7; }
 .type-chip-dark { color: #63d9dd; background: rgba(99,217,221,.15); }
 
 /* ---------- Task cards / setting / results ---------- */
@@ -223,7 +221,6 @@ h1 em { color: var(--blue); font-style: normal; }
 .catalog-card-id { color: var(--muted); font-family: var(--mono); font-size: .8rem; letter-spacing: .06em; }
 .catalog-card-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 36px; width: 36px; height: 36px; margin: 0; color: var(--white); border-radius: 10px; background: var(--blue); font-size: 1rem; font-weight: 800; }
 .catalog-card.task-violet .catalog-card-icon { background: var(--violet); }
-.catalog-card.task-teal .catalog-card-icon { background: var(--teal); }
 .catalog-card.task-orange .catalog-card-icon { background: var(--orange); }
 .catalog-card.task-pink .catalog-card-icon { background: var(--pink); }
 .catalog-card h3 { margin-bottom: 7px; font-size: 1.08rem; letter-spacing: -.035em; }
@@ -240,7 +237,6 @@ h1 em { color: var(--blue); font-style: normal; }
 .detail-section-heading { margin-bottom: 37px; }
 .task-detail { display: grid; grid-template-columns: 62px 1fr auto; gap: 25px; align-items: start; margin-top: 15px; padding: 30px 31px; border: 1px solid var(--line); border-left: 4px solid var(--blue); border-radius: 17px; background: var(--white); scroll-margin-top: 86px; }
 .task-detail.task-violet { border-left-color: var(--violet); }
-.task-detail.task-teal { border-left-color: var(--teal); }
 .task-detail.task-orange { border-left-color: var(--orange); }
 .task-detail.task-pink { border-left-color: var(--pink); }
 .task-dark-detail { color: var(--white); border-color: var(--ink); background: var(--ink); }

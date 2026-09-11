@@ -85,14 +85,14 @@
     "featured": false
   },
   {
-    "id": "task-3-1",
-    "mode": "repair",
+    "id": "task-2-5",
+    "mode": "optimization",
     "title": "Sparse Retrieval Postings Pruning",
     "navTitle": "Sparse retrieval postings pruning",
     "summary": "Optimize candidate generation and postings pruning for opaque, unweighted sparse retrieval while preserving ranking quality.",
     "tag": "sparse postings · pruning · latency",
     "status": "draft",
     "featured": true,
-    "homepageSummary": "Preserve NDCG and recall while cutting search time to 30% of an unpruned starter."
+    "homepageSummary": "Preserve NDCG and recall while optimizing search time against an unpruned starter."
   }
 ]

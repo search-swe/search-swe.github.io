@@ -13,7 +13,6 @@ TICK = chr(96)
 MODES = {
     "implementation": "Implementation",
     "optimization": "Optimization",
-    "repair": "Repair",
 }
 MODE_VISUALS = {
     "implementation": {
@@ -23,10 +22,6 @@ MODE_VISUALS = {
     "optimization": {
         "color": "violet",
         "icon": '<path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/>',
-    },
-    "repair": {
-        "color": "teal",
-        "icon": '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94Z"/>',
     },
 }
 STATUSES = {"setting", "draft", "planned"}
@@ -245,13 +240,13 @@ def catalog_page(tasks: list[dict]) -> str:
   <div class="home-section-heading"><h2 id="{key}-title">{title}</h2><span class="catalog-count">{count}</span></div>
   <ul class="home-task-list">{cards}</ul>
 </section>""")
-    return document("Task catalog", "Browse Search-SWE task settings for implementation, optimization, and repair.", "", f"""
+    return document("Task catalog", "Browse Search-SWE task settings for implementation and optimization.", "", f"""
 <div class="home-layout">
   <aside class="home-sidebar"><nav aria-label="Task categories"><p>Task categories</p>{''.join(links)}</nav></aside>
   <main id="main-content" class="home-document">
     <header class="home-intro catalog-intro">
       <h1>Tasks</h1>
-      <p>Explore search-system engineering tasks across implementation, optimization, and repair under fixed resource constraints. Each task details its objective, requirements, and evaluation.</p>
+      <p>Explore search-system engineering tasks across implementation and optimization under fixed resource constraints. Each task details its objective, requirements, and evaluation.</p>
     </header>
     {''.join(groups)}
     {footer()}
