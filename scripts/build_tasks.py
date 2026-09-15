@@ -153,7 +153,7 @@ def header(prefix: str) -> str:
 <header class="home-header">
   <div class="home-header-inner">
     <a class="home-brand" href="{prefix or './'}" aria-label="Search-SWE home">
-      <img src="{prefix}assests/logo.png" width="32" height="32" alt="" />
+      <img src="{prefix}assets/logo.png" width="32" height="32" alt="" />
       <span>Search-SWE</span>
     </a>
     <nav class="home-nav" aria-label="Main navigation">
@@ -181,8 +181,8 @@ def document(title: str, description: str, prefix: str, body: str) -> str:
   <meta name="description" content="{esc(description)}" />
   <meta name="theme-color" content="#ffffff" />
   <title>{esc(title)} — Search-SWE</title>
-  <link rel="icon" type="image/png" href="{prefix}assests/logo.png" />
-  <link rel="apple-touch-icon" href="{prefix}assests/logo.png" />
+  <link rel="icon" type="image/png" href="{prefix}assets/logo.png" />
+  <link rel="apple-touch-icon" href="{prefix}assets/logo.png" />
   <link rel="stylesheet" href="{prefix}home-sections.css?v=2" />
   <link rel="stylesheet" href="{prefix}task-pages.css?v=3" />
 </head>
