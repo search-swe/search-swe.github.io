@@ -15,7 +15,7 @@ Improve a fixed reranking pipeline for NarrativeQA-style long documents. Each qu
 * **Python**: `3.12`
 * **Compute**: `16` CPU cores, `64 GiB` memory, `100 GiB` storage
 * **GPU required**: `no`
-* **Network**: `restricted` — the supplied local model only
+* **Network**: `no` — the submission uses the supplied local model offline
 
 ## Public input and output contract
 

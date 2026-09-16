@@ -24,21 +24,21 @@
   {
     "id": "task-1-3",
     "mode": "implementation",
-    "title": "Multimodal Paper Search",
-    "navTitle": "Multimodal Paper Search",
-    "summary": "Retrieve relevant content from research-paper PDFs using both text and visual information.",
-    "tag": "multimodal PDF retrieval",
-    "status": "planned",
+    "title": "Scientific-Paper Question Answering",
+    "navTitle": "Scientific-Paper Question Answering",
+    "summary": "Answer scientific questions over 300 research-paper PDFs and identify the supporting paper.",
+    "tag": "scientific RAG",
+    "status": "setting",
     "featured": false
   },
   {
     "id": "task-1-4",
     "mode": "implementation",
-    "title": "Natural-language Ctrl+F",
-    "navTitle": "Natural-language Ctrl+F",
-    "summary": "Locate passages in long book PDFs that match a natural-language information need.",
+    "title": "Long-PDF Evidence Localization",
+    "navTitle": "Long-PDF Evidence Localization",
+    "summary": "Locate the physical pages in a target long PDF that best support a natural-language query.",
     "tag": "in-document search",
-    "status": "planned",
+    "status": "setting",
     "featured": false
   },
   {
@@ -79,9 +79,9 @@
     "mode": "optimization",
     "title": "Agentic Search Optimization",
     "navTitle": "Agentic Search Optimization",
-    "summary": "Improve an agentic search system’s effectiveness on BrowseComp-Plus queries.",
+    "summary": "Optimize a ReAct retrieval starter to return five documents for multi-constraint BrowseComp-Plus queries.",
     "tag": "agentic search",
-    "status": "planned",
+    "status": "setting",
     "featured": false
   },
   {
@@ -91,7 +91,7 @@
     "navTitle": "Sparse retrieval postings pruning",
     "summary": "Optimize candidate generation and postings pruning for opaque, unweighted sparse retrieval while preserving ranking quality.",
     "tag": "sparse postings · pruning · latency",
-    "status": "draft",
+    "status": "setting",
     "featured": true,
     "homepageSummary": "Preserve NDCG and recall while optimizing search time against an unpruned starter."
   }

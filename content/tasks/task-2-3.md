@@ -6,7 +6,7 @@ Optimize a query-side retrieval system built from the compact `Qwen3-Embedding-0
 * **Task type**: `optimize`
 * **Domain**: `information retrieval`
 * **Primary focus**: `query encoder optimization`
-* **Primary metric**: `held-out Accuracy@1 improvement`
+* **Primary metric**: `Accuracy@1 after the runtime gate`
 * **Tags**: `dense-retrieval`, `query-encoder`, `embedding`, `distillation`, `Qwen3`
 
 ## Runtime and requirements
@@ -32,4 +32,10 @@ The submission must contain an executable `/app/submission/run.sh`. It encodes e
 
 ## Evaluation
 
-The hidden split contains 100 disjoint queries. The verifier compares the candidate against a fixed reference starter and applies a runtime gate: the candidate must be faster than the required fraction of the starter runtime. The final score reflects the improvement in held-out `Accuracy@1` after the runtime check; invalid output, modified document vectors, hidden-data access, or external retrieval services results in a score of `0`.
+The hidden split contains 100 disjoint queries. The candidate must finish within `60%` of the fixed reference starter's measured runtime. A candidate that passes the runtime and validity gates receives:
+
+```text
+reward = clamp((candidate Accuracy@1 - 0.31) / 0.69, 0, 1)
+```
+
+The starter accuracy is diagnostic and is not subtracted from the candidate accuracy. Invalid output, modified document vectors, hidden-data access, unauthorized external retrieval, or a failed trajectory audit results in a reward of `0`.

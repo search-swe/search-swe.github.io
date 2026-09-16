@@ -8,7 +8,7 @@ relative to a corrected, unpruned starter baseline.
 * **Task type**: `optimize`
 * **Domain**: `learned sparse retrieval`
 * **Primary focus**: `candidate generation, sparse scoring, and safe query-time pruning`
-* **Primary metric**: `NDCG@10, Recall@100, and starter-relative wall time`
+* **Primary metric**: `Quality-gated linear latency reward`
 * **Tags**: `sparse-retrieval`, `inverted-index`, `IDF`, `candidate-pruning`, `single-threaded`
 
 ## Search-system challenge
@@ -31,8 +31,11 @@ inputs have been provided.
 
 * **Language**: all submission logic must be Python.
 * **Process model**: single-process and single-threaded; no multiprocessing, worker pools, threading, joblib, Ray, or parallel query execution.
+* **Compute**: `1` CPU core, `32 GiB` memory, `80 GiB` storage.
+* **GPU required**: `no`.
 * **Network**: no runtime network access, package installation, remote models, credentials, or external services.
 * **Agent time budget**: up to 120 minutes.
+* **Candidate limits**: `3,600 seconds` for build and `900 seconds` for the hidden-query run.
 
 The `build.sh` and `run.sh` files may be thin Bash wrappers, but indexing,
 retrieval, scoring, pruning, and ranking logic must remain in Python. Native
@@ -83,13 +86,13 @@ results is valid but may reduce Recall@100.
 The agent can use the public validation files:
 
 * `/task/data/corpus.jsonl` — the full corpus;
-* `/task/data/validation/queries.jsonl` — validation queries;
+* `/task/data/validation/queries.jsonl` — 200 public validation queries;
 * `/task/data/validation/qrels.tsv` — validation relevance judgments;
 * `/task/data/validation/stats.json` — validation term and document-frequency statistics;
 * `/task/data/validation/reference_top100.jsonl` — validation regression rankings.
 
-The formal hidden query split and hidden relevance judgments are owned by the
-verifier and are unavailable to the agent.
+The 1,000-query formal hidden split and its relevance judgments are owned by
+the verifier and are unavailable to the agent.
 
 ## Corrected starter baseline
 
@@ -114,13 +117,18 @@ The hidden results must satisfy all of the following:
 ~~~text
 NDCG@10 >= 0.89
 qrels Recall@100 >= 0.99
-candidate wall time <= 0.30 * corrected-starter wall time
 ~~~
 
-The reward is binary:
+Retrieval quality is a hard gate. For a valid submission that passes both
+thresholds, define the latency ratio as candidate wall time divided by the
+verifier-measured corrected-starter wall time. The latency reward is continuous:
 
-* all quality, latency, build, run, output, and trajectory checks pass: reward `1`;
-* any one of those conditions fails: reward `0`.
+* latency ratio at or below `0.30`: reward `1`;
+* latency ratio strictly between `0.30` and `0.50`: reward `(0.50 - latency ratio) / 0.20`;
+* latency ratio at or above `0.50`: reward `0`.
+
+If either quality threshold or any build, run, output, integrity, or trajectory
+check fails, the final reward is `0` regardless of latency.
 
 The verifier measures candidate and starter wall time externally under the same
 workload and resource allocation. Submission-reported lookup counters and

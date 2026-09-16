@@ -11,7 +11,7 @@ The website is static. Each task has a standalone page under `tasks/task-N-N/ind
 - Icons and colors are assigned by engineering mode in `MODE_VISUALS` in `scripts/build_tasks.py`: implementation uses blue modules and optimization a violet growth chart. Tasks of the same mode share a visual identity across the homepage and catalog.
 - Use `setting` for an available setting, `draft` for provisional specifications, and `planned` for a scope-only placeholder. These statuses are editorial metadata and are not displayed on the site.
 
-The five initial settings (1-1, 1-2, 2-1, 2-2, 2-3) were copied unchanged from the supplied task materials. Task 2-5 describes sparse-index optimization. Other planned tasks contain the requested scope and mark missing specifications as pending.
+All nine catalog entries describe available task settings. Keep their facts synchronized with the benchmark repository's task READMEs, instructions, and `task.toml` files.
 
 ## Generate pages
 
@@ -31,7 +31,7 @@ python scripts/build_tasks.py --catalog-only
 python scripts/build_tasks.py --catalog-only --check
 ~~~
 
-This leaves task detail pages unchanged. The current detail HTML for tasks 2-4, 2-5, and 2-6 contains specifications not yet reflected in its Markdown source; reconcile those sources before regenerating all detail pages.
+This leaves task detail pages unchanged. Edit the Markdown source before regenerating detail pages; generated HTML is not the source of truth.
 
 Commit the Markdown, catalog metadata, generator, stylesheet, and generated HTML together. Serving the site does not require Python.
 
