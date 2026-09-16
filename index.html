@@ -8,7 +8,7 @@
     <title>Search-SWE — Search-System Engineering for Agents</title>
     <link rel="icon" type="image/png" href="assets/logo.png" />
     <link rel="apple-touch-icon" href="assets/logo.png" />
-    <link rel="stylesheet" href="home-sections.css?v=2" />
+    <link rel="stylesheet" href="home-sections.css?v=3" />
   </head>
   <body id="top">
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -30,7 +30,8 @@
       <aside class="home-sidebar">
         <nav aria-label="On this page">
           <p>On this page</p>
-          <a href="#motivation">Overview</a>
+          <a href="#introduction">Introduction</a>
+          <a href="#contribute">Contribute</a>
           <a href="#tasks">Tasks</a>
           <a href="#evaluation">Evaluation</a>
         </nav>
@@ -47,9 +48,10 @@
           </div>
         </header>
 
-        <section id="motivation" class="home-section">
-          <h2>Overview</h2>
-          <p>Building an effective search system requires coordinating data processing, query understanding, indexing, retrieval, and ranking. Choices at one stage affect the others: richer representations can increase memory and storage costs, while deeper retrieval and reranking can improve relevance at the expense of latency. Search-SWE tests whether coding agents can navigate these trade-offs to build and improve working systems under fixed resource budgets.</p>
+        <section id="introduction" class="home-section">
+          <h2>Introduction to Search-SWE</h2>
+          <p>Search systems are built from connected decisions about data, query understanding, indexing, retrieval, and ranking. Improving one stage can increase memory, storage, or latency elsewhere, so useful systems require engineering across the complete pipeline rather than isolated code changes.</p>
+          <p class="section-followup">Search-SWE is a benchmark for coding agents that <strong>implement and optimize executable search systems</strong> under fixed data, interface, compute, and network constraints. It measures whether an agent can turn a specification into a working system and navigate quality-efficiency trade-offs on held-out evaluations.</p>
           <div id="search-swe">
             <h3>Two engineering modes</h3>
             <dl class="mode-definitions">
@@ -57,6 +59,21 @@
               <div><dt>Optimization</dt><dd>Improve search quality or efficiency within fixed constraints.</dd></div>
             </dl>
           </div>
+        </section>
+
+        <section id="contribute" class="home-section">
+          <div class="home-section-heading">
+            <h2>How to Contribute to Search-SWE</h2>
+            <a href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">Open the repository <span aria-hidden="true">↗</span></a>
+          </div>
+          <p>A task contribution should be a self-contained, reproducible benchmark setting—not only a prompt or dataset. The repository-local <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/.agents/skills/create-searchswe-task/SKILL.md" target="_blank" rel="noreferrer"><code>create-searchswe-task</code> skill</a> provides the authoring workflow, scaffolder, and validation guidance.</p>
+          <ol class="contribution-steps">
+            <li><strong>Define the contract</strong><span>Choose Implementation or Optimization, then specify the objective, inputs, outputs, metric, and resource limits.</span></li>
+            <li><strong>Build the package</strong><span>Add clear instructions, a reproducible environment, fixed and documented inputs, and a meaningful starter for optimization tasks.</span></li>
+            <li><strong>Isolate evaluation</strong><span>Keep hidden data and credentials in a separate fail-closed verifier with bounded execution and deterministic gates where possible.</span></li>
+            <li><strong>Validate and submit</strong><span>Run static, unit, negative-case, container, and end-to-end checks, then include the evidence and any unrun checks in the pull request.</span></li>
+          </ol>
+          <p class="contribution-examples">For concrete package layouts, see <a href="https://github.com/VectorSpaceLab/Search-SWE/tree/main/tasks/task-1-1" target="_blank" rel="noreferrer">Task 1-1</a> as an Implementation example and <a href="https://github.com/VectorSpaceLab/Search-SWE/tree/main/tasks/task-2-1" target="_blank" rel="noreferrer">Task 2-1</a> as an Optimization example.</p>
         </section>
 
         <section id="tasks" class="home-section">

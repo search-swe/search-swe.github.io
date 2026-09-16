@@ -43,11 +43,18 @@ strong { font-weight: 600; }
 .home-section { margin-top: 36px; }
 .home-section h2 { margin-bottom: 14px; font-size: 25px; line-height: 1.35; font-weight: 600; letter-spacing: -.02em; }
 .home-section h3 { margin: 21px 0 10px; font-size: 17px; line-height: 1.5; font-weight: 600; }
+.section-followup { margin-top: 12px; }
 .mode-definitions > div { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 12px; padding: 5px 0; }
 .mode-definitions dt { font-weight: 600; font-size: 15px; }
 .mode-definitions dd { margin: 0; color: #505864; font-size: 15px; }
 .home-section-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; }
 .home-section-heading a { font-size: 14px; }
+.contribution-steps { margin: 20px 0 0; padding: 0; list-style: none; counter-reset: contribution-step; border-top: 1px solid var(--home-line); }
+.contribution-steps li { display: grid; grid-template-columns: 34px 155px minmax(0, 1fr); gap: 12px; padding: 13px 6px; border-bottom: 1px solid var(--home-line); counter-increment: contribution-step; }
+.contribution-steps li::before { content: counter(contribution-step, decimal-leading-zero); padding-top: 1px; color: var(--home-muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; }
+.contribution-steps strong { font-size: 14px; }
+.contribution-steps span { color: #505864; font-size: 14px; line-height: 1.55; }
+.contribution-examples { margin-top: 16px; color: var(--home-muted); font-size: 14px; }
 .home-task-list { list-style: none; padding: 0; margin: 20px 0 0; border-top: 1px solid var(--home-line); }
 .home-task-list li { border-bottom: 1px solid var(--home-line); }
 .home-task { display: grid; grid-template-columns: 40px minmax(0, 1fr) 142px; align-items: start; gap: 16px; padding: 16px 6px; }
@@ -91,6 +98,8 @@ strong { font-weight: 600; }
   .home-section { margin-top: 30px; }
   .home-section h2 { font-size: 23px; }
   .mode-definitions > div { grid-template-columns: 1fr; gap: 0; padding: 6px 0; }
+  .contribution-steps li { grid-template-columns: 28px minmax(0, 1fr); gap: 2px 10px; }
+  .contribution-steps span { grid-column: 2; }
   .home-task { padding: 14px 0; }
   .home-task-title { font-size: 15px; }
   .home-task-summary { font-size: 13px; }
