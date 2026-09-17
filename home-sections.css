@@ -37,6 +37,7 @@ strong { font-weight: 600; }
 .home-sidebar a:hover { color: var(--home-link); }
 .home-document { min-width: 0; }
 .home-intro { padding-bottom: 32px; border-bottom: 1px solid var(--home-line); }
+.home-hero { display: block; width: 100%; height: auto; margin-bottom: 24px; border-radius: 12px; }
 .home-intro h1 { font-size: 42px; line-height: 1.2; font-weight: 650; letter-spacing: -.035em; margin-bottom: 12px; }
 .home-subtitle { font-size: 21px; color: #505864; line-height: 1.5; margin-bottom: 21px; }
 .home-links { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 19px; font-size: 15px; }
