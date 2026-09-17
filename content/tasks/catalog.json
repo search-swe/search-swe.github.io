@@ -71,7 +71,7 @@
     "summary": "Improve query representations with a compact encoder while document vectors stay fixed and a runtime gate applies.",
     "tag": "query encoder optimization",
     "status": "setting",
-    "featured": true,
+    "featured": false,
     "homepageSummary": "Align a compact query encoder with fixed document embeddings under a runtime constraint."
   },
   {
@@ -92,7 +92,7 @@
     "summary": "Optimize candidate generation and postings pruning for opaque, unweighted sparse retrieval while preserving ranking quality.",
     "tag": "sparse postings · pruning · latency",
     "status": "setting",
-    "featured": true,
+    "featured": false,
     "homepageSummary": "Preserve NDCG and recall while optimizing search time against an unpruned starter."
   }
 ]

@@ -31,8 +31,8 @@
         <nav aria-label="On this page">
           <p>On this page</p>
           <a href="#introduction">Introduction</a>
-          <a href="#contribute">Contribute</a>
           <a href="#tasks">Tasks</a>
+          <a href="#contribute">Contributing</a>
           <a href="#evaluation">Evaluation</a>
         </nav>
       </aside>
@@ -50,10 +50,11 @@
 
         <section id="introduction" class="home-section">
           <h2>Introduction to Search-SWE</h2>
-          <p>Search systems are built from connected decisions about data, query understanding, indexing, retrieval, and ranking. Improving one stage can increase memory, storage, or latency elsewhere, so useful systems require engineering across the complete pipeline rather than isolated code changes.</p>
-          <p class="section-followup">Search-SWE is a benchmark for coding agents that <strong>implement and optimize executable search systems</strong> under fixed data, interface, compute, and network constraints. It measures whether an agent can turn a specification into a working system and navigate quality-efficiency trade-offs on held-out evaluations.</p>
+          <p>Search is a core capability in AI agent applications, from retrieving evidence for research assistants to locating code for software agents and grounding enterprise assistants in internal knowledge. Yet building an effective search system—or improving an existing one—requires substantial engineering expertise: choices in query understanding, indexing, retrieval, and ranking must balance relevance with latency and resource use. As coding agents become part of everyday software development, a natural question arises: <strong>can they also engineer effective search systems?</strong></p>
+          <p class="section-followup">We introduce <strong>Search-SWE</strong>, a benchmark for evaluating coding agents on implementing and optimizing executable search systems. Its design centers on explicit task contracts, reproducible environments with fixed inputs, and task-specific resource budgets. Agents inspect their environment, write and test code, and iterate; a separate verifier evaluates the resulting system on held-out queries, checking functionality, retrieval quality, efficiency, and compliance with task rules. This evaluates working systems rather than code alone, testing whether agents can navigate practical quality–efficiency trade-offs.</p>
           <div id="search-swe">
             <h3>Two engineering modes</h3>
+            <p>Search-SWE captures two common engineering scenarios: building a new search capability from a specification and improving an existing system. Both require executable solutions that meet task-specific interfaces and resource constraints.</p>
             <dl class="mode-definitions">
               <div><dt>Implementation</dt><dd>Build a working search capability from a task specification.</dd></div>
               <div><dt>Optimization</dt><dd>Improve search quality or efficiency within fixed constraints.</dd></div>
@@ -61,27 +62,12 @@
           </div>
         </section>
 
-        <section id="contribute" class="home-section">
-          <div class="home-section-heading">
-            <h2>How to Contribute to Search-SWE</h2>
-            <a href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">Open the repository <span aria-hidden="true">↗</span></a>
-          </div>
-          <p>A task contribution should be a self-contained, reproducible benchmark setting—not only a prompt or dataset. The repository-local <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/.agents/skills/create-searchswe-task/SKILL.md" target="_blank" rel="noreferrer"><code>create-searchswe-task</code> skill</a> provides the authoring workflow, scaffolder, and validation guidance.</p>
-          <ol class="contribution-steps">
-            <li><strong>Define the contract</strong><span>Choose Implementation or Optimization, then specify the objective, inputs, outputs, metric, and resource limits.</span></li>
-            <li><strong>Build the package</strong><span>Add clear instructions, a reproducible environment, fixed and documented inputs, and a meaningful starter for optimization tasks.</span></li>
-            <li><strong>Isolate evaluation</strong><span>Keep hidden data and credentials in a separate fail-closed verifier with bounded execution and deterministic gates where possible.</span></li>
-            <li><strong>Validate and submit</strong><span>Run static, unit, negative-case, container, and end-to-end checks, then include the evidence and any unrun checks in the pull request.</span></li>
-          </ol>
-          <p class="contribution-examples">For concrete package layouts, see <a href="https://github.com/VectorSpaceLab/Search-SWE/tree/main/tasks/task-1-1" target="_blank" rel="noreferrer">Task 1-1</a> as an Implementation example and <a href="https://github.com/VectorSpaceLab/Search-SWE/tree/main/tasks/task-2-1" target="_blank" rel="noreferrer">Task 2-1</a> as an Optimization example.</p>
-        </section>
-
         <section id="tasks" class="home-section">
           <div class="home-section-heading">
             <h2>Tasks</h2>
             <a href="tasks.html">View all tasks <span aria-hidden="true">→</span></a>
           </div>
-          <p>Selected tasks across query understanding, retrieval, ranking, and indexing.</p>
+          <p>Four representative tasks: two Implementation tasks and two Optimization tasks.</p>
           <!-- TASK_CARDS:START -->
           <ul class="home-task-list" aria-label="Selected tasks">
             <li>
@@ -124,32 +110,28 @@
                 <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg><span>Optimization</span></span>
               </a>
             </li>
-            <li>
-              <a class="home-task task-violet" href="tasks/task-2-3/">
-                <span class="home-task-id"><span class="sr-only">Task </span>2-3</span>
-                <span class="home-task-copy">
-                  <span class="home-task-title">Query-side Encoder Alignment</span>
-                  <span class="home-task-summary">Align a compact query encoder with fixed document embeddings under a runtime constraint.</span>
-                </span>
-                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg><span>Optimization</span></span>
-              </a>
-            </li>
-            <li>
-              <a class="home-task task-violet" href="tasks/task-2-5/">
-                <span class="home-task-id"><span class="sr-only">Task </span>2-5</span>
-                <span class="home-task-copy">
-                  <span class="home-task-title">Sparse Retrieval Postings Pruning</span>
-                  <span class="home-task-summary">Preserve NDCG and recall while optimizing search time against an unpruned starter.</span>
-                </span>
-                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg><span>Optimization</span></span>
-              </a>
-            </li>
           </ul>
           <!-- TASK_CARDS:END -->
         </section>
 
+        <section id="contribute" class="home-section">
+          <div class="home-section-heading">
+            <h2>Contributing</h2>
+            <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/contributing.md" target="_blank" rel="noreferrer">Contribution guide <span aria-hidden="true">↗</span></a>
+          </div>
+          <p>We welcome contributions to tasks, tools, shared environments, tests, and documentation. New tasks should be self-contained, reproducible benchmark settings—not only prompts or datasets. Start with the <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/.agents/AGENTS.md" target="_blank" rel="noreferrer">agent workflow</a> and the <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/.agents/skills/create-searchswe-task/SKILL.md" target="_blank" rel="noreferrer"><code>create-searchswe-task</code> skill</a> for authoring and validation.</p>
+          <ol class="contribution-steps">
+            <li><strong>Start one task per PR</strong><span>Use <code>task-submissions/&lt;first-name-slug&gt;/1-x</code> for Implementation or <code>2-x</code> for Optimization. Use your ASCII first name, not your username; resolve active name collisions with suffixes. Maintainers assign final task IDs near merge.</span></li>
+            <li><strong>Build a reproducible package</strong><span>Specify interfaces, metrics, and resource limits; isolate the verifier from the agent. Development assets may use a personal public Hugging Face dataset with documented provenance, redistribution rights, and an immutable commit pin. Never commit secrets or private evaluation assets.</span></li>
+            <li><strong>Validate and document</strong><span>Run submission and release checks, unit tests, container checks, verifier positive and negative cases, and an authorized end-to-end trial. Use <code>--task-path</code> for submission downloads and trials. Report actual results and unrun checks in the PR, and enable maintainer edits where available.</span></li>
+            <li><strong>Finalize in the same PR</strong><span>Maintainers review and promote tasks using the <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/.agents/skills/maintain-searchswe-task/SKILL.md" target="_blank" rel="noreferrer"><code>maintain-searchswe-task</code> skill</a>: assign a final ID, make a pure rename commit, then a separate finalization commit. Official assets must be merged on Hugging Face and pinned before the GitHub merge. Merge commits preserve author history; unfinished submissions never enter main.</span></li>
+          </ol>
+          <p class="contribution-examples">For concrete package layouts, see <a href="https://github.com/VectorSpaceLab/Search-SWE/tree/main/tasks/task-1-1" target="_blank" rel="noreferrer">Task 1-1</a> as an Implementation example and <a href="https://github.com/VectorSpaceLab/Search-SWE/tree/main/tasks/task-2-1" target="_blank" rel="noreferrer">Task 2-1</a> as an Optimization example.</p>
+        </section>
+
         <section id="evaluation" class="home-section">
           <h2>Evaluation</h2>
+          <p>To run an evaluation, follow the repository’s <a href="https://github.com/VectorSpaceLab/Search-SWE#-quick-start" target="_blank" rel="noreferrer">Quick Start <span aria-hidden="true">↗</span></a>: install the host tools, restore task inputs, configure credentials, and launch a task. The walkthrough runs Task 1-1 on CPU with Pi and DeepSeek Flash; Python 3.12+ and Docker are required.</p>
           <p id="construction">Search-SWE uses <a href="https://github.com/harbor-framework/harbor" target="_blank" rel="noreferrer">Harbor</a> to evaluate coding agents through the supported Codex CLI, Pi, and Claude Code launchers in isolated environments. Agents develop solutions using supplied data and public checks. Submissions are then tested on held-out queries, with task-specific correctness, resource, and integrity checks determining whether their search-quality scores are valid.</p>
           <table class="evaluation-table">
             <caption class="sr-only">Search-SWE evaluation criteria and safeguards</caption>
