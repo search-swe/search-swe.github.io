@@ -50,6 +50,11 @@ strong { font-weight: 600; }
 .mode-definitions dd { margin: 0; color: #505864; font-size: 15px; }
 .home-section-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; }
 .home-section-heading a { font-size: 14px; }
+.home-demo { margin-top: 24px; }
+.home-demo-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 8px; }
+.home-section .home-demo-heading h3 { margin: 0; }
+.home-demo-heading a { font-size: 14px; }
+.demo-video { display: block; width: 100%; height: auto; margin-top: 16px; border: 1px solid var(--home-line); border-radius: 12px; background: #f8f9fa; }
 .contribution-steps { margin: 20px 0 0; padding: 0; list-style: none; counter-reset: contribution-step; border-top: 1px solid var(--home-line); }
 .contribution-steps li { display: grid; grid-template-columns: 34px 155px minmax(0, 1fr); gap: 12px; padding: 13px 6px; border-bottom: 1px solid var(--home-line); counter-increment: contribution-step; }
 .contribution-steps li::before { content: counter(contribution-step, decimal-leading-zero); padding-top: 1px; color: var(--home-muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; }
