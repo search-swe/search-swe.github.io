@@ -77,7 +77,7 @@
 <pre><code class="language-text">NDCG@10 &gt;= 0.89
 qrels Recall@100 &gt;= 0.99</code></pre>
 <p>Retrieval quality is a hard gate. For a valid submission that passes both thresholds, define the latency ratio as candidate wall time divided by the verifier-measured corrected-starter wall time. The latency reward is continuous:</p>
-<ul><li>latency ratio at or below <code>0.30</code>: reward <code>1</code>;</li><li>latency ratio strictly between <code>0.30</code> and <code>0.50</code>: reward <code>(0.50 - latency ratio) / 0.20</code>;</li><li>latency ratio at or above <code>0.50</code>: reward <code>0</code>.</li></ul>
+<ul><li>latency ratio at or below <code>0.25</code>: reward <code>1</code>;</li><li>latency ratio strictly between <code>0.25</code> and <code>0.35</code>: reward <code>(0.35 - latency ratio) / 0.10</code>;</li><li>latency ratio at or above <code>0.35</code>: reward <code>0</code>.</li></ul>
 <p>If either quality threshold or any build, run, output, integrity, or trajectory check fails, the final reward is <code>0</code> regardless of latency.</p>
 <p>The verifier measures candidate and starter wall time externally under the same workload and resource allocation. Submission-reported lookup counters and internal timing are diagnostic only; they do not replace verifier wall-time measurement.</p>
 <h2 id="constraints">Constraints</h2>
