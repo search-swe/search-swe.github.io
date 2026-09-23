@@ -123,9 +123,9 @@ Retrieval quality is a hard gate. For a valid submission that passes both
 thresholds, define the latency ratio as candidate wall time divided by the
 verifier-measured corrected-starter wall time. The latency reward is continuous:
 
-* latency ratio at or below `0.30`: reward `1`;
-* latency ratio strictly between `0.30` and `0.50`: reward `(0.50 - latency ratio) / 0.20`;
-* latency ratio at or above `0.50`: reward `0`.
+* latency ratio at or below `0.25`: reward `1`;
+* latency ratio strictly between `0.25` and `0.35`: reward `(0.35 - latency ratio) / 0.10`;
+* latency ratio at or above `0.35`: reward `0`.
 
 If either quality threshold or any build, run, output, integrity, or trajectory
 check fails, the final reward is `0` regardless of latency.
