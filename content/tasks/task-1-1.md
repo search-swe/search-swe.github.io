@@ -22,7 +22,7 @@ Build an executable retrieval system over a 57,359-document biology corpus. The 
 ### Inputs
 
 * `/task/data/corpus.jsonl` — 57,359 biology documents.
-* `/task/data/validation/queries.jsonl` — three public development queries.
+* `/task/data/validation/queries.jsonl` — 10 public development queries.
 * `/task/data/validation/ground_truth.jsonl` — relevance labels for the public queries.
 
 ### Outputs
@@ -33,8 +33,4 @@ The submission must provide executable `build.sh` and `run.sh` entry points unde
 
 ## Evaluation
 
-A hidden query passes if at least one relevant document appears in its top three results.
-
-**All hidden queries must pass for the submission to receive a score of `1`; otherwise the score is `0`.**
-
-Submissions that fail the integrity or jailbreak checks also receive a score of `0`.
+The verifier evaluates 10 hidden queries. A query is a hit when at least one relevant document appears in its top three results. Reward is the fraction of queries hit. Execution or output-validation failure, or a failed trajectory audit, sets the final reward to `0`.

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Locate the physical pages in a target long PDF that best support a natural-language query." />
+  <meta name="description" content="Locate the physical pages in a single long PDF that best support a natural-language query." />
   <meta name="theme-color" content="#ffffff" />
   <title>Long-PDF Evidence Localization — Search-SWE</title>
   <link rel="icon" type="image/png" href="../../assets/logo.png" />
@@ -35,22 +35,23 @@
       <header id="overview" class="task-article-header">
         <div class="task-article-kicker task-blue"><span>TASK 1-4</span><span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/><path d="M17.5 3v7M14 6.5h7"/></svg><span>Implementation</span></span></div>
         <h1>Long-PDF Evidence Localization</h1>
-        <div class="task-summary"><p>Build an executable evidence-localization system over long PDFs. Given a natural-language query and a target PDF, return the physical pages that best contain the relevant evidence.</p></div>
-        <dl class="task-specs"><div><dt>Domain</dt><dd><code>in-document search</code></dd></div><div><dt>Primary focus</dt><dd><code>page-level evidence localization in long PDFs</code></dd></div><div><dt>Primary metric</dt><dd><code>Recall@5</code></dd></div></dl>
+        <div class="task-summary"><p>Build an executable evidence-localization system over a single long PDF. Given a natural-language query, return the physical pages that best contain the relevant evidence.</p></div>
+        <dl class="task-specs"><div><dt>Domain</dt><dd><code>in-document search</code></dd></div><div><dt>Primary focus</dt><dd><code>page-level evidence localization in a long PDF</code></dd></div><div><dt>Primary metric</dt><dd><code>Recall@5</code></dd></div></dl>
         <div class="task-tags" aria-label="Task topics"><span>PDF</span><span>natural-language-search</span><span>long-document</span><span>localization</span><span>page-retrieval</span></div>
       </header>
       <details class="task-mobile-toc"><summary>On this page</summary><nav aria-label="Page contents"><a href="#overview">Overview</a><a href="#runtime-and-requirements">Runtime and requirements</a><a href="#public-input-and-output-contract">Public input and output contract</a><a href="#inputs" class="toc-subsection">Inputs</a><a href="#outputs" class="toc-subsection">Outputs</a><a href="#evaluation">Evaluation</a></nav></details>
       <div class="task-prose"><h2 id="runtime-and-requirements">Runtime and requirements</h2>
-<ul><li><strong>Agent time budget</strong>: up to <code>120 minutes</code></li><li><strong>Python</strong>: <code>3.12</code></li><li><strong>Compute</strong>: <code>16</code> CPU cores, <code>64 GiB</code> memory, <code>100 GiB</code> storage</li><li><strong>GPU required</strong>: <code>no</code></li><li><strong>Network</strong>: <code>restricted</code> — allowlisted OpenRouter and Jina resources only</li><li><strong>Build limit</strong>: <code>2,400 seconds</code></li><li><strong>Hidden-query run limit</strong>: <code>1,800 seconds</code> for the complete query set</li></ul>
+<ul><li><strong>Agent time budget</strong>: up to <code>120 minutes</code></li><li><strong>Python</strong>: <code>3.12</code></li><li><strong>Compute</strong>: <code>16</code> CPU cores, <code>64 GiB</code> memory, <code>100 GiB</code> storage</li><li><strong>GPU required</strong>: <code>no</code></li><li><strong>Network</strong>: <code>restricted</code> — allowlisted OpenRouter and Jina resources only</li><li><strong>Build limit</strong>: <code>2,400 seconds</code></li><li><strong>Per-query limit</strong>: <code>900 seconds</code>, with up to five concurrent invocations</li><li><strong>Hidden-query run limit</strong>: <code>1,800 seconds</code> shared across the complete query set</li></ul>
 <h2 id="public-input-and-output-contract">Public input and output contract</h2>
 <h3 id="inputs">Inputs</h3>
-<ul><li><code>/task/data/corpus</code> — six public development PDFs.</li><li><code>/task/data/validation/queries.jsonl</code> — 30 public development queries.</li><li><code>/task/data/validation/ground_truth.jsonl</code> — public page-level relevance labels.</li></ul>
+<ul><li><code>/task/data/corpus</code> — one 2,043-page PDF of War and Peace.</li><li><code>/task/data/validation/queries.jsonl</code> — 10 public development queries, all referring to the same PDF.</li><li><code>/task/data/validation/golden_answers.jsonl</code> — reference physical pages and supporting excerpts.</li></ul>
 <h3 id="outputs">Outputs</h3>
 <p>The submission must provide executable <code>build.sh</code> and <code>run.sh</code> entry points under <code>/app</code>. For each query, it returns exactly five distinct ranked results. Every result contains a one-based physical PDF <code>page</code>, non-empty <code>evidence</code> text from that page, and a finite numeric <code>score</code>.</p>
 <h2 id="evaluation">Evaluation</h2>
-<p>The verifier rebuilds the system on six different held-out PDFs and evaluates 30 private queries. For each query, <code>Recall@5</code> is the fraction of relevant evidence pages appearing among the five returned pages. The final quality score is the mean across hidden queries:</p>
-<pre><code class="language-text">score = 100 * average(Recall@5)</code></pre>
-<p>Page relevance is scored deterministically; no model judges answer correctness. Invalid execution or output receives zero, and a separate trajectory audit can set the final reward to <code>0</code> for noncompliance.</p></div>
+<p>The verifier rebuilds the system on the same PDF and evaluates 10 hidden queries. For each query, <code>Recall@5</code> is the fraction of all relevant evidence pages retrieved in the top five. Reward is the mean across all 10 queries, with failed or invalid queries contributing zero.</p>
+<pre><code class="language-text">reward = average(Recall@5)
+score = 100 * reward</code></pre>
+<p>Page relevance is scored deterministically; no model judges answer correctness. Shared build/setup failure or a failed trajectory audit sets the final reward to <code>0</code>.</p></div>
       <nav class="task-adjacent" aria-label="Adjacent tasks"><a href="../task-1-3/"><span>Previous task · TASK 1-3</span><strong>Scientific-Paper Question Answering</strong></a><a href="../task-2-1/"><span>Next task · TASK 2-1</span><strong>Constrained Long-document Reranking</strong></a></nav>
       <footer class="home-footer">
   <span>Search-SWE · VectorSpaceLab</span>

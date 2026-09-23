@@ -44,14 +44,12 @@
 <ul><li><strong>Agent time budget</strong>: up to <code>120 minutes</code></li><li><strong>Python</strong>: <code>3.12</code></li><li><strong>Compute</strong>: <code>16</code> CPU cores, <code>32 GiB</code> memory, <code>100 GiB</code> storage</li><li><strong>GPU required</strong>: <code>no</code></li><li><strong>Network</strong>: <code>restricted</code> — allowlisted resources only</li></ul>
 <h2 id="public-input-and-output-contract">Public input and output contract</h2>
 <h3 id="inputs">Inputs</h3>
-<ul><li><code>/task/data/corpus.jsonl</code> — 57,359 biology documents.</li><li><code>/task/data/validation/queries.jsonl</code> — three public development queries.</li><li><code>/task/data/validation/ground_truth.jsonl</code> — relevance labels for the public queries.</li></ul>
+<ul><li><code>/task/data/corpus.jsonl</code> — 57,359 biology documents.</li><li><code>/task/data/validation/queries.jsonl</code> — 10 public development queries.</li><li><code>/task/data/validation/ground_truth.jsonl</code> — relevance labels for the public queries.</li></ul>
 <h3 id="outputs">Outputs</h3>
 <ul><li>JSONL retrieval results — top-3 ranked corpus documents for each input query.</li></ul>
 <p>The submission must provide executable <code>build.sh</code> and <code>run.sh</code> entry points under <code>/app</code>.</p>
 <h2 id="evaluation">Evaluation</h2>
-<p>A hidden query passes if at least one relevant document appears in its top three results.</p>
-<p><strong>All hidden queries must pass for the submission to receive a score of <code>1</code>; otherwise the score is <code>0</code>.</strong></p>
-<p>Submissions that fail the integrity or jailbreak checks also receive a score of <code>0</code>.</p></div>
+<p>The verifier evaluates 10 hidden queries. A query is a hit when at least one relevant document appears in its top three results. Reward is the fraction of queries hit. Execution or output-validation failure, or a failed trajectory audit, sets the final reward to <code>0</code>.</p></div>
       <nav class="task-adjacent" aria-label="Adjacent tasks"><a href="../task-1-2/"><span>Next task · TASK 1-2</span><strong>Memory-constrained Dense Retrieval</strong></a></nav>
       <footer class="home-footer">
   <span>Search-SWE · VectorSpaceLab</span>

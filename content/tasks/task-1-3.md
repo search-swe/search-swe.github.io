@@ -24,18 +24,18 @@ Build an executable retrieval-augmented question answering system over 300 resea
 ### Inputs
 
 * `/task/data/corpus` — 300 research-paper PDFs.
-* `/task/data/validation/queries.jsonl` — 25 public development questions.
+* `/task/data/validation/queries.jsonl` — 10 public development questions.
 * `/task/data/validation/golden_answers.jsonl` — public reference answers and supporting document IDs.
 
 ### Outputs
 
-The submission must provide executable `build.sh` and `run.sh` entry points under `/app`. Each query produces exactly one JSONL object containing its `query_id`, a non-empty `answer`, and one corpus document ID in `evidence`.
+The submission must provide executable `build.sh` and `run.sh` entry points under `/app`. Each query produces exactly one JSONL object containing its `query_id`, a non-empty `answer`, and one corpus document ID in `evidence` (the PDF filename without `.pdf`).
 
 The index and any shared service must support up to five concurrent hidden-query invocations.
 
 ## Evaluation
 
-The hidden split contains 25 held-out questions over the same PDF corpus. A question scores `1` only when the submitted evidence document matches the reference and an independent answer judge accepts the answer as semantically equivalent to the reference answer. `LLMJudgeAccuracy` is the mean of these binary outcomes:
+The hidden split contains 10 held-out questions over the same PDF corpus. A question scores `1` only when the submitted evidence document matches the reference and an independent answer judge accepts the answer as semantically equivalent to the reference answer. `LLMJudgeAccuracy` is the mean of these binary outcomes:
 
 ```text
 reward = mean(LLMJudgeAccuracy)

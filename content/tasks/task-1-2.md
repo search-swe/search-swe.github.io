@@ -16,8 +16,8 @@ Build an executable dense-vector search engine over 1.5 million precomputed Natu
 * **Compute**: `16` CPU cores, `2 GiB` memory, `100 GiB` storage
 * **GPU required**: `no`
 * **Network**: `no`
-* **Build limit**: `120 seconds`
-* **Per-query limit**: `0.5 seconds`
+* **Build limit**: `120 seconds`, including index construction and service startup
+* **Per-query limit**: `0.5 seconds` per invocation, measured from process start to exit
 
 ## Public input and output contract
 
@@ -26,7 +26,7 @@ Build an executable dense-vector search engine over 1.5 million precomputed Natu
 * `/task/data/vectors.f32` — 1,500,000 normalized float32 vectors with dimension 1,024.
 * `/task/data/metadata.jsonl` — document metadata aligned with the vector rows.
 * `/task/data/vector_config.json` — vector collection configuration.
-* `/task/data/validation/` — five public development queries and relevance labels.
+* `/task/data/validation/` — 20 public development queries and relevance labels.
 
 ### Outputs
 
@@ -34,6 +34,6 @@ The submission must provide executable `build.sh` and `run.sh` entry points unde
 
 ## Evaluation
 
-The verifier evaluates five hidden quality queries and a separate hidden performance workload. A quality query passes when a relevant document appears in the top three results. **All five quality queries must pass, while the build, latency, memory, index-size, and output checks must also succeed, to receive a score of `1`; otherwise the score is `0`.**
+The verifier evaluates 20 hidden queries. A query scores `1` only if its invocation succeeds within `0.5 seconds`, its output is valid, and a relevant document appears in the top three results; otherwise it scores `0`. Reward is the mean of these per-query scores. Build or overall evaluation failure, or a failed trajectory audit, sets the final reward to `0`.
 
 The implementation may use exact or approximate search, quantization, memory mapping, block-wise computation, or other indexing strategies, but must use the supplied vectors and operate without external retrieval resources.

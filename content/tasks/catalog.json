@@ -36,7 +36,7 @@
     "mode": "implementation",
     "title": "Long-PDF Evidence Localization",
     "navTitle": "Long-PDF Evidence Localization",
-    "summary": "Locate the physical pages in a target long PDF that best support a natural-language query.",
+    "summary": "Locate the physical pages in a single long PDF that best support a natural-language query.",
     "tag": "in-document search",
     "status": "setting",
     "featured": false
