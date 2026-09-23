@@ -15,7 +15,7 @@ Optimize a query-side retrieval system built from the compact `Qwen3-Embedding-0
 * **Python**: `3.12`
 * **Compute**: `8` CPU cores, `32 GiB` memory, `100 GiB` storage
 * **GPU required**: `yes`
-* **Network**: available during development; the final submission must run offline
+* **Network**: `restricted` — allowlisted OpenRouter and Jina resources only
 
 ## Public input and output contract
 
