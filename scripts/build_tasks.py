@@ -158,7 +158,7 @@ def header(prefix: str) -> str:
     </a>
     <nav class="home-nav" aria-label="Main navigation">
       <a href="{prefix or './'}">Overview</a>
-      <a href="{prefix}tasks.html" aria-current="{('page' if not prefix else 'true')}">Tasks</a>
+      <a href="{prefix}tasks/" aria-current="{('page' if not prefix else 'true')}">Tasks</a>
       <a href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
     </nav>
   </div>
@@ -218,7 +218,7 @@ def home_card(task: dict) -> str:
 
 def catalog_card(task: dict) -> str:
     return f"""<li id="{task['id']}">
-  <a class="catalog-task task-{MODE_VISUALS[task['mode']]['color']}" href="tasks/{task['id']}/">
+  <a class="catalog-task task-{MODE_VISUALS[task['mode']]['color']}" href="{task['id']}/">
     <span class="home-task-id"><span class="sr-only">Task </span>{task['id'].removeprefix('task-')}</span>
     <span class="catalog-task-icon" aria-hidden="true">{mode_icon(task)}</span>
     <span class="home-task-copy">
@@ -240,7 +240,7 @@ def catalog_page(tasks: list[dict]) -> str:
   <div class="home-section-heading"><h2 id="{key}-title">{title}</h2><span class="catalog-count">{count}</span></div>
   <ul class="home-task-list">{cards}</ul>
 </section>""")
-    return document("Task catalog", "Browse Search-SWE task settings for implementation and optimization.", "", f"""
+    return document("Task catalog", "Browse Search-SWE task settings for implementation and optimization.", "../", f"""
 <div class="home-layout">
   <aside class="home-sidebar"><nav aria-label="Task categories"><p>Task categories</p>{''.join(links)}</nav></aside>
   <main id="main-content" class="home-document">
@@ -293,9 +293,9 @@ def detail_page(task: dict, tasks: list[dict], setting: dict) -> str:
             adjacent.append(f'<a href="../{neighbor["id"]}/"><span>{label} · {task_label(neighbor)}</span><strong>{esc(neighbor["title"])}</strong></a>')
     return document(setting["title"], task["summary"], "../../", f"""
 <main id="main-content" class="task-reader">
-  <nav class="task-breadcrumbs" aria-label="Breadcrumb"><a href="../../">Home</a><span aria-hidden="true">/</span><a href="../../tasks.html">Tasks</a><span aria-hidden="true">/</span><span aria-current="page">{task_label(task)}</span></nav>
+  <nav class="task-breadcrumbs" aria-label="Breadcrumb"><a href="../../">Home</a><span aria-hidden="true">/</span><a href="../../tasks/">Tasks</a><span aria-hidden="true">/</span><span aria-current="page">{task_label(task)}</span></nav>
   <div class="task-reader-layout">
-    <aside class="task-directory"><a class="all-tasks-link" href="../../tasks.html">← All tasks</a>{directory(tasks, task)}</aside>
+    <aside class="task-directory"><a class="all-tasks-link" href="../../tasks/">← All tasks</a>{directory(tasks, task)}</aside>
     <article class="task-article">
       <header id="overview" class="task-article-header">
         <div class="task-article-kicker task-{MODE_VISUALS[task['mode']]['color']}"><span>{task_label(task)}</span><span class="home-task-mode">{mode_icon(task)}<span>{MODES[task['mode']]}</span></span></div>
@@ -324,7 +324,7 @@ def generate() -> dict[Path, str]:
             raise ValueError("Invalid task ID")
         if task["mode"] not in MODES or task["status"] not in STATUSES:
             raise ValueError("Unknown task mode or status")
-    outputs = {ROOT / "tasks.html": catalog_page(tasks)}
+    outputs = {ROOT / "tasks" / "index.html": catalog_page(tasks)}
     for task in tasks:
         outputs[ROOT / "tasks" / task["id"] / "index.html"] = detail_page(task, tasks, read_setting(task))
     homepage = (ROOT / "index.html").read_text(encoding="utf-8")
@@ -345,7 +345,7 @@ def main() -> int:
     changed = []
     outputs = generate()
     if args.catalog_only:
-        outputs = {path: content for path, content in outputs.items() if path in (ROOT / "tasks.html", ROOT / "index.html")}
+        outputs = {path: content for path, content in outputs.items() if path in (ROOT / "tasks" / "index.html", ROOT / "index.html")}
     for path, content in outputs.items():
         existing = path.read_text(encoding="utf-8") if path.exists() else None
         if existing == content:

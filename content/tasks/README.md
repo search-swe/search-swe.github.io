@@ -43,4 +43,4 @@ The supported Markdown constructs are level-two/three headings, paragraphs, flat
 python -m http.server 8765 --bind 127.0.0.1
 ~~~
 
-Open the local server root or `tasks.html`. Site links and assets use relative paths so the site also works below a project subdirectory.
+Open the local server root or `tasks/`. Site links and assets use relative paths so the site also works below a project subdirectory.
