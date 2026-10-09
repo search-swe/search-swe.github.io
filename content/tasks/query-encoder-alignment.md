@@ -2,8 +2,7 @@
 
 Optimize a query-side retrieval system built from the compact `Qwen3-Embedding-0.6B` backbone. The document vectors are fixed in advance, so the task focuses on improving query representations without changing, re-encoding, or reordering the document collection.
 
-* **Task ID**: `search-swe/task-2-3`
-* **Task type**: `optimize`
+* **Task name**: `search-swe/query-encoder-alignment`
 * **Domain**: `information retrieval`
 * **Primary focus**: `query encoder optimization`
 * **Primary metric**: `Accuracy@1 after the runtime gate`

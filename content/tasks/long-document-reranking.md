@@ -1,9 +1,8 @@
-# Constrained Long-document Reranking
+# Long-document Reranking
 
 Improve a fixed reranking pipeline for NarrativeQA-style long documents. Each query comes with a frozen BM25 Top-100 candidate pool, and the task focuses on reranking those candidates when relevant evidence may occur beyond the first 512 model tokens.
 
-* **Task ID**: `search-swe/task-2-1`
-* **Task type**: `optimize`
+* **Task name**: `search-swe/long-document-reranking`
 * **Domain**: `information retrieval`
 * **Primary focus**: `long-document reranking`
 * **Primary metric**: `Accuracy@5`

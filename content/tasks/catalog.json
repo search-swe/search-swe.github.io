@@ -1,98 +1,89 @@
 [
   {
-    "id": "task-1-1",
-    "mode": "implementation",
     "title": "Reasoning-intensive Query Rewriting",
     "navTitle": "Reasoning-intensive Query Rewriting",
     "summary": "Build retrieval over a biology corpus by rewriting natural-language queries into precise search intent.",
     "tag": "query understanding",
     "status": "setting",
     "featured": true,
-    "homepageSummary": "Rewrite complex biology queries to bridge the gap between query intent and relevant documents."
+    "homepageSummary": "Rewrite complex biology queries to bridge the gap between query intent and relevant documents.",
+    "name": "reasoning-query-rewriting"
   },
   {
-    "id": "task-1-2",
-    "mode": "implementation",
     "title": "Memory-constrained Dense Retrieval",
     "navTitle": "Memory-constrained Dense Retrieval",
     "summary": "Search 1.5M document vectors while balancing retrieval quality, memory, index size, and latency.",
     "tag": "large-scale dense search",
     "status": "setting",
     "featured": true,
-    "homepageSummary": "Search 1.5M dense vectors within 2 GiB of memory while meeting accuracy and latency requirements."
+    "homepageSummary": "Search 1.5M dense vectors within 2 GiB of memory while meeting accuracy and latency requirements.",
+    "name": "memory-constrained-dense-retrieval"
   },
   {
-    "id": "task-1-3",
-    "mode": "implementation",
     "title": "Scientific-Paper Question Answering",
     "navTitle": "Scientific-Paper Question Answering",
     "summary": "Answer scientific questions over 300 research-paper PDFs and identify the supporting paper.",
     "tag": "scientific RAG",
     "status": "setting",
-    "featured": false
+    "featured": false,
+    "name": "scientific-paper-qa"
   },
   {
-    "id": "task-1-4",
-    "mode": "implementation",
     "title": "Long-PDF Evidence Localization",
     "navTitle": "Long-PDF Evidence Localization",
     "summary": "Locate the physical pages in a single long PDF that best support a natural-language query.",
     "tag": "in-document search",
     "status": "setting",
-    "featured": false
+    "featured": false,
+    "name": "long-pdf-evidence"
   },
   {
-    "id": "task-2-1",
-    "mode": "optimization",
-    "title": "Constrained Long-document Reranking",
-    "navTitle": "Constrained Long-document Reranking",
+    "title": "Long-document Reranking",
+    "navTitle": "Long-document Reranking",
     "summary": "Improve a fixed reranker when relevant evidence lies beyond the first token window of a document.",
     "tag": "reranking",
     "status": "setting",
     "featured": true,
-    "homepageSummary": "Improve long-document reranking through window selection and score aggregation, with a fixed model and candidate set."
+    "homepageSummary": "Improve long-document reranking through window selection and score aggregation, with a fixed model and candidate set.",
+    "name": "long-document-reranking"
   },
   {
-    "id": "task-2-2",
-    "mode": "optimization",
-    "title": "Domain-specific Embedder Fine-tuning",
-    "navTitle": "Domain-specific Embedder Fine-tuning",
+    "title": "Code Embedding Fine-tuning",
+    "navTitle": "Code Embedding Fine-tuning",
     "summary": "Improve a fixed-backbone code-retrieval embedder using the supplied training data and constraints.",
     "tag": "representation learning",
     "status": "setting",
     "featured": true,
-    "homepageSummary": "Fine-tune a pretrained embedder for code retrieval while preserving its backbone architecture."
+    "homepageSummary": "Fine-tune a pretrained embedder for code retrieval while preserving its backbone architecture.",
+    "name": "code-embedding-finetuning"
   },
   {
-    "id": "task-2-3",
-    "mode": "optimization",
     "title": "Query-side Encoder Alignment",
     "navTitle": "Query-side Encoder Alignment",
     "summary": "Improve query representations with a compact encoder while document vectors stay fixed and a runtime gate applies.",
     "tag": "query encoder optimization",
     "status": "setting",
     "featured": false,
-    "homepageSummary": "Align a compact query encoder with fixed document embeddings under a runtime constraint."
+    "homepageSummary": "Align a compact query encoder with fixed document embeddings under a runtime constraint.",
+    "name": "query-encoder-alignment"
   },
   {
-    "id": "task-2-4",
-    "mode": "optimization",
-    "title": "Agentic Search Optimization",
-    "navTitle": "Agentic Search Optimization",
+    "title": "Agentic Search",
+    "navTitle": "Agentic Search",
     "summary": "Optimize a ReAct retrieval starter to return five documents for multi-constraint BrowseComp-Plus queries.",
     "tag": "agentic search",
     "status": "setting",
-    "featured": false
+    "featured": false,
+    "name": "agentic-search"
   },
   {
-    "id": "task-2-5",
-    "mode": "optimization",
-    "title": "Sparse Retrieval Postings Pruning",
-    "navTitle": "Sparse retrieval postings pruning",
+    "title": "Sparse Retrieval Pruning",
+    "navTitle": "Sparse Retrieval Pruning",
     "summary": "Optimize candidate generation and postings pruning for opaque, unweighted sparse retrieval while preserving ranking quality.",
     "tag": "sparse postings · pruning · latency",
     "status": "setting",
     "featured": false,
-    "homepageSummary": "Preserve NDCG and recall while optimizing search time against an unpruned starter."
+    "homepageSummary": "Preserve NDCG and recall while optimizing search time against an unpruned starter.",
+    "name": "sparse-retrieval-pruning"
   }
 ]

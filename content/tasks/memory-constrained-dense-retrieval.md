@@ -2,8 +2,7 @@
 
 Build an executable dense-vector search engine over 1.5 million precomputed NaturalQuestions document vectors. The task tests how an agent balances retrieval quality, memory usage, index size, and query latency when the raw vector collection is substantially larger than available memory.
 
-* **Task ID**: `search-swe/task-1-2`
-* **Task type**: `create`
+* **Task name**: `search-swe/memory-constrained-dense-retrieval`
 * **Domain**: `information retrieval`
 * **Primary focus**: `memory-constrained vector search`
 * **Primary metric**: `Accuracy@3`

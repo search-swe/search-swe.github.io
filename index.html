@@ -51,21 +51,13 @@
         <section id="introduction" class="home-section">
           <h2>Introduction</h2>
           <p>Search is a core capability in AI agent applications, from retrieving evidence for research assistants to locating code for software agents and grounding enterprise assistants in internal knowledge. Yet building an effective search system—or improving an existing one—requires substantial engineering expertise: choices in query understanding, indexing, retrieval, and ranking must balance relevance with latency and resource use. As coding agents become part of everyday software development, a natural question arises: <strong>can they also engineer effective search systems?</strong></p>
-          <p class="section-followup">We introduce <strong>Search-SWE</strong>, a benchmark for evaluating coding agents on implementing and optimizing executable search systems. Its design centers on explicit task contracts, reproducible environments with fixed inputs, and task-specific resource budgets. Agents inspect their environment, write and test code, and iterate; a separate verifier evaluates the resulting system on held-out queries, checking functionality, retrieval quality, efficiency, and compliance with task rules. This evaluates working systems rather than code alone, testing whether agents can navigate practical quality–efficiency trade-offs.</p>
-          <div id="search-swe">
-            <h3>Two engineering modes</h3>
-            <p>Search-SWE captures two common engineering scenarios: building a new search capability from a specification and improving an existing system. Both require executable solutions that meet task-specific interfaces and resource constraints.</p>
-            <dl class="mode-definitions">
-              <div><dt>Implementation</dt><dd>Build a working search capability from a task specification.</dd></div>
-              <div><dt>Optimization</dt><dd>Improve search quality or efficiency within fixed constraints.</dd></div>
-            </dl>
-          </div>
+          <p id="search-swe" class="section-followup">We introduce <strong>Search-SWE</strong>, a benchmark for evaluating coding agents on implementing and optimizing executable search systems. Its design centers on explicit task contracts, reproducible environments with fixed inputs, and task-specific resource budgets. Agents inspect their environment, write and test code, and iterate; a separate verifier evaluates the resulting system on held-out queries, checking functionality, retrieval quality, efficiency, and compliance with task rules. The benchmark measures working systems and the practical quality–efficiency trade-offs made during development.</p>
           <div class="home-demo">
             <div class="home-demo-heading">
               <h3>Search-SWE in Action</h3>
               <a href="assets/demo/" target="_blank" rel="noreferrer">Open interactive demo <span aria-hidden="true">↗</span></a>
             </div>
-            <p id="demo-description">This demo follows <a href="tasks/task-2-1/">Task 2-1</a>, a long-document reranking Optimization task, end to end—showing how a coding agent interprets the specification, experiments with solutions, and submits a working system for isolated verification and held-out evaluation.</p>
+            <p id="demo-description">This demo follows <a href="tasks/long-document-reranking/">long-document reranking</a> end to end—showing how a coding agent interprets the specification, experiments with solutions, and submits a working system for isolated verification and held-out evaluation.</p>
             <video class="demo-video" controls playsinline preload="metadata" poster="assets/demo-poster.jpg" width="1920" height="1080" aria-describedby="demo-description">
               <source src="assets/demo.mp4" type="video/mp4" />
               Your browser does not support embedded video. <a href="assets/demo.mp4">Download the demo video</a> instead.
@@ -78,47 +70,47 @@
             <h2>Tasks</h2>
             <a href="tasks/">View all tasks <span aria-hidden="true">→</span></a>
           </div>
-          <p>Four representative tasks: two Implementation tasks and two Optimization tasks.</p>
+          <p>Explore tasks spanning query understanding, retrieval, ranking, and representation learning.</p>
           <!-- TASK_CARDS:START -->
           <ul class="home-task-list" aria-label="Selected tasks">
             <li>
-              <a class="home-task task-blue" href="tasks/task-1-1/">
-                <span class="home-task-id"><span class="sr-only">Task </span>1-1</span>
+              <a class="home-task" href="tasks/reasoning-query-rewriting/">
+                <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
                 <span class="home-task-copy">
                   <span class="home-task-title">Reasoning-intensive Query Rewriting</span>
                   <span class="home-task-summary">Rewrite complex biology queries to bridge the gap between query intent and relevant documents.</span>
                 </span>
-                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/><path d="M17.5 3v7M14 6.5h7"/></svg><span>Implementation</span></span>
+                <span class="home-task-arrow" aria-hidden="true">→</span>
               </a>
             </li>
             <li>
-              <a class="home-task task-blue" href="tasks/task-1-2/">
-                <span class="home-task-id"><span class="sr-only">Task </span>1-2</span>
+              <a class="home-task" href="tasks/memory-constrained-dense-retrieval/">
+                <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
                 <span class="home-task-copy">
                   <span class="home-task-title">Memory-constrained Dense Retrieval</span>
                   <span class="home-task-summary">Search 1.5M dense vectors within 2 GiB of memory while meeting accuracy and latency requirements.</span>
                 </span>
-                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/><path d="M17.5 3v7M14 6.5h7"/></svg><span>Implementation</span></span>
+                <span class="home-task-arrow" aria-hidden="true">→</span>
               </a>
             </li>
             <li>
-              <a class="home-task task-violet" href="tasks/task-2-1/">
-                <span class="home-task-id"><span class="sr-only">Task </span>2-1</span>
+              <a class="home-task" href="tasks/long-document-reranking/">
+                <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
                 <span class="home-task-copy">
-                  <span class="home-task-title">Constrained Long-document Reranking</span>
+                  <span class="home-task-title">Long-document Reranking</span>
                   <span class="home-task-summary">Improve long-document reranking through window selection and score aggregation, with a fixed model and candidate set.</span>
                 </span>
-                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg><span>Optimization</span></span>
+                <span class="home-task-arrow" aria-hidden="true">→</span>
               </a>
             </li>
             <li>
-              <a class="home-task task-violet" href="tasks/task-2-2/">
-                <span class="home-task-id"><span class="sr-only">Task </span>2-2</span>
+              <a class="home-task" href="tasks/code-embedding-finetuning/">
+                <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
                 <span class="home-task-copy">
-                  <span class="home-task-title">Domain-specific Embedder Fine-tuning</span>
+                  <span class="home-task-title">Code Embedding Fine-tuning</span>
                   <span class="home-task-summary">Fine-tune a pretrained embedder for code retrieval while preserving its backbone architecture.</span>
                 </span>
-                <span class="home-task-mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18M6 15l5-5 4 3 6-8M16 5h5v5"/></svg><span>Optimization</span></span>
+                <span class="home-task-arrow" aria-hidden="true">→</span>
               </a>
             </li>
           </ul>
@@ -130,19 +122,19 @@
             <h2>Contributing</h2>
             <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/contributing.md" target="_blank" rel="noreferrer">Contribution guide <span aria-hidden="true">↗</span></a>
           </div>
-          <p>We welcome contributions to tasks, tools, shared environments, tests, and documentation. New tasks should be self-contained, reproducible benchmark settings—not only prompts or datasets. Start with the <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/.agents/AGENTS.md" target="_blank" rel="noreferrer">agent workflow</a> and the <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/.agents/skills/create-searchswe-task/SKILL.md" target="_blank" rel="noreferrer"><code>create-searchswe-task</code> skill</a> for authoring and validation.</p>
+          <p>We welcome contributions to tasks, tools, shared environments, tests, and documentation. New tasks should include clear instructions, reproducible environments, fixed inputs and a separate verifier. Start with the <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/.agents/AGENTS.md" target="_blank" rel="noreferrer">agent workflow</a> and the <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/.agents/skills/create-searchswe-task/SKILL.md" target="_blank" rel="noreferrer"><code>create-searchswe-task</code> skill</a> for authoring and validation.</p>
           <ol class="contribution-steps">
-            <li><strong>Use one contributor namespace per PR</strong><span>A PR may include multiple tasks under <code>task-submissions/&lt;first-name-slug&gt;/&lt;1|2&gt;-x-&lt;positive-ordinal&gt;</code>, with category 1 for Implementation and 2 for Optimization. Use your ASCII first name, not your username, and reuse the same contributor directory for all tasks. A suffix such as <code>alice-2</code> distinguishes another contributor with the same first name—not another task. Ordinals must be unique within each category in the PR/checkout and cannot be reused in the same PR after promotion; they are not final task IDs.</span></li>
+            <li><strong>Choose a descriptive task name</strong><span>Start at <code>task-submissions/&lt;task-name&gt;</code>. Use at most five lowercase hyphen-separated words, beginning with a letter. The <code>task-</code> prefix and <code>all</code> are reserved. Check formal tasks, submissions, and active PRs for collisions. A PR may add multiple uniquely named tasks. Record actual authors in each package and never reuse a submission path in that PR.</span></li>
             <li><strong>Build a reproducible package</strong><span>Specify interfaces, metrics, and resource limits; isolate the verifier from the agent. Development assets may use a personal public Hugging Face dataset with documented provenance, redistribution rights, and an immutable commit pin. Never commit secrets or private evaluation assets.</span></li>
-            <li><strong>Validate and document</strong><span>Run submission and release checks, unit tests, container checks, verifier positive and negative cases, and an authorized end-to-end trial. Use <code>--task-path</code> for submission downloads and trials. Report actual results and unrun checks in the PR, and enable maintainer edits where available.</span></li>
-            <li><strong>Finalize every task in the same PR</strong><span>Maintainers review and promote tasks using the <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/.agents/skills/maintain-searchswe-task/SKILL.md" target="_blank" rel="noreferrer"><code>maintain-searchswe-task</code> skill</a>. For each task independently, assign a final ID, make a pure rename commit, migrate its assets to official Hugging Face storage, and pin the merged official SHA in a separate finalization commit. All tasks must complete promotion, asset publication, and validation before the GitHub PR can merge. Use a merge commit, not squash or rebase, to preserve author history; unfinished submissions never enter main.</span></li>
+            <li><strong>Test with a coding model and refine</strong><span>Run package checks, unit tests, container checks and verifier positive and negative cases, then an authorized coding-model trial. Use <code>--task-path</code> for submission downloads and trials. Inspect trajectories, scores and judge health; use the findings to refine the task setting and revalidate substantive changes. The authoring agent prompts contributors to configure any missing API keys locally. Report findings, changes, the final tested revision and unrun checks in the PR, and enable maintainer edits where available.</span></li>
+            <li><strong>Finalize every task in the same PR</strong><span>Maintainers review and promote tasks using the <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/.agents/skills/maintain-searchswe-task/SKILL.md" target="_blank" rel="noreferrer"><code>maintain-searchswe-task</code> skill</a>. For each task independently, preserve its name when moving to <code>tasks/&lt;task-name&gt;</code> in a pure rename commit, publish new assets under the same task name in official Hugging Face storage, and pin the merged official SHA. Commit any finalization changes separately in the same PR. All tasks must complete promotion, asset publication, and validation before the GitHub PR can merge. Use a merge commit, not squash or rebase, to preserve author history; unfinished submissions never enter main.</span></li>
           </ol>
-          <p class="contribution-examples">Before scaffolding, inspect one or two closest <a href="https://github.com/VectorSpaceLab/Search-SWE/tree/main/tasks" target="_blank" rel="noreferrer">formal tasks</a>, chosen by mode, grader, resources/APIs, hardware, and input/artifact layout—not task number. Record their paths and relevance, and use them only as structural references: current guides, schemas, and validators take priority. Independently establish task-specific data, thresholds, licenses, Hugging Face pins, IDs, authors, and access policies rather than copying them. If no close reference exists, say so.</p>
+          <p class="contribution-examples">Before scaffolding, inspect one or two closest <a href="https://github.com/VectorSpaceLab/Search-SWE/tree/main/tasks" target="_blank" rel="noreferrer">formal tasks</a>, chosen by objective, grader, resources/APIs, hardware, and input/artifact layout. Record their paths and relevance, and use them only as structural references: current guides, schemas, and validators take priority. Independently establish task-specific data, thresholds, licenses, Hugging Face pins, names, authors, and access policies rather than copying them. If no close reference exists, say so.</p>
         </section>
 
         <section id="evaluation" class="home-section">
           <h2>Evaluation</h2>
-          <p>To run an evaluation, follow the repository’s <a href="https://github.com/VectorSpaceLab/Search-SWE#-quick-start" target="_blank" rel="noreferrer">Quick Start <span aria-hidden="true">↗</span></a>: install the host tools, restore task inputs, configure credentials, and launch a task. The walkthrough runs Task 1-1 on CPU with Pi and DeepSeek Flash; Python 3.12+ and Docker are required.</p>
+          <p>To run an evaluation, follow the repository’s <a href="https://github.com/VectorSpaceLab/Search-SWE#-quick-start" target="_blank" rel="noreferrer">Quick Start <span aria-hidden="true">↗</span></a>: install the host tools, restore task inputs, configure credentials, and launch a task. The walkthrough runs <code>reasoning-query-rewriting</code> on CPU with Pi and DeepSeek Flash; Python 3.12+ and Docker are required.</p>
           <p id="construction">Search-SWE uses <a href="https://github.com/harbor-framework/harbor" target="_blank" rel="noreferrer">Harbor</a> to evaluate coding agents through the supported Codex CLI, Pi, and Claude Code launchers in isolated environments. Agents develop solutions using supplied data and public checks. Submissions are then tested on held-out queries, with task-specific correctness, resource, and integrity checks determining whether their search-quality scores are valid.</p>
           <table class="evaluation-table">
             <caption class="sr-only">Search-SWE evaluation criteria and safeguards</caption>

@@ -1,11 +1,10 @@
-# Sparse Retrieval Postings Pruning
+# Sparse Retrieval Pruning
 
 Optimize a Python-only sparse retrieval system over one million documents with
 opaque, unweighted term IDs. Preserve retrieval quality while reducing query
-latency against the corrected, unpruned starter.
+latency against the unpruned reference starter.
 
-* **Task ID**: `search-swe/task-2-5`
-* **Task type**: `optimize`
+* **Task name**: `search-swe/sparse-retrieval-pruning`
 * **Domain**: `learned sparse retrieval`
 * **Primary focus**: `sparse retrieval and postings pruning`
 * **Primary metric**: `Quality-gated linear latency reward`
@@ -62,7 +61,7 @@ qrels Recall@100 >= 0.99
 ~~~
 
 For a valid submission, let the latency ratio be candidate wall time divided by
-the corrected-starter wall time measured by the verifier:
+the reference wall time measured by the verifier:
 
 * ratio at or below `0.25`: reward `1`;
 * ratio between `0.25` and `0.35`: reward `(0.35 - ratio) / 0.10`;

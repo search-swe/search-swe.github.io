@@ -1,9 +1,8 @@
-# Domain-specific Embedder Fine-tuning
+# Code Embedding Fine-tuning
 
 Improve a code-retrieval embedding model using supplied training data. The task starts from the fixed `BAAI/bge-base-en-v1.5` backbone and evaluates whether the submitted checkpoint can place the relevant code document at rank one on unseen queries.
 
-* **Task ID**: `search-swe/task-2-2`
-* **Task type**: `optimize`
+* **Task name**: `search-swe/code-embedding-finetuning`
 * **Domain**: `code retrieval`
 * **Primary focus**: `embedding fine-tuning`
 * **Primary metric**: `held-out Accuracy@1 improvement`

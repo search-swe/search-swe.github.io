@@ -1,9 +1,8 @@
-# Agentic Search Optimization
+# Agentic Search
 
 Optimize a supplied ReAct retrieval starter over the BrowseComp-Plus corpus. Given a multi-constraint question, return exactly five distinct documents that best address its combined information need.
 
-* **Task ID**: `search-swe/task-2-4`
-* **Task type**: `optimize`
+* **Task name**: `search-swe/agentic-search`
 * **Domain**: `multi-constraint search`
 * **Primary focus**: `agentic retrieval and document coverage`
 * **Primary metric**: `Gold Recall@5`

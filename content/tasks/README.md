@@ -1,41 +1,66 @@
 # Task content
 
-The website is static. Each task has a standalone page under `tasks/task-N-N/index.html`. GitHub Pages or any local static server can serve these pages without a runtime build or Markdown service.
+Each task has a static page at `tasks/<task-name>/index.html`, generated from
+`content/tasks/<task-name>.md` and `catalog.json`. Serve the generated site as
+static files. Task names match the benchmark repository and its
+Hugging Face dataset paths.
 
-## Edit a task
+## Add or edit a task
 
-- Edit its Markdown setting in this directory.
-- Edit `catalog.json` for the card title, summary, category, status, and homepage selection.
-- Keep `featured: true` on the six tasks shown on the homepage.
-- Use `homepageSummary` for a shorter description in the homepage and catalog task lists; otherwise they use `summary`. Detail-page prose comes from the Markdown setting.
-- Icons and colors are assigned by engineering mode in `MODE_VISUALS` in `scripts/build_tasks.py`: implementation uses blue modules and optimization a violet growth chart. Tasks of the same mode share a visual identity across the homepage and catalog.
-- Use `setting` for an available setting, `draft` for provisional specifications, and `planned` for a scope-only placeholder. These statuses are editorial metadata and are not displayed on the site.
+1. Choose the same descriptive name as the benchmark package: at most five
+   lowercase hyphen-separated words, starting with a letter. The `task-` prefix
+   and `all` are reserved. Names must be unique.
+2. Add a Markdown setting with a level-one title matching the catalog title and
+   `* **Task name**: ` followed by the canonical name in inline code, for example
+   `search-swe/reasoning-query-rewriting`. Copy the structure of an existing
+   setting and verify every fact against the task README, instruction and TOML.
+3. Add a catalog entry with `name`, `title`, `summary`, `tag`, and `status`.
+   Optional `navTitle` shortens navigation text; `homepageSummary` shortens the
+   homepage card; `featured: true` includes the task on the homepage. Catalog
+   order controls the directory, cards and previous/next navigation. The generator
+   discovers tasks and featured cards from the catalog.
+4. Run the full generator and checks below. Review and commit sources and
+   generated HTML together.
 
-All nine catalog entries describe available task settings. Keep their facts synchronized with the benchmark repository's task READMEs, instructions, and `task.toml` files.
+Cards share one visual style, with topic tags describing each task's focus.
+Status is editorial metadata: use `setting` for available settings,
+`draft` for provisional specifications, and
+`planned` for scope-only placeholders; it is not displayed.
 
-## Generate pages
+## Generate and check pages
 
 From the repository root:
 
 ~~~sh
 python scripts/build_tasks.py
 python scripts/build_tasks.py --check
+python -m unittest discover -s scripts -p 'test_*.py'
 ~~~
 
-Only the Python standard library is required. The generator reads paths relative to its own repository location. It writes the task catalog, standalone detail pages, and the homepage task list between the `TASK_CARDS` markers. It preserves the rest of the homepage. All pages share document typography and navigation styles from `home-sections.css`; `task-pages.css` adds the grouped catalog and detail-reader layouts.
+Only the Python standard library is required. The generator resolves paths
+relative to its repository location. It writes the catalog, all task pages,
+and homepage cards between the `TASK_CARDS` markers, preserving the rest of the
+homepage. Shared styles live in `home-sections.css` and `task-pages.css`.
 
-For catalog titles, summaries, or catalog layout changes, update only the catalog and homepage cards:
+To remove a task, remove its catalog entry and Markdown, then run the full
+generator. It removes obsolete detail pages carrying its generated-file marker;
+`--check` reports them as stale. Unmarked pages and unrelated assets are left
+alone. Renaming follows the same remove/add process.
+
+For changes only to catalog summaries or homepage selection:
 
 ~~~sh
 python scripts/build_tasks.py --catalog-only
 python scripts/build_tasks.py --catalog-only --check
 ~~~
 
-This leaves task detail pages unchanged. Edit the Markdown source before regenerating detail pages; generated HTML is not the source of truth.
+This leaves detail pages unchanged and performs no stale-page cleanup. Use a
+full build for names, ordering, titles, settings or task membership changes.
+Edit the catalog and Markdown sources, then regenerate HTML.
 
-Commit the Markdown, catalog metadata, generator, stylesheet, and generated HTML together. Serving the site does not require Python.
-
-The supported Markdown constructs are level-two/three headings, paragraphs, flat ordered/unordered lists, inline code, bold text, HTTP(S)/relative links, and fenced code blocks. Raw HTML is escaped. Markdown setting files are maintained here as the source for the generated task pages.
+Supported Markdown includes level-two/three headings, paragraphs, flat ordered
+and unordered lists, inline code, bold text, HTTP(S)/relative links, and fenced
+code blocks. Raw HTML is escaped.
 
 ## Local preview
 
@@ -43,4 +68,6 @@ The supported Markdown constructs are level-two/three headings, paragraphs, flat
 python -m http.server 8765 --bind 127.0.0.1
 ~~~
 
-Open the local server root or `tasks/`. Site links and assets use relative paths so the site also works below a project subdirectory.
+Open the server root or `tasks/`. Links and assets are relative, so the site also
+works below a project subdirectory. Check desktop and mobile layouts before
+publishing. The demo video and poster are independent assets.

@@ -1,7 +1,6 @@
 # Reasoning-intensive Query Rewriting
 
-* **Task ID**: `search-swe/task-1-1`
-* **Task type**: `create`
+* **Task name**: `search-swe/reasoning-query-rewriting`
 * **Domain**: `biology`
 * **Primary focus**: `query rewriting`
 * **Primary metric**: `Accuracy@3`

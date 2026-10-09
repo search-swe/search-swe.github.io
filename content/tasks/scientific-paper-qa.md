@@ -2,8 +2,7 @@
 
 Build an executable retrieval-augmented question answering system over 300 research-paper PDFs. For each scientific question, return a concise answer and identify the paper that supports it.
 
-* **Task ID**: `search-swe/task-1-3`
-* **Task type**: `create`
+* **Task name**: `search-swe/scientific-paper-qa`
 * **Domain**: `scientific question answering`
 * **Primary focus**: `evidence-grounded RAG over PDFs`
 * **Primary metric**: `LLMJudgeAccuracy`

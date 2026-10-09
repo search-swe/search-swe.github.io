@@ -2,8 +2,7 @@
 
 Build an executable evidence-localization system over a single long PDF. Given a natural-language query, return the physical pages that best contain the relevant evidence.
 
-* **Task ID**: `search-swe/task-1-4`
-* **Task type**: `create`
+* **Task name**: `search-swe/long-pdf-evidence`
 * **Domain**: `in-document search`
 * **Primary focus**: `page-level evidence localization in a long PDF`
 * **Primary metric**: `Recall@5`

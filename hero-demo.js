@@ -4,13 +4,13 @@
 
   const modes = {
     build: {
-      title: 'Implementation: make documents searchable',
+      title: 'Make documents searchable',
       description: 'An agent assembles indexing, retrieval and ranking into a search capability. Documents enter an index. A query follows the retrieval path and matching documents become ranked results. This is a general illustration, not a particular algorithm, task or measured run.',
       stages: ['Define', 'Assemble', 'Search', 'Verify'],
       captions: ['Documents in. Search still to build.', 'Connect indexing, retrieval and ranking.', 'Find documents that match the query.', 'A working search capability.'],
     },
     optimize: {
-      title: 'Optimization: find where search relevance falls short',
+      title: 'Improve search relevance',
       description: 'The search engine returns results, but a relevant document is missing from the candidate set and another is buried in the ranking. The agent inspects retrieval and ranking. A missed document enters the candidate set, and the relevant documents move to the top of the results. Blue matching marks connect the query to relevant documents. This illustrates search-quality optimization, not measured results or guaranteed gains.',
       stages: ['Inspect', 'Diagnose', 'Improve', 'Compare'],
       captions: ['Results return. Relevance falls short.', 'Trace misses and weak rankings.', 'Improve retrieval and ranking.', 'Bring relevant documents to the top.'],

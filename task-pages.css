@@ -1,14 +1,11 @@
 /* Task-specific layouts, using the shared document typography and navigation. */
+.catalog-sidebar nav { max-height: calc(100vh - 130px); overflow-y: auto; scrollbar-width: thin; }
 .catalog-intro { padding-bottom: 24px; }
 .catalog-intro > p { color: var(--home-muted); }
 .catalog-count { font-size: 13px; color: var(--home-muted); }
-.catalog-group .home-task-list { margin-top: 0; }
-.catalog-task { display: grid; grid-template-columns: 40px 20px minmax(0, 1fr); gap: 14px; align-items: start; padding: 16px 6px; }
+.catalog-task { display: grid; grid-template-columns: 22px minmax(0, 1fr) 18px; gap: 14px; align-items: start; padding: 16px 6px; }
 .catalog-task:hover { text-decoration: none; background: #f8f9fb; }
 .catalog-task:hover .home-task-title { text-decoration: underline; }
-.catalog-task-icon { display: flex; align-items: center; height: 24px; color: #426bb4; }
-.catalog-task-icon svg { display: block; width: 17px; height: 17px; flex: none; }
-.task-violet .catalog-task-icon { color: #8064a4; }
 
 .task-reader { width: min(1240px, calc(100% - 64px)); margin: 0 auto; padding-top: 28px; }
 .task-breadcrumbs { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; font-size: 12px; color: var(--home-muted); }
@@ -18,15 +15,13 @@
 .all-tasks-link { display: inline-block; margin-bottom: 22px; font-size: 13px; }
 .task-directory-group { margin-bottom: 22px; }
 .task-directory-group > p { margin-bottom: 7px; color: var(--home-ink); font-size: 12px; font-weight: 600; }
-.task-directory-group a { display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: start; gap: 8px; padding: 8px 6px; border-radius: 4px; color: var(--home-muted); font-size: 12px; font-weight: 500; line-height: 1.5; }
-.task-directory-id { padding-top: 1px; font-size: 11px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; white-space: nowrap; }
+.task-directory-group a { display: block; padding: 8px 6px; border-radius: 4px; color: var(--home-muted); font-size: 12px; font-weight: 500; line-height: 1.5; }
 .task-directory-title { min-width: 0; overflow-wrap: anywhere; }
 .task-directory-group a:hover { background: #f8f9fb; }
 .task-directory-group a[aria-current="page"] { color: var(--home-link); background: #eef3fb; }
 .task-article { min-width: 0; }
 .task-article-header { padding-bottom: 26px; border-bottom: 1px solid var(--home-line); }
 .task-article-kicker { display: flex; align-items: center; flex-wrap: wrap; gap: 18px; margin-bottom: 16px; color: var(--home-muted); font-size: 12px; }
-.task-article-kicker .home-task-mode { padding-top: 0; }
 .task-article h1 { margin-bottom: 18px; font-size: 32px; line-height: 1.25; font-weight: 600; letter-spacing: -.025em; overflow-wrap: anywhere; }
 .task-summary { color: #505864; font-size: 15px; line-height: 1.75; }
 .task-summary p { margin-bottom: 18px; }
@@ -76,6 +71,10 @@
   .task-specs > div { grid-template-columns: 100px minmax(0, 1fr); gap: 12px; }
 }
 @media (max-width: 480px) {
-  .catalog-task { grid-template-columns: 29px 17px minmax(0, 1fr); gap: 10px; padding: 14px 0; }
+  .catalog-task { grid-template-columns: 18px minmax(0, 1fr) 16px; gap: 10px; padding: 14px 0; }
   .task-adjacent { grid-template-columns: 1fr; gap: 18px; }
+}
+.task-article-kicker { overflow-wrap: anywhere; }
+@media (max-width: 720px) {
+  .catalog-sidebar { display: none; }
 }
