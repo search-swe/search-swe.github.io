@@ -24,7 +24,7 @@ Improve a fixed reranking pipeline for NarrativeQA-style long documents. Each qu
 * `/task/data/validation/queries.jsonl` — 100 public queries, each with a fixed BM25 Top-100 candidate list.
 * `/task/data/validation/ground_truth.jsonl` — relevance labels for the public queries.
 
-The submission must use the candidate documents supplied with each query and the local `BAAI/bge-reranker-large` model. It may optimize preprocessing, document-window selection, score aggregation, and inference, but may not retrieve additional candidates or replace the model.
+The candidate documents supplied with each query and the local `BAAI/bge-reranker-large` model, tokenizer, and configuration stay fixed. The submission may optimize preprocessing, document-window selection, score aggregation, caching, and inference.
 
 ### Outputs
 
@@ -32,4 +32,6 @@ The submission must provide executable `build.sh` and `run.sh` entry points unde
 
 ## Evaluation
 
-The hidden split contains 100 disjoint queries. A query passes when its relevant document appears in the first five reranked candidates. The task score is the average held-out `Accuracy@5`; invalid output, candidate-set violations, unauthorized retrieval, or model replacement results in a score of `0`.
+The hidden split contains 100 disjoint queries. A query is a hit when at least one relevant document appears in the first five reranked candidates. `Accuracy@5` is the fraction of hidden queries that are hits.
+
+Final reward equals `Accuracy@5` when evaluation is valid and the trajectory audit passes. Execution failures, invalid output, candidate-set or fixed-model violations, and failed trajectory audits receive a reward of `0`.

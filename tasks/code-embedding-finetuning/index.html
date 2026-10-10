@@ -49,7 +49,9 @@
 <h3 id="outputs">Outputs</h3>
 <p>The submission must contain a self-contained offline checkpoint at <code>/app/submission/model</code>. It must preserve the backbone architecture, parameter names, parameter shapes, and parameter count, and must be loadable locally by the standard Transformers interfaces.</p>
 <h2 id="evaluation">Evaluation</h2>
-<p>The verifier compares the original backbone and the submitted checkpoint using the same embedding and exact-search procedure on 200 hidden code-retrieval queries. The score is based on the submitted model&#x27;s improvement in held-out <code>Accuracy@1</code>; hidden data and external resources are unavailable during development.</p></div>
+<p>The verifier compares the original backbone and the submitted checkpoint using the same embedding and exact-search procedure on 200 hidden code-retrieval queries. The base reward is the nonnegative absolute improvement in held-out <code>Accuracy@1</code>, measured on the 0–1 accuracy scale:</p>
+<pre><code class="language-text">max(0, submitted Accuracy@1 - original-backbone Accuracy@1)</code></pre>
+<p>Final reward equals this gain when evaluation is valid and the trajectory audit passes. Invalid evaluation, timeouts, or a failed audit receive a reward of <code>0</code>.</p></div>
       <nav class="task-adjacent" aria-label="Adjacent tasks"><a href="../long-document-reranking/"><span>Previous task</span><strong>Long-document Reranking</strong></a><a href="../query-encoder-alignment/"><span>Next task</span><strong>Query-side Encoder Alignment</strong></a></nav>
       <footer class="home-footer">
   <span>Search-SWE · VectorSpaceLab</span>

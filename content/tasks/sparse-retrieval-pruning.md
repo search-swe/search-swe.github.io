@@ -19,9 +19,11 @@ latency against the unpruned reference starter.
 * **Network**: `no`
 * **Candidate limits**: `3,600 seconds` for build and `900 seconds` for search
 
-All indexing, retrieval, scoring, pruning, and ranking logic must be Python.
-The submission must be single-process and single-threaded, with no native code,
-parallel query execution, runtime downloads, or external services.
+Implement indexing, retrieval, scoring, pruning, and ranking in Python, using
+preinstalled packages such as NumPy through their normal APIs. Bash entry points
+may parse arguments and launch Python. Both build and search run offline in a
+single process with a single thread. Submitted native source and native
+compilation are prohibited.
 
 ## Public input and output contract
 

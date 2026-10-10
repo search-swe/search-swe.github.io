@@ -31,4 +31,10 @@ The submission must contain a self-contained offline checkpoint at `/app/submiss
 
 ## Evaluation
 
-The verifier compares the original backbone and the submitted checkpoint using the same embedding and exact-search procedure on 200 hidden code-retrieval queries. The score is based on the submitted model's improvement in held-out `Accuracy@1`; hidden data and external resources are unavailable during development.
+The verifier compares the original backbone and the submitted checkpoint using the same embedding and exact-search procedure on 200 hidden code-retrieval queries. The base reward is the nonnegative absolute improvement in held-out `Accuracy@1`, measured on the 0–1 accuracy scale:
+
+```text
+max(0, submitted Accuracy@1 - original-backbone Accuracy@1)
+```
+
+Final reward equals this gain when evaluation is valid and the trajectory audit passes. Invalid evaluation, timeouts, or a failed audit receive a reward of `0`.

@@ -46,11 +46,12 @@
 <h2 id="public-input-and-output-contract">Public input and output contract</h2>
 <h3 id="inputs">Inputs</h3>
 <ul><li><code>/task/data/corpus.jsonl</code> — a 355-document long-document corpus.</li><li><code>/task/data/validation/queries.jsonl</code> — 100 public queries, each with a fixed BM25 Top-100 candidate list.</li><li><code>/task/data/validation/ground_truth.jsonl</code> — relevance labels for the public queries.</li></ul>
-<p>The submission must use the candidate documents supplied with each query and the local <code>BAAI/bge-reranker-large</code> model. It may optimize preprocessing, document-window selection, score aggregation, and inference, but may not retrieve additional candidates or replace the model.</p>
+<p>The candidate documents supplied with each query and the local <code>BAAI/bge-reranker-large</code> model, tokenizer, and configuration stay fixed. The submission may optimize preprocessing, document-window selection, score aggregation, caching, and inference.</p>
 <h3 id="outputs">Outputs</h3>
 <p>The submission must provide executable <code>build.sh</code> and <code>run.sh</code> entry points under <code>/app</code> and return the top five reranked candidates for every query in JSONL format.</p>
 <h2 id="evaluation">Evaluation</h2>
-<p>The hidden split contains 100 disjoint queries. A query passes when its relevant document appears in the first five reranked candidates. The task score is the average held-out <code>Accuracy@5</code>; invalid output, candidate-set violations, unauthorized retrieval, or model replacement results in a score of <code>0</code>.</p></div>
+<p>The hidden split contains 100 disjoint queries. A query is a hit when at least one relevant document appears in the first five reranked candidates. <code>Accuracy@5</code> is the fraction of hidden queries that are hits.</p>
+<p>Final reward equals <code>Accuracy@5</code> when evaluation is valid and the trajectory audit passes. Execution failures, invalid output, candidate-set or fixed-model violations, and failed trajectory audits receive a reward of <code>0</code>.</p></div>
       <nav class="task-adjacent" aria-label="Adjacent tasks"><a href="../long-pdf-evidence/"><span>Previous task</span><strong>Long-PDF Evidence Localization</strong></a><a href="../code-embedding-finetuning/"><span>Next task</span><strong>Code Embedding Fine-tuning</strong></a></nav>
       <footer class="home-footer">
   <span>Search-SWE · VectorSpaceLab</span>

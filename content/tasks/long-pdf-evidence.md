@@ -33,11 +33,11 @@ The submission must provide executable `build.sh` and `run.sh` entry points unde
 
 ## Evaluation
 
-The verifier rebuilds the system on the same PDF and evaluates 10 hidden queries. For each query, `Recall@5` is the fraction of all relevant evidence pages retrieved in the top five. Reward is the mean across all 10 queries, with failed or invalid queries contributing zero.
+The verifier rebuilds the system on the same PDF and evaluates 10 hidden queries. For each query, `Recall@5` is the fraction of all relevant evidence pages retrieved in the top five. Retrieval quality is the mean across all 10 queries, with failed or invalid queries contributing zero. The evaluation report displays this quality on a 0–100 scale before the trajectory audit.
 
 ```text
-reward = average(Recall@5)
-score = 100 * reward
+mean_recall = average(Recall@5)
+score = 100 * mean_recall
 ```
 
-Page relevance is scored deterministically; no model judges answer correctness. Shared build/setup failure or a failed trajectory audit sets the final reward to `0`.
+Page relevance is scored deterministically against gold labels. A separate model audit checks trajectory compliance. Final reward equals `mean_recall` when evaluation is valid and the audit passes; a shared build/setup failure or failed audit sets it to `0`.
