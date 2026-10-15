@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sync Search-SWE Task Pages"
+  short_description: "Sync homepage task pages from benchmark contributions"
+  default_prompt: "Use $sync-searchswe-task-pages to compare this homepage with the specified Search-SWE checkout, add missing task pages, regenerate the site, and verify the result."
