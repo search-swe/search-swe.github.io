@@ -94,5 +94,104 @@
     "status": "setting",
     "featured": false,
     "name": "rust-bm25-search"
+  },
+  {
+    "title": "Agentic Search — Vectorless",
+    "navTitle": "Agentic Search — Vectorless",
+    "summary": "Build retrieval over BrowseComp-Plus without embeddings or BM25, returning five documents for each multi-constraint question.",
+    "tag": "vectorless search",
+    "status": "setting",
+    "featured": false,
+    "name": "agentic-search-vectorless"
+  },
+  {
+    "title": "Biomedical Graph Retrieval",
+    "navTitle": "Biomedical Graph Retrieval",
+    "summary": "Answer biomedical graph questions by returning the complete set of matching node IDs from a supplied SQLite knowledge graph.",
+    "tag": "graph retrieval",
+    "status": "setting",
+    "featured": false,
+    "name": "biomedical-graph-retrieval"
+  },
+  {
+    "title": "ChunQiu Temporal Retrieval",
+    "navTitle": "ChunQiu Temporal Retrieval",
+    "summary": "Retrieve Classical Chinese annal records for reign dates and temporal constraints while distinguishing events from later commentary.",
+    "tag": "temporal retrieval",
+    "status": "setting",
+    "featured": false,
+    "name": "chunqiu-temporal-retrieval"
+  },
+  {
+    "title": "Code Context Retrieval",
+    "navTitle": "Code Context Retrieval",
+    "summary": "Find compact source-code regions that provide the context needed to understand an issue in its specified repository snapshot.",
+    "tag": "code context retrieval",
+    "status": "setting",
+    "featured": false,
+    "name": "code-context-retrieval"
+  },
+  {
+    "title": "Code Reranker Fine-tuning",
+    "navTitle": "Code Reranker Fine-tuning",
+    "summary": "Fine-tune a fixed BGE reranker to improve top-five code retrieval over shared BM25 and local embedding candidates.",
+    "tag": "reranker training",
+    "status": "setting",
+    "featured": false,
+    "name": "code-reranker-finetuning"
+  },
+  {
+    "title": "Decision Model Training",
+    "navTitle": "Decision Model Training",
+    "summary": "Train a compact local model to make structured categorical, Boolean and ordinal decisions on previously unseen task schemas.",
+    "tag": "decision model training",
+    "status": "setting",
+    "featured": false,
+    "name": "decision-model-training"
+  },
+  {
+    "title": "Join-aware Table Retrieval",
+    "navTitle": "Join-aware Table Retrieval",
+    "summary": "Retrieve the tables and column-level joins needed to answer a question from a catalog of relational schemas.",
+    "tag": "table and join retrieval",
+    "status": "setting",
+    "featured": false,
+    "name": "join-aware-table-retrieval"
+  },
+  {
+    "title": "Legal Stance Retrieval",
+    "navTitle": "Legal Stance Retrieval",
+    "summary": "Retrieve court documents that support or refute a claim according to the stance requested by the query.",
+    "tag": "stance-aware retrieval",
+    "status": "setting",
+    "featured": false,
+    "name": "legal-stance-retrieval"
+  },
+  {
+    "title": "Long-PDF Sentence Evidence — Vectorless",
+    "navTitle": "Long-PDF Sentence Evidence — Vectorless",
+    "summary": "Build an embedding-free index of a long novel and return complete original sentences that jointly support interpretive questions.",
+    "tag": "vectorless evidence retrieval",
+    "status": "setting",
+    "featured": false,
+    "name": "long-pdf-evidence-vectorless"
+  },
+  {
+    "title": "Negative-Constraint Retrieval",
+    "navTitle": "Negative-Constraint Retrieval",
+    "summary": "Retrieve one passage that satisfies the requested subjects while excluding forbidden content anywhere in the passage.",
+    "tag": "negative constraints",
+    "status": "setting",
+    "featured": false,
+    "name": "negative-constraint-retrieval"
+  },
+  {
+    "title": "Quantity-aware Retrieval",
+    "navTitle": "Quantity-aware Retrieval",
+    "summary": "Retrieve clinical passages that satisfy numerical conditions, using supplied examples and a local embedding model.",
+    "tag": "numerical constraints",
+    "status": "setting",
+    "featured": false,
+    "name": "quantity-aware-retrieval"
   }
 ]

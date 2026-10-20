@@ -29,14 +29,14 @@
 </header>
 
 <div class="home-layout">
-  <aside class="home-sidebar catalog-sidebar"><nav aria-label="Task directory"><div class="task-directory-group"><p>All tasks</p><a href="#reasoning-query-rewriting"><span class="task-directory-title">Reasoning-intensive Query Rewriting</span></a><a href="#memory-constrained-dense-retrieval"><span class="task-directory-title">Memory-constrained Dense Retrieval</span></a><a href="#scientific-paper-qa"><span class="task-directory-title">Scientific-Paper Question Answering</span></a><a href="#long-pdf-evidence"><span class="task-directory-title">Long-PDF Evidence Localization</span></a><a href="#long-document-reranking"><span class="task-directory-title">Long-document Reranking</span></a><a href="#code-embedding-finetuning"><span class="task-directory-title">Code Embedding Fine-tuning</span></a><a href="#query-encoder-alignment"><span class="task-directory-title">Query-side Encoder Alignment</span></a><a href="#agentic-search"><span class="task-directory-title">Agentic Search</span></a><a href="#sparse-retrieval-pruning"><span class="task-directory-title">Sparse Retrieval Pruning</span></a><a href="#rust-bm25-search"><span class="task-directory-title">Rust BM25 Search</span></a></div></nav></aside>
+  <aside class="home-sidebar catalog-sidebar"><nav aria-label="Task directory"><div class="task-directory-group"><p>All tasks</p><a href="#reasoning-query-rewriting"><span class="task-directory-title">Reasoning-intensive Query Rewriting</span></a><a href="#memory-constrained-dense-retrieval"><span class="task-directory-title">Memory-constrained Dense Retrieval</span></a><a href="#scientific-paper-qa"><span class="task-directory-title">Scientific-Paper Question Answering</span></a><a href="#long-pdf-evidence"><span class="task-directory-title">Long-PDF Evidence Localization</span></a><a href="#long-document-reranking"><span class="task-directory-title">Long-document Reranking</span></a><a href="#code-embedding-finetuning"><span class="task-directory-title">Code Embedding Fine-tuning</span></a><a href="#query-encoder-alignment"><span class="task-directory-title">Query-side Encoder Alignment</span></a><a href="#agentic-search"><span class="task-directory-title">Agentic Search</span></a><a href="#sparse-retrieval-pruning"><span class="task-directory-title">Sparse Retrieval Pruning</span></a><a href="#rust-bm25-search"><span class="task-directory-title">Rust BM25 Search</span></a><a href="#agentic-search-vectorless"><span class="task-directory-title">Agentic Search — Vectorless</span></a><a href="#biomedical-graph-retrieval"><span class="task-directory-title">Biomedical Graph Retrieval</span></a><a href="#chunqiu-temporal-retrieval"><span class="task-directory-title">ChunQiu Temporal Retrieval</span></a><a href="#code-context-retrieval"><span class="task-directory-title">Code Context Retrieval</span></a><a href="#code-reranker-finetuning"><span class="task-directory-title">Code Reranker Fine-tuning</span></a><a href="#decision-model-training"><span class="task-directory-title">Decision Model Training</span></a><a href="#join-aware-table-retrieval"><span class="task-directory-title">Join-aware Table Retrieval</span></a><a href="#legal-stance-retrieval"><span class="task-directory-title">Legal Stance Retrieval</span></a><a href="#long-pdf-evidence-vectorless"><span class="task-directory-title">Long-PDF Sentence Evidence — Vectorless</span></a><a href="#negative-constraint-retrieval"><span class="task-directory-title">Negative-Constraint Retrieval</span></a><a href="#quantity-aware-retrieval"><span class="task-directory-title">Quantity-aware Retrieval</span></a></div></nav></aside>
   <main id="main-content" class="home-document">
     <header class="home-intro catalog-intro">
       <h1>Tasks</h1>
       <p>Build and improve search systems under fixed resource constraints. Browse each task's goal, inputs, submission interface, and evaluation criteria.</p>
     </header>
     <section class="home-section" aria-labelledby="all-tasks-title">
-      <div class="home-section-heading"><h2 id="all-tasks-title">All tasks</h2><span class="catalog-count">10 tasks</span></div>
+      <div class="home-section-heading"><h2 id="all-tasks-title">All tasks</h2><span class="catalog-count">21 tasks</span></div>
       <ul class="home-task-list"><li id="reasoning-query-rewriting">
   <a class="catalog-task" href="reasoning-query-rewriting/">
     <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
@@ -143,6 +143,127 @@
       <span class="home-task-title">Rust BM25 Search</span>
       <span class="home-task-summary">Build a Rust BM25 engine over 8.8M passages and balance retrieval quality, query time, and index size against a fixed Pyserini reference.</span>
       <span class="home-task-topic">BM25 · Rust · indexing</span>
+    </span>
+    <span class="home-task-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+<li id="agentic-search-vectorless">
+  <a class="catalog-task" href="agentic-search-vectorless/">
+    <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
+    <span class="home-task-copy">
+      <span class="home-task-title">Agentic Search — Vectorless</span>
+      <span class="home-task-summary">Build retrieval over BrowseComp-Plus without embeddings or BM25, returning five documents for each multi-constraint question.</span>
+      <span class="home-task-topic">vectorless search</span>
+    </span>
+    <span class="home-task-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+<li id="biomedical-graph-retrieval">
+  <a class="catalog-task" href="biomedical-graph-retrieval/">
+    <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
+    <span class="home-task-copy">
+      <span class="home-task-title">Biomedical Graph Retrieval</span>
+      <span class="home-task-summary">Answer biomedical graph questions by returning the complete set of matching node IDs from a supplied SQLite knowledge graph.</span>
+      <span class="home-task-topic">graph retrieval</span>
+    </span>
+    <span class="home-task-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+<li id="chunqiu-temporal-retrieval">
+  <a class="catalog-task" href="chunqiu-temporal-retrieval/">
+    <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
+    <span class="home-task-copy">
+      <span class="home-task-title">ChunQiu Temporal Retrieval</span>
+      <span class="home-task-summary">Retrieve Classical Chinese annal records for reign dates and temporal constraints while distinguishing events from later commentary.</span>
+      <span class="home-task-topic">temporal retrieval</span>
+    </span>
+    <span class="home-task-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+<li id="code-context-retrieval">
+  <a class="catalog-task" href="code-context-retrieval/">
+    <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
+    <span class="home-task-copy">
+      <span class="home-task-title">Code Context Retrieval</span>
+      <span class="home-task-summary">Find compact source-code regions that provide the context needed to understand an issue in its specified repository snapshot.</span>
+      <span class="home-task-topic">code context retrieval</span>
+    </span>
+    <span class="home-task-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+<li id="code-reranker-finetuning">
+  <a class="catalog-task" href="code-reranker-finetuning/">
+    <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
+    <span class="home-task-copy">
+      <span class="home-task-title">Code Reranker Fine-tuning</span>
+      <span class="home-task-summary">Fine-tune a fixed BGE reranker to improve top-five code retrieval over shared BM25 and local embedding candidates.</span>
+      <span class="home-task-topic">reranker training</span>
+    </span>
+    <span class="home-task-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+<li id="decision-model-training">
+  <a class="catalog-task" href="decision-model-training/">
+    <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
+    <span class="home-task-copy">
+      <span class="home-task-title">Decision Model Training</span>
+      <span class="home-task-summary">Train a compact local model to make structured categorical, Boolean and ordinal decisions on previously unseen task schemas.</span>
+      <span class="home-task-topic">decision model training</span>
+    </span>
+    <span class="home-task-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+<li id="join-aware-table-retrieval">
+  <a class="catalog-task" href="join-aware-table-retrieval/">
+    <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
+    <span class="home-task-copy">
+      <span class="home-task-title">Join-aware Table Retrieval</span>
+      <span class="home-task-summary">Retrieve the tables and column-level joins needed to answer a question from a catalog of relational schemas.</span>
+      <span class="home-task-topic">table and join retrieval</span>
+    </span>
+    <span class="home-task-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+<li id="legal-stance-retrieval">
+  <a class="catalog-task" href="legal-stance-retrieval/">
+    <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
+    <span class="home-task-copy">
+      <span class="home-task-title">Legal Stance Retrieval</span>
+      <span class="home-task-summary">Retrieve court documents that support or refute a claim according to the stance requested by the query.</span>
+      <span class="home-task-topic">stance-aware retrieval</span>
+    </span>
+    <span class="home-task-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+<li id="long-pdf-evidence-vectorless">
+  <a class="catalog-task" href="long-pdf-evidence-vectorless/">
+    <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
+    <span class="home-task-copy">
+      <span class="home-task-title">Long-PDF Sentence Evidence — Vectorless</span>
+      <span class="home-task-summary">Build an embedding-free index of a long novel and return complete original sentences that jointly support interpretive questions.</span>
+      <span class="home-task-topic">vectorless evidence retrieval</span>
+    </span>
+    <span class="home-task-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+<li id="negative-constraint-retrieval">
+  <a class="catalog-task" href="negative-constraint-retrieval/">
+    <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
+    <span class="home-task-copy">
+      <span class="home-task-title">Negative-Constraint Retrieval</span>
+      <span class="home-task-summary">Retrieve one passage that satisfies the requested subjects while excluding forbidden content anywhere in the passage.</span>
+      <span class="home-task-topic">negative constraints</span>
+    </span>
+    <span class="home-task-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+<li id="quantity-aware-retrieval">
+  <a class="catalog-task" href="quantity-aware-retrieval/">
+    <span class="home-task-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span>
+    <span class="home-task-copy">
+      <span class="home-task-title">Quantity-aware Retrieval</span>
+      <span class="home-task-summary">Retrieve clinical passages that satisfy numerical conditions, using supplied examples and a local embedding model.</span>
+      <span class="home-task-topic">numerical constraints</span>
     </span>
     <span class="home-task-arrow" aria-hidden="true">→</span>
   </a>
