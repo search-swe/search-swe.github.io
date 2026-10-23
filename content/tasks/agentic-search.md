@@ -12,7 +12,7 @@ Optimize a supplied ReAct retrieval starter over the BrowseComp-Plus corpus. Giv
 
 * **Agent time budget**: up to `120 minutes`
 * **Python**: `3.12`
-* **Compute**: `32` CPU cores, `128 GiB` memory, `200 GiB` storage
+* **Compute**: `32` CPU cores, `16 GiB` memory, `200 GiB` storage
 * **GPU required**: `no`
 * **Network**: `restricted` — allowlisted OpenRouter and Jina resources only
 * **Build limit**: `600 seconds`
@@ -42,4 +42,8 @@ reward = mean(GoldRecall@5)
 score = 100 * reward
 ```
 
-Execution and output validation are hard gates. This task uses deterministic scoring and has neither an answer judge nor a trajectory judge; the restrictions on hidden labels and unauthorized resources still apply.
+Execution and output validation are hard gates. Retrieval quality is scored deterministically, without an answer judge. A separate trajectory audit checks resource, retrieval-round and integrity constraints. A confirmed violation zeros the entire reward; missing trajectory or a failed audit invalidates the run and cannot produce positive credit. The complete verifier has a 17,100-second limit, including this audit.
+
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/agentic-search/instruction.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/agentic-search/task.toml)
+for the complete contract at the reviewed benchmark revision.

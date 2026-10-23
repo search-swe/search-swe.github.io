@@ -10,7 +10,7 @@ Improve a code-retrieval embedding model using supplied training data. The task 
 
 ## Runtime and requirements
 
-* **Agent time budget**: up to `12 hours`
+* **Agent time budget**: up to `6 hours`
 * **Python**: `3.12`
 * **Compute**: `8` CPU cores, `32 GiB` memory, `100 GiB` storage
 * **GPU required**: `yes`
@@ -38,3 +38,7 @@ max(0, submitted Accuracy@1 - original-backbone Accuracy@1)
 ```
 
 Final reward equals this gain when evaluation is valid and the trajectory audit passes. Invalid evaluation, timeouts, or a failed audit receive a reward of `0`.
+
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/code-embedding-finetuning/instruction.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/code-embedding-finetuning/task.toml)
+for the complete contract at the reviewed benchmark revision.

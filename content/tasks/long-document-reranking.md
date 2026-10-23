@@ -12,7 +12,7 @@ Improve a fixed reranking pipeline for NarrativeQA-style long documents. Each qu
 
 * **Agent time budget**: up to `120 minutes`
 * **Python**: `3.12`
-* **Compute**: `16` CPU cores, `64 GiB` memory, `100 GiB` storage
+* **Compute**: `16` CPU cores, `16 GiB` memory, `100 GiB` storage
 * **GPU required**: `no`
 * **Network**: `no` — the submission uses the supplied local model offline
 
@@ -35,3 +35,7 @@ The submission must provide executable `build.sh` and `run.sh` entry points unde
 The hidden split contains 100 disjoint queries. A query is a hit when at least one relevant document appears in the first five reranked candidates. `Accuracy@5` is the fraction of hidden queries that are hits.
 
 Final reward equals `Accuracy@5` when evaluation is valid and the trajectory audit passes. Execution failures, invalid output, candidate-set or fixed-model violations, and failed trajectory audits receive a reward of `0`.
+
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-document-reranking/instruction.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-document-reranking/task.toml)
+for the complete contract at the reviewed benchmark revision.

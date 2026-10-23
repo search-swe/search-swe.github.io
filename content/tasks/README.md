@@ -14,13 +14,19 @@ Hugging Face dataset paths.
    `* **Task name**: ` followed by the canonical name in inline code, for example
    `search-swe/reasoning-query-rewriting`. Copy the structure of an existing
    setting and verify every fact against the task README, instruction and TOML.
-3. Add a catalog entry with `name`, `title`, `summary`, `tag`, and `status`.
+3. Add a catalog entry with `name`, `title`, `summary`, `tag`, `status`, and `hardware` (`cpu` or `gpu`). Set hardware from the benchmark
+   task.toml: `environment.gpus > 0` means GPU.
    Optional `navTitle` shortens navigation text; `homepageSummary` shortens the
    homepage card; `featured: true` includes the task on the homepage. Catalog
-   order controls the directory, cards and previous/next navigation. The generator
+   order controls the selected homepage cards. The task catalog, directories and
+   previous/next navigation use CPU then GPU groups, sorted A–Z by display title. The generator
    discovers tasks and featured cards from the catalog.
 4. Run the full generator and checks below. Review and commit sources and
    generated HTML together.
+
+Each task displays its short repository name in code formatting, with a copy
+button for use with `--task`. Clipboard support lives in `task-pages.js`, with
+an HTTP-preview fallback and manual selection when copying is unavailable.
 
 Cards share one visual style, with topic tags describing each task's focus.
 Status is editorial metadata: use `setting` for available settings,

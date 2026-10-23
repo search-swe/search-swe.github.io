@@ -78,3 +78,17 @@
 @media (max-width: 720px) {
   .catalog-sidebar { display: none; }
 }
+
+/* Hardware groups and selectable task names share the catalog's reading order. */
+.catalog-jump { display: flex; gap: 12px; margin: 0 0 24px; }
+.catalog-jump a { padding: 8px 14px; border: 1px solid var(--home-line); border-radius: 6px; font-size: 13px; }
+.home-section h2[id] { scroll-margin-top: 100px; }
+.task-name-control { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.catalog-task + .task-name-control { padding: 0 24px 16px 42px; }
+.task-name-control code { padding: 4px 7px; background: #f3f4f6; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; color: var(--home-ink); overflow-wrap: anywhere; user-select: all; }
+.copy-task-name { min-height: 32px; padding: 5px 10px; border: 1px solid var(--home-line); border-radius: 4px; background: white; color: var(--home-muted); font: inherit; font-size: 12px; cursor: pointer; }
+.copy-task-name:hover { color: var(--home-link); background: #f8f9fb; }
+.copy-task-name:focus-visible, .catalog-jump a:focus-visible { outline: 2px solid var(--home-link); outline-offset: 3px; }
+@media (max-width: 480px) {
+  .catalog-task + .task-name-control { padding-left: 28px; padding-right: 0; }
+}

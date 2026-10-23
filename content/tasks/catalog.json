@@ -7,17 +7,19 @@
     "status": "setting",
     "featured": true,
     "homepageSummary": "Rewrite complex biology queries to bridge the gap between query intent and relevant documents.",
-    "name": "reasoning-query-rewriting"
+    "name": "reasoning-query-rewriting",
+    "hardware": "cpu"
   },
   {
     "title": "Memory-constrained Dense Retrieval",
     "navTitle": "Memory-constrained Dense Retrieval",
-    "summary": "Search 1.5M document vectors while balancing retrieval quality, memory, index size, and latency.",
+    "summary": "Search 1.5 million vectors within 512 MiB of memory and a 64 MiB deployable index workspace.",
     "tag": "large-scale dense search",
     "status": "setting",
     "featured": true,
-    "homepageSummary": "Search 1.5M dense vectors within 2 GiB of memory while meeting accuracy and latency requirements.",
-    "name": "memory-constrained-dense-retrieval"
+    "homepageSummary": "Search 1.5M vectors within 512 MiB of memory and a 64 MiB index workspace while meeting quality and latency gates.",
+    "name": "memory-constrained-dense-retrieval",
+    "hardware": "cpu"
   },
   {
     "title": "Scientific-Paper Question Answering",
@@ -26,16 +28,18 @@
     "tag": "scientific RAG",
     "status": "setting",
     "featured": false,
-    "name": "scientific-paper-qa"
+    "name": "scientific-paper-qa",
+    "hardware": "cpu"
   },
   {
-    "title": "Long-PDF Evidence Localization",
-    "navTitle": "Long-PDF Evidence Localization",
-    "summary": "Locate the physical pages in a single long PDF that best support a natural-language query.",
+    "title": "Long-PDF Sentence Evidence",
+    "navTitle": "Long-PDF Sentence Evidence",
+    "summary": "Retrieve complete original sentences that jointly support interpretations of a long novel.",
     "tag": "in-document search",
     "status": "setting",
     "featured": false,
-    "name": "long-pdf-evidence"
+    "name": "long-pdf-evidence",
+    "hardware": "cpu"
   },
   {
     "title": "Long-document Reranking",
@@ -45,7 +49,8 @@
     "status": "setting",
     "featured": true,
     "homepageSummary": "Improve long-document reranking through window selection and score aggregation, with a fixed model and candidate set.",
-    "name": "long-document-reranking"
+    "name": "long-document-reranking",
+    "hardware": "cpu"
   },
   {
     "title": "Code Embedding Fine-tuning",
@@ -55,17 +60,19 @@
     "status": "setting",
     "featured": true,
     "homepageSummary": "Fine-tune a pretrained embedder for code retrieval while preserving its backbone architecture.",
-    "name": "code-embedding-finetuning"
+    "name": "code-embedding-finetuning",
+    "hardware": "gpu"
   },
   {
     "title": "Query-side Encoder Alignment",
     "navTitle": "Query-side Encoder Alignment",
-    "summary": "Improve query representations with a compact encoder while document vectors stay fixed and a runtime gate applies.",
+    "summary": "Improve a compact query encoder over a measured ridge baseline while keeping document vectors fixed and meeting a relative runtime gate.",
     "tag": "query encoder optimization",
     "status": "setting",
     "featured": false,
     "homepageSummary": "Align a compact query encoder with fixed document embeddings under a runtime constraint.",
-    "name": "query-encoder-alignment"
+    "name": "query-encoder-alignment",
+    "hardware": "gpu"
   },
   {
     "title": "Agentic Search",
@@ -74,7 +81,8 @@
     "tag": "agentic search",
     "status": "setting",
     "featured": false,
-    "name": "agentic-search"
+    "name": "agentic-search",
+    "hardware": "cpu"
   },
   {
     "title": "Sparse Retrieval Pruning",
@@ -84,7 +92,8 @@
     "status": "setting",
     "featured": false,
     "homepageSummary": "Preserve NDCG and recall while optimizing search time against an unpruned starter.",
-    "name": "sparse-retrieval-pruning"
+    "name": "sparse-retrieval-pruning",
+    "hardware": "cpu"
   },
   {
     "title": "Rust BM25 Search",
@@ -93,7 +102,8 @@
     "tag": "BM25 · Rust · indexing",
     "status": "setting",
     "featured": false,
-    "name": "rust-bm25-search"
+    "name": "rust-bm25-search",
+    "hardware": "cpu"
   },
   {
     "title": "Agentic Search — Vectorless",
@@ -102,7 +112,8 @@
     "tag": "vectorless search",
     "status": "setting",
     "featured": false,
-    "name": "agentic-search-vectorless"
+    "name": "agentic-search-vectorless",
+    "hardware": "cpu"
   },
   {
     "title": "Biomedical Graph Retrieval",
@@ -111,7 +122,8 @@
     "tag": "graph retrieval",
     "status": "setting",
     "featured": false,
-    "name": "biomedical-graph-retrieval"
+    "name": "biomedical-graph-retrieval",
+    "hardware": "cpu"
   },
   {
     "title": "ChunQiu Temporal Retrieval",
@@ -120,7 +132,8 @@
     "tag": "temporal retrieval",
     "status": "setting",
     "featured": false,
-    "name": "chunqiu-temporal-retrieval"
+    "name": "chunqiu-temporal-retrieval",
+    "hardware": "gpu"
   },
   {
     "title": "Code Context Retrieval",
@@ -129,7 +142,8 @@
     "tag": "code context retrieval",
     "status": "setting",
     "featured": false,
-    "name": "code-context-retrieval"
+    "name": "code-context-retrieval",
+    "hardware": "cpu"
   },
   {
     "title": "Code Reranker Fine-tuning",
@@ -138,7 +152,8 @@
     "tag": "reranker training",
     "status": "setting",
     "featured": false,
-    "name": "code-reranker-finetuning"
+    "name": "code-reranker-finetuning",
+    "hardware": "gpu"
   },
   {
     "title": "Decision Model Training",
@@ -147,7 +162,8 @@
     "tag": "decision model training",
     "status": "setting",
     "featured": false,
-    "name": "decision-model-training"
+    "name": "decision-model-training",
+    "hardware": "gpu"
   },
   {
     "title": "Join-aware Table Retrieval",
@@ -156,7 +172,8 @@
     "tag": "table and join retrieval",
     "status": "setting",
     "featured": false,
-    "name": "join-aware-table-retrieval"
+    "name": "join-aware-table-retrieval",
+    "hardware": "cpu"
   },
   {
     "title": "Legal Stance Retrieval",
@@ -165,7 +182,8 @@
     "tag": "stance-aware retrieval",
     "status": "setting",
     "featured": false,
-    "name": "legal-stance-retrieval"
+    "name": "legal-stance-retrieval",
+    "hardware": "gpu"
   },
   {
     "title": "Long-PDF Sentence Evidence — Vectorless",
@@ -174,7 +192,8 @@
     "tag": "vectorless evidence retrieval",
     "status": "setting",
     "featured": false,
-    "name": "long-pdf-evidence-vectorless"
+    "name": "long-pdf-evidence-vectorless",
+    "hardware": "cpu"
   },
   {
     "title": "Negative-Constraint Retrieval",
@@ -183,7 +202,8 @@
     "tag": "negative constraints",
     "status": "setting",
     "featured": false,
-    "name": "negative-constraint-retrieval"
+    "name": "negative-constraint-retrieval",
+    "hardware": "cpu"
   },
   {
     "title": "Quantity-aware Retrieval",
@@ -192,6 +212,287 @@
     "tag": "numerical constraints",
     "status": "setting",
     "featured": false,
-    "name": "quantity-aware-retrieval"
+    "name": "quantity-aware-retrieval",
+    "hardware": "gpu"
+  },
+  {
+    "name": "budgeted-bimetric-retrieval",
+    "title": "Budgeted Bimetric Retrieval",
+    "navTitle": "Budgeted Bimetric Retrieval",
+    "tag": "budgeted vector retrieval",
+    "summary": "Search 250,000 NQ passages using cheap vectors and at most 20 expensive distance evaluations per question.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "cpu"
+  },
+  {
+    "name": "budgeted-candidate-reranking",
+    "title": "Budgeted Candidate Reranking",
+    "navTitle": "Budgeted Candidate Reranking",
+    "tag": "metered reranking",
+    "summary": "Allocate a small local-model token budget to rerank a fixed pool of 100 BM25 passages.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "composed-image-search",
+    "title": "Composed Image Search",
+    "navTitle": "Composed Image Search",
+    "tag": "composed image retrieval",
+    "summary": "Find gallery photographs matching a reference image plus a requested change.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "constrained-molecular-search",
+    "title": "Constrained Molecular Search",
+    "navTitle": "Constrained Molecular Search",
+    "tag": "molecular retrieval",
+    "summary": "Recover the best feasible 10,000 compounds from a 12.4-million-combination library under changing property constraints.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "deletion-resilient-vector-search",
+    "title": "Deletion-resilient Vector Search",
+    "navTitle": "Deletion-resilient Vector Search",
+    "tag": "dynamic vector indexes",
+    "summary": "Maintain graph search quality and reclaim memory as repeated deletions remove 80% of two vector collections.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "cpu"
+  },
+  {
+    "name": "document-page-search",
+    "title": "Document Page Search",
+    "navTitle": "Document Page Search",
+    "tag": "multilingual page retrieval",
+    "summary": "Find supporting pages across multilingual reports containing text, charts and tables.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "evolving-personal-memory",
+    "title": "Evolving Personal Memory",
+    "navTitle": "Evolving Personal Memory",
+    "tag": "conversation memory",
+    "summary": "Answer questions from a person’s conversation history as it stood at a specified session.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "cpu"
+  },
+  {
+    "name": "filtered-ann-retrieval",
+    "title": "Filtered ANN Retrieval",
+    "navTitle": "Filtered ANN Retrieval",
+    "tag": "filtered vector search",
+    "summary": "Return exact filtered nearest neighbors from ten million tagged vectors under a 15 ms response deadline.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "cpu"
+  },
+  {
+    "name": "financial-report-qa",
+    "title": "Financial-Report Evidence Retrieval",
+    "navTitle": "Financial-Report Evidence Retrieval",
+    "tag": "financial evidence retrieval",
+    "summary": "Locate original report passages supporting financial questions across a collection of annual reports.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "cpu"
+  },
+  {
+    "name": "icsi-meeting-memory",
+    "title": "ICSI Meeting Memory",
+    "navTitle": "ICSI Meeting Memory",
+    "tag": "compact meeting memory",
+    "summary": "Compress meeting history into a small readable memory, then retrieve notes and answer questions from those notes alone.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "cpu"
+  },
+  {
+    "name": "incremental-vector-search",
+    "title": "Incremental Vector Search",
+    "navTitle": "Incremental Vector Search",
+    "tag": "incremental vector indexes",
+    "summary": "Maintain one vector index through insertions and large-K queries while improving near-perfect recall.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "cpu"
+  },
+  {
+    "name": "instruction-following-embedding",
+    "title": "Instruction-following Embedding",
+    "navTitle": "Instruction-following Embedding",
+    "tag": "compact query adapters",
+    "summary": "Adapt query embeddings to changed relevance instructions while retaining a fixed document-vector space.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "khmer-embedding-training",
+    "title": "Khmer-to-English Embedding Training",
+    "navTitle": "Khmer-to-English Embedding Training",
+    "tag": "cross-language training",
+    "summary": "Train a multilingual embedder and build retrieval from Khmer questions to English documents.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "large-scale-formula-retrieval",
+    "title": "Large-scale Formula Retrieval",
+    "navTitle": "Large-scale Formula Retrieval",
+    "tag": "mathematical formula search",
+    "summary": "Search the full ARQMath formula collection with a compact CPU index and a 50 ms query deadline.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "cpu"
+  },
+  {
+    "name": "layout-page-search",
+    "title": "Layout Page Search",
+    "navTitle": "Layout Page Search",
+    "tag": "document evidence pages",
+    "summary": "Return a compact set of pages supporting a question within its specified document.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "lightweight-query-retrieval",
+    "title": "Lightweight Query Retrieval",
+    "navTitle": "Lightweight Query Retrieval",
+    "tag": "latency-constrained retrieval",
+    "summary": "Reduce complete-batch retrieval time while preserving useful results across three collections.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "methodology-inspiration-retrieval",
+    "title": "Methodology Inspiration Retrieval",
+    "navTitle": "Methodology Inspiration Retrieval",
+    "tag": "research-method retrieval",
+    "summary": "Find papers whose methods can help address a proposed research problem beyond mere topical similarity.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "multilingual-vector-postprocessing",
+    "title": "Multilingual Vector Postprocessing",
+    "navTitle": "Multilingual Vector Postprocessing",
+    "tag": "multilingual vector transforms",
+    "summary": "Improve cross-language retrieval by applying one frozen language-aware function to existing vectors.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "narrative-clue-search",
+    "title": "Narrative-Clue Search",
+    "navTitle": "Narrative-Clue Search",
+    "tag": "narrative retrieval",
+    "summary": "Find a remembered work from a long description containing scattered clues and uncertain recollections.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "cpu"
+  },
+  {
+    "name": "paper-metadata-retrieval",
+    "title": "Paper Metadata Retrieval",
+    "navTitle": "Paper Metadata Retrieval",
+    "tag": "constrained paper search",
+    "summary": "Find the single paper satisfying both a substantive research need and its source-metadata constraints.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "cpu"
+  },
+  {
+    "name": "protein-text-bidirectional-retrieval",
+    "title": "Protein–Text Bidirectional Retrieval",
+    "navTitle": "Protein–Text Bidirectional Retrieval",
+    "tag": "protein-text embeddings",
+    "summary": "Learn compact representations that retrieve official protein–description pairs correctly in both directions.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "resource-bounded-multivector-search",
+    "title": "Resource-bounded Multivector Search",
+    "navTitle": "Resource-bounded Multivector Search",
+    "tag": "MaxSim search efficiency",
+    "summary": "Accelerate full-corpus ColBERT retrieval while retaining at least 99% exact MaxSim Recall@100.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "cpu"
+  },
+  {
+    "name": "same-place-image-search",
+    "title": "Same-Place Image Search",
+    "navTitle": "Same-Place Image Search",
+    "tag": "landmark retrieval",
+    "summary": "Find photographs of the same physical place despite changes in viewpoint, scale and occlusion.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "sketch-text-search",
+    "title": "Sketch-and-Text Image Search",
+    "navTitle": "Sketch-and-Text Image Search",
+    "tag": "sketch and text retrieval",
+    "summary": "Find an artwork using a partial sketch together with a description of its complete scene.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "spoken-query-search",
+    "title": "Spoken-Query Document Search",
+    "navTitle": "Spoken-Query Document Search",
+    "tag": "speech uncertainty retrieval",
+    "summary": "Retrieve documents from noisy speech-recognition hypotheses without access to clean questions or audio.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "training-error-tracing",
+    "title": "Training Error Tracing",
+    "navTitle": "Training Error Tracing",
+    "tag": "training-record retrieval",
+    "summary": "Retrieve modified training records associated with erroneous generated answers while reducing latency and GPU memory.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "video-moment-search",
+    "title": "Video-Moment Search",
+    "navTitle": "Video-Moment Search",
+    "tag": "temporal video retrieval",
+    "summary": "Locate the time interval matching a natural-language description within a specified video.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "gpu"
+  },
+  {
+    "name": "visual-document-qa",
+    "title": "Visual-Document Question Answering",
+    "navTitle": "Visual-Document Question Answering",
+    "tag": "visual document QA",
+    "summary": "Answer questions from long documents containing text, charts and tables, including unanswerable requests.",
+    "status": "setting",
+    "featured": false,
+    "hardware": "cpu"
   }
 ]

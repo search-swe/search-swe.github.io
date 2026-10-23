@@ -1,40 +1,45 @@
 # Query-side Encoder Alignment
 
-Optimize a query-side retrieval system built from the compact `Qwen3-Embedding-0.6B` backbone. The document vectors are fixed in advance, so the task focuses on improving query representations without changing, re-encoding, or reordering the document collection.
+Improve a compact query encoder over a measured ridge baseline while keeping document vectors fixed and meeting a relative runtime gate.
 
 * **Task name**: `search-swe/query-encoder-alignment`
-* **Domain**: `information retrieval`
-* **Primary focus**: `query encoder optimization`
-* **Primary metric**: `Accuracy@1 after the runtime gate`
-* **Tags**: `dense-retrieval`, `query-encoder`, `embedding`, `distillation`, `Qwen3`
+* **Domain**: `query encoder optimization`
+* **Primary focus**: `Query-side Encoder Alignment`
+* **Primary metric**: `Accuracy@1 error reduction above frozen 0.6B ridge, after runtime gate`
+* **Tags**: `query encoder optimization`, `search-swe`
 
 ## Runtime and requirements
 
-* **Agent time budget**: up to `12 hours`
-* **Python**: `3.12`
-* **Compute**: `8` CPU cores, `32 GiB` memory, `100 GiB` storage
-* **GPU required**: `yes`
-* **Network**: `restricted` — allowlisted OpenRouter and Jina resources only
+* **Agent budget**: `6 hours`
+* **Compute**: `8` CPUs, `32 GiB` RAM, `100 GiB` storage; `1` GPU(s)
+
+Use Qwen3-Embedding-0.6B as the basis. Development has allowlisted egress, but external retrieval, reranking, embedding, generation and answer services are prohibited. Final inference is offline. Each reference/candidate invocation has 1,800 seconds; task-specific verification 70 minutes, within a 95-minute overall verifier including audit.
 
 ## Public input and output contract
 
 ### Inputs
 
-* `/task/data/doc.npy` — 8,674 fixed 2,560-dimensional document vectors.
-* `/task/data/corpus.jsonl` — the corpus-to-vector row mapping.
-* `/task/data/validation/` — 100 public validation queries and relevance labels.
-* `/task/models/Qwen3-Embedding-0.6B` — the compact query-encoder backbone.
+8,674 fixed document vectors in `/task/data/doc.npy` and corresponding corpus rows; 100 public query/label pairs under `/task/data/validation/`. `/app/quality_baseline` supplies fixed 0.6B centered-ridge quality baseline. The 4B starter/model may provide public-input teacher signals and timing comparisons, but is inaccessible to final inference.
 
 ### Outputs
 
-The submission must contain an executable `/app/submission/run.sh`. It encodes each query, searches the supplied fixed document vectors, and returns exactly one top-ranked document per query in JSONL format.
+Submit all custom runtime files under `/app/submission`, including:
+
+~~~bash
+/app/submission/run.sh --doc-vectors /task/data/doc.npy --queries /path/to/queries.jsonl --output /path/to/results.jsonl --top-k 1
+~~~
+
+Preserve vector bytes and row order. Return one valid `doc_id`/finite `score` result per `query_id`, in input order. Exclude same-ID documents and full-text matches after NFKC, whitespace collapse and casefold. Ties follow corpus order. A second fresh process must produce byte-identical output. Use supplied scratch and leave no background processes.
 
 ## Evaluation
 
-The hidden split contains 100 disjoint queries. The candidate must finish within `60%` of the fixed reference starter's measured runtime. A candidate that passes the runtime and validity gates receives:
+A0 is the measured hidden Accuracy@1 of the fixed 0.6B centered-ridge baseline, fit only on public corpus text/vector pairs. Reward is `clip((Accuracy@1-A0)/(1-A0),0,1)` provided candidate runtime is at most 60% of the separate measured 4B time reference.
 
-```text
-reward = clamp((candidate Accuracy@1 - 0.31) / 0.69, 0, 1)
-```
+Timing includes startup, imports, loading, encoding, retrieval/filtering, output and exit, without warmup or cache flushing. The first candidate run supplies time; the second checks determinism. The 4B accuracy is diagnostic. Reference failure or A0=1 invalidates measurement; format, vector-integrity, timeout or audit failure yields zero.
 
-The starter accuracy is diagnostic and is not subtracted from the candidate accuracy. Invalid output, modified document vectors, hidden-data access, unauthorized external retrieval, or a failed trajectory audit results in a reward of `0`.
+Final reward requires a healthy, accepting independent trajectory and submission integrity audit. Audit failures are reported separately from retrieval quality and cannot produce positive credit.
+
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/query-encoder-alignment/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/query-encoder-alignment/README.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/query-encoder-alignment/task.toml)
+for the complete contract at the synchronized benchmark revision.

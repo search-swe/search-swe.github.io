@@ -12,7 +12,7 @@ Build an executable retrieval-augmented question answering system over 300 resea
 
 * **Agent time budget**: up to `120 minutes`
 * **Python**: `3.12`
-* **Compute**: `16` CPU cores, `64 GiB` memory, `100 GiB` storage
+* **Compute**: `16` CPU cores, `16 GiB` memory, `100 GiB` storage
 * **GPU required**: `no`
 * **Network**: `restricted` — allowlisted OpenRouter and Jina resources only
 * **Build limit**: `3,600 seconds`
@@ -42,3 +42,7 @@ score = 100 * reward
 ```
 
 Failed execution or structurally invalid output makes the entire submission invalid. A separate trajectory audit checks task and resource compliance and sets the final reward to `0` if it fails. Submission API access, answer-judge credentials, and trajectory-audit credentials are separate security domains.
+
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/scientific-paper-qa/instruction.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/scientific-paper-qa/task.toml)
+for the complete contract at the reviewed benchmark revision.

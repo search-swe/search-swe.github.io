@@ -51,7 +51,7 @@ class TaskPages(unittest.TestCase):
         self.run_builder()
         name = "hybrid-evidence-search"
         task = {"name": name, "title": "Hybrid Evidence Search", "summary": "Build and improve evidence retrieval.",
-                "tag": "hybrid retrieval", "status": "setting", "featured": True}
+                "tag": "hybrid retrieval", "status": "setting", "featured": True, "hardware": "cpu"}
         self.tasks.append(task)
         self.write_catalog()
         (self.root / f"content/tasks/{name}.md").write_text(
@@ -60,7 +60,9 @@ class TaskPages(unittest.TestCase):
         self.run_builder()
         self.run_builder("--check")
         self.assertIn(f'href="tasks/{name}/"', (self.root / "index.html").read_text())
-        previous = (self.root / "tasks" / self.tasks[-2]["name"] / "index.html").read_text()
+        ordered = sorted(self.tasks, key=lambda t: (t["hardware"] == "gpu", t["title"].casefold(), t["name"]))
+        previous_task = ordered[ordered.index(task) - 1]
+        previous = (self.root / "tasks" / previous_task["name"] / "index.html").read_text()
         self.assertIn(f'../{name}/', previous)
         self.assertIn("Next task", previous)
         self.assertTrue((self.root / "tasks" / name / "index.html").is_file())
@@ -113,6 +115,24 @@ class TaskPages(unittest.TestCase):
             self.tasks[0][key] = value
             self.write_catalog()
             self.run_builder(success=False)
+
+    def test_hardware_groups_order_and_copy_names(self):
+        self.run_builder()
+        text = (self.root / "tasks/index.html").read_text()
+        for hardware in ("cpu", "gpu"):
+            section = text.split(f'aria-labelledby="{hardware}-tasks">', 1)[1].split('</section>', 1)[0]
+            expected = sorted((t for t in self.tasks if t["hardware"] == hardware),
+                              key=lambda t: (t["title"].casefold(), t["name"]))
+            positions = [section.index(f'<li id="{t["name"]}">') for t in expected]
+            self.assertEqual(positions, sorted(positions))
+            for task in expected:
+                self.assertIn(f'<code>{task["name"]}</code>', section)
+                self.assertIn(f'data-task-name="{task["name"]}"', section)
+            for task in self.tasks:
+                self.assertEqual(f'<li id="{task["name"]}">' in section, task["hardware"] == hardware)
+        self.tasks[0]["hardware"] = "unknown"
+        self.write_catalog()
+        self.assertIn("hardware must be cpu or gpu", self.run_builder(success=False).stderr)
 
     def test_missing_or_mismatched_setting_fails(self):
         task = self.tasks[0]

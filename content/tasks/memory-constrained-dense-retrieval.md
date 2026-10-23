@@ -1,38 +1,41 @@
 # Memory-constrained Dense Retrieval
 
-Build an executable dense-vector search engine over 1.5 million precomputed NaturalQuestions document vectors. The task tests how an agent balances retrieval quality, memory usage, index size, and query latency when the raw vector collection is substantially larger than available memory.
+Search 1.5 million vectors within 512 MiB of memory and a 64 MiB deployable index workspace.
 
 * **Task name**: `search-swe/memory-constrained-dense-retrieval`
-* **Domain**: `information retrieval`
-* **Primary focus**: `memory-constrained vector search`
+* **Domain**: `compact vector retrieval`
+* **Primary focus**: `Memory-constrained Dense Retrieval`
 * **Primary metric**: `Accuracy@3`
-* **Tags**: `dense-retrieval`, `vector-search`, `NaturalQuestions`, `ANN`, `indexing`, `memory-constrained`
+* **Tags**: `compact vector retrieval`, `search-swe`
 
 ## Runtime and requirements
 
-* **Agent time budget**: up to `120 minutes`
-* **Python**: `3.12`
-* **Compute**: `16` CPU cores, `2 GiB` memory, `100 GiB` storage
-* **GPU required**: `no`
-* **Network**: `no`
-* **Build limit**: `120 seconds`, including index construction and service startup
-* **Per-query limit**: `0.5 seconds` per invocation, measured from process start to exit
+* **Agent budget**: `2 hours`
+* **Compute**: `16` CPUs, `0.5 GiB` RAM, `100 GiB` storage; `0` GPU(s)
+
+Offline; 16 CPUs for construction, one logical CPU shared by every online process. Build: 150 seconds; each invocation: 0.5 seconds including cold service startup and protected output capture. The 512 MiB cgroup includes descendants, runtime overhead and file cache. The `/task/index` 64 MiB tmpfs also consumes this memory.
 
 ## Public input and output contract
 
 ### Inputs
 
-* `/task/data/vectors.f32` — 1,500,000 normalized float32 vectors with dimension 1,024.
-* `/task/data/metadata.jsonl` — document metadata aligned with the vector rows.
-* `/task/data/vector_config.json` — vector collection configuration.
-* `/task/data/validation/` — 20 public development queries and relevance labels.
+`/task/data/vectors.f32` contains 1,500,000 normalized 1,024-dimensional FP32 vectors. Matching metadata/configuration and 20 public development queries with relevance labels are supplied under `/task/data/`.
 
 ### Outputs
 
-The submission must provide executable `build.sh` and `run.sh` entry points under `/app` and return the top three corpus documents for each query in JSONL format.
+Submit executable `/app/build.sh` and `/app/run.sh` under `/app`. Build accepts `--vectors`, `--metadata`, `--config`, `--index-dir`; run accepts `--index-dir`, `--query-vectors`, `--query-metadata`, `--query-config`, `--output`, `--top-k 3`.
+
+Derive all corpus-dependent state during the measured build. All final generated artifacts, executables, caches and temporary files must fit inside the supplied 64 MiB workspace; result JSONL is the exception. After build, all submission processes and shared IPC state are cleared. The first query must reload/start the service within its own deadline. Return matching `query_id` and exactly three unique valid `doc_id`/finite `score` results, descending by score with corpus-order ties. The original corpus remains readable for genuine retrieval.
 
 ## Evaluation
 
-The verifier evaluates 20 hidden queries. A query scores `1` only if its invocation succeeds within `0.5 seconds`, its output is valid, and a relevant document appears in the top three results; otherwise it scores `0`. Reward is the mean of these per-query scores. Build or overall evaluation failure, or a failed trajectory audit, sets the final reward to `0`.
+A is mean latency-gated Accuracy@3 over 20 hidden queries: each requires valid captured output within 0.5 seconds and a relevant top-three hit. Require `A>=0.95`; otherwise reward is zero. After this gate, reward is `A*min(1,0.030/L95)`.
 
-The implementation may use exact or approximate search, quantization, memory mapping, block-wise computation, or other indexing strategies, but must use the supplied vectors and operate without external retrieval resources.
+L95 is the 19th sorted end-to-end duration. Failed launches/timeouts contribute 0.5 seconds; other durations include output capture and are capped at 0.5. There is one sequential pass, no hidden warmup, and no OS cache flush. Build failure, invalid/oversized index, final OOM, resource or integrity failure zeros the task.
+
+Final reward requires a healthy, accepting independent trajectory and submission integrity audit. Audit failures are reported separately from retrieval quality and cannot produce positive credit.
+
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/memory-constrained-dense-retrieval/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/memory-constrained-dense-retrieval/README.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/memory-constrained-dense-retrieval/task.toml)
+for the complete contract at the synchronized benchmark revision.

@@ -1,43 +1,44 @@
-# Long-PDF Evidence Localization
+# Long-PDF Sentence Evidence
 
-Build an executable evidence-localization system over a single long PDF. Given a natural-language query, return the physical pages that best contain the relevant evidence.
+Retrieve complete original sentences that jointly support interpretations of a long novel.
 
 * **Task name**: `search-swe/long-pdf-evidence`
-* **Domain**: `in-document search`
-* **Primary focus**: `page-level evidence localization in a long PDF`
-* **Primary metric**: `Recall@5`
-* **Tags**: `PDF`, `natural-language-search`, `long-document`, `localization`, `page-retrieval`
+* **Domain**: `in-document evidence retrieval`
+* **Primary focus**: `Long-PDF Sentence Evidence`
+* **Primary metric**: `SentenceEvidenceAccuracy`
+* **Tags**: `in-document evidence retrieval`, `search-swe`
 
 ## Runtime and requirements
 
-* **Agent time budget**: up to `120 minutes`
-* **Python**: `3.12`
-* **Compute**: `16` CPU cores, `64 GiB` memory, `100 GiB` storage
-* **GPU required**: `no`
-* **Network**: `restricted` — allowlisted OpenRouter and Jina resources only
-* **Build limit**: `2,400 seconds`
-* **Per-query limit**: `900 seconds`, with up to five concurrent invocations
-* **Hidden-query run limit**: `1,800 seconds` shared across the complete query set
+* **Agent budget**: `2 hours`
+* **Compute**: `16` CPUs, `16 GiB` RAM, `100 GiB` storage; `0` GPU(s)
+
+Build: 2,400 seconds, including starting the retrieval service. Each query invocation: 30 seconds, with up to five concurrent invocations and a shared 1,800-second query phase. CPU-only; documented OpenRouter/Jina resources are permitted. Only `/app` transfers; code runs unprivileged in a fresh verifier with supplied writable index and output paths.
 
 ## Public input and output contract
 
 ### Inputs
 
-* `/task/data/corpus` — one 2,043-page PDF of War and Peace.
-* `/task/data/validation/queries.jsonl` — 10 public development queries, all referring to the same PDF.
-* `/task/data/validation/golden_answers.jsonl` — reference physical pages and supporting excerpts.
+`/task/data/corpus` contains the 2,043-page War and Peace PDF and fixed inventory of 28,798 sentence units. Ten public queries and sufficient reference evidence are under `/task/data/validation/`. Twelve evaluation questions are held out.
 
 ### Outputs
 
-The submission must provide executable `build.sh` and `run.sh` entry points under `/app`. For each query, it returns exactly five distinct ranked results. Every result contains a one-based physical PDF `page`, non-empty `evidence` text from that page, and a finite numeric `score`.
+Provide executable `/app/build.sh` and `/app/run.sh` with dependencies:
+
+~~~bash
+/app/build.sh --corpus /task/data/corpus --index-dir /path/to/index
+/app/run.sh --index-dir /path/to/index --queries /path/to/queries.jsonl --output /path/to/results.jsonl --top-k 5
+~~~
+
+Build saves all runtime artifacts and starts a service ready for repeated query calls. Return exactly `query_id` and `results`, containing zero to five distinct objects with exactly `sentence_id` and `sentence`. Copy whole inventory units, with only NFKC/whitespace normalization tolerated. Combined text is at most 16,000 characters. Do not return page rankings, generated answers or paraphrases.
 
 ## Evaluation
 
-The verifier rebuilds the system on the same PDF and evaluates 10 hidden queries. For each query, `Recall@5` is the fraction of all relevant evidence pages retrieved in the top five. Retrieval quality is the mean across all 10 queries, with failed or invalid queries contributing zero. The evaluation report displays this quality on a 0–100 scale before the trajectory audit.
+SentenceEvidenceAccuracy is the mean complete-support outcome over all twelve questions. The semantic judge accepts alternative correct original evidence; matching reference IDs is unnecessary. Incomplete, empty, malformed, failed or timed-out results zero their query. Shared build/setup or audit failure zeros the task. Reward equals accuracy on a 0–1 scale; judge service failures invalidate the measurement rather than measure retrieval quality.
 
-```text
-mean_recall = average(Recall@5)
-score = 100 * mean_recall
-```
+Final reward requires a healthy, accepting independent trajectory and submission integrity audit. Audit failures are reported separately from retrieval quality and cannot produce positive credit.
 
-Page relevance is scored deterministically against gold labels. A separate model audit checks trajectory compliance. Final reward equals `mean_recall` when evaluation is valid and the audit passes; a shared build/setup failure or failed audit sets it to `0`.
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-pdf-evidence/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-pdf-evidence/README.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-pdf-evidence/task.toml)
+for the complete contract at the synchronized benchmark revision.

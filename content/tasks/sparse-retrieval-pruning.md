@@ -7,7 +7,7 @@ latency against the unpruned reference starter.
 * **Task name**: `search-swe/sparse-retrieval-pruning`
 * **Domain**: `learned sparse retrieval`
 * **Primary focus**: `sparse retrieval and postings pruning`
-* **Primary metric**: `Quality-gated linear latency reward`
+* **Primary metric**: `Quality-gated linear speedup reward`
 * **Tags**: `sparse-retrieval`, `inverted-index`, `IDF`, `candidate-pruning`
 
 ## Runtime and requirements
@@ -55,20 +55,16 @@ ordered descending, with ascending document ID as the tie-breaker.
 
 ## Evaluation
 
-The hidden split contains 1,000 queries. Results must satisfy both gates:
+Every candidate round must reach mean NDCG@10 >=0.89 and qrels Recall@100 >=0.99 on all 1,000 hidden queries. Five rounds use fresh processes, alternating starter-first and candidate-first. Compute each system’s median complete search time; with `s=starter_median/candidate_median`:
 
 ~~~text
-NDCG@10 >= 0.89
-qrels Recall@100 >= 0.99
+reward = max(0, min(1, (s - 4) / 12))
 ~~~
 
-For a valid submission, let the latency ratio be candidate wall time divided by
-the reference wall time measured by the verifier:
+Fourfold speedup earns zero, tenfold earns 0.5, and sixteenfold or better earns one. Timing includes startup, imports, index/query loading, retrieval, output and exit. There is no warmup and OS caches are retained. Each invocation has fresh scratch; code and index are read-only, and answers cannot be reused across runs.
 
-* ratio at or below `0.25`: reward `1`;
-* ratio between `0.25` and `0.35`: reward `(0.35 - ratio) / 0.10`;
-* ratio at or above `0.35`: reward `0`.
+Candidate/reference build limits are 3,600/1,800 seconds, each search has 900 seconds and the overall verifier has 16,200 seconds. Both systems share the same one-CPU, one-thread, 32 GiB policy. Quality/output validation applies to every round. Execution, resource or required audit failure gives zero; self-reported counters are diagnostic.
 
-Quality, execution, output, integrity, and trajectory-audit failures receive a
-reward of `0`. Hidden queries, hidden judgments, and external evaluation data
-are unavailable.
+Final reward requires a healthy, accepting independent trajectory and submission integrity audit. Audit failures are reported separately from retrieval quality and cannot produce positive credit.
+
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/sparse-retrieval-pruning/instruction.md) for the current protocol.

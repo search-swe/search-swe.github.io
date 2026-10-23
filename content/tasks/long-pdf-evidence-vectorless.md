@@ -11,7 +11,7 @@ Build an embedding-free index of a long novel and return complete original sente
 ## Runtime and requirements
 
 * **Agent budget**: `120 minutes`
-* **Compute**: `16` CPUs, `64 GiB` RAM, `100 GiB` storage; no GPU
+* **Compute**: `16` CPUs, `16 GiB` RAM, `100 GiB` storage; no GPU
 * **Build limit**: `2,400 seconds`
 * **Query limits**: `900 seconds` each; `1,800 seconds` shared by the query phase
 * **Concurrency**: up to five queries; an additional `60 seconds` allows cleanup
@@ -75,6 +75,6 @@ effort and temperature zero. It has a 2,700-second budget. Its credentials and
 model permission are not granted to submission code. A separate 3,600-second
 trajectory audit must return a valid binary pass to preserve the 0–1 accuracy reward.
 
-The full contract is in the benchmark's [task instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/dab2e1e04904ff2731bf81849c65c639631c9499/tasks/long-pdf-evidence-vectorless/instruction.md),
-[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/dab2e1e04904ff2731bf81849c65c639631c9499/tasks/long-pdf-evidence-vectorless/README.md),
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/dab2e1e04904ff2731bf81849c65c639631c9499/tasks/long-pdf-evidence-vectorless/task.toml).
+The full contract is in the benchmark's [task instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-pdf-evidence-vectorless/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-pdf-evidence-vectorless/README.md),
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-pdf-evidence-vectorless/task.toml).

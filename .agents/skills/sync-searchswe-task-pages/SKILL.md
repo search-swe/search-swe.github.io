@@ -36,7 +36,11 @@ python "$SKILL_DIR/scripts/find_task_updates.py" \
 
 The helper identifies missing catalog entries, not semantic changes to existing
 task contracts. For requested revisions, inspect the relevant package diff and
-source files. A website-only entry may reflect an older benchmark checkout or
+source files. A full alignment review must also compare existing website claims
+with the current contract, even when the corresponding source has not changed
+since the last sync: a stale website claim may predate that snapshot. Include
+scoring constants, invoked finalizers/audits, catalog summaries and homepage
+contribution guidance; an instruction-only diff is insufficient. A website-only entry may reflect an older benchmark checkout or
 a rename: investigate it before deleting anything. Do not publish an unreviewed
 local scaffold as an available task merely because its directory exists.
 
@@ -99,11 +103,14 @@ Use the site's supported Markdown subset: level-two/three headings, paragraphs,
 flat lists, inline code, bold, links, and fenced code. Avoid Markdown tables,
 nested lists, raw HTML, or unrendered math in task settings.
 
-Update `content/tasks/catalog.json` with `name`, `title`, `summary`, `tag`, and
+Update `content/tasks/catalog.json` with `name`, `title`, `summary`, `tag`, `hardware`, and
 `status`; `navTitle`, `homepageSummary`, and `featured` are optional. Use the
 canonical descriptive name as both Markdown filename and URL slug; do not
-restore numeric task IDs or implementation/optimization categories. Preserve
-existing order and featured selection unless asked to change them. New tasks
+restore numeric task IDs or implementation/optimization categories. Set `hardware` to `gpu` when benchmark `environment.gpus > 0`, otherwise `cpu`;
+verify this field on updates as well as additions. The generated catalog,
+directories and adjacent navigation group CPU before GPU and sort each group
+by display title. Copy buttons use the short `name` accepted by `--task`. Preserve
+existing source order and featured selection unless asked to change them. New tasks
 normally append with `status: "setting"` and `featured: false`, so the catalog
 grows without expanding the homepage's curated selection.
 

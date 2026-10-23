@@ -177,11 +177,12 @@ def document(title: str, description: str, prefix: str, body: str) -> str:
   <link rel="icon" type="image/png" href="{prefix}assets/logo.png" />
   <link rel="apple-touch-icon" href="{prefix}assets/logo.png" />
   <link rel="stylesheet" href="{prefix}home-sections.css?v=3" />
-  <link rel="stylesheet" href="{prefix}task-pages.css?v=4" />
+  <link rel="stylesheet" href="{prefix}task-pages.css?v=5" />
 </head>
 <body id="top">
 {header(prefix)}
 {body}
+<script src="{prefix}task-pages.js?v=1" defer></script>
 </body>
 </html>
 """
@@ -204,6 +205,17 @@ def home_card(task: dict) -> str:
             </li>"""
 
 
+def task_name_control(task: dict) -> str:
+    name = esc(task["name"])
+    return f'<div class="task-name-control"><code>{name}</code><button type="button" class="copy-task-name" data-task-name="{name}" aria-label="Copy task name: {name}" hidden>Copy</button><span class="copy-status sr-only" role="status"></span></div>'
+
+
+def task_groups(tasks: list[dict]) -> list[tuple[str, list[dict]]]:
+    return [(hardware, sorted((task for task in tasks if task["hardware"] == hardware),
+                              key=lambda task: (task["title"].casefold(), task["name"])))
+            for hardware in ("cpu", "gpu")]
+
+
 def catalog_card(task: dict) -> str:
     return f"""<li id="{task['name']}">
   <a class="catalog-task" href="{task['name']}/">
@@ -215,36 +227,44 @@ def catalog_card(task: dict) -> str:
     </span>
     <span class="home-task-arrow" aria-hidden="true">→</span>
   </a>
+  {task_name_control(task)}
 </li>"""
 
 
 def catalog_page(tasks: list[dict]) -> str:
-    cards = "\n".join(catalog_card(task) for task in tasks)
+    sections = []
+    for hardware, group in task_groups(tasks):
+        cards = "\n".join(catalog_card(task) for task in group)
+        sections.append(f"""<section class="home-section" aria-labelledby="{hardware}-tasks">
+      <div class="home-section-heading"><h2 id="{hardware}-tasks">{hardware.upper()} tasks</h2><span class="catalog-count">{len(group)} tasks</span></div>
+      <ul class="home-task-list">{cards}</ul>
+    </section>""")
     count = f'{len(tasks)} task' + ('s' if len(tasks) != 1 else '')
     return document("Task catalog", "Browse Search-SWE tasks for implementing and optimizing search systems.", "../", f"""
 <div class="home-layout">
   <aside class="home-sidebar catalog-sidebar">{directory(tasks)}</aside>
   <main id="main-content" class="home-document">
     <header class="home-intro catalog-intro">
-      <h1>Tasks</h1>
-      <p>Build and improve search systems under fixed resource constraints. Browse each task's goal, inputs, submission interface, and evaluation criteria.</p>
+      <h1>Tasks <span class="catalog-count">{count}</span></h1>
+      <p>Build and improve search systems under fixed resource constraints. Browse CPU and GPU tasks, sorted A–Z by title. Copy a task name to use with <code>--task</code> when running an evaluation.</p>
     </header>
-    <section class="home-section" aria-labelledby="all-tasks-title">
-      <div class="home-section-heading"><h2 id="all-tasks-title">All tasks</h2><span class="catalog-count">{count}</span></div>
-      <ul class="home-task-list">{cards}</ul>
-    </section>
+    <nav class="catalog-jump" aria-label="Hardware groups"><a href="#cpu-tasks">CPU tasks</a><a href="#gpu-tasks">GPU tasks</a></nav>
+    {"".join(sections)}
     {footer()}
   </main>
 </div>""")
 
 
 def directory(tasks: list[dict], current: dict | None = None) -> str:
-    links = []
-    for task in tasks:
-        active = ' aria-current="page"' if current and task["name"] == current["name"] else ""
-        href = f'../{task["name"]}/' if current else f'#{task["name"]}'
-        links.append(f'<a href="{href}"{active}><span class="task-directory-title">{esc(task.get("navTitle", task["title"]))}</span></a>')
-    return '<nav aria-label="Task directory"><div class="task-directory-group"><p>All tasks</p>' + "".join(links) + "</div></nav>"
+    groups = []
+    for hardware, group in task_groups(tasks):
+        links = []
+        for task in group:
+            active = ' aria-current="page"' if current and task["name"] == current["name"] else ""
+            href = f'../{task["name"]}/' if current else f'#{task["name"]}'
+            links.append(f'<a href="{href}"{active}><span class="task-directory-title">{esc(task.get("navTitle", task["title"]))}</span></a>')
+        groups.append(f'<div class="task-directory-group"><p>{hardware.upper()} tasks · {len(group)}</p>' + "".join(links) + '</div>')
+    return '<nav aria-label="Task directory">' + "".join(groups) + '</nav>'
 
 
 def contents(toc: list[tuple[int, str, str]]) -> str:
@@ -278,7 +298,7 @@ def detail_page(task: dict, tasks: list[dict], setting: dict) -> str:
     <aside class="task-directory"><a class="all-tasks-link" href="../../tasks/">← All tasks</a>{directory(tasks, task)}</aside>
     <article class="task-article">
       <header id="overview" class="task-article-header">
-        <div class="task-article-kicker"><span>{esc(task['name'])}</span></div>
+        <div class="task-article-kicker"><span>{task["hardware"].upper()}</span>{task_name_control(task)}</div>
         <h1>{esc(setting['title'])}</h1>
         <div class="task-summary">{setting['intro']}</div>
         <dl class="task-specs">{facts}</dl>
@@ -310,13 +330,16 @@ def generate() -> dict[Path, str]:
         for field in ("title", "summary", "tag"):
             if not isinstance(task.get(field), str) or not task[field].strip():
                 raise ValueError(f"{task['name']}: missing {field}")
+        if task.get("hardware") not in {"cpu", "gpu"}:
+            raise ValueError(f"{task['name']}: hardware must be cpu or gpu")
         if "featured" in task and not isinstance(task["featured"], bool):
             raise ValueError("featured must be a boolean")
     if len(names) != len(set(names)):
         raise ValueError("Duplicate task names")
     outputs = {ROOT / "tasks" / "index.html": catalog_page(tasks)}
+    ordered = [task for _, group in task_groups(tasks) for task in group]
     for task in tasks:
-        outputs[ROOT / "tasks" / task["name"] / "index.html"] = detail_page(task, tasks, read_setting(task))
+        outputs[ROOT / "tasks" / task["name"] / "index.html"] = detail_page(task, ordered, read_setting(task))
     homepage = (ROOT / "index.html").read_text(encoding="utf-8")
     start, end = "<!-- TASK_CARDS:START -->", "<!-- TASK_CARDS:END -->"
     if (homepage.count(start) != 1 or homepage.count(end) != 1
