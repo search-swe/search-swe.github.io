@@ -11,10 +11,13 @@ Improve a fixed reranking pipeline for NarrativeQA-style long documents. Each qu
 ## Runtime and requirements
 
 * **Agent time budget**: up to `120 minutes`
+* **Verifier time budget**: up to `13200 seconds` (`3 hours 40 minutes`)
 * **Python**: `3.12`
 * **Compute**: `16` CPU cores, `16 GiB` memory, `100 GiB` storage
 * **GPU required**: `no`
 * **Network**: `no` — the submission uses the supplied local model offline
+
+The verifier window covers a build of up to `1800 seconds`, two query runs of up to `3600 seconds` each, a trajectory judge of up to `3600 seconds`, and `600 seconds` for setup and cleanup. Each stage remains subject to its own time limit.
 
 ## Public input and output contract
 
@@ -36,6 +39,6 @@ The hidden split contains 100 disjoint queries. A query is a hit when at least o
 
 Final reward equals `Accuracy@5` when evaluation is valid and the trajectory audit passes. Execution failures, invalid output, candidate-set or fixed-model violations, and failed trajectory audits receive a reward of `0`.
 
-See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-document-reranking/instruction.md)
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-document-reranking/task.toml)
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/1bd099de7b8617b863051d57b7930dd7e81d4808/tasks/long-document-reranking/instruction.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/1bd099de7b8617b863051d57b7930dd7e81d4808/tasks/long-document-reranking/task.toml)
 for the complete contract at the reviewed benchmark revision.
