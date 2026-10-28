@@ -61,6 +61,6 @@ or a subjective relevance judge.
 Missing, malformed, failed or timed-out query results contribute zero for that
 query. Build or integrity failures prevent the submission from scoring.
 
-The full contract is in the benchmark's [task instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/dab2e1e04904ff2731bf81849c65c639631c9499/tasks/code-context-retrieval/instruction.md),
-[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/dab2e1e04904ff2731bf81849c65c639631c9499/tasks/code-context-retrieval/README.md),
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/dab2e1e04904ff2731bf81849c65c639631c9499/tasks/code-context-retrieval/task.toml).
+The full contract is in the benchmark's [task instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/code-context-retrieval/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/code-context-retrieval/README.md),
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/code-context-retrieval/task.toml).

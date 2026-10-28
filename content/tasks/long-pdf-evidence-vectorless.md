@@ -59,6 +59,8 @@ answers, paraphrases or partial sentences. Empty results are valid and score zer
 
 ## Evaluation
 
+Evidence is judged for semantic support, not matching reference wording or sentence IDs. Equivalent explanations and harmless redundancy are accepted, while requested comparisons, qualifications and causal links must still be supported. Material contradictions or unresolved essential referents prevent complete-support credit.
+
 The verifier checks source hashes and sentence membership. A separate answer
 judge evaluates whether the entire evidence set fully supports the requested
 interpretation. Alternative original evidence is accepted; topical similarity
@@ -75,6 +77,6 @@ effort and temperature zero. It has a 2,700-second budget. Its credentials and
 model permission are not granted to submission code. A separate 3,600-second
 trajectory audit must return a valid binary pass to preserve the 0–1 accuracy reward.
 
-The full contract is in the benchmark's [task instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-pdf-evidence-vectorless/instruction.md),
-[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-pdf-evidence-vectorless/README.md),
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-pdf-evidence-vectorless/task.toml).
+The full contract is in the benchmark's [task instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/long-pdf-evidence-vectorless/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/long-pdf-evidence-vectorless/README.md),
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/long-pdf-evidence-vectorless/task.toml).

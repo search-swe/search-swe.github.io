@@ -26,7 +26,9 @@ Hugging Face dataset paths.
 
 Each task displays its short repository name in code formatting, with a copy
 button for use with `--task`. Clipboard support lives in `task-pages.js`, with
-an HTTP-preview fallback and manual selection when copying is unavailable.
+an HTTP-preview fallback and manual selection when copying is unavailable. Detail
+headers also link to the task directory on the benchmark’s GitHub `main` branch;
+version-pinned instruction and configuration links remain in the task setting.
 
 Cards share one visual style, with topic tags describing each task's focus.
 Status is editorial metadata: use `setting` for available settings,

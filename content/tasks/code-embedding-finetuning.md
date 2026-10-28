@@ -31,6 +31,8 @@ The submission must contain a self-contained offline checkpoint at `/app/submiss
 
 ## Evaluation
 
+Queries are encoded without a prefix; documents use `(title + " " + text).strip()`. Both are truncated to 512 tokens. The final-layer CLS vector is L2-normalized, and retrieval uses exact inner products.
+
 The verifier compares the original backbone and the submitted checkpoint using the same embedding and exact-search procedure on 200 hidden code-retrieval queries. The base reward is the nonnegative absolute improvement in held-out `Accuracy@1`, measured on the 0–1 accuracy scale:
 
 ```text
@@ -39,6 +41,6 @@ max(0, submitted Accuracy@1 - original-backbone Accuracy@1)
 
 Final reward equals this gain when evaluation is valid and the trajectory audit passes. Invalid evaluation, timeouts, or a failed audit receive a reward of `0`.
 
-See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/code-embedding-finetuning/instruction.md)
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/code-embedding-finetuning/task.toml)
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/code-embedding-finetuning/instruction.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/code-embedding-finetuning/task.toml)
 for the complete contract at the reviewed benchmark revision.

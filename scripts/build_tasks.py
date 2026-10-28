@@ -298,7 +298,7 @@ def detail_page(task: dict, tasks: list[dict], setting: dict) -> str:
     <aside class="task-directory"><a class="all-tasks-link" href="../../tasks/">← All tasks</a>{directory(tasks, task)}</aside>
     <article class="task-article">
       <header id="overview" class="task-article-header">
-        <div class="task-article-kicker"><span>{task["hardware"].upper()}</span>{task_name_control(task)}</div>
+        <div class="task-article-kicker"><span>{task["hardware"].upper()}</span>{task_name_control(task)}<a href="https://github.com/VectorSpaceLab/Search-SWE/tree/main/tasks/{esc(task['name'])}" target="_blank" rel="noreferrer">View on GitHub <span aria-hidden="true">↗</span></a></div>
         <h1>{esc(setting['title'])}</h1>
         <div class="task-summary">{setting['intro']}</div>
         <dl class="task-specs">{facts}</dl>

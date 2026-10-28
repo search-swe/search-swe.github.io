@@ -34,11 +34,13 @@ Build saves all runtime artifacts and starts a service ready for repeated query 
 
 ## Evaluation
 
+Evidence is judged for semantic support, not matching reference wording or sentence IDs. Equivalent explanations and harmless redundancy are accepted, while requested comparisons, qualifications and causal links must still be supported. Material contradictions or unresolved essential referents prevent complete-support credit.
+
 SentenceEvidenceAccuracy is the mean complete-support outcome over all twelve questions. The semantic judge accepts alternative correct original evidence; matching reference IDs is unnecessary. Incomplete, empty, malformed, failed or timed-out results zero their query. Shared build/setup or audit failure zeros the task. Reward equals accuracy on a 0–1 scale; judge service failures invalidate the measurement rather than measure retrieval quality.
 
 Final reward requires a healthy, accepting independent trajectory and submission integrity audit. Audit failures are reported separately from retrieval quality and cannot produce positive credit.
 
-See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-pdf-evidence/instruction.md),
-[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-pdf-evidence/README.md)
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/long-pdf-evidence/task.toml)
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/long-pdf-evidence/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/long-pdf-evidence/README.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/long-pdf-evidence/task.toml)
 for the complete contract at the synchronized benchmark revision.

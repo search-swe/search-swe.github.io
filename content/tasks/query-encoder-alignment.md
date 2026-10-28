@@ -15,6 +15,8 @@ Improve a compact query encoder over a measured ridge baseline while keeping doc
 
 Use Qwen3-Embedding-0.6B as the basis. Development has allowlisted egress, but external retrieval, reranking, embedding, generation and answer services are prohibited. Final inference is offline. Each reference/candidate invocation has 1,800 seconds; task-specific verification 70 minutes, within a 95-minute overall verifier including audit.
 
+Final query inference must use the supplied `Qwen3-Embedding-0.6B` encoder or a legitimately adapted derivative, and its outputs must contribute to candidate selection or ranking. Development-only use, loading unused weights or discarding encoder outputs does not satisfy this requirement. Lexical, structural and corpus-copy features may supplement the required encoder, but cannot replace it.
+
 ## Public input and output contract
 
 ### Inputs
@@ -39,7 +41,7 @@ Timing includes startup, imports, loading, encoding, retrieval/filtering, output
 
 Final reward requires a healthy, accepting independent trajectory and submission integrity audit. Audit failures are reported separately from retrieval quality and cannot produce positive credit.
 
-See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/query-encoder-alignment/instruction.md),
-[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/query-encoder-alignment/README.md)
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/561461e2619f269ffe3c8c44a541086eee17129f/tasks/query-encoder-alignment/task.toml)
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/query-encoder-alignment/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/query-encoder-alignment/README.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/query-encoder-alignment/task.toml)
 for the complete contract at the synchronized benchmark revision.

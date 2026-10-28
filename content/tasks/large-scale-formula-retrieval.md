@@ -31,9 +31,11 @@ Load replies `{"ok":true}`. Query requests contain `query_id`, `latex`; response
 
 Map instances to visual groups, deduplicate by first rank, remove unjudged groups but retain judged grade-zero groups. nDCG prime uses original 0–3 linear gains and complete-qrels IDCG. Reward is mean nDCG prime over all 76 queries, with failed/late queries zero. MAP prime and P prime@10 are diagnostics. Query failures restart the service; build, prepared-size, memory or total-storage failures zero the task. Faster compliant execution earns no separate points.
 
+Reaching the agent deadline does not by itself invalidate the available submission; the verifier still checks its build and serving behavior. Trusted development-memory evidence is required, and a recorded development memory violation makes the score zero.
+
 Final reward requires a healthy, accepting independent trajectory and submission integrity audit. Audit failures are reported separately from retrieval quality and cannot produce positive credit.
 
-See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/large-scale-formula-retrieval/instruction.md),
-[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/large-scale-formula-retrieval/README.md)
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/large-scale-formula-retrieval/task.toml)
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/large-scale-formula-retrieval/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/large-scale-formula-retrieval/README.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/large-scale-formula-retrieval/task.toml)
 for the complete contract at the synchronized benchmark revision.

@@ -64,12 +64,12 @@ The verifier checks successful index construction, executable behavior,
 query coverage, IDs, duplicate handling, finite scores and stage limits.
 Completed valid JSONL rows remain usable after a query timeout; missing or
 invalid rows score zero. A non-timeout query-command failure invalidates
-that call. See [instruction.md](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/same-place-image-search/instruction.md) and the verifier for the exact
+that call. See [instruction.md](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/same-place-image-search/instruction.md) and the verifier for the exact
 task-specific validity checks.
 
 Final reward requires a healthy, accepting independent trajectory and submission integrity audit. Audit failures are reported separately from retrieval quality and cannot produce positive credit.
 
-See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/same-place-image-search/instruction.md),
-[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/same-place-image-search/README.md)
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/same-place-image-search/task.toml)
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/same-place-image-search/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/same-place-image-search/README.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/same-place-image-search/task.toml)
 for the complete contract at the synchronized benchmark revision.

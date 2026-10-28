@@ -30,7 +30,7 @@ input loading, inference, API calls and output writing.
 * `/task/models/Qwen3-Embedding-0.6B` — supplied local embedding weights.
 
 There is no separate public validation split. Training examples are not mounted
-in the verifier; evaluation contains 778 questions.
+in the verifier; evaluation contains 775 questions.
 
 ### Outputs
 
@@ -55,12 +55,12 @@ must appear exactly once; output row order is unrestricted.
 
 ## Evaluation
 
-Reward is mean binary nDCG@10 over all 778 questions, without baseline
+Reward is mean binary nDCG@10 over all 775 questions, without baseline
 subtraction. The ideal ranking contains up to ten relevant documents.
 
 A timed-out or failed batch, malformed or missing output, or a failed mandatory
 trajectory compliance audit yields zero overall; there is no partial batch credit.
 
-The full contract is in the benchmark's [task instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/dab2e1e04904ff2731bf81849c65c639631c9499/tasks/chunqiu-temporal-retrieval/instruction.md),
-[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/dab2e1e04904ff2731bf81849c65c639631c9499/tasks/chunqiu-temporal-retrieval/README.md),
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/dab2e1e04904ff2731bf81849c65c639631c9499/tasks/chunqiu-temporal-retrieval/task.toml).
+The full contract is in the benchmark's [task instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/chunqiu-temporal-retrieval/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/chunqiu-temporal-retrieval/README.md),
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/chunqiu-temporal-retrieval/task.toml).

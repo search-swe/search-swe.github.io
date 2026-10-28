@@ -11,6 +11,8 @@ Build an executable retrieval system over a 57,359-document biology corpus. The 
 ## Runtime and requirements
 
 * **Agent time budget**: up to `120 minutes`
+* **Build limit**: `1800 seconds`
+* **Query-run limit**: `900 seconds` total for the single invocation processing all 10 hidden queries
 * **Python**: `3.12`
 * **Compute**: `16` CPU cores, `32 GiB` memory, `100 GiB` storage
 * **GPU required**: `no`
@@ -34,6 +36,6 @@ The submission must provide executable `build.sh` and `run.sh` entry points unde
 
 The verifier evaluates 10 hidden queries. A query is a hit when at least one relevant document appears in its top three results. Reward is the fraction of queries hit. Execution or output-validation failure, or a failed trajectory audit, sets the final reward to `0`.
 
-See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/reasoning-query-rewriting/instruction.md)
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/reasoning-query-rewriting/task.toml)
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/reasoning-query-rewriting/instruction.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/reasoning-query-rewriting/task.toml)
 for the complete contract at the reviewed benchmark revision.

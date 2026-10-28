@@ -29,7 +29,7 @@ limit includes startup, inference, API work and output writing.
 
 The examples contain synthetically edited passage text; they are not corpus-ID
 relevance judgments. There is no public retrieval validation split. The verifier
-withholds training examples and evaluates 210 original queries.
+withholds training examples and evaluates 209 retained queries after removing one query with invalid positive labels.
 
 ### Outputs
 
@@ -53,21 +53,21 @@ in corpus order. Empty results are valid and score zero.
 
 ## Evaluation
 
-Let `Q` be mean binary nDCG@10 over all 210 questions. Use the specified reference
+Let `Q` be mean binary nDCG@10 over all 209 questions. Use the specified reference
 constant exactly as given:
 
 ~~~text
-B = 0.1838
+B = 0.1847
 reward = clamp((Q - B) / (1 - B), 0, 1)
 ~~~
 
-The rounded constant `0.1838` is the contract's baseline; do not substitute an
+The rounded constant `0.1847` is the contract's baseline; do not substitute an
 unrounded historical measurement. There is no independent timing bonus.
 
 A timed-out question contributes zero without leaving the denominator. Other
 execution/output failures, failed build, integrity violations or a failed
 mandatory trajectory audit set the overall reward to zero.
 
-The full contract is in the benchmark's [task instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/quantity-aware-retrieval/instruction.md),
-[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/quantity-aware-retrieval/README.md),
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/b17b701dfce01dc043e50180ed1bfe733b40f612/tasks/quantity-aware-retrieval/task.toml).
+The full contract is in the benchmark's [task instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/quantity-aware-retrieval/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/quantity-aware-retrieval/README.md),
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/1d73c6f9c4a90ba922b7572d9395a6f40661bbb2/tasks/quantity-aware-retrieval/task.toml).
