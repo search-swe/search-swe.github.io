@@ -76,7 +76,7 @@ def verify_remote(api, package, manifest, revision, site_origin):
 
 
 def activate(package, manifest, revision, site_snapshot_sha256):
-    from build_leaderboard import generate
+    from build_leaderboard import generate, write_pages
     config = {'provider': 'huggingface', 'repo_id': REPO_ID, 'revision': revision,
               'release_path': manifest['release_path'], 'snapshot_id': manifest['snapshot_id'],
               'source_hashes': manifest['source_hashes'], 'site_snapshot_sha256': site_snapshot_sha256,
@@ -84,9 +84,7 @@ def activate(package, manifest, revision, site_snapshot_sha256):
     # Resolve/validate all pages before changing the website's data configuration.
     pages = generate(config, production=True)
     write(ROOT / 'content/leaderboard/storage.json', config)
-    for path, content in pages.items():
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(content)
+    write_pages(pages)
     receipt = package.with_name(package.name + '-uploaded.json')
     write(receipt, config)
     print(f'Pinned HF revision: {revision}\nReceipt: {receipt}')

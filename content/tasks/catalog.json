@@ -256,16 +256,6 @@
     "hardware": "gpu"
   },
   {
-    "name": "deletion-resilient-vector-search",
-    "title": "Deletion-resilient Vector Search",
-    "navTitle": "Deletion-resilient Vector Search",
-    "tag": "dynamic vector indexes",
-    "summary": "Maintain graph search quality and reclaim memory as repeated deletions remove 80% of two vector collections.",
-    "status": "setting",
-    "featured": false,
-    "hardware": "cpu"
-  },
-  {
     "name": "document-page-search",
     "title": "Document Page Search",
     "navTitle": "Document Page Search",
@@ -424,16 +414,6 @@
     "status": "setting",
     "featured": false,
     "hardware": "gpu"
-  },
-  {
-    "name": "resource-bounded-multivector-search",
-    "title": "Resource-bounded Multivector Search",
-    "navTitle": "Resource-bounded Multivector Search",
-    "tag": "MaxSim search efficiency",
-    "summary": "Accelerate full-corpus ColBERT retrieval while retaining at least 99% exact MaxSim Recall@100.",
-    "status": "setting",
-    "featured": false,
-    "hardware": "cpu"
   },
   {
     "name": "same-place-image-search",

@@ -1,10 +1,18 @@
 # Leaderboard data and publication
 
-The homepage now links to `/leaderboard/`, with static model entries and 196
+The homepage now links to `/leaderboard/`, with static model entries and 188
 trial pages. Local previews read exported trajectories. Production pages read the same public
 files from an immutable Hugging Face commit. Neither mode calls inference APIs or
 modifies evaluation jobs. See [the publication guide](../../docs/leaderboard-publication.md)
 for the prepared upload script, path normalization and production checks.
+
+The current selection has 47 tasks (24 CPU, 23 GPU) and four models. The
+2026-10-31 withdrawal removes two tasks and their eight trials from scores,
+token totals, task pages and trial routes. `scripts/prune_hf_tasks.py` checks the
+prepared HF update offline; `--apply` deletes only those trial directories and
+updates the dataset metadata in one guarded commit. It then verifies the result
+and pins the local site to the new HF revision. Before execution, the local site
+previews the prepared public package. See the publication guide for the command.
 
 From the homepage repository root:
 
@@ -19,9 +27,11 @@ Open <http://localhost:7788/leaderboard/>. If the existing homepage server alrea
 uses port 7788, reuse it. Serve the repository at the domain root; deep links
 are real directories and refresh without a routing fallback.
 
-`release.json` is the current compact snapshot. `releases/<id>.json` preserves
-each imported snapshot. The release ID includes a hash of the selected index
-and analysis results. HTML is generated into `leaderboard/`.
+`release.json` is the current compact snapshot. `releases/<id>.json` stores
+imported snapshots; withdrawn selections must also be removed from these public
+JSON files. The release ID includes a hash of the selected index
+and analysis results. HTML is generated into `leaderboard/`; obsolete generated
+entry, snapshot and trial pages are removed when the selection changes.
 Large exports in `data/leaderboard/traces/` are ignored by Git; a fresh checkout
 needs the importer to read trajectories. The importer leaves original records
 and older exports untouched. Public packages are prepared separately in `.build/hf-trajectories/`; source

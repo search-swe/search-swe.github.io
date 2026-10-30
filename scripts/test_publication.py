@@ -14,7 +14,7 @@ from export_trial_files import export_files
 from import_results import encode, export_trajectory, read, scrub, write
 from leaderboard_storage import resolve_snapshot
 from publication import PublicText, REPO_ID, fingerprints, load_package
-from prepare_hf_release import referenced_files
+from prepare_hf_release import finalize, referenced_files
 from upload_hf_release import verify_remote
 
 
@@ -79,7 +79,7 @@ class StorageTests(unittest.TestCase):
 
     def test_every_production_trace_and_download_uses_same_immutable_commit(self):
         pages = build.generate(self.config, production=True)
-        self.assertEqual(len(pages), 202)
+        self.assertEqual(len(pages), 2 + len(self.snapshot['entries']) + len(self.snapshot['trials']))
         prefix = f'https://huggingface.co/datasets/{REPO_ID}/resolve/{"a" * 40}/releases/test/'
         for html in pages.values():
             self.assertNotIn('/data/leaderboard/traces/', html)
@@ -102,6 +102,18 @@ class StorageTests(unittest.TestCase):
 
 
 class PackageTests(unittest.TestCase):
+    def test_finalizing_again_preserves_the_publication_inventory_filename(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            snapshot = {'id': 'test', 'observed_at': '2026-10-31', 'source_hashes': {},
+                        'tasks': [], 'entries': [], 'trials': [],
+                        'publication': {'note': 'Exported-file hashes are in publication.json.gz.'}}
+            finalize(root, snapshot, 'releases/test')
+            before = (root / 'publication.json.gz').read_bytes()
+            finalize(root, snapshot, 'releases/test')
+            self.assertEqual((root / 'publication.json.gz').read_bytes(), before)
+            self.assertNotIn('.gz.gz', read(root / 'releases/test/snapshot.json')['publication']['note'])
+
     def fixture(self, root):
         release = root / 'releases/test'
         directory = release / 'trials/demo'

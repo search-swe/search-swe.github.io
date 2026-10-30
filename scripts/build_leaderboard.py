@@ -206,24 +206,35 @@ def generate(storage=None, production=False):
     return outputs
 
 
+def write_pages(pages, check=False):
+    """Remove obsolete generated routes when the selected task set changes."""
+    stale = [p for p in (ROOT / 'leaderboard').rglob('index.html')
+             if p not in pages and MARKER in p.read_text()]
+    changed = [p for p, content in pages.items()
+               if not p.exists() or p.read_text() != content]
+    if check and (changed or stale):
+        raise ValueError('Pages need rebuilding/removing: ' + ', '.join(
+            str(p.relative_to(ROOT)) for p in changed + stale))
+    if not check:
+        for path in changed:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(pages[path])
+        for path in stale:
+            path.unlink()
+            if not any(path.parent.iterdir()):
+                path.parent.rmdir()
+    return len(changed), len(stale)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--production', action='store_true', help='Require verified, immutable Hugging Face data URLs')
     parser.add_argument('--storage', type=Path, help='Override the data-storage configuration (for local public-export previews)')
     args = parser.parse_args()
-    changed = []
     storage = json.loads(args.storage.read_text()) if args.storage else None
-    for path, content in generate(storage, args.production).items():
-        if path.exists() and path.read_text() == content:
-            continue
-        changed.append(str(path.relative_to(ROOT)))
-        if not args.check:
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(content)
-    if args.check and changed:
-        raise SystemExit('Pages need rebuilding: ' + ', '.join(changed))
-    print('Leaderboard pages are up to date.' if args.check else f'Generated {len(changed)} pages.')
+    changed, removed = write_pages(generate(storage, args.production), args.check)
+    print('Leaderboard pages are up to date.' if args.check else f'Generated {changed} pages; removed {removed} obsolete pages.')
 
 
 if __name__ == '__main__':

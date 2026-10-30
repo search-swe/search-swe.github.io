@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import build_leaderboard as build
 import import_results as importer
@@ -120,11 +121,12 @@ class SnapshotTests(unittest.TestCase):
 
     def test_fixed_coverage_tokens_and_expected_analysis_means(self):
         snapshot = self.snapshot
-        expected = {'openai/gpt-6-luna': 17.323029258377396,
-                    'deepseek/deepseek-v4.1-flash-1017': 14.839777093554181,
-                    'xiaomi/mimo-v2.6-flash': 4.553738755437103,
-                    'z-ai/glm-5.3-flash': 1.2571635456379853}
-        self.assertEqual(len(snapshot['trials']), 196)
+        expected = {'openai/gpt-6-luna': 16.386433628958837,
+                    'deepseek/deepseek-v4.1-flash-1017': 15.471256969875635,
+                    'xiaomi/mimo-v2.6-flash': 4.747514872689746,
+                    'z-ai/glm-5.3-flash': 1.3106598667289633}
+        self.assertEqual(len(snapshot['tasks']), 47)
+        self.assertEqual(len(snapshot['trials']), 188)
         for entry in snapshot['entries']:
             trials = [t for t in snapshot['trials'] if t['entry'] == entry['id']]
             self.assertEqual({t['task'] for t in trials}, {t['name'] for t in snapshot['tasks']})
@@ -137,12 +139,31 @@ class SnapshotTests(unittest.TestCase):
 
     def test_generated_routes_and_no_script_injection(self):
         pages = build.generate()
-        self.assertEqual(len(pages), 202)
+        self.assertEqual(len(pages), 194)
         for trial in self.snapshot['trials']:
             self.assertIn(build.ROOT / f'leaderboard/trials/{trial["id"]}/index.html', pages)
         rendered = build.page('<script>', '<p>test</p>', 'trial', {'message': '</script><script>alert(1)'}, self.snapshot)
         self.assertIn('&lt;script&gt;', rendered)
         self.assertNotIn('</script><script>alert(1)', rendered)
+
+
+class PageRemovalTests(unittest.TestCase):
+    def test_obsolete_generated_routes_are_removed_without_touching_manual_pages(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.object(build, 'ROOT', Path(tmp)):
+            stale = build.ROOT / 'leaderboard/trials/withdrawn/index.html'
+            manual = build.ROOT / 'leaderboard/manual/index.html'
+            kept = build.ROOT / 'leaderboard/index.html'
+            for path, text in [(stale, build.MARKER), (manual, 'Manual page')]:
+                path.parent.mkdir(parents=True)
+                path.write_text(text)
+            pages = {kept: build.MARKER + 'Current leaderboard'}
+            with self.assertRaisesRegex(ValueError, 'rebuilding/removing'):
+                build.write_pages(pages, check=True)
+            self.assertTrue(stale.exists())
+            self.assertEqual(build.write_pages(pages), (1, 1))
+            self.assertFalse(stale.exists())
+            self.assertEqual(manual.read_text(), 'Manual page')
+            self.assertEqual(build.write_pages(pages, check=True), (0, 0))
 
 
 if __name__ == '__main__':

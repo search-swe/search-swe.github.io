@@ -150,7 +150,6 @@ def prepare(jobs, output):
 
 
 def finalize(output, snapshot, release_path):
-    snapshot['publication']['note'] = snapshot['publication']['note'].replace('publication.json.', 'publication.json.gz.')
     write(output / release_path / 'snapshot.json', snapshot)
     referenced_files(output / release_path, snapshot)
     write(output / 'README.md', dataset_card(snapshot, release_path).encode())
