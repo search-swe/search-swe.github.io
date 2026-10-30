@@ -2,3 +2,7 @@
 .DS_Store
 __pycache__/
 *.py[cod]
+
+# Local evaluation exports; rebuild with scripts/import_results.py.
+/data/leaderboard/traces/
+/.build/

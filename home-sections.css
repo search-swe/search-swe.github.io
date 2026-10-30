@@ -104,7 +104,7 @@ strong { font-weight: 600; }
   .evaluation-table tbody th { width: 105px; }
   .home-footer { flex-wrap: wrap; gap: 10px; margin-top: 32px; }
 }
-@media (max-width: 360px) {
+@media (max-width: 520px) {
   .home-header-inner { flex-wrap: wrap; justify-content: center; gap: 0 18px; padding-top: 8px; }
   .home-nav { gap: 24px; }
   html { scroll-padding-top: 115px; }
