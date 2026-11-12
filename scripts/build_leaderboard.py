@@ -101,10 +101,7 @@ def methodology(task_scores=False):
 
 
 def cost_note(snapshot):
-    note = f'<p class="cost-note">Cost is estimated from recorded agent tokens at <a href="/content/leaderboard/official-pricing.json">official API rates</a> in USD ({snapshot["cost_methodology"]["as_of"]}; standard processing, including model-specific cache writes and context rates).</p>'
-    if any('Final aggregate counter unavailable' in t.get('usage_note', '') for t in snapshot['trials']):
-        note += '<p class="cost-note">Kimi token accounting uses recorded aggregate counters when available; otherwise it falls back to deduplicated main/subagent response usage. These totals are used for leaderboard reporting and cost estimation.</p>'
-    return note
+    return f'<p class="cost-note">Cost is estimated from recorded agent tokens at <a href="/content/leaderboard/official-pricing.json">official API rates</a> in USD ({snapshot["cost_methodology"]["as_of"]}; standard processing, including model-specific cache writes and context rates).</p>'
 
 
 def sort_heading(label, key, css='', active=False):
@@ -191,7 +188,12 @@ def trial_page(trial, entry, snapshot, siblings):
     def files(group):
         return f'<div class="trial-files" data-file-group="{group}"><p class="file-status">Select this tab to browse the saved files.</p><noscript>Enable JavaScript to browse individual files.</noscript></div>'
 
-    notes = ''.join(f'<p>{esc(trial[key])}</p>' for key in ('agent_time_basis', 'usage_note') if trial.get(key))
+    usage_note = trial.get('usage_note', '')
+    if 'Final aggregate counter unavailable' in usage_note:
+        usage_note = 'Final token usage unavailable; totals use recorded responses.'
+        if trial.get('agent_status') == 'AgentTimeoutError':
+            usage_note = 'AgentTimeoutError: final token usage unavailable; totals use recorded responses.'
+    notes = ''.join(f'<p>{esc(note)}</p>' for note in (trial.get('agent_time_basis'), usage_note) if note)
     qualification = trial.get('qualification')
     qualification_html = (f'<details class="evidence-summary"><summary>Recorded qualification notes</summary><pre class="json-block">{esc(json.dumps(qualification, indent=2, ensure_ascii=False))}</pre></details>'
                           if qualification else '')

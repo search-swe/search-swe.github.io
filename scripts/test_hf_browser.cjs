@@ -79,7 +79,7 @@ const server = http.createServer((req, res) => {
     await page.locator('#panel-agent .file-text').waitFor();
     await page.locator('#panel-agent summary').filter({hasText: 'Coding time & token usage'}).click();
     const accounting = await page.locator('#panel-agent .evidence-summary').innerText();
-    assert(accounting.includes('final reported token totals'));
+    assert(accounting.includes('Final token usage unavailable; totals use recorded responses.'));
     assert(!accounting.includes('lower bounds'));
     const download = await page.locator('.download-links a').first().getAttribute('href');
     assert(download.startsWith(dataOrigin));

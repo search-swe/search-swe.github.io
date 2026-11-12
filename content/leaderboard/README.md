@@ -112,6 +112,8 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   Claude Code guessed costUSD values are never used.
   This reporting policy applies to generated pages and `/leaderboard/results.json`;
   the verified HF snapshot and its original accounting notes remain unchanged.
+  Only affected trial pages show a short fallback explanation in Agent details;
+  leaderboard and model overview pages keep the shared API pricing note only.
 - `scripts/leaderboard_costs.py` matches native response usage to every selected
   task/model/effort, verifies trajectory hashes and all published token totals,
   deduplicates response IDs, and calculates with decimal arithmetic before
