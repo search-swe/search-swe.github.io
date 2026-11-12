@@ -4,49 +4,66 @@
 从公开的 HF Dataset [`search-swe/trajectories`](https://huggingface.co/datasets/search-swe/trajectories)
 匿名按需读取。浏览器不需要 HF Token。
 
-## 当前更新：加入 GPT-6.1 Sol，三个模型共 141 条轨迹
+## 当前更新：加入 Kimi K3.1 Pro，四个模型共 188 条轨迹
 
-2026-11-11 版本展示 `gpt-6.1-sol`、`openai/gpt-6.1-terra` 和
-`openai/gpt-6-luna`，每个模型 47/47 道题（24 CPU、23 GPU）。
-Sol 平均分为 46.4303712901；Terra 的 42.5322347241 和 Luna 的
-13.1030991867 保持不变。数据源：
+2026-11-12 版本增加 `kimi-k3.1-pro`，47/47 道题（24 CPU、23 GPU），
+平均分 26.5999307981。Provider 全部为 **Moonshot AI**，由评测操作者确认；
+使用 **Claude Code 2.1.309 / max**，版本与主仓库默认配置一致。
+原有 Sol、Terra、Luna 的结果和轨迹文件保持不变。
+
+数据源仍为
 `/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs/final-trajectories`。
+新包为 `.build/hf-trajectories-luna-terra-sol-kimi`，共 83,214 个公开文件
+（约 2.91 GiB），包含 188 条 ATIF 和
+196 个原始会话文本（141 个 Codex、55 个 Claude Code 主/子会话）。
 
-本次上传及全部校验已完成，固定 HF 提交为
-[`72369be64bb94af4124c804d700cfd16bbd4a1ca`](https://huggingface.co/datasets/search-swe/trajectories/commit/72369be64bb94af4124c804d700cfd16bbd4a1ca)。
-52,179 个公开文件的大小、哈希和匿名下载/CORS 校验通过。完成回执为
-`.build/hf-trajectories-luna-terra-sol-uploaded.json`。
-
-一条命令准备公开包、上传、校验并生成生产页面：
-
-```bash
-python scripts/publish_final_results.py --upload
-```
-
-不带 `--upload` 只准备和校验本地预览，不访问 HF。
-本次向 `search-swe/trajectories` 添加新的三模型 release，保留之前已发布的
-Luna/Terra release 和固定版本链接。公开包共 52,179 个文件，约 1.64 GiB。
-脚本不会删除旧目录，也不会执行 Git commit/push。
-所有公开文件经过远端大小和 Git/LFS 哈希校验，匿名下载和 CORS 校验通过后，
-才更新 `content/leaderboard/storage.json` 的固定提交，并生成 146 个 HTML 页面及结果 JSON。
-
-中断后可以直接使用原包续传，无需重新读取可能已更新的归档：
+本次上传及全量校验已完成，固定 HF 版本为
+[`baa8b4fa26a87b781b0f8594305933bd61d973a1`](https://huggingface.co/datasets/search-swe/trajectories/commit/baa8b4fa26a87b781b0f8594305933bd61d973a1)。
+83,214 个文件通过远端大小、哈希以及匿名 JSON/gzip 下载和 CORS 校验；
+生产页面固定到该版本，网站由 `main` 分支的 GitHub Pages 发布。
 
 ```bash
-python scripts/upload_hf_release.py --package .build/hf-trajectories-luna-terra-sol --upload
+python scripts/publish_final_results.py \
+  --base-package .build/hf-trajectories-luna-terra-sol --upload
 ```
 
-仓库查询和清单校验使用现有 HF 登录，公开下载不携带凭证。429 遵守
-`Retry-After` / `RateLimit`；缺少重试头时按 60、120、240、300 秒退避，
-最多重试六次。分页只重试当前页。依赖：
-`python -m pip install -r scripts/requirements-hf.txt`。
+不带 `--upload` 只生成和检查本地预览。增量脚本逐文件确认旧 payload 不变，
+通过当前 Hub SDK 的 `upload_folder` / Xet 自动分批续传接口，仅上传 Kimi
+的 47 个新 trial 目录，验证全部远端 payload 后一次提交 snapshot、
+README 和 publication 清单。最终全量哈希、大小、匿名下载与 CORS 校验通过后，
+写入固定 SHA 并生成 194 个 HTML 页面和结果 JSON。物理 release 目录沿用原目录，
+新 snapshot ID 独立更新；旧 SHA 链接继续有效。脚本不执行 Git add、commit、push。
+
+上传中断后从固定包续传：
+
+```bash
+python scripts/append_hf_trajectories.py \
+  --base-package .build/hf-trajectories-luna-terra-sol \
+  --package .build/hf-trajectories-luna-terra-sol-kimi --upload
+```
+
+校验完成的 SHA 见 `content/leaderboard/storage.json`，本地回执为
+`.build/hf-trajectories-luna-terra-sol-kimi-uploaded.json`。若远端元数据与基线或
+新包均不匹配，脚本中止以免覆盖其他发布；所有旧文件保留。
+已提交而未完成本地激活的发布也可通过同一命令恢复。
+
+Kimi 的 40 个任务使用已保存的累计用量计数；另外 7 个采用回退策略，
+将归档响应去重后的合计作为最终展示的 token 数和费用估算依据，未记录的
+用量不作估算。网页和 `/leaderboard/results.json` 采用这一口径，已验证的
+HF 原始快照及其中的历史说明保持不变。费用按官方标准美元价估算，
+不使用 Claude Code 对未知模型猜测的 costUSD；缓存与 reasoning 不重复收费。
+
+仓库查询使用现有 HF 登录，公开下载不携带凭证。429 遵守服务端等待头，
+分页只重试当前页。只读元数据及匿名下载遇到临时连接错误或 HTTP 500/502/503/504
+时最多短暂重试三次；不自动重放结果不确定的写请求。
+依赖：`python -m pip install -r scripts/requirements-hf.txt`。
 
 ## 本地重建与审计
 
 ```bash
-python scripts/publish_final_results.py
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-luna-terra-sol
 python scripts/import_final_results.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-luna-terra-sol.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-luna-terra-sol-kimi.usage.json --check
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/build_tasks.py --check
 ```
@@ -56,12 +73,12 @@ python scripts/build_tasks.py --check
 本地预览重建会切换 storage 配置；已上传版本可用完整 HF SHA 重新验证并激活：
 
 ```bash
-python scripts/upload_hf_release.py --package .build/hf-trajectories-luna-terra-sol --verify-revision <FULL_HF_SHA>
+python scripts/upload_hf_release.py --package .build/hf-trajectories-luna-terra-sol-kimi --verify-revision <FULL_HF_SHA>
 python scripts/build_leaderboard.py --production --check
 ```
 
 评分沿 `FINAL_RESULT.json` 的最终 reward 指针读取，原生 reward × 100 必须
-与索引分数相符。用量来自原始 coding session 中按 response ID 去重的
+与索引分数相符。Codex 用量来自原始 coding session 中按 response ID 去重的
 `token_usage_record`，并与最终 thread 累计计数核对。ATIF 汇总落后时使用完整
 请求回执，具体说明保存在 Agent tab。重评分不会重复计入解题用量；
 缺少原始结束时间的三条既有轨迹仍显示缺失时长。
@@ -75,10 +92,11 @@ Cost 使用 `official-pricing.json` 保存的官方标准处理 USD 价格，包
 逐请求长上下文档位。Sol 价格和 2026-09-29 发布日期来自
 [模型文档](https://developers.openai.com/api/docs/models/gpt-6.1-sol)及
 [官方更新日志](https://developers.openai.com/api/docs/changelog)，核实日期为 2026-11-11。
-其他模型使用相同口径。费用是按官方费率估算的解题开销，不是账户账单，
+Kimi 使用上述官方平价 USD 费率和独立的 Claude Code 会话计数口径。
+费用是按官方费率估算的解题开销，不是账户账单，
 不包含 verifier、任务内 API 或基础设施。仅更新价格可单独重算，不必重传轨迹。
 
-公开包包含全部 141 个 ATIF 下载及 141 份原始会话文本导出；预览与下载
+公开包包含全部 188 个 ATIF 下载及 196 份原始会话文本导出；预览与下载
 使用相同的脱敏文本。主机路径替换为别名，凭证和环境值脱敏。
 二进制索引、权重等只列名称、大小和不可预览原因，不上传其内容。
 
@@ -88,8 +106,8 @@ Cost 使用 `official-pricing.json` 保存的官方标准处理 USD 价格，包
 [`1f675a76e0eb10ca5dfb514287c836904c923f18`](https://huggingface.co/datasets/search-swe/trajectories/commit/1f675a76e0eb10ca5dfb514287c836904c923f18)。
 当时共 94 条轨迹、32,470 个公开文件，旧 `releases/2026-10-30-3090361873/`
 目录从 HF 当前树移除，历史提交保留。该过程由 `replace_hf_trajectories.py`
-和 `.build/hf-replacement-luna-terra.json` 记录。本次加入 Sol 使用新增 release
-流程，不再执行这个历史删除计划。
+和 `.build/hf-replacement-luna-terra.json` 记录。之后加入 Sol 使用新增 release；本次 Kimi 使用增量追加，
+不执行这个历史删除计划。
 
 ## 历史记录：2026-11-04 GLM 下架
 
@@ -270,7 +288,7 @@ releases/<date-selection-hash>/
 ```bash
 PYTHONPATH=scripts python -m unittest \
   scripts/test_publication.py scripts/test_leaderboard.py scripts/test_trial_files.py
-HF_PACKAGE=.build/hf-trajectories-without-glm NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
+HF_PACKAGE=.build/hf-trajectories-luna-terra-sol-kimi NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
 ```
 
 浏览器检查使用另一个真实 HTTP origin 提供公开发布包，验证匿名跨域加载、

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "as_of": "2026-11-11",
+  "as_of": "2026-11-12",
   "currency": "USD",
   "unit": "USD per million tokens",
-  "policy": "Standard real-time USD API list prices with 30-minute cache writes. Long-context rates apply per request above 272,000 input tokens. No batch, fast-mode, account or regional adjustments.",
+  "policy": "Standard real-time USD API list prices. Cache-write and context-tier rates are model-specific. No batch, fast-mode, account or regional adjustments.",
   "scope": "Selected coding agent model requests only; excludes verifier, task-internal APIs, infrastructure and unrelated runs. Recorded cache reads and writes are subsets of input. Reasoning is already included in output.",
   "models": {
     "openai/gpt-6-luna": {
@@ -65,6 +65,17 @@
         }
       },
       "note": "Standard processing with 30-minute cache writes. Above 272,000 input tokens the entire request uses 2x input/cache and 1.5x output prices."
+    },
+    "kimi-k3.1-pro": {
+      "official_model": "kimi-k3.1-pro",
+      "source": "https://platform.kimi.ai/",
+      "rates": {
+        "input": "2.00",
+        "cached_input": "0.20",
+        "cache_write_input": "2.00",
+        "output": "10.00"
+      },
+      "note": "Standard K3.1 Pro USD rates, uniform across context lengths. Includes recorded main/subagent receipts and aggregate background counters where available. When aggregate counters are unavailable, deduplicated recorded responses provide the final reported token totals and the basis for estimated cost. Unrecorded usage is not estimated. Claude Code guessed costUSD is not used."
     }
   }
 }

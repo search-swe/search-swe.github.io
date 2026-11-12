@@ -4,7 +4,7 @@ import os
 import unittest
 from contextlib import redirect_stdout
 from unittest.mock import patch
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 import httpx
 from huggingface_hub import set_client_factory
@@ -14,6 +14,20 @@ import hf_network as network
 
 
 class RetryTests(unittest.TestCase):
+    def test_anonymous_transport_retry_is_bounded_and_preserves_permanent_errors(self):
+        with patch.object(network.time, 'sleep'), redirect_stdout(io.StringIO()):
+            operation = unittest.mock.Mock(side_effect=[URLError('TLS EOF'), b'complete'])
+            self.assertEqual(network.retry_read(operation, 'anonymous download'), b'complete')
+            self.assertEqual(operation.call_count, 2)
+            operation = unittest.mock.Mock(side_effect=URLError('TLS EOF'))
+            with self.assertRaises(URLError):
+                network.retry_read(operation, 'anonymous download', max_retries=2)
+            self.assertEqual(operation.call_count, 3)
+            operation = unittest.mock.Mock(side_effect=HTTPError('https://example.invalid', 403, 'denied', {}, None))
+            with self.assertRaises(HTTPError):
+                network.retry_read(operation, 'anonymous download')
+            self.assertEqual(operation.call_count, 1)
+
     def test_server_delay_takes_precedence_and_fallback_grows(self):
         self.assertEqual(network.retry_delay({'Retry-After': '350'}, 0), 351)
         self.assertEqual(network.retry_delay({'RateLimit': '"api";r=0;t=70'}, 0), 71)
@@ -55,6 +69,11 @@ class RetryTests(unittest.TestCase):
 class SDKReadTests(unittest.TestCase):
     def setUp(self):
         self.addCleanup(set_client_factory, default_client_factory)
+        # The SDK may fetch an agent registry while constructing User-Agent.
+        # Keep that unrelated telemetry request out of the mocked Hub protocol.
+        telemetry = patch('huggingface_hub.constants.HF_HUB_DISABLE_TELEMETRY', True)
+        telemetry.start()
+        self.addCleanup(telemetry.stop)
         sleeper = patch.object(network.time, 'sleep')
         self.sleep = sleeper.start()
         self.addCleanup(sleeper.stop)
@@ -104,6 +123,29 @@ class SDKReadTests(unittest.TestCase):
         self.assertEqual(self.api(handler).get_paths_info('search-swe/trajectories', ['README.md'], repo_type='dataset'), [])
         self.assertEqual(len(requests), 2)
         self.assertEqual(requests[0].content, requests[1].content)
+
+    def test_readonly_transport_and_server_failures_are_retried(self):
+        calls = []
+        def handler(request):
+            calls.append(request)
+            if len(calls) == 1:
+                raise httpx.ConnectError('TLS connection interrupted', request=request)
+            if len(calls) == 2:
+                return httpx.Response(503)
+            return httpx.Response(200, json=[])
+        self.assertEqual(self.api(handler).get_paths_info('search-swe/trajectories', ['README.md'], repo_type='dataset'), [])
+        self.assertEqual(len(calls), 3)
+
+    def test_transient_mutation_failures_are_not_replayed(self):
+        calls = []
+        def handler(request):
+            calls.append(request)
+            raise httpx.ConnectError('Connection interrupted', request=request)
+        with network.http_client(transport=httpx.MockTransport(handler)) as client:
+            with self.assertRaises(httpx.ConnectError):
+                client.post('https://huggingface.co/api/datasets/test/commit/main', content=b'commit')
+        self.assertEqual(len(calls), 1)
+        self.sleep.assert_not_called()
 
     def test_mutating_requests_are_not_automatically_replayed_by_the_http_client(self):
         calls = []

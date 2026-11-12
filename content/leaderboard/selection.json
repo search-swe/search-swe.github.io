@@ -1,9 +1,10 @@
 {
   "schema": 2,
-  "updated_at": "2026-11-11",
+  "updated_at": "2026-11-12",
   "included_models": [
     "openai/gpt-6-luna",
     "openai/gpt-6.1-terra",
-    "gpt-6.1-sol"
+    "gpt-6.1-sol",
+    "kimi-k3.1-pro"
   ]
 }

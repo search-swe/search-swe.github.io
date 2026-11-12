@@ -21,7 +21,7 @@ class CurrentArchiveTests(unittest.TestCase):
                     writer.writeheader()
                     writer.writerows(rows)
             save()
-            self.assertEqual(len(selected_rows(root, ['one', 'two'])), 6)
+            self.assertEqual(len(selected_rows(root, ['one', 'two'])), 8)
             rows.pop(0)
             save()
             with self.assertRaisesRegex(ValueError, 'complete task catalog'):

@@ -88,7 +88,7 @@ def export_files(source_trial, final_verifier, output, scrub, write, check=False
             entry['unavailable'] = 'Binary file: text preview is unavailable.'
             groups[group].append(entry)
             continue
-        if suffix == '.jsonl':
+        if suffix == '.jsonl' or path.name == 'claude-code.txt':
             # Native session records can also contain structured environment values.
             lines = []
             for line in value.splitlines(keepends=True):

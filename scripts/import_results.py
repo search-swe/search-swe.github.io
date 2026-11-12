@@ -23,6 +23,7 @@ NAMES = {
     "openai/gpt-6-luna": "GPT-6 Luna",
     "openai/gpt-6.1-terra": "GPT-6.1 Terra",
     "gpt-6.1-sol": "GPT-6.1 Sol",
+    "kimi-k3.1-pro": "Kimi K3.1 Pro",
     "deepseek/deepseek-v4.1-flash-1017": "DeepSeek V4.1 Flash 1017",
     "xiaomi/mimo-v2.6-flash": "MiMo-V2.6-Flash",
     "z-ai/glm-5.3-flash": "GLM 5.3 Flash",

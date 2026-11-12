@@ -10,7 +10,7 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 
 from import_results import ROOT, read, write
-from hf_network import authenticated_api, retry_429
+from hf_network import authenticated_api, retry_429, retry_read
 from publication import DEFAULT_PACKAGE, REPO_ID, fingerprints, load_package
 
 
@@ -77,7 +77,8 @@ def verify_remote(api, package, manifest, revision, site_origin, include_metadat
                 cors = response.headers.get('Access-Control-Allow-Origin')
                 return cors, response.read()
 
-        cors, body = retry_429(anonymous_download, 'anonymous public download')
+        cors, body = retry_read(lambda: retry_429(anonymous_download, 'anonymous public download'),
+                               'anonymous public download')
         if cors not in {'*', site_origin}:
             raise ValueError(f'Anonymous browser CORS check failed: {path}')
         if hashlib.sha256(body).hexdigest() != expected[path]['sha256']:

@@ -1,63 +1,72 @@
 # Leaderboard data and publication
 
-The current homepage contains **47 tasks (24 CPU, 23 GPU), three models,
-and 141 selected trials** from the 2026-11-11 final archive. GPT-6.1 Sol scores
-46.4303712901, GPT-6.1 Terra scores 42.5322347241 and GPT-6 Luna scores
-13.1030991867 on the 0–100 mean-task scale. `selection.json` explicitly allows
-these models. Sol uses OpenAI directly; Luna and Terra use OpenRouter, as
-validated against the native session metadata. Their existing results are unchanged.
+The current homepage contains **47 tasks (24 CPU, 23 GPU), four models,
+and 188 selected trials** from the 2026-11-12 final archive. Mean task scores:
+GPT-6.1 Sol 46.4303712901, GPT-6.1 Terra 42.5322347241,
+Kimi K3.1 Pro 26.5999307981, GPT-6 Luna 13.1030991867.
+`selection.json` explicitly allows these models.
 
-The public package is `.build/hf-trajectories-luna-terra-sol/`: 52,178 inventoried
-payload files plus the inventory itself, approximately 1.64 GiB. It contains all
-141 ATIF trajectories and all 141 original coding session text exports, with
-credentials redacted and host paths normalized. Large binary artifacts remain
-listed by name and size without content downloads. Original benchmark records
-are never modified.
+Kimi uses **Moonshot AI for all 47 tasks**, as confirmed by the evaluation
+operator. Its harness is **Claude Code 2.1.309**, matching the benchmark default,
+with max reasoning effort. Harbor's generic `anthropic` adapter label does not
+identify the actual endpoint provider. Sol uses OpenAI directly; Luna and Terra
+use OpenRouter. Their scores and public trial payloads are unchanged.
 
-**Publication is complete.** `storage.json` pins verified HF commit
-`72369be64bb94af4124c804d700cfd16bbd4a1ca`. All 52,179 public files passed remote hash/size checks
-and anonymous JSON/gzip download/CORS checks. The previous Luna/Terra release remains on HF.
+The public package is `.build/hf-trajectories-luna-terra-sol-kimi/`: 83,214
+public files including its inventory, approximately 2.91 GiB. It contains
+188 ATIF trajectories and 196 original session JSONL exports: 141 Codex sessions
+plus 55 Claude Code main/subagent sessions. Credentials are redacted and host
+paths normalized. Large binary artifacts remain listed without content downloads.
+Original benchmark records are never modified.
 
-Prepare, upload, verify and build the production homepage with the existing HF login:
+**Publication verified:** [baa8b4fa26a87b781b0f8594305933bd61d973a1](https://huggingface.co/datasets/search-swe/trajectories/commit/baa8b4fa26a87b781b0f8594305933bd61d973a1).
+All 83,214 public files passed remote size/hash verification and anonymous
+JSON/gzip download/CORS checks. The local production pages pin this revision.
 
-```bash
-python scripts/publish_final_results.py --upload
-```
-
-Without `--upload`, this command prepares and checks the local preview only.
-The upload adds a new release to `search-swe/trajectories`, retaining previous
-HF releases and immutable links. It verifies every remote file's hash and size,
-anonymous JSON/gzip downloads and CORS, then pins `storage.json` to the verified
-commit and builds production pages. Git commit and push remain separate steps.
-The historical `replace_hf_trajectories.py` script remains scoped to the earlier
-Luna/Terra replacement; it is not used to add Sol.
-
-To resume an interrupted upload using the frozen package without reimporting:
+Prepare, append, verify and build with the existing HF login:
 
 ```bash
-python scripts/upload_hf_release.py --package .build/hf-trajectories-luna-terra-sol --upload
+python scripts/publish_final_results.py \
+  --base-package .build/hf-trajectories-luna-terra-sol --upload
 ```
 
-Hub metadata requests explicitly use the existing login. HTTP 429 responses wait
-for the server's reset time (or bounded exponential backoff); pagination retries
-the affected page. Public browser downloads remain anonymous.
-See [the publication guide](../../docs/leaderboard-publication.md) for details.
+Without `--upload`, this prepares and checks the local preview only. The append
+script validates that every existing trial payload is byte-for-byte unchanged,
+uploads only the 47 new Kimi trial directories through the Hub SDK
+`upload_folder` / Xet resumable pipeline, then checks all remote payloads
+before atomically committing the snapshot, dataset card and publication inventory.
+It verifies all final file hashes/sizes and anonymous downloads/CORS before
+pinning `storage.json` and generating production pages. The physical release
+folder is retained; its basename is not the new snapshot ID. Previous immutable
+HF commit URLs remain valid. Git add, commit and push are separate user actions.
 
-To reproduce the local preparation from the current archive:
+Resume an interrupted upload from the frozen package:
 
 ```bash
-python scripts/publish_final_results.py
-python -m http.server 7788 --bind 127.0.0.1
+python scripts/append_hf_trajectories.py \
+  --base-package .build/hf-trajectories-luna-terra-sol \
+  --package .build/hf-trajectories-luna-terra-sol-kimi --upload
 ```
 
-Open <http://localhost:7788/leaderboard/>. Reuse an existing server on that port.
-The importer reads `INDEX.csv`, each `FINAL_RESULT.json`, native result/reward,
-and original session receipts directly. It accepts both `agent/sessions/` and
-`agent/original-codex-sessions/`, requiring exactly one session with an identity
-matching the selected trajectory. Source inventories authenticate exported text
-and selected inputs. Packages, usage receipts and backups stay under `.build/`
-and are excluded from Git. Production builds reject local preview URLs.
-Rebuilding a local preview requires reactivating the verified HF release before deployment.
+The verified commit is recorded in `storage.json` and
+`.build/hf-trajectories-luna-terra-sol-kimi-uploaded.json`. A retry also recovers
+an already committed release if local activation was interrupted. Remote metadata
+changes abort the append; no files are deleted. Hub reads use the current login
+and bounded HTTP 429 retries. Read-only metadata/download requests also retry
+transient connection failures and HTTP 500/502/503/504 up to three times. Ambiguous
+mutation failures are not replayed. Public browser downloads remain anonymous.
+See [the publication guide](../../docs/leaderboard-publication.md).
+
+For local preview, run the preparation command without `--upload`, then reuse
+an existing server at <http://localhost:7788/leaderboard/> (or start
+`python -m http.server 7788 --bind 127.0.0.1`). Rebuilding a preview requires
+reactivating the verified HF release before deployment.
+
+The importer checks INDEX, FINAL_RESULT, result/reward and source inventories.
+Codex requires one original session matching the selected trajectory; Claude Code
+requires the selected main session and includes all archived subagent sessions.
+Packages, private usage receipts and backups remain gitignored under `.build/`.
+Production builds reject preview URLs.
 
 ## Typography and result tables
 
@@ -79,8 +88,8 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
 - A valid zero remains a valid measurement. Agent completion is separate and
   appears in Agent. Original execution duration includes tools and waiting,
   excluding setup and verification. When Harbor lacks original execution times,
-  paired session start/complete events are used. Three trials have no recorded
-  coding end time and display a missing duration; regrade time is never substituted.
+  paired Codex session events or Claude Code cost-state startTime/totalDuration
+  are used. Missing original end times remain missing; regrade time is never substituted.
 - Total tokens in the main leaderboard sum input (including cache) + output
   across the selected All / CPU / GPU task set, not a per-task average. Entry rows
   show Input Tokens, Output Tokens and Cached Tokens; trial summaries show the
@@ -89,10 +98,20 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   time. Verifier/task-internal API usage is excluded. Regrading uses original
   coding usage once. Missing values remain missing.
 - Cost sums selected coding responses at the frozen official USD API rates in
-  `official-pricing.json`, checked 2026-11-11. All three models use standard processing,
-  30-minute cache writes, and per-request long-context rates above 272,000 input
-  tokens. Cache reads/writes are subsets of input and charged once; reasoning
+  `official-pricing.json`, checked 2026-11-12. The OpenAI models use standard
+  processing, 30-minute cache writes and per-request context tiers above 272,000
+  input tokens. Kimi uses standard USD rates: input/write $2, read $0.20 and
+  output $10 per million tokens, uniform across context lengths. Cache reads/writes are subsets of input and charged once; reasoning
   is already included in output. Sources and pricing assumptions remain public.
+- Claude Code receipts are deduplicated by message ID across streaming blocks
+  and subagent sessions. For 40 trials, recorded modelUsage counters also include
+  background/compaction usage. Seven trials have no aggregate counter: the fallback
+  uses deduplicated recorded responses as the final reported token totals and the
+  basis for estimated cost. Unrecorded usage is not estimated. Aggregate
+  remainders are priced only with a flat tariff; no extra response IDs are invented.
+  Claude Code guessed costUSD values are never used.
+  This reporting policy applies to generated pages and `/leaderboard/results.json`;
+  the verified HF snapshot and its original accounting notes remain unchanged.
 - `scripts/leaderboard_costs.py` matches native response usage to every selected
   task/model/effort, verifies trajectory hashes and all published token totals,
   deduplicates response IDs, and calculates with decimal arithmetic before
@@ -231,7 +250,7 @@ unchanged; exported JSON contains no local host source paths in its metadata.
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/import_final_results.py --check
 python scripts/build_leaderboard.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-luna-terra-sol.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-luna-terra-sol-kimi.usage.json --check
 python scripts/build_tasks.py --check
 node --check leaderboard.js
 node --check leaderboard-pareto.js

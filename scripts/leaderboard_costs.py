@@ -80,6 +80,13 @@ def calculate(snapshot, usage, prices):
         for tokens in unique.values():
             cost += request_cost(tokens, prices['models'][config['model']])
             totals.update({key: tokens[key] for key in TOKEN_FIELDS})
+        if row.get('aggregate_remainder') is not None:
+            model = prices['models'][config['model']]
+            if model.get('long_context'):
+                raise ValueError('Aggregate usage cannot be priced with per-request context tiers')
+            remainder = row['aggregate_remainder']
+            cost += request_cost(remainder, model)
+            totals.update({key: remainder[key] for key in TOKEN_FIELDS})
         totals['response_count'] = len(unique)
         if any(totals[k] != trial['tokens'].get(k) for k in (*TOKEN_FIELDS, 'response_count')):
             raise ValueError(f'Usage disagrees with selected trial totals: {trial["id"]}')

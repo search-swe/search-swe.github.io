@@ -1,2 +1,3 @@
 # Only needed for the upload/remote-verification command, never by the website.
-huggingface_hub>=1.0,<2
+huggingface_hub>=1.27,<2
+hf_xet

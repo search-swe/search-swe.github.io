@@ -123,9 +123,10 @@ class SnapshotTests(unittest.TestCase):
         snapshot = self.snapshot
         expected = {'openai/gpt-6-luna': 13.103099186708066,
                     'openai/gpt-6.1-terra': 42.53223472405557,
-                    'gpt-6.1-sol': 46.4303712900911}
+                    'gpt-6.1-sol': 46.4303712900911,
+                    'kimi-k3.1-pro': 26.599930798089026}
         self.assertEqual(len(snapshot['tasks']), 47)
-        self.assertEqual(len(snapshot['trials']), 141)
+        self.assertEqual(len(snapshot['trials']), 188)
         self.assertEqual({entry['model'] for entry in snapshot['entries']}, set(expected))
         for entry in snapshot['entries']:
             trials = [t for t in snapshot['trials'] if t['entry'] == entry['id']]
@@ -139,7 +140,7 @@ class SnapshotTests(unittest.TestCase):
 
     def test_generated_routes_and_no_script_injection(self):
         pages = build.generate()
-        self.assertEqual(len(pages), 147)  # 146 pages plus the cost-enriched download.
+        self.assertEqual(len(pages), 195)  # 194 pages plus the cost-enriched download.
         for trial in self.snapshot['trials']:
             self.assertIn(build.ROOT / f'leaderboard/trials/{trial["id"]}/index.html', pages)
         rendered = build.page('<script>', '<p>test</p>', 'trial', {'message': '</script><script>alert(1)'}, self.snapshot)

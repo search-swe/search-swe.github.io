@@ -1,4 +1,4 @@
-"""Prepare Luna/Terra/Sol public evidence directly from the current final archive.
+"""Prepare the four selected models directly from the current final archive.
 
 No evaluation jobs are changed and no network requests are made. Publication is
 a separate, explicit step in publish_final_results.py.
@@ -18,10 +18,11 @@ from import_results import ROOT, NAMES, TOKEN_FIELDS, digest, encode, export_tra
 from leaderboard_costs import calculate
 from prepare_hf_release import finalize, referenced_files
 from publication import PublicText, load_package, safe_path
+from claude_code_usage import claude_usage
 
-MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol')
+MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1-pro')
 DEFAULT_FINAL = Path('/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs/final-trajectories')
-DEFAULT_PACKAGE = ROOT / '.build/hf-trajectories-luna-terra-sol'
+DEFAULT_PACKAGE = ROOT / '.build/hf-trajectories-luna-terra-sol-kimi'
 CONTENT = ROOT / 'content/leaderboard'
 
 
@@ -30,7 +31,7 @@ def selected_rows(final, tasks):
         rows = [r for r in csv.DictReader(source) if r['model'] in MODELS]
     keys = [(r['task'], r['model']) for r in rows]
     if len(keys) != len(set(keys)) or set(keys) != {(t, m) for t in tasks for m in MODELS}:
-        raise ValueError('Luna, Terra and Sol must each cover exactly the complete task catalog')
+        raise ValueError('Selected models must each cover exactly the complete task catalog')
     return sorted(rows, key=lambda r: (r['task'], r['model']))
 
 
@@ -109,15 +110,15 @@ def coding_time(result, starts, finishes):
     return start, finish, seconds, basis
 
 
-def prepare(final, package):
+def prepare(final, package, base_package=None):
     final, package = final.resolve(), package.resolve()
     catalog = read(ROOT / 'content/tasks/catalog.json')
     rows = selected_rows(final, {t['name'] for t in catalog})
     if len(catalog) != 47:
-        raise ValueError('This publication expects 47 tasks and 141 selected trials')
+        raise ValueError('This publication expects 47 tasks and 188 selected trials')
     policy = read(CONTENT / 'selection.json')
     if policy.get('included_models') != list(MODELS):
-        raise ValueError('Website selection must explicitly contain only Luna, Terra and Sol')
+        raise ValueError('Website selection must explicitly contain the four selected models')
     metadata = read(CONTENT / 'model-metadata.json')
     archive = read(final / 'MANIFEST.json')
     if archive['index_sha256'] != digest((final / 'INDEX.csv').read_bytes()):
@@ -125,11 +126,13 @@ def prepare(final, package):
     settings = {(s['task'], s['model']): s for s in archive['settings']}
     source_hashes = {'index': archive['index_sha256'], 'archive': digest((final / 'MANIFEST.json').read_bytes()),
                      'model_metadata': digest(encode(metadata)), 'selection': digest(encode(policy))}
-    release_id = policy['updated_at'] + '-luna-terra-sol-' + digest(encode(source_hashes))[:10]
-    release_path = 'releases/' + release_id
+    release_id = policy['updated_at'] + '-luna-terra-sol-kimi-' + digest(encode(source_hashes))[:10]
+    # Appending retains the physical corpus directory. Immutable commit URLs keep
+    # the previously published snapshot available without copying its 141 trials.
+    release_path = load_package(base_package)['release_path'] if base_package else 'releases/' + release_id
     if (package / 'publication.json.gz').exists():
         manifest = load_package(package)
-        if manifest['source_hashes'] != source_hashes:
+        if manifest['source_hashes'] != source_hashes or manifest['release_path'] != release_path:
             raise ValueError('Package has different source records; use a new --package directory')
         snapshot = read(package / manifest['release_path'] / 'snapshot.json')
         referenced_files(package / manifest['release_path'], snapshot)
@@ -137,7 +140,7 @@ def prepare(final, package):
     # Retrying an interrupted export is safe only in this exact release directory.
     if package.exists() and any(p.name != 'releases' for p in package.iterdir()):
         raise ValueError('Unrecognized incomplete package; use a new --package directory')
-    if (package / 'releases').exists() and any(p.name != release_id for p in (package / 'releases').iterdir()):
+    if (package / 'releases').exists() and any(p.name != Path(release_path).name for p in (package / 'releases').iterdir()):
         raise ValueError('Incomplete package belongs to another source snapshot')
     public = PublicText(final.parent, scrub)
     snapshot = {'schema': 1, 'id': release_id, 'observed_at': archive['at'], 'source_hashes': source_hashes,
@@ -189,10 +192,38 @@ def prepare(final, package):
         raw = json.loads(trajectory)
         if raw['agent']['model_name'] != row['model']:
             raise ValueError('Selected trajectory model differs')
-        events = [json.loads(line) for line in source(coding_session(trial_root)).splitlines() if line.strip()]
-        provider = coding_provider(pointer, events, raw['session_id'])
-        tokens, requests, starts, finishes = session_usage(events)
-        start, finish, seconds, time_basis = coding_time(result, starts, finishes)
+        extra_usage = None
+        usage_note = 'Per-response native coding receipts, deduplicated by response ID.'
+        if row['model'] == 'kimi-k3.1-pro':
+            agent, provider = 'Claude Code', metadata['models'][row['model']]['provider']
+            if provider != 'Moonshot AI' or raw['agent']['name'] != 'claude-code' or raw['agent']['version'] != '2.1.309':
+                raise ValueError('Kimi provider or harness differs from the confirmed configuration')
+            harness = json.loads(source(trial_root / 'agent/harness.json'))
+            if harness['actual_version'] != '2.1.309' or harness['requested_version'] != '2.1.309':
+                raise ValueError('Kimi installed harness version differs')
+            session_paths = sorted((trial_root / 'agent/sessions').rglob('*.jsonl'))
+            if not any(p.stem == raw['session_id'] for p in session_paths):
+                raise ValueError('Original Claude Code main session missing')
+            sessions = [[json.loads(line) for line in source(p).splitlines() if line.strip()] for p in session_paths]
+            stream = []
+            for line in source(trial_root / 'agent/claude-code.txt').splitlines():
+                try:
+                    stream.append(json.loads(line))
+                except json.JSONDecodeError:
+                    pass  # CLI progress lines are not JSON events.
+            tokens, requests, extra_usage, start, finish, completed, usage_note = claude_usage(
+                sessions, stream, raw['session_id'], row['model'], raw['agent']['version'])
+            starts, finishes = [start] if start else [], [finish] if finish else []
+            start, finish, seconds, time_basis = coding_time(result, starts, finishes)
+            if time_basis.startswith('Native coding session'):
+                time_basis = 'Original Claude Code cost-state startTime/totalDuration; regrade duration excluded.'
+        else:
+            agent = 'Codex'
+            events = [json.loads(line) for line in source(coding_session(trial_root)).splitlines() if line.strip()]
+            provider = coding_provider(pointer, events, raw['session_id'])
+            tokens, requests, starts, finishes = session_usage(events)
+            completed = bool(finishes)
+            start, finish, seconds, time_basis = coding_time(result, starts, finishes)
         entry_id = release_id + '-' + row['model_label']
         trial_id = row['task'] + '-' + row['model_label'] + '-' + digest(trajectory + reward_bytes)[:12]
         destination = package / release_path / 'trials' / trial_id
@@ -207,7 +238,7 @@ def prepare(final, package):
                     raise ValueError(f'Exported evidence differs from source inventory: {group}/{item["name"]}')
         info = metadata['models'][row['model']]
         entry = {'id': entry_id, 'model': row['model'], 'name': NAMES[row['model']], 'effort': row['effort'],
-                 'agent': 'Codex', 'agent_version': raw['agent']['version'], 'provider': provider,
+                 'agent': agent, 'agent_version': raw['agent']['version'], 'provider': provider,
                  'release_date': info['release_date'], 'release_date_source': info['source']}
         if entry_id in entries and entries[entry_id] != entry:
             raise ValueError('Mixed agent configurations in one model entry')
@@ -218,14 +249,13 @@ def prepare(final, package):
         qualification = sanitize({k: v for k, v in qualification.items() if v}, public)
         exception = (result.get('exception_info') or {}).get('exception_type')
         fm = raw.get('final_metrics', {})
-        usage_note = 'Per-response native coding receipts, deduplicated by response ID.'
-        if any(tokens[k] != fm.get(f) for k, f in [('input_tokens', 'total_prompt_tokens'), ('output_tokens', 'total_completion_tokens')]):
+        if agent == 'Codex' and any(tokens[k] != fm.get(f) for k, f in [('input_tokens', 'total_prompt_tokens'), ('output_tokens', 'total_completion_tokens')]):
             usage_note += ' The ATIF summary lags the final receipt; totals include that recorded response.'
-        config = {'agent': 'Codex', 'version': raw['agent']['version'], 'model': row['model'],
+        config = {'agent': agent, 'version': raw['agent']['version'], 'model': row['model'],
                   'effort': row['effort'], 'provider': provider, 'run_mode': pointer.get('mode') or 'native',
                   'task_commit': pointer.get('source_revision'), 'verifier_commit': pointer.get('source_revision')}
         trial = {'id': trial_id, 'entry': entry_id, 'task': row['task'], 'score': score, 'valid': True,
-                 'agent_status': exception or ('completed' if finishes else 'Completion not recorded in the archived session'),
+                 'agent_status': exception or ('completed' if completed else 'Completion not recorded in the archived session'),
                  'agent_seconds': seconds, 'started_at': start, 'finished_at': finish, 'agent_time_basis': time_basis,
                  'tokens': tokens, 'usage_note': usage_note, 'steps': count, 'configuration': config,
                  'qualification': qualification, 'trajectory_url': f'trials/{trial_id}/manifest.json',
@@ -235,6 +265,8 @@ def prepare(final, package):
         snapshot['trials'].append(trial)
         usage_rows.append({'task': row['task'], 'model': row['model'], 'effort': row['effort'],
                            'primary_trajectory_sha256': digest(trajectory), 'requests': requests})
+        if extra_usage is not None:
+            usage_rows[-1]['aggregate_remainder'] = extra_usage
         print(f'Prepared {number:3}/{len(rows)}: {row["task"]} / {row["model_label"]}', flush=True)
     snapshot['entries'] = sorted(entries.values(), key=lambda e: e['id'])
     # Freeze usage outside the upload package, so source receipts are never uploaded accidentally.
@@ -277,6 +309,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--final-dir', type=Path, default=DEFAULT_FINAL)
     parser.add_argument('--package', type=Path, default=DEFAULT_PACKAGE)
+    parser.add_argument('--base-package', type=Path, help='Retain this verified package release directory for append')
     parser.add_argument('--check', action='store_true', help='Validate the prepared public package without writing')
     args = parser.parse_args()
     package = args.package.resolve()
@@ -287,7 +320,7 @@ def main():
         check_site_snapshot(package, manifest)
         print('Public package and homepage snapshot verified; no network requests or writes.')
     else:
-        snapshot, manifest = prepare(args.final_dir, package)
+        snapshot, manifest = prepare(args.final_dir, package, args.base_package)
         install_preview(package, snapshot, manifest)
 
 

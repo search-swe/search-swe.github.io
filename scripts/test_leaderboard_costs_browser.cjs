@@ -23,8 +23,8 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     assert.equal(await page.locator('#view-table').getAttribute('aria-selected'), 'true');
     assert.equal(await page.locator('#panel-pareto').isVisible(), false);
     assert.match(await page.locator('thead th').last().innerText(), /Cost/);
-    assert.match(await page.locator('.cost-note').innerText(), /estimated.*official API rates/);
-    assert.deepEqual(await page.locator('tbody .cost-cell').allTextContents(), ['$250.79', '$232.30', '$13.78']);
+    assert.match(await page.locator('.cost-note').first().innerText(), /estimated.*official API rates/);
+    assert.deepEqual(await page.locator('tbody .cost-cell').allTextContents(), totals('all').sort((a, b) => b.score - a.score).map(e => money(e.cost)));
     for (const direction of ['asc', 'desc']) {
       await page.locator('#sort').selectOption(`cost-${direction}`);
       const expected = totals('all').sort((a, b) => (a.cost - b.cost) * (direction === 'asc' ? 1 : -1));
@@ -35,7 +35,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     assert.equal(await page.locator('#view-pareto').getAttribute('aria-selected'), 'true');
     assert.equal(await page.locator('#panel-table').isVisible(), false);
     assert.equal(await page.locator('.sort-label').isVisible(), false);
-    assert.equal(await page.locator('.pareto-point').count(), 3);
+    assert.equal(await page.locator('.pareto-point').count(), 4);
     assert(await page.locator('.pareto-heading').evaluate(node => {
       const title = node.querySelector('h2').getBoundingClientRect();
       const key = node.querySelector('.pareto-key').getBoundingClientRect();
@@ -87,7 +87,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     await page.setViewportSize({width: 390, height: 844});
     await page.waitForTimeout(150);
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-    assert.equal(await page.locator('.pareto-legend-item').count(), 3);
+    assert.equal(await page.locator('.pareto-legend-item').count(), 4);
     assert(!(await page.locator('#pareto-chart').innerHTML()).match(/NaN|Infinity/));
     await page.locator('#view-table').click();
     await page.locator('.table-frame').evaluate(node => { node.scrollLeft = node.scrollWidth; });
@@ -128,7 +128,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
       assert.equal(await noJS.locator('.metrics > div').count(), 6);
       assert.equal(await noJS.locator('#stat-input-tokens').innerText(), trial.tokens.input_tokens.toLocaleString('en-US'));
       assert.equal(await noJS.locator('.metric-detail').innerText(), `including ${trial.tokens.cached_input_tokens.toLocaleString('en-US')} cached`);
-      assert.match(await noJS.locator('.cost-note').innerText(), /estimated.*official API rates/);
+      assert.match(await noJS.locator('.cost-note').first().innerText(), /estimated.*official API rates/);
       for (const width of [1440, 1280, 390]) {
         await noJS.setViewportSize({width, height: 1000});
         assert.equal(await noJS.locator('#stat-cost').isVisible(), true);
@@ -138,7 +138,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     }
     assert(!requests.some(url => url.includes('huggingface.co')));
     await noJS.goto(`${origin}/leaderboard/`);
-    assert.deepEqual(await noJS.locator('tbody .cost-cell').allTextContents(), ['$250.79', '$232.30', '$13.78']);
+    assert.deepEqual(await noJS.locator('tbody .cost-cell').allTextContents(), totals('all').sort((a, b) => b.score - a.score).map(e => money(e.cost)));
     assert.equal(await noJS.locator('.leaderboard-tabs').isVisible(), false);
     await noJS.close();
     assert.deepEqual(errors, []);

@@ -1,4 +1,4 @@
-"""Authenticated Hub reads and bounded 429 retries, without restarting pagination."""
+"""Authenticated reads with bounded rate-limit/transport retries, page by page."""
 from __future__ import annotations
 
 import math
@@ -49,6 +49,26 @@ def retry_429(operation, label, max_retries=6):
                     print(f'Waiting for HF rate limit reset: {remaining}s remaining.', flush=True)
 
 
+def retry_read(operation, label, max_retries=3):
+    """Retry transient transport/server failures only for explicitly read-only calls."""
+    import httpx
+    for attempt in range(max_retries + 1):
+        try:
+            return operation()
+        except Exception as error:
+            response = getattr(error, 'response', None)
+            status = getattr(response, 'status_code', None) if response is not None else getattr(error, 'code', None)
+            transient = status in {500, 502, 503, 504} or (
+                status is None and isinstance(error, (OSError, httpx.TransportError)))
+            if not transient or attempt == max_retries:
+                raise
+            if response is None and hasattr(error, 'close'):
+                error.close()
+            delay = 2 ** attempt
+            print(f'Transient read failure ({type(error).__name__}): {label}; retrying in {delay}s.', flush=True)
+            time.sleep(delay)
+
+
 def http_client(**kwargs):
     # Imports stay lazy: offline package checks do not require the upload SDK.
     import httpx
@@ -63,14 +83,15 @@ def http_client(**kwargs):
 
             def read_request():
                 response = super(RateLimitClient, self).send(request, **send_kwargs)
-                if response.status_code == 429:
+                if response.status_code in {429, 500, 502, 503, 504}:
                     response.close()
                     response.raise_for_status()
                 return response
 
             # Retry this page alone, including the first SDK pagination request.
             # Exhaustion raises, preventing another SDK status-based retry loop.
-            return retry_429(read_request, 'Hub metadata/download request')
+            return retry_read(lambda: retry_429(read_request, 'Hub metadata/download request'),
+                              'Hub metadata/download request')
 
     return RateLimitClient(follow_redirects=True, timeout=None, **kwargs)
 

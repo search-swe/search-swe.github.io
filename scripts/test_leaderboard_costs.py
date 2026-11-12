@@ -42,7 +42,8 @@ class CostTests(unittest.TestCase):
 
     def test_selected_model_long_context_rates(self):
         usage = tokens(1000000, 800000, 0, 100000)
-        expected = {'openai/gpt-6-luna': '0.131', 'openai/gpt-6.1-terra': '1.23', 'gpt-6.1-sol': '2.46'}
+        expected = {'openai/gpt-6-luna': '0.131', 'openai/gpt-6.1-terra': '1.23', 'gpt-6.1-sol': '2.46',
+                    'kimi-k3.1-pro': '1.56'}
         for model, value in expected.items():
             self.assertEqual(costs.request_cost(usage, self.prices['models'][model]), Decimal(value))
 
