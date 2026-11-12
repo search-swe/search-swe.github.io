@@ -72,6 +72,47 @@ class ClaudeUsageTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Conflicting'):
             self.read(sessions, stream)
 
+    def test_local_synthetic_errors_have_no_tokens_or_response_count(self):
+        sessions, stream = self.fixture()
+        synthetic = {'type': 'assistant', 'message': {'model': '<synthetic>', 'usage': {
+            'input_tokens': 0, 'output_tokens': 0, 'cache_read_input_tokens': 0, 'cache_creation_input_tokens': 0}}}
+        sessions[0].append(synthetic)
+        self.assertEqual(self.read(sessions, stream)[0]['response_count'], 2)
+        synthetic['message']['usage']['output_tokens'] = 1
+        with self.assertRaisesRegex(ValueError, 'Synthetic'):
+            self.read(sessions, stream)
+
+    def test_resumed_session_uses_last_cumulative_result(self):
+        sessions, stream = self.fixture()
+        counter = {'inputTokens': 20, 'cacheReadInputTokens': 160, 'cacheCreationInputTokens': 20,
+                   'outputTokens': 30, 'thinkingTokens': 15}
+        stream += [{'type': 'result', 'modelUsage': {'kimi-k3.1-pro': counter}}, copy.deepcopy(stream[0]),
+                   {'type': 'result', 'modelUsage': {'kimi-k3.1-pro': {**counter, 'inputTokens': 30}}}]
+        totals = self.read(sessions, stream)[0]
+        self.assertEqual(totals['input_tokens'], 210)
+        self.assertEqual(totals['total_tokens'], 240)
+        stream[-1]['modelUsage']['kimi-k3.1-pro']['inputTokens'] = 10
+        with self.assertRaisesRegex(ValueError, 'Regressing'):
+            self.read(sessions, stream)
+
+    def test_partial_receipt_requires_complete_counter_without_invented_reasoning(self):
+        sessions, stream = self.fixture()
+        incomplete = copy.deepcopy(sessions[0][0])
+        incomplete['message']['id'] = 'partial'
+        incomplete['message']['usage']['output_tokens_details'] = None
+        sessions[0].append(incomplete)
+        with self.assertRaisesRegex(ValueError, 'requires a final aggregate'):
+            self.read(sessions, stream)
+        stream.append({'type': 'result', 'modelUsage': {'kimi-k3.1-pro': {
+            'inputTokens': 30, 'cacheReadInputTokens': 240, 'cacheCreationInputTokens': 30,
+            'outputTokens': 32, 'thinkingTokens': 16}}})
+        totals, requests, remainder, *_ = self.read(sessions, stream)
+        self.assertEqual(totals['total_tokens'], 332)
+        self.assertEqual(totals['reasoning_output_tokens'], 16)
+        self.assertEqual(totals['response_count'], 2)
+        self.assertNotIn('partial', [r['response_id'] for r in requests])
+        self.assertEqual(remainder['output_tokens'], 2)
+
 
 if __name__ == '__main__':
     unittest.main()

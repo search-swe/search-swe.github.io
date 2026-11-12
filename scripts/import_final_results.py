@@ -1,4 +1,4 @@
-"""Prepare the four selected models directly from the current final archive.
+"""Prepare the selected models directly from the current final archive.
 
 No evaluation jobs are changed and no network requests are made. Publication is
 a separate, explicit step in publish_final_results.py.
@@ -9,6 +9,7 @@ import argparse
 import csv
 import json
 import math
+import shutil
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
@@ -20,16 +21,25 @@ from prepare_hf_release import finalize, referenced_files
 from publication import PublicText, load_package, safe_path
 from claude_code_usage import claude_usage
 
-MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1-pro')
+MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1-pro', 'anthropic/claude-opus-5.5')
 DEFAULT_FINAL = Path('/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs/final-trajectories')
-DEFAULT_PACKAGE = ROOT / '.build/hf-trajectories-luna-terra-sol-kimi'
+DEFAULT_PACKAGE = ROOT / '.build/hf-trajectories-luna-terra-sol-kimi-opus'
 CONTENT = ROOT / 'content/leaderboard'
+
+
+def entry_model(row):
+    if row['model'] == 'anthropic/claude-opus-5':
+        if (row['task'] != 'constrained-molecular-search' or
+                row.get('model_label') != 'claude-opus-5.5-claude-code-max'):
+            raise ValueError('Unapproved Opus model substitution')
+        return 'anthropic/claude-opus-5.5'
+    return row['model']
 
 
 def selected_rows(final, tasks):
     with (final / 'INDEX.csv').open() as source:
-        rows = [r for r in csv.DictReader(source) if r['model'] in MODELS]
-    keys = [(r['task'], r['model']) for r in rows]
+        rows = [r for r in csv.DictReader(source) if r['model'] in (*MODELS, 'anthropic/claude-opus-5')]
+    keys = [(r['task'], entry_model(r)) for r in rows]
     if len(keys) != len(set(keys)) or set(keys) != {(t, m) for t in tasks for m in MODELS}:
         raise ValueError('Selected models must each cover exactly the complete task catalog')
     return sorted(rows, key=lambda r: (r['task'], r['model']))
@@ -115,10 +125,10 @@ def prepare(final, package, base_package=None):
     catalog = read(ROOT / 'content/tasks/catalog.json')
     rows = selected_rows(final, {t['name'] for t in catalog})
     if len(catalog) != 47:
-        raise ValueError('This publication expects 47 tasks and 188 selected trials')
+        raise ValueError('This publication expects 47 tasks')
     policy = read(CONTENT / 'selection.json')
     if policy.get('included_models') != list(MODELS):
-        raise ValueError('Website selection must explicitly contain the four selected models')
+        raise ValueError('Website selection must explicitly contain the selected models')
     metadata = read(CONTENT / 'model-metadata.json')
     archive = read(final / 'MANIFEST.json')
     if archive['index_sha256'] != digest((final / 'INDEX.csv').read_bytes()):
@@ -126,9 +136,9 @@ def prepare(final, package, base_package=None):
     settings = {(s['task'], s['model']): s for s in archive['settings']}
     source_hashes = {'index': archive['index_sha256'], 'archive': digest((final / 'MANIFEST.json').read_bytes()),
                      'model_metadata': digest(encode(metadata)), 'selection': digest(encode(policy))}
-    release_id = policy['updated_at'] + '-luna-terra-sol-kimi-' + digest(encode(source_hashes))[:10]
+    release_id = policy['updated_at'] + '-luna-terra-sol-kimi-opus-' + digest(encode(source_hashes))[:10]
     # Appending retains the physical corpus directory. Immutable commit URLs keep
-    # the previously published snapshot available without copying its 141 trials.
+    # the previously published snapshot available without duplicating its remote payloads.
     release_path = load_package(base_package)['release_path'] if base_package else 'releases/' + release_id
     if (package / 'publication.json.gz').exists():
         manifest = load_package(package)
@@ -150,7 +160,24 @@ def prepare(final, package, base_package=None):
                                     'WORKSPACE_ROOT': 'Host workspace', 'USER_HOME': 'User home directory'},
                     'note': 'Sanitized public text; source hashes identify the unmodified private archive.'}}
     entries, usage_rows = {}, []
+    previous = {}
+    if base_package:
+        base_snapshot = read(base_package / release_path / 'snapshot.json')
+        base_usage = read(base_package.with_suffix('.usage.json'))
+        previous = {(t['task'], t['configuration']['model']): t for t in base_snapshot['trials']}
+        entries.update({e['id']: e for e in base_snapshot['entries']})
+        usage_rows.extend(base_usage['rows'])
+        # Reuse immutable payloads, including their original redaction/export
+        # format. Re-importing old trials would change published evidence bytes.
+        shutil.copytree(base_package / release_path / 'trials', package / release_path / 'trials', dirs_exist_ok=True)
     for number, row in enumerate(rows, 1):
+        old = previous.get((row['task'], row['model']))
+        if old:
+            if (old['trajectory_sha256'] != row['primary_trajectory_sha256'] or
+                    not math.isclose(old['score'], float(row['score']), abs_tol=1e-8)):
+                raise ValueError('Previously published selection changed; cannot append')
+            snapshot['trials'].append(old)
+            continue
         root = safe_path(final, row['task'] + '/' + row['model_label'])
         pointer = read(safe_path(final, row['metadata']))
         if pointer.get('status') != 'valid' or pointer.get('DO_NOT_USE_AS_FINAL'):
@@ -194,13 +221,25 @@ def prepare(final, package, base_package=None):
             raise ValueError('Selected trajectory model differs')
         extra_usage = None
         usage_note = 'Per-response native coding receipts, deduplicated by response ID.'
-        if row['model'] == 'kimi-k3.1-pro':
-            agent, provider = 'Claude Code', metadata['models'][row['model']]['provider']
-            if provider != 'Moonshot AI' or raw['agent']['name'] != 'claude-code' or raw['agent']['version'] != '2.1.309':
-                raise ValueError('Kimi provider or harness differs from the confirmed configuration')
-            harness = json.loads(source(trial_root / 'agent/harness.json'))
-            if harness['actual_version'] != '2.1.309' or harness['requested_version'] != '2.1.309':
-                raise ValueError('Kimi installed harness version differs')
+        if row['model'] == 'kimi-k3.1-pro' or row['model'].startswith('anthropic/claude-opus-5'):
+            agent = 'Claude Code'
+            provider = 'OpenRouter' if row['model'].startswith('anthropic/') else metadata['models'][row['model']]['provider']
+            if (raw['agent']['name'] != 'claude-code' or raw['agent']['version'] != '2.1.309' or
+                    (provider == 'OpenRouter' and (pointer.get('provider') != 'openrouter' or row['effort'] != 'max')) or
+                    (row['model'] == 'kimi-k3.1-pro' and provider != 'Moonshot AI')):
+                raise ValueError('Claude Code provider or harness differs from the confirmed configuration')
+            if provider == 'OpenRouter':
+                coding_config = json.loads(source(trial_root / 'config.json'))['agent']
+                if (coding_config['name'] != 'scripts.evaluation.harbor_agents:ManagedOpenRouterClaudeCode' or
+                        coding_config['model_name'] != row['model'] or
+                        coding_config['kwargs'].get('version') != '2.1.309' or
+                        coding_config['kwargs'].get('reasoning_effort') != 'max'):
+                    raise ValueError('Opus coding configuration differs from the selected model/provider/effort')
+            harness_path = trial_root / 'agent/harness.json'
+            if harness_path.exists():
+                harness = json.loads(source(harness_path))
+                if harness['actual_version'] != '2.1.309' or harness['requested_version'] != '2.1.309':
+                    raise ValueError('Claude Code installed harness version differs')
             session_paths = sorted((trial_root / 'agent/sessions').rglob('*.jsonl'))
             if not any(p.stem == raw['session_id'] for p in session_paths):
                 raise ValueError('Original Claude Code main session missing')
@@ -236,8 +275,9 @@ def prepare(final, package, base_package=None):
                 expected = inventory[path.relative_to(output).as_posix()]
                 if item['bytes'] != expected['bytes'] or (item['source_sha256'] and item['source_sha256'] != expected['sha256']):
                     raise ValueError(f'Exported evidence differs from source inventory: {group}/{item["name"]}')
-        info = metadata['models'][row['model']]
-        entry = {'id': entry_id, 'model': row['model'], 'name': NAMES[row['model']], 'effort': row['effort'],
+        model = entry_model(row)
+        info = metadata['models'][model]
+        entry = {'id': entry_id, 'model': model, 'name': NAMES[model], 'effort': row['effort'],
                  'agent': agent, 'agent_version': raw['agent']['version'], 'provider': provider,
                  'release_date': info['release_date'], 'release_date_source': info['source']}
         if entry_id in entries and entries[entry_id] != entry:
@@ -261,6 +301,12 @@ def prepare(final, package, base_package=None):
                  'qualification': qualification, 'trajectory_url': f'trials/{trial_id}/manifest.json',
                  'trajectory_sha256': digest(trajectory), 'reward_sha256': digest(reward_bytes),
                  'reward': sanitize(reward, public), 'redacted_fields': redactions}
+        if model != row['model']:
+            if not pointer.get('actual_model_substitution') or pointer.get('requested_scoreboard_model') != model:
+                raise ValueError('Model substitution lacks explicit archive provenance')
+            substitution = next(s for s in policy['model_substitutions'] if
+                                s['task'] == row['task'] and s['actual_model'] == row['model'] and s['requested_model'] == model)
+            trial['model_substitution'] = substitution
         write(destination / 'evaluation.json', {k: trial[k] for k in ('score', 'reward', 'configuration', 'qualification')})
         snapshot['trials'].append(trial)
         usage_rows.append({'task': row['task'], 'model': row['model'], 'effort': row['effort'],

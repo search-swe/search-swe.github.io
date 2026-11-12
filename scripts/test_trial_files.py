@@ -25,7 +25,8 @@ class TrialFileTests(unittest.TestCase):
             (source / 'agent/codex.txt').write_text('message\n' * 10000)
             session = source / 'agent/sessions/2026/10/30/rollout.jsonl'
             session.parent.mkdir(parents=True)
-            session.write_text(json.dumps({'type': 'session_meta', 'env': {'API_KEY': 'private-value'}}) + '\n')
+            session.write_text(json.dumps({'type': 'session_meta', 'text': 'one\u2028two\u2029three',
+                                           'env': {'API_KEY': 'private-value'}}, ensure_ascii=False) + '\n')
             (source / 'agent/trajectory.json').write_text('{"steps": []}')
             (source / 'artifacts/run.py').write_text('print("hello")')
             (source / 'artifacts/.env').write_text('SECRET=value')
@@ -56,6 +57,7 @@ class TrialFileTests(unittest.TestCase):
             agent_files = {f['name']: f for f in index['groups']['agent']}
             self.assertIn('trajectory.json', agent_files)
             self.assertEqual(json.loads(body(agent_files['sessions/2026/10/30/rollout.jsonl']))['env']['API_KEY'], '[REDACTED: environment value]')
+            self.assertEqual(json.loads(body(agent_files['sessions/2026/10/30/rollout.jsonl']))['text'], 'one\u2028two\u2029three')
             self.assertEqual(index['exception']['exception_type'], 'AgentTimeoutError')
             self.assertEqual(index['groups']['exception'], [])
             export_files(source, final, output, scrub, write, check=True)

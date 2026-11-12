@@ -80,7 +80,7 @@ def main():
         # Current Hub + hf_xet stream and commit adaptive batches; reruns detect
         # already committed files and deduplicate uploaded chunks on the server.
         api.upload_folder(repo_id=REPO_ID, folder_path=package, repo_type='dataset', revision='main',
-                          allow_patterns=additions, commit_message='Add Search-SWE Kimi K3.1 Pro trajectories')
+                          allow_patterns=additions, commit_message=f'Add {len(additions)} Search-SWE trajectories: {manifest["snapshot_id"]}')
         revision = api.repo_info(REPO_ID, repo_type='dataset').sha
         print(f'Payload upload finished at {revision}; verifying every remote payload before publication.', flush=True)
         if not metadata_matches(api, base_package, base, revision):
@@ -93,7 +93,7 @@ def main():
             raise ValueError('Local snapshot changed during upload')
         from huggingface_hub import CommitOperationAdd
         commit = retry_429(lambda: api.create_commit(REPO_ID, repo_type='dataset', parent_commit=revision,
-            commit_message=f'Publish Search-SWE Kimi K3.1 Pro: {manifest["snapshot_id"]}',
+            commit_message=f'Publish Search-SWE: {manifest["snapshot_id"]}',
             operations=[CommitOperationAdd(path_in_repo=p, path_or_fileobj=package / p)
                         for p in ['README.md', 'publication.json.gz', snapshot_path]]), 'append metadata commit')
         revision = commit.oid

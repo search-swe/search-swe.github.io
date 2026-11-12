@@ -104,6 +104,21 @@ def cost_note(snapshot):
     return f'<p class="cost-note">Cost is estimated from recorded agent tokens at <a href="/content/leaderboard/official-pricing.json">official API rates</a> in USD ({snapshot["cost_methodology"]["as_of"]}; standard processing, including model-specific cache writes and context rates).</p>'
 
 
+def substitution_note(trials, detailed=False):
+    notes = []
+    for trial in trials:
+        sub = trial.get('model_substitution')
+        if not sub:
+            continue
+        link = f'<a href="/leaderboard/trials/{esc(trial["id"])}/">{esc(trial["task"])}</a>'
+        text = (f'Claude Opus 5.5: {link} uses Opus 5 after five biology-safety refusals.' if not detailed else
+                'This result uses Claude Opus 5 after five Opus 5.5 biology-safety refusals, following '
+                f'<a href="{esc(sub["policy_source"])}">Anthropic’s recommended fallback</a>. '
+                'The score, tokens, time and cost are from the selected Opus 5 run.')
+        notes.append(f'<p class="cost-note model-substitution-note">{text}</p>')
+    return ''.join(notes)
+
+
 def sort_heading(label, key, css='', active=False):
     direction = 'descending' if active else 'none'
     arrow = '↓' if active else '↕'
@@ -132,7 +147,7 @@ def leaderboard(snapshot):
 <section id="panel-table" role="tabpanel" aria-labelledby="view-table"><div class="table-frame"><table class="leaderboard-table"><caption class="sr-only">Model leaderboard</caption><thead><tr><th>Rank</th><th>Model</th><th>Agent</th>{sort_heading('Mean task score (%)', 'score', active=True)}{sort_heading('Release Date', 'date', 'release-date')}<th class="coverage">Tasks</th>{sort_heading('Total tokens', 'tokens', 'token-cell')}{sort_heading('Cost', 'cost', 'cost-cell numeric')}</tr></thead><tbody>{''.join(rows)}</tbody></table><p class="empty-state" hidden>No matching models. Try a different search.</p></div></section>
 <section id="panel-pareto" class="pareto-panel" role="tabpanel" aria-labelledby="view-pareto" hidden><div class="pareto-heading"><div class="pareto-axis-control"><h2><label for="pareto-x">Score vs.</label></h2><select id="pareto-x" aria-label="Pareto x-axis"><option value="cost">Cost</option><option value="tokens">Tokens</option><option value="time">Time</option></select></div><span class="pareto-key">Pareto frontier</span></div><div id="pareto-chart" class="pareto-chart"></div><p id="pareto-empty" class="empty-state" hidden>No matching models with recorded cost data.</p><div id="pareto-legend" class="pareto-legend" aria-label="Models in the chart"></div><p id="pareto-note" class="pareto-note"></p></section>
 <div class="table-caption"><span id="scope-caption">All {len(snapshot['tasks'])} tasks · one selected evaluation per model and task</span><a href="{esc(snapshot.get('download_url', '/content/leaderboard/releases/' + snapshot['id'] + '.json'))}" download>Download results JSON ↓</a></div>
-{methodology()}{cost_note(snapshot)}'''
+{substitution_note(snapshot['trials'])}{methodology()}{cost_note(snapshot)}'''
     return page('Leaderboard', body, 'leaderboard', snapshot, snapshot)
 
 
@@ -155,7 +170,7 @@ def entry_page(entry, snapshot):
     body = f'''<nav class="breadcrumbs"><a id="back-leaderboard" href="/leaderboard/">← Leaderboard</a><span>/ Evaluation entry</span></nav>
 <h1>{esc(entry['name'])}</h1><div class="entry-meta"><p class="entry-subtitle">reasoning effort {esc(entry['effort'])} <span class="dot">·</span> Last Updated <time datetime="{snapshot['observed_at'][:10]}">{snapshot['observed_at'][:10]}</time></p>
 <div class="id-line"><code>{entry['model']}</code><button class="copy-button" data-copy="{entry['model']}" hidden>Copy model ID</button></div></div>
-<div class="section-heading"><h2>Task results</h2><a href="/tasks/">Task catalog ↗</a></div>
+{substitution_note(trials)}<div class="section-heading"><h2>Task results</h2><a href="/tasks/">Task catalog ↗</a></div>
 {controls('Search tasks…', sorts)}
 <div class="table-frame"><table class="entry-table"><caption class="sr-only">Task results for {esc(entry['name'])}</caption><thead><tr><th>Task</th><th class="hardware-cell">Hardware</th><th class="agent-cell">Agent</th><th class="provider-cell">Provider</th>{sort_heading('Task score (%)', 'score', 'score-cell numeric')}{sort_heading('Agent time', 'time', 'duration-cell numeric')}{sort_heading('Input Tokens', 'input', 'input-tokens numeric')}{sort_heading('Output Tokens', 'output', 'output-tokens numeric')}{sort_heading('Cached Tokens', 'cached', 'cached-tokens numeric')}{sort_heading('Cost', 'cost', 'cost-cell numeric')}<th class="trajectory-cell">Trajectory</th></tr></thead><tbody>{''.join(rows)}</tbody></table><p class="empty-state" hidden>No matching tasks. Try a different search.</p></div>
 <p class="table-caption" id="scope-caption">{len(trials)} selected evaluations · valid zero scores included</p>{methodology(task_scores=True)}{cost_note(snapshot)}'''
@@ -199,7 +214,8 @@ def trial_page(trial, entry, snapshot, siblings):
                           if qualification else '')
     body = f'''<nav class="breadcrumbs"><a href="/leaderboard/">Leaderboard</a><span>/</span><a id="back-entry" href="/leaderboard/entries/{entry['id']}/">{esc(entry['name'])}</a><span>/ Trial</span></nav>
 <div class="eyebrow">{task['hardware'].upper()} TASK <span class="status-valid">Valid result</span></div><h1 class="trial-title">{esc(task['title'])}</h1>
-<p class="entry-subtitle">{esc(entry['name'])} <span class="dot">·</span> {esc(configuration['agent'])} <span class="inline-meta">(v{esc(configuration['version'].removeprefix('v'))})</span> <span class="dot">·</span> reasoning effort {esc(configuration['effort'])}</p>
+<p class="entry-subtitle">{esc('Claude Opus 5' if trial.get('model_substitution') else entry['name'])} <span class="dot">·</span> {esc(configuration['agent'])} <span class="inline-meta">(v{esc(configuration['version'].removeprefix('v'))})</span> <span class="dot">·</span> reasoning effort {esc(configuration['effort'])}</p>
+{substitution_note([trial], detailed=True)}
 <div class="trial-links"><a href="/tasks/{task['name']}/">Task description ↗</a>{revision}<button id="copy-page" class="copy-button" hidden>Copy link</button><span class="adjacent">{adjacent}</span></div>
 {metrics([('stat-score','Task score (%)',f"{trial['score']:.1f}"),*token_metrics,('stat-time','Agent time',esc(duration(trial['agent_seconds']))),('stat-cost','Cost',money(trial.get('cost_usd'))),('stat-steps','Recorded steps',f"{trial['steps']:,}")], token_detail)}
 {cost_note(snapshot)}

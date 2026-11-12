@@ -27,7 +27,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     assert.equal(await page.locator('#view-table').getAttribute('aria-selected'), 'true');
     assert.equal(await page.locator('#panel-pareto').isVisible(), false);
     assert.match(await page.locator('thead th').last().innerText(), /Cost/);
-    assert.match(await page.locator('.cost-note').first().innerText(), /estimated.*official API rates/);
+    assert.match(await page.locator('.cost-note:not(.model-substitution-note)').first().innerText(), /estimated.*official API rates/);
     assert.deepEqual(await page.locator('tbody .cost-cell').allTextContents(), totals('all').sort((a, b) => b.score - a.score).map(e => money(e.cost)));
     for (const direction of ['asc', 'desc']) {
       await page.locator('#sort').selectOption(`cost-${direction}`);
@@ -40,13 +40,13 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     assert.equal(await page.locator('#panel-table').isVisible(), false);
     assert.equal(await page.locator('.sort-label').isVisible(), false);
     assert.deepEqual(await page.locator('#pareto-x option').allTextContents(), ['Cost', 'Tokens', 'Time']);
-    assert.equal(await page.locator('.pareto-point').count(), 4);
+    assert.equal(await page.locator('.pareto-point').count(), data.entries.length);
     assert(await page.locator('.pareto-heading').evaluate(node => {
       const title = node.querySelector('h2').getBoundingClientRect();
       const key = node.querySelector('.pareto-key').getBoundingClientRect();
       return Math.abs(title.y + title.height / 2 - key.y - key.height / 2) < 1;
     }));
-    assert.deepEqual((await page.locator('.pareto-point[data-frontier="true"]').evaluateAll(nodes => nodes.map(n => n.dataset.entry))).map(id => byId.get(id).model).sort(), ['gpt-6.1-sol', 'openai/gpt-6-luna', 'openai/gpt-6.1-terra']);
+    assert.deepEqual((await page.locator('.pareto-point[data-frontier="true"]').evaluateAll(nodes => nodes.map(n => n.dataset.entry))).map(id => byId.get(id).model).sort(), ['anthropic/claude-opus-5.5', 'gpt-6.1-sol', 'openai/gpt-6-luna', 'openai/gpt-6.1-terra']);
     await page.locator('.pareto-point').first().hover();
     assert.equal(await page.locator('.pareto-tooltip').isVisible(), true);
     await page.locator('#filter').fill('glm');
@@ -129,12 +129,12 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     await page.setViewportSize({width: 390, height: 844});
     await page.waitForTimeout(150);
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-    assert.equal(await page.locator('.pareto-legend-item').count(), 4);
+    assert.equal(await page.locator('.pareto-legend-item').count(), data.entries.length);
     assert(!(await page.locator('#pareto-chart').innerHTML()).match(/NaN|Infinity/));
     for (const axis of ['time', 'cost', 'tokens']) {
       await page.locator('#pareto-x').selectOption(axis);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-      assert.equal(await page.locator('.pareto-point').count(), 4);
+      assert.equal(await page.locator('.pareto-point').count(), data.entries.length);
       assert(!(await page.locator('#pareto-chart').innerHTML()).match(/NaN|Infinity/));
     }
     await page.goto(`${origin}/leaderboard/?view=pareto&x=release-date`);
@@ -179,7 +179,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
       assert.equal(await noJS.locator('.metrics > div').count(), 6);
       assert.equal(await noJS.locator('#stat-input-tokens').innerText(), trial.tokens.input_tokens.toLocaleString('en-US'));
       assert.equal(await noJS.locator('.metric-detail').innerText(), `including ${trial.tokens.cached_input_tokens.toLocaleString('en-US')} cached`);
-      assert.match(await noJS.locator('.cost-note').first().innerText(), /estimated.*official API rates/);
+      assert.match(await noJS.locator('.cost-note:not(.model-substitution-note)').first().innerText(), /estimated.*official API rates/);
       for (const width of [1440, 1280, 390]) {
         await noJS.setViewportSize({width, height: 1000});
         assert.equal(await noJS.locator('#stat-cost').isVisible(), true);
@@ -214,7 +214,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
         assert(Math.abs(position.y - initial) <= 1, `${width}x${height}, ${axis}: scrolled from ${initial} to ${position.y}`);
         assert.equal(position.focused, 'pareto-x');
         assert.equal(navigations, navigationCount, 'Changing the axis must not reload the document');
-        assert.equal(await scrollPage.locator(`.pareto-point[data-axis="${axis}"]`).count(), 4);
+        assert.equal(await scrollPage.locator(`.pareto-point[data-axis="${axis}"]`).count(), data.entries.length);
       }
     }
     await scrollPage.close();

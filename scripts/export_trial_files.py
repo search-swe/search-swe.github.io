@@ -91,11 +91,14 @@ def export_files(source_trial, final_verifier, output, scrub, write, check=False
         if suffix == '.jsonl' or path.name == 'claude-code.txt':
             # Native session records can also contain structured environment values.
             lines = []
-            for line in value.splitlines(keepends=True):
+            # U+2028/U+2029 are legal inside JSON strings, not JSONL delimiters.
+            for line in value.split('\n'):
+                if not line:
+                    continue
                 try:
                     lines.append(json.dumps(sanitize(json.loads(line), scrub), ensure_ascii=False) + '\n')
                 except json.JSONDecodeError:
-                    lines.append(scrub(line))
+                    lines.append(scrub(line) + '\n')
             value = ''.join(lines)
         elif suffix == '.json':
             try:

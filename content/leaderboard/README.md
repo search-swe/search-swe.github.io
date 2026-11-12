@@ -1,72 +1,80 @@
 # Leaderboard data and publication
 
-The current homepage contains **47 tasks (24 CPU, 23 GPU), four models,
-and 188 selected trials** from the 2026-11-12 final archive. Mean task scores:
+The current homepage contains **47 tasks (24 CPU, 23 GPU), five leaderboard
+entries, and 235 selected trials**. Mean task scores: Claude Opus 5.5 48.4108822466,
 GPT-6.1 Sol 46.4303712901, GPT-6.1 Terra 42.5322347241,
 Kimi K3.1 Pro 26.5999307981, GPT-6 Luna 13.1030991867.
-`selection.json` explicitly allows these models.
+`selection.json` explicitly records the included models and the sole substitution.
 
-Kimi uses **Moonshot AI for all 47 tasks**, as confirmed by the evaluation
-operator. Its harness is **Claude Code 2.1.309**, matching the benchmark default,
-with max reasoning effort. Harbor's generic `anthropic` adapter label does not
-identify the actual endpoint provider. Sol uses OpenAI directly; Luna and Terra
-use OpenRouter. Their scores and public trial payloads are unchanged.
+The Opus entry uses **Claude Code 2.1.309 / max / OpenRouter** for all 47 tasks,
+matching the benchmark default harness version. It contains 46 actual Opus 5.5
+runs and one **Opus 5** run for `constrained-molecular-search` (score 19.5839).
+Five prior Opus 5.5 attempts each recorded `api_refusal_category: bio` and
+`model_refusal_no_fallback`. [Anthropic's Claude Code documentation](https://code.claude.com/docs/en/model-config#automatic-model-fallback)
+recommends Opus 5 for biology-flagged Opus 5.5 requests. The five-attempt limit and
+benchmark attribution are evaluation decisions, not an official benchmark rule.
+The leaderboard, model entry and task detail disclose this substitution; the
+trial's configuration, trajectory and cost calculation retain the actual Opus 5
+identity. Failed attempts are outside the selected-run accounting scope.
 
-The public package is `.build/hf-trajectories-luna-terra-sol-kimi/`: 83,214
-public files including its inventory, approximately 2.91 GiB. It contains
-188 ATIF trajectories and 196 original session JSONL exports: 141 Codex sessions
-plus 55 Claude Code main/subagent sessions. Credentials are redacted and host
-paths normalized. Large binary artifacts remain listed without content downloads.
-Original benchmark records are never modified.
+All 15,567 files in the 47 Opus source inventories passed byte-size and SHA-256
+checks. Each selected result/reward agrees with INDEX and FINAL_RESULT. All 47
+have final aggregate usage and original coding time: **912,829,589 tokens** and
+**$498.74161865** at official standard API rates. Resumed Claude sessions use their
+last cumulative counter; local synthetic API-error messages contribute no usage.
+One interrupted response in `layout-page-search` lacks a reasoning breakdown;
+its complete aggregate counters cover the usage without inventing per-call values.
+JSONL parsing respects literal Unicode line separators inside JSON strings.
 
-**Publication verified:** [baa8b4fa26a87b781b0f8594305933bd61d973a1](https://huggingface.co/datasets/search-swe/trajectories/commit/baa8b4fa26a87b781b0f8594305933bd61d973a1).
-All 83,214 public files passed remote size/hash verification and anonymous
-JSON/gzip download/CORS checks. The local production pages pin this revision.
+Kimi uses Moonshot AI; Sol uses OpenAI directly; Luna and Terra use OpenRouter.
+Their 188 published trial summaries and payloads are unchanged.
+
+The public package is `.build/hf-trajectories-luna-terra-sol-kimi-opus/`:
+**99,100 public files**, approximately **3.34 GiB**, with 235 ATIF trajectories
+and 243 original session JSONL exports (141 Codex, 102 Claude Code).
+Credentials are redacted and host paths normalized. Large binary artifacts remain
+listed without content downloads. Original benchmark records are never modified.
+The verified HF revision and receipt are recorded in `storage.json` and
+`.build/hf-trajectories-luna-terra-sol-kimi-opus-uploaded.json`.
+
+**Publication verified:** [bbaaac80df3c6e6eae532705aeec26c627cdc37b](https://huggingface.co/datasets/search-swe/trajectories/commit/bbaaac80df3c6e6eae532705aeec26c627cdc37b).
+All 99,100 remote files passed size/hash checks and anonymous JSON/gzip downloads
+with CORS. The local production pages pin this revision. Website Git staging,
+commit and push remain separate from the uploader.
 
 Prepare, append, verify and build with the existing HF login:
 
 ```bash
 python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-luna-terra-sol --upload
+  --base-package .build/hf-trajectories-luna-terra-sol-kimi \
+  --package .build/hf-trajectories-luna-terra-sol-kimi-opus --upload
 ```
 
 Without `--upload`, this prepares and checks the local preview only. The append
-script validates that every existing trial payload is byte-for-byte unchanged,
-uploads only the 47 new Kimi trial directories through the Hub SDK
-`upload_folder` / Xet resumable pipeline, then checks all remote payloads
-before atomically committing the snapshot, dataset card and publication inventory.
-It verifies all final file hashes/sizes and anonymous downloads/CORS before
-pinning `storage.json` and generating production pages. The physical release
-folder is retained; its basename is not the new snapshot ID. Previous immutable
-HF commit URLs remain valid. Git add, commit and push are separate user actions.
+script preserves all old payload bytes, uploads only the 47 new trial directories
+through the Hub SDK's resumable Xet pipeline, and verifies remote files before
+atomically publishing snapshot, dataset card and inventory. Final anonymous
+JSON/gzip downloads and CORS checks precede production activation. The physical
+release directory is retained; old immutable commit URLs remain valid.
+Git add, commit and push are separate user actions.
 
-Resume an interrupted upload from the frozen package:
+Resume an interrupted upload directly from the frozen package:
 
 ```bash
 python scripts/append_hf_trajectories.py \
-  --base-package .build/hf-trajectories-luna-terra-sol \
-  --package .build/hf-trajectories-luna-terra-sol-kimi --upload
+  --base-package .build/hf-trajectories-luna-terra-sol-kimi \
+  --package .build/hf-trajectories-luna-terra-sol-kimi-opus --upload
 ```
 
-The verified commit is recorded in `storage.json` and
-`.build/hf-trajectories-luna-terra-sol-kimi-uploaded.json`. A retry also recovers
-an already committed release if local activation was interrupted. Remote metadata
-changes abort the append; no files are deleted. Hub reads use the current login
-and bounded HTTP 429 retries. Read-only metadata/download requests also retry
-transient connection failures and HTTP 500/502/503/504 up to three times. Ambiguous
-mutation failures are not replayed. Public browser downloads remain anonymous.
+No files are deleted. Remote metadata changes abort the append. Hub reads use
+the current login and bounded HTTP 429/transient-failure retries; browser reads
+remain anonymous. Packages, private usage receipts and backups stay gitignored
+under `.build/`. Production builds reject preview URLs.
 See [the publication guide](../../docs/leaderboard-publication.md).
 
-For local preview, run the preparation command without `--upload`, then reuse
-an existing server at <http://localhost:7788/leaderboard/> (or start
-`python -m http.server 7788 --bind 127.0.0.1`). Rebuilding a preview requires
+For local preview, omit `--upload` and reuse <http://localhost:7788/leaderboard/>,
+or run `python -m http.server 7788 --bind 127.0.0.1`. A preview rebuild requires
 reactivating the verified HF release before deployment.
-
-The importer checks INDEX, FINAL_RESULT, result/reward and source inventories.
-Codex requires one original session matching the selected trajectory; Claude Code
-requires the selected main session and includes all archived subagent sessions.
-Packages, private usage receipts and backups remain gitignored under `.build/`.
-Production builds reject preview URLs.
 
 ## Typography and result tables
 
@@ -101,11 +109,13 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   `official-pricing.json`, checked 2026-11-12. The OpenAI models use standard
   processing, 30-minute cache writes and per-request context tiers above 272,000
   input tokens. Kimi uses standard USD rates: input/write $2, read $0.20 and
-  output $10 per million tokens, uniform across context lengths. Cache reads/writes are subsets of input and charged once; reasoning
+  output $10 per million tokens, uniform across context lengths. Opus 5.5 uses
+  input/read/write/output $4/$0.20/$5/$20, and the Opus 5 substitution uses
+  $5/$0.50/$6.25/$25 per million tokens (5-minute writes). Cache reads/writes are subsets of input and charged once; reasoning
   is already included in output. Sources and pricing assumptions remain public.
 - Claude Code receipts are deduplicated by message ID across streaming blocks
-  and subagent sessions. For 40 trials, recorded modelUsage counters also include
-  background/compaction usage. Seven trials have no aggregate counter: the fallback
+  and subagent sessions. For 40 Kimi trials, recorded modelUsage counters also include
+  background/compaction usage. Seven Kimi trials have no aggregate counter: the fallback
   uses deduplicated recorded responses as the final reported token totals and the
   basis for estimated cost. Unrecorded usage is not estimated. Aggregate
   remainders are priced only with a flat tariff; no extra response IDs are invented.
@@ -113,7 +123,7 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   This reporting policy applies to generated pages and `/leaderboard/results.json`;
   the verified HF snapshot and its original accounting notes remain unchanged.
   Only affected trial pages show a short fallback explanation in Agent details;
-  leaderboard and model overview pages keep the shared API pricing note only.
+  Kimi accounting notes do not appear on the leaderboard or model overview. The Opus model-substitution note is separate.
 - `scripts/leaderboard_costs.py` matches native response usage to every selected
   task/model/effort, verifies trajectory hashes and all published token totals,
   deduplicates response IDs, and calculates with decimal arithmetic before
@@ -258,7 +268,7 @@ unchanged; exported JSON contains no local host source paths in its metadata.
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/import_final_results.py --check
 python scripts/build_leaderboard.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-luna-terra-sol-kimi.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-luna-terra-sol-kimi-opus.usage.json --check
 python scripts/build_tasks.py --check
 node --check leaderboard.js
 node --check leaderboard-pareto.js

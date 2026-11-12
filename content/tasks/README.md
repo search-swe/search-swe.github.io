@@ -8,6 +8,11 @@ Hugging Face dataset paths.
 The 47 task settings were synchronized on 2026-11-08 against benchmark commit
 [`ed7544f`](https://github.com/VectorSpaceLab/Search-SWE/commit/ed7544f4aeb1fe8a072edc77ece1f2f4a742bfda).
 Instruction, task-documentation and runtime links in the settings pin that revision.
+Reviewed again on 2026-11-13 against benchmark commit
+[`a09bca1`](https://github.com/VectorSpaceLab/Search-SWE/commit/a09bca19014e31426a3730680970b55714d922ff).
+All 47 tasks and their resource settings remain aligned. Subsequent task changes
+repair Java runtime availability without changing the task contracts or scoring;
+the existing setting links retain their synchronized revision.
 Check the invoked verifier and scoring constants as well as instructions when
 updating timing repetitions, judge aggregation, reference values and failure rules.
 Published leaderboard results remain tied to their recorded evaluation snapshots;

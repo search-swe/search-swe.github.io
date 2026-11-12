@@ -8,7 +8,7 @@ const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'leaderboard/results.json')));
 const read = name => {
   const file = /^https?:/.test(name)
-    ? path.join(path.resolve(root, process.env.HF_PACKAGE || '.build/hf-trajectories-luna-terra-sol-kimi'), new URL(name).pathname)
+    ? path.join(path.resolve(root, process.env.HF_PACKAGE || '.build/hf-trajectories-luna-terra-sol-kimi-opus'), new URL(name).pathname)
     : path.join(root, name);
   return JSON.parse(fs.readFileSync(file));
 };
@@ -21,22 +21,22 @@ const read = name => {
     page.on('pageerror', error => errors.push(error.message));
     page.on('request', request => requests.push(request.url()));
     await page.goto(`${origin}/leaderboard/`);
-    assert.equal(await page.locator('tbody tr:visible').count(), 4);
-    assert.deepEqual(await page.locator('.score-value').allTextContents(), ['46.4', '42.5', '26.6', '13.1']);
-    assert.deepEqual(await page.locator('tbody .coverage').allTextContents(), Array(4).fill('47 / 47'));
-    assert.deepEqual(await page.locator('tbody .token-cell').allTextContents(), ['939.0M', '2.25B', '786.9M', '817.2M']);
-    assert.equal(await page.locator('tbody .token-cell').first().getAttribute('title'), '939,038,729 tokens');
+    assert.equal(await page.locator('tbody tr:visible').count(), 5);
+    assert.deepEqual(await page.locator('.score-value').allTextContents(), ['48.4', '46.4', '42.5', '26.6', '13.1']);
+    assert.deepEqual(await page.locator('tbody .coverage').allTextContents(), Array(5).fill('47 / 47'));
+    assert.deepEqual(await page.locator('tbody .token-cell').allTextContents(), ['912.8M', '939.0M', '2.25B', '786.9M', '817.2M']);
+    assert.equal(await page.locator('tbody .token-cell').first().getAttribute('title'), '912,829,589 tokens');
     assert(!requests.some(url => url.includes('/traces/')));
-    assert.equal(await page.locator('.model-name').first().innerText(), 'GPT-6.1 Sol (max)');
-    assert.equal(await page.locator('.agent-cell').first().innerText(), 'Codex (v0.164.0)');
+    assert.equal(await page.locator('.model-name').first().innerText(), 'Claude Opus 5.5 (max)');
+    assert.equal(await page.locator('.agent-cell').first().innerText(), 'Claude Code (v2.1.309)');
     assert(!(await page.locator('tbody').innerText()).includes('OpenRouter'));
-    assert.deepEqual(await page.locator('tbody .release-date').allTextContents(), ['2026-09-29', '2026-10-26', '2026-10-23', '2026-09-22']);
+    assert.deepEqual(await page.locator('tbody .release-date').allTextContents(), ['2026-09-22', '2026-09-29', '2026-10-26', '2026-10-23', '2026-09-22']);
     const idFor = name => snapshot.entries.find(entry => entry.name === name).id;
-    const rankedIds = ['GPT-6.1 Sol', 'GPT-6.1 Terra', 'Kimi K3.1 Pro', 'GPT-6 Luna'].map(idFor);
+    const rankedIds = ['Claude Opus 5.5', 'GPT-6.1 Sol', 'GPT-6.1 Terra', 'Kimi K3.1 Pro', 'GPT-6 Luna'].map(idFor);
     const sortOrders = {
-      'score-desc': [0, 1, 2, 3], 'score-asc': [3, 2, 1, 0],
-      'date-desc': [1, 2, 0, 3], 'date-asc': [3, 0, 2, 1],
-      'tokens-desc': [1, 0, 3, 2], 'tokens-asc': [2, 3, 0, 1],
+      'score-desc': [0, 1, 2, 3, 4], 'score-asc': [4, 3, 2, 1, 0],
+      'date-desc': [2, 3, 1, 4, 0], 'date-asc': [4, 0, 1, 3, 2],
+      'tokens-desc': [2, 1, 0, 4, 3], 'tokens-asc': [3, 4, 0, 1, 2],
     };
     for (const [sort, order] of Object.entries(sortOrders)) {
       await page.locator('#sort').selectOption(sort);
@@ -60,7 +60,7 @@ const read = name => {
     await page.locator('[data-sort-key="tokens"]').click();
     assert.equal(await page.locator('#sort').inputValue(), 'tokens-desc');
     await page.getByRole('button', {name: 'GPU', exact: true}).click();
-    assert.deepEqual(await page.locator('tbody .coverage').allTextContents(), Array(4).fill('23 / 23'));
+    assert.deepEqual(await page.locator('tbody .coverage').allTextContents(), Array(5).fill('23 / 23'));
     const gpu = new Set(snapshot.tasks.filter(t => t.hardware === 'gpu').map(t => t.name));
     const luna = snapshot.entries.find(e => e.model === 'openai/gpt-6-luna');
     const gpuTotal = snapshot.trials.filter(t => t.entry === luna.id && gpu.has(t.task)).reduce((sum, t) => sum + t.tokens.total_tokens, 0);
@@ -316,7 +316,7 @@ const read = name => {
     }
     const noJS = await browser.newPage({javaScriptEnabled: false});
     await noJS.goto(`${origin}/leaderboard/`);
-    assert.equal(await noJS.locator('tbody tr').count(), 4);
+    assert.equal(await noJS.locator('tbody tr').count(), 5);
     await noJS.goto(`${origin}/leaderboard/trials/${many.id}/`);
     assert(await noJS.locator('#panel-verifier').isVisible());
     assert.equal(errors.length, 0, errors.join('\n'));

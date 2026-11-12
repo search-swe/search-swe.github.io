@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from import_final_results import MODELS, coding_provider, coding_session, coding_time, selected_rows, session_usage
+from import_final_results import MODELS, coding_provider, coding_session, coding_time, entry_model, selected_rows, session_usage
 from import_results import export_trajectory, read
 
 
@@ -21,7 +21,7 @@ class CurrentArchiveTests(unittest.TestCase):
                     writer.writeheader()
                     writer.writerows(rows)
             save()
-            self.assertEqual(len(selected_rows(root, ['one', 'two'])), 8)
+            self.assertEqual(len(selected_rows(root, ['one', 'two'])), 2 * len(MODELS))
             rows.pop(0)
             save()
             with self.assertRaisesRegex(ValueError, 'complete task catalog'):
@@ -30,6 +30,15 @@ class CurrentArchiveTests(unittest.TestCase):
             save()
             with self.assertRaises(ValueError):
                 selected_rows(root, ['one', 'two'])
+
+    def test_opus_substitution_is_limited_to_the_authorized_task_and_column(self):
+        row = {'task': 'constrained-molecular-search', 'model': 'anthropic/claude-opus-5',
+               'model_label': 'claude-opus-5.5-claude-code-max'}
+        self.assertEqual(entry_model(row), 'anthropic/claude-opus-5.5')
+        self.assertEqual(row['model'], 'anthropic/claude-opus-5')
+        for override in ({'task': 'other'}, {'model_label': 'other'}):
+            with self.assertRaisesRegex(ValueError, 'Unapproved'):
+                entry_model({**row, **override})
 
     def test_receipts_include_last_response_even_without_a_ui_token_event(self):
         usage = {'input_tokens': 100, 'cached_input_tokens': 80, 'cache_write_input_tokens': 10,

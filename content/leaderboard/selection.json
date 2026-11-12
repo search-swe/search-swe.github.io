@@ -5,6 +5,51 @@
     "openai/gpt-6-luna",
     "openai/gpt-6.1-terra",
     "gpt-6.1-sol",
-    "kimi-k3.1-pro"
+    "kimi-k3.1-pro",
+    "anthropic/claude-opus-5.5"
+  ],
+  "model_substitutions": [
+    {
+      "task": "constrained-molecular-search",
+      "requested_model": "anthropic/claude-opus-5.5",
+      "actual_model": "anthropic/claude-opus-5",
+      "refusal_attempts": 5,
+      "refusal_category": "bio",
+      "note": "Opus 5 replaces Opus 5.5 after five biology-safety refusals.",
+      "policy_source": "https://code.claude.com/docs/en/model-config#automatic-model-fallback",
+      "policy_basis": "Anthropic recommends Opus 5 for biology-flagged Opus 5.5 requests. Five attempts and benchmark attribution are evaluation decisions, not an Anthropic benchmark rule.",
+      "refusal_evidence": [
+        {
+          "attempt": 1,
+          "session_id": "ef9f6710-30ba-44b9-bd63-6326434939eb",
+          "refusal_category": "bio",
+          "stream_sha256": "8c4334f1221f28fd27cfd161b556e593371975e8770163d8db71295ca8ca840b"
+        },
+        {
+          "attempt": 2,
+          "session_id": "1055719f-8788-4dbe-92a8-fd0a80e8b307",
+          "refusal_category": "bio",
+          "stream_sha256": "984a03a0cbabbecca838d3e4b86db4dd7340fd4249ebe40e36f93415b2ce9be6"
+        },
+        {
+          "attempt": 3,
+          "session_id": "86cfba02-5554-4f83-9305-77bef807d89a",
+          "refusal_category": "bio",
+          "stream_sha256": "2948d4bc24c428111e438f36c38bec10bcdebac686d7ceec198fec4e0a6e7c5c"
+        },
+        {
+          "attempt": 4,
+          "session_id": "e68380ab-47d1-4ed9-8936-16f20e08c630",
+          "refusal_category": "bio",
+          "stream_sha256": "2c71106e005cac33ce833c92b92058a5e66907e3313902f4539966741076e78e"
+        },
+        {
+          "attempt": 5,
+          "session_id": "62a98213-7ab1-41c9-8bae-8f7ce521a075",
+          "refusal_category": "bio",
+          "stream_sha256": "cf5391e3be4f70663d9433b99f973d61071864780769c4f83b591c7a4fcd99d0"
+        }
+      ]
+    }
   ]
 }

@@ -8,7 +8,7 @@ const {gunzipSync} = require('node:zlib');
 const {spawn, spawnSync} = require('node:child_process');
 const {chromium} = require('playwright');
 const root = path.resolve(__dirname, '..');
-const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-luna-terra-sol-kimi'));
+const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-luna-terra-sol-kimi-opus'));
 const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const manifest = JSON.parse(gunzipSync(fs.readFileSync(path.join(packageRoot, 'publication.json.gz'))));
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'content/leaderboard/release.json')));
@@ -92,6 +92,18 @@ const server = http.createServer((req, res) => {
     const localFile = path.join(packageRoot, new URL(download).pathname);
     assert.equal(remoteHash, crypto.createHash('sha256').update(fs.readFileSync(localFile)).digest('hex'));
     assert.equal(credentialRequests, 0, 'Cross-origin data requests must omit browser cookies and credentials');
+    const opus = snapshot.entries.find(e => e.model === 'anthropic/claude-opus-5.5');
+    await page.goto(`${origin}/leaderboard/entries/${opus.id}/`);
+    assert.deepEqual(await page.locator('tbody .provider-cell').allTextContents(), Array(47).fill('OpenRouter'));
+    const fallback = snapshot.trials.find(t => t.entry === opus.id && t.task === 'constrained-molecular-search');
+    await page.locator('.model-substitution-note a').click();
+    assert(page.url().includes(fallback.id));
+    assert.match(await page.locator('.model-substitution-note').innerText(), /Claude Opus 5 after five Opus 5.5/);
+    assert((await page.locator('.entry-subtitle').innerText()).startsWith('Claude Opus 5 ·'));
+    await page.locator('.tool-call').first().waitFor();
+    const fallbackManifest = JSON.parse(fs.readFileSync(path.join(packageRoot, manifest.release_path, 'trials', fallback.id, 'evaluation.json')));
+    assert.equal(fallbackManifest.configuration.model, 'anthropic/claude-opus-5');
+    assert.equal(fallbackManifest.score, 19.5839);
     assert.deepEqual(errors, []);
     await browser.close(); browser = null;
     const status = await new Promise(resolve => {

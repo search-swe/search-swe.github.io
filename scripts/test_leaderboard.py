@@ -124,9 +124,10 @@ class SnapshotTests(unittest.TestCase):
         expected = {'openai/gpt-6-luna': 13.103099186708066,
                     'openai/gpt-6.1-terra': 42.53223472405557,
                     'gpt-6.1-sol': 46.4303712900911,
-                    'kimi-k3.1-pro': 26.599930798089026}
+                    'kimi-k3.1-pro': 26.599930798089026,
+                    'anthropic/claude-opus-5.5': 48.41088224661941}
         self.assertEqual(len(snapshot['tasks']), 47)
-        self.assertEqual(len(snapshot['trials']), 188)
+        self.assertEqual(len(snapshot['trials']), 235)
         self.assertEqual({entry['model'] for entry in snapshot['entries']}, set(expected))
         for entry in snapshot['entries']:
             trials = [t for t in snapshot['trials'] if t['entry'] == entry['id']]
@@ -140,12 +141,29 @@ class SnapshotTests(unittest.TestCase):
 
     def test_generated_routes_and_no_script_injection(self):
         pages = build.generate()
-        self.assertEqual(len(pages), 195)  # 194 pages plus the cost-enriched download.
+        self.assertEqual(len(pages), 243)  # 242 pages plus the cost-enriched download.
         for trial in self.snapshot['trials']:
             self.assertIn(build.ROOT / f'leaderboard/trials/{trial["id"]}/index.html', pages)
         rendered = build.page('<script>', '<p>test</p>', 'trial', {'message': '</script><script>alert(1)'}, self.snapshot)
         self.assertIn('&lt;script&gt;', rendered)
         self.assertNotIn('</script><script>alert(1)', rendered)
+
+    def test_opus_fallback_keeps_actual_model_and_discloses_substitution(self):
+        trials = [t for t in self.snapshot['trials'] if t.get('model_substitution')]
+        self.assertEqual(len(trials), 1)
+        trial = trials[0]
+        self.assertEqual(trial['task'], 'constrained-molecular-search')
+        self.assertEqual(trial['configuration']['model'], 'anthropic/claude-opus-5')
+        self.assertEqual(trial['configuration']['provider'], 'OpenRouter')
+        entry = next(e for e in self.snapshot['entries'] if e['id'] == trial['entry'])
+        self.assertEqual(entry['model'], 'anthropic/claude-opus-5.5')
+        self.assertEqual(trial['model_substitution']['refusal_category'], 'bio')
+        self.assertEqual(len(trial['model_substitution']['refusal_evidence']), 5)
+        pages = build.generate()
+        self.assertIn('uses Opus 5 after five biology-safety refusals', pages[build.ROOT / 'leaderboard/index.html'])
+        detail = pages[build.ROOT / f'leaderboard/trials/{trial["id"]}/index.html']
+        self.assertIn('This result uses Claude Opus 5', detail)
+        self.assertIn('Anthropic’s recommended fallback', detail)
 
 
 class PageRemovalTests(unittest.TestCase):
