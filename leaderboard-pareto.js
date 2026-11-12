@@ -39,14 +39,16 @@
     const eligible = entries.filter(e => e.trials.length === taskCount && taskCount > 0 &&
       Number.isFinite(e[axis]) && e[axis] >= 0 && Number.isFinite(e.score));
     const visible = eligible.filter(e => e.visible);
-    chart.replaceChildren();
-    legend.replaceChildren();
     const empty = document.getElementById('pareto-empty');
     empty.textContent = `No matching models with recorded ${metric.name} data.`;
     empty.hidden = visible.length > 0;
     document.getElementById('pareto-note').textContent = metric.note;
     chart.hidden = visible.length === 0;
-    if (!visible.length) return;
+    if (!visible.length) {
+      chart.replaceChildren();
+      legend.replaceChildren();
+      return;
+    }
     legend.style.setProperty('--pareto-columns', Math.min(4, visible.length));
 
     // Search hides models, but does not turn a dominated model into a frontier point.
@@ -105,6 +107,7 @@
     tooltip.className = 'pareto-tooltip';
     tooltip.hidden = true;
     tooltip.setAttribute('aria-hidden', 'true');
+    const legendItems = document.createDocumentFragment();
 
     visible.forEach(entry => {
       const color = colors[entry.colorIndex % colors.length];
@@ -150,9 +153,12 @@
       details.className = 'pareto-legend-summary';
       details.textContent = summary + coverage;
       item.append(dot, name, details);
-      legend.append(item);
+      legendItems.append(item);
     });
-    chart.append(svg, tooltip);
+    // Keep the previous chart in place until its replacement is ready. Measuring
+    // an empty chart collapses the page and clamps the user's scroll position.
+    chart.replaceChildren(svg, tooltip);
+    legend.replaceChildren(legendItems);
     // Keep nearby model labels apart; the legend retains every model on crowded charts.
     const occupied = visible.map(e => ({x: x(e[axis]) - 9, y: y(e.score) - 9, width: 18, height: 18}));
     const overlaps = (a, b) => a.x < b.x + b.width + 4 && a.x + a.width + 4 > b.x &&

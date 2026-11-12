@@ -192,6 +192,32 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     assert.deepEqual(await noJS.locator('tbody .cost-cell').allTextContents(), totals('all').sort((a, b) => b.score - a.score).map(e => money(e.cost)));
     assert.equal(await noJS.locator('.leaderboard-tabs').isVisible(), false);
     await noJS.close();
+    const scrollPage = await browser.newPage();
+    let navigations = 0;
+    scrollPage.on('request', request => { if (request.isNavigationRequest()) navigations++; });
+    for (const [width, height] of [[1440, 900], [1440, 600], [390, 844]]) {
+      await scrollPage.setViewportSize({width, height});
+      await scrollPage.goto(`${origin}/leaderboard/?view=pareto`);
+      await scrollPage.locator('.pareto-point').first().waitFor();
+      await scrollPage.evaluate(async () => {
+        await document.fonts.ready;
+        window.scrollTo(0, 220);
+      });
+      await scrollPage.locator('#pareto-x').focus();
+      const initial = await scrollPage.evaluate(() => scrollY);
+      assert(initial > 100, 'Regression must start with the page scrolled down');
+      const navigationCount = navigations;
+      for (const axis of ['tokens', 'time', 'cost', 'time', 'tokens', 'cost']) {
+        await scrollPage.locator('#pareto-x').selectOption(axis);
+        await scrollPage.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+        const position = await scrollPage.evaluate(() => ({y: scrollY, focused: document.activeElement.id}));
+        assert(Math.abs(position.y - initial) <= 1, `${width}x${height}, ${axis}: scrolled from ${initial} to ${position.y}`);
+        assert.equal(position.focused, 'pareto-x');
+        assert.equal(navigations, navigationCount, 'Changing the axis must not reload the document');
+        assert.equal(await scrollPage.locator(`.pareto-point[data-axis="${axis}"]`).count(), 4);
+      }
+    }
+    await scrollPage.close();
     await page.goto(`${origin}/leaderboard/?view=pareto&x=time`);
     await page.evaluate(() => {
       const base = {name: 'Fixture', effort: 'max', score: 0, visible: true,
@@ -209,7 +235,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     assert.equal(await page.locator('#pareto-empty').innerText(), 'No matching models with recorded time data.');
     assert.equal(await page.locator('#pareto-empty').isVisible(), true);
     assert.deepEqual(errors, []);
-    console.log('Cost and Pareto browser checks passed: all three axes, totals, timing coverage, frontiers, URL state, scopes, filtering, navigation, keyboard, mobile, download and no-JS.');
+    console.log('Cost and Pareto browser checks passed: all three axes, scroll/focus preservation, totals, timing coverage, frontiers, URL state, scopes, filtering, navigation, keyboard, mobile, download and no-JS.');
   } finally {
     await browser.close();
   }
