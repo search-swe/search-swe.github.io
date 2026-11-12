@@ -8,7 +8,11 @@
   const average = values => values.length && values.every(v => v != null) ? values.reduce((a, b) => a + b, 0) / values.length : null;
   const total = values => values.length && values.every(v => v != null) ? values.reduce((a, b) => a + b, 0) : null;
   const money = value => value == null ? '—' : value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
-  const stats = trials => ({score: average(trials.map(t => t.score)), tokens: total(trials.map(t => t.tokens.total_tokens)), cost: total(trials.map(t => t.cost_usd))});
+  const stats = trials => {
+    const times = trials.map(t => t.agent_seconds).filter(value => Number.isFinite(value) && value >= 0);
+    return {score: average(trials.map(t => t.score)), tokens: total(trials.map(t => t.tokens.total_tokens)),
+      cost: total(trials.map(t => t.cost_usd)), time: total(times), timedTasks: times.length};
+  };
   const set = (id, text) => { const node = document.getElementById(id); if (node) node.textContent = text; };
   const suffix = () => params.size ? `?${params}` : '';
   const safeState = value => new URLSearchParams(value || '');
@@ -47,6 +51,8 @@
   document.querySelector('.controls').hidden = false;
   let scope = ['all', 'cpu', 'gpu'].includes(params.get('scope')) ? params.get('scope') : 'all';
   let view = params.get('view') === 'pareto' ? 'pareto' : 'table';
+  const axis = document.getElementById('pareto-x');
+  if (axis) axis.value = ['cost', 'tokens', 'time'].includes(params.get('x')) ? params.get('x') : 'cost';
   const viewTabs = [...document.querySelectorAll('[data-view]')];
   if (viewTabs.length) document.querySelector('.leaderboard-tabs').hidden = false;
   if (kind === 'entry') {
@@ -60,6 +66,7 @@
     if (sort.value !== defaultSort) params.set('sort', sort.value); else params.delete('sort');
     if (kind === 'leaderboard') {
       if (view === 'pareto') params.set('view', view); else params.delete('view');
+      if (axis.value !== 'cost') params.set('x', axis.value); else params.delete('x');
       viewTabs.forEach(tab => {
         const active = tab.dataset.view === view;
         tab.setAttribute('aria-selected', String(active));
@@ -104,7 +111,7 @@
         row.querySelectorAll('a').forEach(a => a.href = url);
         tbody.append(row);
       });
-      if (view === 'pareto') window.SearchSwePareto.render(entries, count);
+      if (view === 'pareto') window.SearchSwePareto.render(entries, count, axis.value);
       set('scope-caption', `${scope === 'all' ? 'All' : scope.toUpperCase()} ${count} tasks · one selected evaluation per model and task`);
     } else {
       const [key, direction] = sort.value.split('-');
@@ -136,6 +143,7 @@
     document.querySelector('.empty-state').hidden = rows.some(r => !r.hidden);
   }
   input.addEventListener('input', update); sort.addEventListener('change', update);
+  if (axis) axis.addEventListener('change', update);
   document.querySelectorAll('[data-sort-key]').forEach(button => {
     button.disabled = false;
     button.addEventListener('click', () => {

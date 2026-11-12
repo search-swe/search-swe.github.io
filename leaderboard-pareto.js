@@ -1,12 +1,29 @@
-/* The chart uses the same selected trials and unrounded costs as the table. */
+/* Compare score with cost, tokens or recorded time over the selected tasks. */
 (() => {
   'use strict';
   const colors = ['#16847c', '#bd7b27', '#3976c6', '#9562bb', '#bd5b76'];
   const money = value => value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
-  const frontier = entries => entries.filter(entry => !entries.some(other =>
-    other.cost <= entry.cost && other.score >= entry.score &&
-    (other.cost < entry.cost || other.score > entry.score)
-  )).sort((a, b) => a.cost - b.cost || b.score - a.score);
+  const compact = value => value.toLocaleString('en-US', {notation: 'compact', maximumFractionDigits: value >= 1e9 ? 2 : 1});
+  const duration = seconds => {
+    if (seconds < 60) return `${Math.round(seconds)}s`;
+    const minutes = Math.floor(seconds / 60);
+    return minutes < 60 ? `${minutes}min` : `${Math.floor(minutes / 60)}h ${minutes % 60}min`;
+  };
+  const axes = {
+    cost: {name: 'cost', label: 'Cost (USD)', title: 'total agent cost', unit: 1, log: true,
+      format: money, tick: value => '$' + value.toLocaleString('en-US', {maximumFractionDigits: value < 1 ? 3 : value < 10 ? 2 : 0}),
+      note: 'Total estimated agent cost across the selected tasks, using official API rates.'},
+    tokens: {name: 'tokens', label: 'Total tokens', title: 'total agent tokens', unit: 1,
+      format: value => `${compact(value)} tokens`, tick: compact,
+      note: 'Total agent input and output tokens across the selected tasks. Cached tokens are included in input; reasoning is included in output.'},
+    time: {name: 'time', label: 'Total recorded agent time (hours)', title: 'total recorded agent time', unit: 3600,
+      format: duration, tick: value => value.toLocaleString('en-US', {maximumFractionDigits: 2}) + 'h',
+      note: 'Sum of recorded agent durations, including tools and waiting, across the selected tasks. Missing durations are omitted; each model shows its timing coverage.'},
+  };
+  const frontier = (entries, axis = 'cost') => entries.filter(entry => !entries.some(other =>
+    other[axis] <= entry[axis] && other.score >= entry.score &&
+    (other[axis] < entry[axis] || other.score > entry.score)
+  )).sort((a, b) => a[axis] - b[axis] || b.score - a.score);
 
   function svgNode(tag, attributes = {}, text) {
     const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
@@ -15,38 +32,45 @@
     return node;
   }
 
-  function render(entries, taskCount) {
+  function render(entries, taskCount, axis = 'cost') {
+    const metric = axes[axis];
     const chart = document.getElementById('pareto-chart');
     const legend = document.getElementById('pareto-legend');
     const eligible = entries.filter(e => e.trials.length === taskCount && taskCount > 0 &&
-      Number.isFinite(e.cost) && e.cost >= 0 && Number.isFinite(e.score));
+      Number.isFinite(e[axis]) && e[axis] >= 0 && Number.isFinite(e.score));
     const visible = eligible.filter(e => e.visible);
     chart.replaceChildren();
     legend.replaceChildren();
-    document.getElementById('pareto-empty').hidden = visible.length > 0;
+    const empty = document.getElementById('pareto-empty');
+    empty.textContent = `No matching models with recorded ${metric.name} data.`;
+    empty.hidden = visible.length > 0;
+    document.getElementById('pareto-note').textContent = metric.note;
     chart.hidden = visible.length === 0;
     if (!visible.length) return;
     legend.style.setProperty('--pareto-columns', Math.min(4, visible.length));
 
     // Search hides models, but does not turn a dominated model into a frontier point.
-    const frontierIds = new Set(frontier(eligible).map(e => e.id));
+    const frontierIds = new Set(frontier(eligible, axis).map(e => e.id));
     const width = Math.max(300, chart.clientWidth), height = width < 600 ? 330 : 420;
     const left = 58, right = width - 32, top = 42, bottom = height - 54;
-    const minCost = Math.min(...eligible.map(e => e.cost));
-    const maxCost = Math.max(...eligible.map(e => e.cost));
-    const logarithmic = minCost > 0;
-    const xMin = logarithmic ? minCost / 1.25 : 0;
-    const xMax = Math.max(logarithmic ? maxCost * 1.25 : maxCost * 1.1, 0.01);
+    const minValue = Math.min(...eligible.map(e => e[axis] / metric.unit));
+    const maxValue = Math.max(...eligible.map(e => e[axis] / metric.unit));
+    const logarithmic = metric.log && minValue > 0;
+    const xMin = logarithmic ? minValue / 1.25 : 0;
+    const roughStep = Math.max(maxValue, 0.01) / 4;
+    const magnitude = 10 ** Math.floor(Math.log10(roughStep));
+    const step = [1, 2, 2.5, 5, 10].find(n => n * magnitude >= roughStep) * magnitude;
+    const xMax = logarithmic ? maxValue * 1.25 : Math.max(step, Math.ceil(maxValue / step) * step);
     const transform = value => logarithmic ? Math.log10(value) : value;
-    const x = value => left + (transform(value) - transform(xMin)) /
+    const x = value => left + (transform(value / metric.unit) - transform(xMin)) /
       (transform(xMax) - transform(xMin)) * (right - left);
     const yMax = Math.min(100, Math.max(5, Math.ceil(Math.max(...eligible.map(e => e.score)) * 1.15 / 5) * 5));
     const y = value => bottom - value / yMax * (bottom - top);
     const svg = svgNode('svg', {viewBox: `0 0 ${width} ${height}`, 'aria-labelledby': 'pareto-title pareto-description'});
-    svg.append(svgNode('title', {id: 'pareto-title'}, 'Mean task score versus total agent cost'));
+    svg.append(svgNode('title', {id: 'pareto-title'}, `Mean task score versus ${metric.title}`));
     svg.append(svgNode('desc', {id: 'pareto-description'},
-      `Costs cover the same ${taskCount} selected tasks as the table. Higher scores and lower costs are better. ` +
-      'The frontier connects models for which no model has both an equal or higher score and an equal or lower cost, with at least one strict improvement. Select a model to open its results.'));
+      `The chart covers ${taskCount} selected tasks. Higher scores and lower ${metric.name} are better. ${metric.note} ` +
+      `The frontier connects models for which no model has both an equal or higher score and an equal or lower ${metric.name}, with at least one strict improvement. Select a model to open its results.`));
     svg.append(svgNode('text', {x: left, y: 18, class: 'pareto-axis-label'}, 'Mean task score (0–100)'));
     const yStep = yMax <= 25 ? 5 : yMax <= 50 ? 10 : 20;
     for (let tick = 0; tick <= yMax; tick += yStep) {
@@ -62,20 +86,20 @@
         }
       }
     } else {
-      ticks = Array.from({length: 5}, (_, i) => xMax * i / 4);
+      ticks = Array.from({length: Math.round(xMax / step) + 1}, (_, i) => step * i);
     }
     // Keep tick labels readable on small screens.
     if (width < 600 && ticks.length > 4) ticks = ticks.filter((_, i) => i % 2 === 0);
     ticks.forEach(tick => {
-      svg.append(svgNode('line', {x1: x(tick), x2: x(tick), y1: top, y2: bottom, class: 'pareto-grid pareto-grid-vertical'}));
-      const label = '$' + tick.toLocaleString('en-US', {maximumFractionDigits: tick < 1 ? 3 : tick < 10 ? 2 : 0});
-      svg.append(svgNode('text', {x: x(tick), y: bottom + 23, 'text-anchor': 'middle', class: 'pareto-tick'}, label));
+      const position = x(tick * metric.unit);
+      svg.append(svgNode('line', {x1: position, x2: position, y1: top, y2: bottom, class: 'pareto-grid pareto-grid-vertical'}));
+      svg.append(svgNode('text', {x: position, y: bottom + 23, 'text-anchor': 'middle', class: 'pareto-tick'}, metric.tick(tick)));
     });
     svg.append(svgNode('text', {x: (left + right) / 2, y: height - 6, 'text-anchor': 'middle', class: 'pareto-axis-label'},
-      `Cost (USD${logarithmic ? ', log scale' : ''})`));
-    const line = frontier(eligible).filter(e => e.visible);
+      `${metric.label}${logarithmic ? ' · log scale' : ''}`));
+    const line = frontier(eligible, axis).filter(e => e.visible);
     if (line.length > 1) {
-      svg.append(svgNode('path', {class: 'pareto-frontier', d: line.map((e, i) => `${i ? 'L' : 'M'}${x(e.cost)},${y(e.score)}`).join(' ')}));
+      svg.append(svgNode('path', {class: 'pareto-frontier', d: line.map((e, i) => `${i ? 'L' : 'M'}${x(e[axis])},${y(e.score)}`).join(' ')}));
     }
     const tooltip = document.createElement('div');
     tooltip.className = 'pareto-tooltip';
@@ -86,23 +110,26 @@
       const color = colors[entry.colorIndex % colors.length];
       const onFrontier = frontierIds.has(entry.id);
       const label = `${entry.name} (${entry.effort})`;
-      const summary = `${entry.score.toFixed(1)} · ${money(entry.cost)}`;
+      const coverage = axis === 'time' ? ` · ${entry.timedTasks}/${taskCount} tasks timed` : '';
+      const summary = `${entry.score.toFixed(1)} · ${metric.format(entry[axis])}`;
       const link = svgNode('a', {href: entry.url, tabindex: 0, class: 'pareto-point',
         'data-entry': entry.id, 'data-cost': entry.cost, 'data-score': entry.score,
-        'data-frontier': onFrontier, 'aria-label': `${label}: ${summary}${onFrontier ? ', Pareto frontier' : ''}. View results.`});
-      if (onFrontier) link.append(svgNode('circle', {cx: x(entry.cost), cy: y(entry.score), r: 11, fill: color, opacity: '.13'}));
-      link.append(svgNode('circle', {cx: x(entry.cost), cy: y(entry.score), r: 6, fill: color, class: 'pareto-dot'}));
-      const end = x(entry.cost) > width * .6;
-      link.append(svgNode('text', {x: x(entry.cost) + (end ? -14 : 14), y: y(entry.score) - 12,
+        'data-axis': axis, 'data-value': entry[axis],
+        'data-frontier': onFrontier, 'aria-label': `${label}: ${summary}${coverage}${onFrontier ? ', Pareto frontier' : ''}. View results.`});
+      if (onFrontier) link.append(svgNode('circle', {cx: x(entry[axis]), cy: y(entry.score), r: 11, fill: color, opacity: '.13'}));
+      link.append(svgNode('circle', {cx: x(entry[axis]), cy: y(entry.score), r: 6, fill: color, class: 'pareto-dot'}));
+      const end = x(entry[axis]) > width * .6;
+      link.append(svgNode('text', {x: x(entry[axis]) + (end ? -14 : 14), y: y(entry.score) - 12,
         'text-anchor': end ? 'end' : 'start', class: 'pareto-point-label'}, entry.name));
       const showTooltip = () => {
         const name = document.createElement('strong');
         name.textContent = label;
         const details = document.createElement('span');
-        details.textContent = `${summary} · ${taskCount} tasks`;
+        const exact = axis === 'tokens' ? `${entry[axis].toLocaleString('en-US')} tokens` : metric.format(entry[axis]);
+        details.textContent = `${entry.score.toFixed(1)} · ${exact}${coverage || ` · ${taskCount} tasks`}`;
         tooltip.replaceChildren(name, details);
         tooltip.hidden = false;
-        tooltip.style.left = `${Math.max(8, Math.min(x(entry.cost) + 14, width - tooltip.offsetWidth - 8))}px`;
+        tooltip.style.left = `${Math.max(8, Math.min(x(entry[axis]) + 14, width - tooltip.offsetWidth - 8))}px`;
         tooltip.style.top = `${Math.max(0, y(entry.score) - tooltip.offsetHeight - 18)}px`;
       };
       link.addEventListener('mouseenter', showTooltip);
@@ -121,13 +148,13 @@
       name.textContent = label;
       const details = document.createElement('span');
       details.className = 'pareto-legend-summary';
-      details.textContent = summary;
+      details.textContent = summary + coverage;
       item.append(dot, name, details);
       legend.append(item);
     });
     chart.append(svg, tooltip);
     // Keep nearby model labels apart; the legend retains every model on crowded charts.
-    const occupied = visible.map(e => ({x: x(e.cost) - 9, y: y(e.score) - 9, width: 18, height: 18}));
+    const occupied = visible.map(e => ({x: x(e[axis]) - 9, y: y(e.score) - 9, width: 18, height: 18}));
     const overlaps = (a, b) => a.x < b.x + b.width + 4 && a.x + a.width + 4 > b.x &&
       a.y < b.y + b.height + 4 && a.y + a.height + 4 > b.y;
     const labels = [...svg.querySelectorAll('.pareto-point-label')]

@@ -143,13 +143,19 @@ secondary line), output tokens, duration, Cost and step count.
 Entry and trial pages share the main board's short pricing note. Amounts display
 in USD with two decimal places; totals and sorting use unrounded values.
 
-The leaderboard defaults to **Table**; **Pareto** shows total cost versus mean
-task score for the same All / CPU / GPU selection. Its cost axis is logarithmic
-(linear if a genuinely free model is present). Hover or keyboard-focus points
-for values, and follow points or legend links to model results. View, search,
+The leaderboard defaults to **Table**; **Pareto** compares mean task score with
+**Cost**, **Tokens** or **Time** for the same All / CPU / GPU selection. Cost is
+the default and uses a logarithmic axis (linear if a free model is present).
+Tokens sums input and output, counting cache and reasoning only once. Time sums
+recorded agent durations, including tools and waiting but excluding verification;
+missing durations are omitted, with recorded/selected task coverage shown in each
+model's legend and tooltip. A model with no recorded duration is omitted from Time.
+Tokens and Time use linear axes, with time ticks in hours. Release Date is not a
+Pareto option. Hover or keyboard-focus points for values, and follow points or
+legend links to model results. View, x-axis (`x=cost|tokens|time`), search,
 scope and sort survive reloads and the return link from an entry. Search hides
 models without redefining which models are Pareto-optimal in the selected
-hardware scope. Dominance uses unrounded values; equal points do not dominate
+hardware scope. Each axis recomputes dominance from unrounded values; equal points do not dominate
 one another. The chart is rendered locally from the embedded summary, with no
 chart library, inference calls or additional trajectory downloads.
 

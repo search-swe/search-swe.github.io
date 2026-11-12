@@ -64,8 +64,11 @@ th[aria-sort=ascending] .sort-indicator, th[aria-sort=descending] .sort-indicato
 .leaderboard-tabs button { padding: 10px 0 12px; border: 0; border-radius: 0; border-bottom: 2px solid transparent; color: var(--home-muted); font-weight: 550; letter-spacing: .06em; text-transform: uppercase; }
 .leaderboard-tabs button[aria-selected=true] { color: #235fa8; border-bottom-color: #235fa8; }
 .pareto-panel { border: 1px solid var(--home-line); border-radius: 4px; padding: 22px 26px 20px; background: #fff; }
-.pareto-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
+.pareto-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px 16px; flex-wrap: wrap; margin-bottom: 8px; }
 .pareto-heading h2 { font-size: 16px; margin: 0; }
+.pareto-axis-control { display: flex; align-items: center; gap: 10px; }
+.pareto-axis-control select { min-width: 100px; padding: 6px 10px; font-size: 14px; }
+.lb-main .pareto-note { margin: 14px 0 0; font-size: 12px; }
 .pareto-key { display: inline-flex; align-items: center; gap: 9px; color: var(--home-muted); font-size: 13px; }
 .pareto-key::before { content: ''; width: 25px; border-top: 2px dashed #87a9ce; }
 .pareto-chart { position: relative; width: 100%; }
