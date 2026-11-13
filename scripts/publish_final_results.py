@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare the final Luna/Terra/Sol/Kimi/Opus release and optionally upload it to HF.
+"""Prepare the explicitly selected final results and optionally upload them to HF.
 
 Without --upload, prepare and validate locally. With --upload, resume the public
 upload, verify it and build production pages. Existing HF releases are retained.

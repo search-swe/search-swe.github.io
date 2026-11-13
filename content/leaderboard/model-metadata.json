@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "checked_at": "2026-11-12",
+  "checked_at": "2026-11-13",
   "models": {
     "openai/gpt-6-luna": {
       "release_date": "2026-09-22",
@@ -24,6 +24,21 @@
       "release_date": "2026-09-22",
       "source": "https://www.anthropic.com/claude-opus-5-5",
       "provider": "OpenRouter"
+    },
+    "gpt-6-astra": {
+      "release_date": "2026-09-03",
+      "source": "https://openai.com/index/safety-overview-gpt-6-astra/",
+      "provider": "OpenAI",
+      "provider_basis": "All 47 selected native Codex sessions record the OpenAI provider; the evaluation uses the OpenAI API directly."
+    },
+    "deepseek/deepseek-v4.1-flash-1017": {
+      "release_date": "2026-10-17",
+      "source": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017",
+      "provider": "DeepSeek (via OpenRouter)",
+      "api_platform": "OpenRouter",
+      "inference_provider": "DeepSeek",
+      "provider_basis": "The evaluation operator confirmed the applied provider allowlist on 2026-11-13. Its intersection with the model endpoints contains only DeepSeek. Native sessions record OpenRouter.",
+      "provider_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash-1017/endpoints"
     }
   }
 }

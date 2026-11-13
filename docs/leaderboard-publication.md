@@ -4,7 +4,49 @@
 从公开的 HF Dataset [`search-swe/trajectories`](https://huggingface.co/datasets/search-swe/trajectories)
 匿名按需读取。浏览器不需要 HF Token。
 
-## 当前更新：加入 Claude Opus 5.5，五个榜单条目共 235 条轨迹
+## 当前更新：加入 GPT-6 Astra 和 DeepSeek V4.1 Flash 1017
+
+共 7 个榜单条目、329 条结果。两组新增结果均为 **Codex 0.164.0 / max**，
+各覆盖 47 个任务，均分分别为 **45.9273539796** 和 **21.0540612397**。
+28,868 个源文件（59,761,934,520 字节）的大小和 SHA-256 全部核验通过。
+94 份原生会话的逐响应 token 总数与最终 thread 计数一致。
+Astra 原始解题时长完整；DeepSeek 的 `spoken-query-search` 按用户指定记为
+7200 秒，参与展示和平均耗时统计。原始结束时间仍为空，赋值依据保存在
+`agent_time_basis`，并按原始轨迹 SHA-256 固定在导入逻辑中。
+另有七条既有缺失耗时按同一规则补为 7200 秒：Luna 的 agentic-search、
+scientific-paper-qa；Terra 的 visual-document-qa；Kimi 的 evolving-personal-memory、
+incremental-vector-search、long-pdf-evidence-vectorless、paper-metadata-retrieval。
+其中六条原始会话覆盖到两小时预算附近；Terra 的原始 Harbor 记录确认
+7200.519128 秒后 AgentTimeoutError，且会话 SHA-256 与归档一致。
+当前 329 条结果都有耗时，每个模型均为 47/47；原始时间戳和终止状态不改写。
+
+保留已核验的有效零分：DeepSeek 多语言任务执行的 `pkill` 终止了 Codex；
+query-encoder-alignment 有健康完成的完整性拒绝；filtered-ann-retrieval 构建超时。
+Astra agentic-search 用尽两小时预算，末尾重连已由原评测审查确认可接受，
+最终测量和三次审查均健康完成。原记录不改写，也不因低分重新解题。
+
+Provider 显示：Astra/Sol 为 OpenAI，Kimi 为 Moonshot AI，Luna/Terra/Opus
+为 OpenRouter，DeepSeek 表格简写为 **DeepSeek**，模型页副标题注明
+**DeepSeek via OpenRouter**，详情和下载保留完整渠道。后者依据用户确认的
+Guardrail 与官方端点清单的交集；保留 OpenRouter 渠道，避免误写为直连。
+其余 OpenRouter 模型不展开列举可能的上游服务商，也不宣称已核实逐请求路由。
+
+新包为 `.build/hf-trajectories-astra-deepseek/`，复用先前 235 条结果及全部 payload。
+包含 329 个 ATIF、337 份原始会话文本；当前导入器、上传器和浏览器检查默认均使用
+这个包。`.build/hf-trajectories-current/` 保留为旧的 235 条结果基线。上传及续传命令如下：
+
+```bash
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-current --package .build/hf-trajectories-astra-deepseek --upload
+python scripts/append_hf_trajectories.py --base-package .build/hf-trajectories-current --package .build/hf-trajectories-astra-deepseek --upload
+```
+
+脚本校验远端后更新本地生产配置，不执行官网 Git add、commit、push。
+本地审查记录在 `.build/astra-deepseek-review/`；已验证版本以 storage.json
+及 `.build/hf-trajectories-astra-deepseek-uploaded.json` 为准。
+费用沿用官方公开费率估算口径：Astra 为 $1,339.084603，DeepSeek 为
+$23.883737988。DeepSeek 使用官方高峰列表价，未应用分时折扣，不是实际账单。
+
+## 历史更新：加入 Claude Opus 5.5，五个榜单条目共 235 条轨迹
 
 Opus 条目覆盖 47/47 道题，平均分 **48.4108822466**。配置均为
 **Claude Code 2.1.309 / max / OpenRouter**，版本与评测仓库默认配置一致。
@@ -31,12 +73,13 @@ Claude Code 的本地合成错误消息不计 token；恢复会话取最终累�
 但最终累计数完整，使用累计数对齐总量。JSONL 中的 Unicode 行分隔符属于
 字符串内容，不作为记录边界。既有 Kimi 的 7 个 token 回退任务沿用已有口径。
 
-当前公开包为 `.build/hf-trajectories-current`，**99,100 个文件、约 3.34 GiB**，
+该次公开包为 `.build/hf-trajectories-current`，**99,100 个文件、约 3.34 GiB**，
 含 235 个 ATIF 和 243 份原始会话文本。之前四个模型的 188 份结果和全部
-payload 保持不变。已验证 HF SHA 以 `content/leaderboard/storage.json` 为准，
-本地回执为 `.build/hf-trajectories-current-uploaded.json`。
+payload 保持不变。该次已验证 HF SHA 见历史回执
+`.build/hf-trajectories-current-uploaded.json`；`content/leaderboard/storage.json`
+现在记录的是本文开头的七模型版本。
 
-## 2026-11-13：统一目录并清理重复发布
+## 历史记录：2026-11-13 统一目录并清理重复发布
 
 HF 当前分支只保留 `releases/current/`，不在目录名中列举模型或日期。
 固定 commit SHA 负责版本标识；网站依然使用固定 SHA 下载，不读取可变的 `main`。
@@ -64,7 +107,7 @@ python scripts/normalize_hf_layout.py --source-package .build/hf-trajectories-lu
 完成模型选择、元数据及导入配置更新后，以最近的已验证包为基线，指定新的本地包：
 
 ```bash
-python scripts/publish_final_results.py --base-package .build/hf-trajectories-current --package .build/hf-trajectories-next --upload
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-astra-deepseek --package .build/hf-trajectories-next --upload
 ```
 
 不带 `--upload` 只准备本地预览。增量上传只新增 trial，保留 `releases/current/`
@@ -75,8 +118,8 @@ python scripts/publish_final_results.py --base-package .build/hf-trajectories-cu
 ## 本地重建与审计
 
 ```bash
-python scripts/import_final_results.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-current.usage.json --check
+python scripts/import_final_results.py --package .build/hf-trajectories-astra-deepseek --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-astra-deepseek.usage.json --check
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/build_tasks.py --check
 python scripts/build_leaderboard.py --production --check
@@ -86,14 +129,16 @@ python scripts/build_leaderboard.py --production --check
 若源归档已经变化，应指定新的 `--package` 路径，不覆盖旧包。恢复生产配置可使用：
 
 ```bash
-python scripts/upload_hf_release.py --package .build/hf-trajectories-current --verify-revision <FULL_HF_SHA>
+python scripts/upload_hf_release.py --package .build/hf-trajectories-astra-deepseek --verify-revision <FULL_HF_SHA>
 ```
 
 评分沿 `FINAL_RESULT.json` 的最终 reward 指针读取，原生 reward × 100 必须
 与索引分数相符。Codex 用量来自原始 coding session 中按 response ID 去重的
 `token_usage_record`，并与最终 thread 累计计数核对。ATIF 汇总落后时使用完整
 请求回执，具体说明保存在 Agent tab。重评分不会重复计入解题用量；
-缺少原始结束时间的三条既有轨迹仍显示缺失时长。
+Luna 两条、Terra 一条、Kimi 四条原先缺失的耗时，加上 DeepSeek spoken-query-search，
+共八条按用户认可的两小时编码预算记为 7200 秒；各自保留赋值依据，
+只补耗时，不把原始缺失时间戳伪装成已记录的起止时间。
 
 Sol 使用 OpenAI 直连，Luna/Terra 使用 OpenRouter；provider 和 session ID
 均与原生会话元数据核对。Sol 的 `large-scale-formula-retrieval` 原始会话位于
@@ -109,11 +154,12 @@ Kimi 使用上述官方平价 USD 费率和独立的 Claude Code 会话计数口
 不包含 verifier、任务内 API 或基础设施。仅更新价格可单独重算，不必重传轨迹。
 
 Pareto 图横轴可选 Cost、Tokens、Time，默认 Cost，没有 Release Date 选项。
-三项均汇总当前 All／CPU／GPU 范围内的任务；Time 使用已记录的 Agent 耗时，
-缺失时间不作补算，图例和提示显示时间记录覆盖数。切换横轴会重算前沿，
+三项均汇总当前 All／CPU／GPU 范围内的任务；Time 使用结果摘要中的 Agent 耗时，
+包括上述八条补齐的 7200 秒，当前各模型耗时覆盖均为 47/47。将来若有未审定的
+缺失时间，仍跳过并显示覆盖数。切换横轴会重算前沿，
 并通过 `x=cost|tokens|time` 保存到链接，刷新和从模型详情返回时保留。
 
-公开包包含全部 235 个 ATIF 下载及 243 份原始会话文本导出；预览与下载
+公开包包含全部 329 个 ATIF 下载及 337 份原始会话文本导出；预览与下载
 使用相同的脱敏文本。主机路径替换为别名，凭证和环境值脱敏。
 二进制索引、权重等只列名称、大小和不可预览原因，不上传其内容。
 
@@ -305,7 +351,7 @@ releases/current/
 ```bash
 PYTHONPATH=scripts python -m unittest \
   scripts/test_publication.py scripts/test_leaderboard.py scripts/test_trial_files.py
-HF_PACKAGE=.build/hf-trajectories-current NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
+HF_PACKAGE=.build/hf-trajectories-astra-deepseek NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
 ```
 
 浏览器检查使用另一个真实 HTTP origin 提供公开发布包，验证匿名跨域加载、

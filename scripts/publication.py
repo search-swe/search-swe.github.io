@@ -9,7 +9,7 @@ from pathlib import Path, PurePosixPath
 
 REPO_ID = 'search-swe/trajectories'
 CURRENT_RELEASE = 'releases/current'
-DEFAULT_PACKAGE = Path(__file__).resolve().parents[1] / '.build/hf-trajectories-current'
+DEFAULT_PACKAGE = Path(__file__).resolve().parents[1] / '.build/hf-trajectories-astra-deepseek'
 PATH_BOUNDARY = r'(?:(?<![\w/])|(?<=\\n)|(?<=\\r)|(?<=\\t))'
 PRIVATE_ROOT = re.compile(r'/data/Search-SWE-Workspace|/root/Search-SWE|' + PATH_BOUNDARY + r'(?:/home/[^/\s]+/|/root/)')
 CREDENTIAL = re.compile(r'\b(?:sk-(?:or-v1-)?[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{20,})\b')

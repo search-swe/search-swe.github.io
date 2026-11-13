@@ -1,10 +1,39 @@
 # Leaderboard data and publication
 
-The current homepage contains **47 tasks (24 CPU, 23 GPU), five leaderboard
-entries, and 235 selected trials**. Mean task scores: Claude Opus 5.5 48.4108822466,
-GPT-6.1 Sol 46.4303712901, GPT-6.1 Terra 42.5322347241,
-Kimi K3.1 Pro 26.5999307981, GPT-6 Luna 13.1030991867.
+The current homepage contains **47 tasks (24 CPU, 23 GPU), seven leaderboard
+entries, and 329 selected trials**. Mean task scores: Claude Opus 5.5 48.4108822466,
+GPT-6.1 Sol 46.4303712901, GPT-6 Astra 45.9273539796,
+GPT-6.1 Terra 42.5322347241, Kimi K3.1 Pro 26.5999307981,
+DeepSeek V4.1 Flash 1017 21.0540612397, GPT-6 Luna 13.1030991867.
 `selection.json` explicitly records the included models and the sole substitution.
+
+Astra and DeepSeek each add 47 tasks using **Codex 0.164.0 / max**, the
+benchmark default. Their 28,868 source files (59,761,934,520 bytes) passed size
+and SHA-256 verification. Native response receipts reconcile with all final
+thread counters: Astra uses 700,858,145 tokens ($1,339.084603 estimated),
+DeepSeek uses 1,800,519,562 ($23.883737988 estimated at official peak list rates).
+Astra has 47 original coding durations; DeepSeek has 46 recorded durations and
+one maintainer-assigned duration. DeepSeek's regraded `spoken-query-search` uses
+7200 seconds for display and aggregation; its original end timestamp remains
+unknown. The assignment is recorded in `agent_time_basis` and survives reimport.
+Seven earlier missing durations are also assigned 7200 seconds after review:
+Luna's `agentic-search` and `scientific-paper-qa`; Terra's `visual-document-qa`;
+and Kimi's `evolving-personal-memory`, `incremental-vector-search`,
+`long-pdf-evidence-vectorless` and `paper-metadata-retrieval`. Six native session
+spans reach the two-hour deadline window. Terra's recovered original Harbor
+result records 7200.519128 seconds and `AgentTimeoutError`, with the original
+session hash matching the archive. All seven models now have 47/47 reported
+durations. These eight assignments change only duration and its provenance.
+
+The reviewed exceptions remain visible in individual evidence: Astra's
+`agentic-search` reached its 7,200-second deadline; final SDK reconnects were
+accepted by the archived deadline-overlap review, and scoring plus all three
+audits completed healthily. DeepSeek's `multilingual-vector-postprocessing`
+retains a valid zero after its own `pkill` terminated Codex; its
+`query-encoder-alignment` retains a healthy integrity rejection for bypassing
+the required query encoder. `filtered-ann-retrieval` retains its build-timeout
+zero. These are not replaced by new attempts. The incomplete DeepSeek
+Claude Code/Pi cohorts are excluded from this Codex entry.
 
 The Opus entry uses **Claude Code 2.1.309 / max / OpenRouter** for all 47 tasks,
 matching the benchmark default harness version. It contains 46 actual Opus 5.5
@@ -26,22 +55,33 @@ One interrupted response in `layout-page-search` lacks a reasoning breakdown;
 its complete aggregate counters cover the usage without inventing per-call values.
 JSONL parsing respects literal Unicode line separators inside JSON strings.
 
-Kimi uses Moonshot AI; Sol uses OpenAI directly; Luna and Terra use OpenRouter.
-Their 188 published trial summaries and payloads are unchanged.
+Provider labels preserve the API route: Astra and Sol show **OpenAI**, Kimi
+shows **Moonshot AI**, and Luna, Terra and Opus show **OpenRouter**. DeepSeek
+shows **DeepSeek** in task rows, with **DeepSeek via OpenRouter** in the entry
+subtitle and the full route in tooltips, trial details and downloads. The operator-confirmed provider allowlist
+intersects the DeepSeek 1017 endpoint list only at DeepSeek; the other routed
+models may use multiple allowed upstreams. Do not infer a single upstream from
+the model author. Raw native configuration remains unchanged. See the
+[provider routing documentation](https://openrouter.ai/docs/guides/routing/provider-selection)
+and [DeepSeek endpoint list](https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash-1017/endpoints).
+Scores, tokens, configurations and payloads for all 235 earlier trials are
+unchanged; the seven duration assignments above update their timing summaries.
 
-The public package is `.build/hf-trajectories-current/`: **99,100 public files**,
-approximately **3.34 GiB**, with 235 ATIF trajectories and 243 original session
-JSONL exports (141 Codex, 102 Claude Code). Credentials are redacted and host paths
+The public package is `.build/hf-trajectories-astra-deepseek/`: **133,257 files**,
+approximately **4.28 GiB**, with 329 ATIF
+trajectories and 337 original session JSONL exports (235 Codex, 102 Claude Code). Credentials are redacted and host paths
 normalized. Large binary artifacts remain listed without content downloads.
 Original benchmark records are never modified.
+This is also the default package for the current importer, uploader and browser
+checks; `.build/hf-trajectories-current/` remains the older 235-trial append base.
 
 The active HF directory is **`releases/current/`**, independent of model names or
 publication dates. Full commit SHAs identify immutable versions. The verified
 revision is recorded in [`storage.json`](storage.json) and the private receipt
-`.build/hf-trajectories-current-uploaded.json`. The website pins that SHA rather
+`.build/hf-trajectories-astra-deepseek-uploaded.json`. The website pins that SHA rather
 than reading the mutable `main` branch.
 
-On 2026-11-13, the current 235-trial corpus was moved from
+On 2026-11-13, the then-current 235-trial corpus was moved from
 `releases/2026-11-11-luna-terra-sol-0b5b811770/`. The obsolete
 `releases/2026-11-09-luna-terra-a9eb7c2ac3/` was removed from `main`: its 94 trials
 and all 32,467 trial payload files were already present byte-for-byte in the
@@ -49,7 +89,8 @@ current corpus. Snapshot, entry and trial identities remain unchanged; previous
 commit-pinned downloads still work. The migration reuses Git trees and updates
 only the dataset card and publication inventory.
 
-Reproduce or resume this migration with the existing HF login:
+The following commands document that historical migration, not the current
+seven-model publication:
 
 ```bash
 python scripts/normalize_hf_layout.py \
@@ -66,7 +107,7 @@ the current verified package as the base, and use a fresh output package:
 
 ```bash
 python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-current \
+  --base-package .build/hf-trajectories-astra-deepseek \
   --package .build/hf-trajectories-next --upload
 ```
 
@@ -102,7 +143,10 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   appears in Agent. Original execution duration includes tools and waiting,
   excluding setup and verification. When Harbor lacks original execution times,
   paired Codex session events or Claude Code cost-state startTime/totalDuration
-  are used. Missing original end times remain missing; regrade time is never substituted.
+  are used. Missing original end timestamps remain missing; regrade time is never
+  substituted. Eight reviewed runs use the maintainer-assigned 7200-second
+  coding budget, with provenance in `agent_time_basis` and exact source trajectory
+  hashes in the importer. All 329 selected trials now have a reported duration.
 - Total tokens in the main leaderboard sum input (including cache) + output
   across the selected All / CPU / GPU task set, not a per-task average. Entry rows
   show Input Tokens, Output Tokens and Cached Tokens; trial summaries show the
@@ -111,13 +155,13 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   time. Verifier/task-internal API usage is excluded. Regrading uses original
   coding usage once. Missing values remain missing.
 - Cost sums selected coding responses at the frozen official USD API rates in
-  `official-pricing.json`, checked 2026-11-12. The OpenAI models use standard
+  `official-pricing.json`, checked 2026-11-13. The OpenAI models use standard
   processing, 30-minute cache writes and per-request context tiers above 272,000
   input tokens. Kimi uses standard USD rates: input/write $2, read $0.20 and
   output $10 per million tokens, uniform across context lengths. Opus 5.5 uses
   input/read/write/output $4/$0.20/$5/$20, and the Opus 5 substitution uses
   $5/$0.50/$6.25/$25 per million tokens (5-minute writes). Cache reads/writes are subsets of input and charged once; reasoning
-  is already included in output. Sources and pricing assumptions remain public.
+  is already included in output. DeepSeek uses peak list prices ($0.30/$0.006/$1.20 for input/cache read/output per million), without time-of-day discounts; these estimates are not an OpenRouter invoice. Sources and pricing assumptions remain public.
 - Claude Code receipts are deduplicated by message ID across streaming blocks
   and subagent sessions. For 40 Kimi trials, recorded modelUsage counters also include
   background/compaction usage. Seven Kimi trials have no aggregate counter: the fallback
@@ -164,9 +208,10 @@ The leaderboard defaults to **Table**; **Pareto** compares mean task score with
 **Cost**, **Tokens** or **Time** for the same All / CPU / GPU selection. Cost is
 the default and uses a logarithmic axis (linear if a free model is present).
 Tokens sums input and output, counting cache and reasoning only once. Time sums
-recorded agent durations, including tools and waiting but excluding verification;
-missing durations are omitted, with recorded/selected task coverage shown in each
-model's legend and tooltip. A model with no recorded duration is omitted from Time.
+reported agent durations, including tools and waiting but excluding verification.
+This includes the eight maintainer-assigned 7200-second coding budgets.
+Missing durations are omitted, with timed/selected task coverage shown in each
+model's legend and tooltip. A model with no duration is omitted from Time.
 Tokens and Time use linear axes, with time ticks in hours. Release Date is not a
 Pareto option. Hover or keyboard-focus points for values, and follow points or
 legend links to model results. View, x-axis (`x=cost|tokens|time`), search,
@@ -271,9 +316,9 @@ unchanged; exported JSON contains no local host source paths in its metadata.
 
 ```bash
 python -m unittest discover -s scripts -p 'test_*.py'
-python scripts/import_final_results.py --check
+python scripts/import_final_results.py --package .build/hf-trajectories-astra-deepseek --check
 python scripts/build_leaderboard.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-current.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-astra-deepseek.usage.json --check
 python scripts/build_tasks.py --check
 node --check leaderboard.js
 node --check leaderboard-pareto.js
@@ -283,8 +328,9 @@ node --check trial-files.js
 ```
 
 With Playwright available in the Node module search path and the preview server
-running, run `node scripts/test_leaderboard_browser.cjs`. Set
+running, run `HF_PACKAGE=.build/hf-trajectories-astra-deepseek node scripts/test_leaderboard_browser.cjs`. Set
 `LEADERBOARD_ORIGIN` to use a different local server address.
+Run `HF_PACKAGE=.build/hf-trajectories-astra-deepseek node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
 Run `node scripts/test_leaderboard_costs_browser.cjs` for cost sorting, chart/table
 parity across hardware scopes, keyboard tabs, links, empty states and mobile layout.
 

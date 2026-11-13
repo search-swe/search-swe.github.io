@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "as_of": "2026-11-12",
+  "as_of": "2026-11-13",
   "currency": "USD",
   "unit": "USD per million tokens",
   "policy": "Standard real-time USD API list prices. Cache-write and context-tier rates are model-specific. No batch, fast-mode, account or regional adjustments.",
@@ -98,6 +98,37 @@
         "output": "25.00"
       },
       "note": "Standard global processing with 5-minute cache writes; uniform across context lengths. Uses the actual model that ran the selected trial."
+    },
+    "gpt-6-astra": {
+      "official_model": "gpt-6-astra",
+      "source": "https://developers.openai.com/api/docs/models/gpt-6-astra",
+      "rates": {
+        "input": "10.00",
+        "cached_input": "1.00",
+        "cache_write_input": "12.50",
+        "output": "50.00"
+      },
+      "long_context": {
+        "above_input_tokens": 272000,
+        "rates": {
+          "input": "20.00",
+          "cached_input": "2.00",
+          "cache_write_input": "25.00",
+          "output": "75.00"
+        }
+      },
+      "note": "Standard processing. Above 272,000 input tokens the entire request uses 2x input/cache and 1.5x output prices."
+    },
+    "deepseek/deepseek-v4.1-flash-1017": {
+      "official_model": "deepseek-flash (DeepSeek-V4.1-Flash-1017)",
+      "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "rates": {
+        "input": "0.30",
+        "cached_input": "0.006",
+        "cache_write_input": "0.30",
+        "output": "1.20"
+      },
+      "note": "Official peak list rates, without off-peak discounts, for comparable cost estimates; not the actual OpenRouter bill. Cache misses include cache population at the ordinary input rate."
     }
   }
 }

@@ -1,4 +1,4 @@
-/* Compare score with cost, tokens or recorded time over the selected tasks. */
+/* Compare score with cost, tokens or reported time over the selected tasks. */
 (() => {
   'use strict';
   const colors = ['#16847c', '#bd7b27', '#3976c6', '#9562bb', '#bd5b76'];
@@ -16,9 +16,9 @@
     tokens: {name: 'tokens', label: 'Total tokens', title: 'total agent tokens', unit: 1,
       format: value => `${compact(value)} tokens`, tick: compact,
       note: 'Total agent input and output tokens across the selected tasks. Cached tokens are included in input; reasoning is included in output.'},
-    time: {name: 'time', label: 'Total recorded agent time (hours)', title: 'total recorded agent time', unit: 3600,
+    time: {name: 'time', label: 'Total agent time (hours)', title: 'total agent time', unit: 3600,
       format: duration, tick: value => value.toLocaleString('en-US', {maximumFractionDigits: 2}) + 'h',
-      note: 'Sum of recorded agent durations, including tools and waiting, across the selected tasks. Missing durations are omitted; each model shows its timing coverage.'},
+      note: 'Sum of reported agent durations, including tools and waiting, across the selected tasks. Missing durations are omitted; each model shows its timing coverage.'},
   };
   const frontier = (entries, axis = 'cost') => entries.filter(entry => !entries.some(other =>
     other[axis] <= entry[axis] && other.score >= entry.score &&

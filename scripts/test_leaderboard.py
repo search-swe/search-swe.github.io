@@ -125,9 +125,11 @@ class SnapshotTests(unittest.TestCase):
                     'openai/gpt-6.1-terra': 42.53223472405557,
                     'gpt-6.1-sol': 46.4303712900911,
                     'kimi-k3.1-pro': 26.599930798089026,
-                    'anthropic/claude-opus-5.5': 48.41088224661941}
+                    'anthropic/claude-opus-5.5': 48.41088224661941,
+                    'gpt-6-astra': 45.927353979642724,
+                    'deepseek/deepseek-v4.1-flash-1017': 21.054061239674596}
         self.assertEqual(len(snapshot['tasks']), 47)
-        self.assertEqual(len(snapshot['trials']), 235)
+        self.assertEqual(len(snapshot['trials']), 329)
         self.assertEqual({entry['model'] for entry in snapshot['entries']}, set(expected))
         for entry in snapshot['entries']:
             trials = [t for t in snapshot['trials'] if t['entry'] == entry['id']]
@@ -141,7 +143,7 @@ class SnapshotTests(unittest.TestCase):
 
     def test_generated_routes_and_no_script_injection(self):
         pages = build.generate()
-        self.assertEqual(len(pages), 243)  # 242 pages plus the cost-enriched download.
+        self.assertEqual(len(pages), 339)  # 338 pages plus the cost-enriched download.
         for trial in self.snapshot['trials']:
             self.assertIn(build.ROOT / f'leaderboard/trials/{trial["id"]}/index.html', pages)
         rendered = build.page('<script>', '<p>test</p>', 'trial', {'message': '</script><script>alert(1)'}, self.snapshot)

@@ -8,10 +8,12 @@ const {gunzipSync} = require('node:zlib');
 const {spawn, spawnSync} = require('node:child_process');
 const {chromium} = require('playwright');
 const root = path.resolve(__dirname, '..');
-const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-current'));
+const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-astra-deepseek'));
 const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const manifest = JSON.parse(gunzipSync(fs.readFileSync(path.join(packageRoot, 'publication.json.gz'))));
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'content/leaderboard/release.json')));
+assert.deepEqual(JSON.parse(fs.readFileSync(path.join(packageRoot, manifest.release_path, 'snapshot.json'))), snapshot,
+  'HF_PACKAGE must match the current website snapshot');
 const configPath = path.join(root, '.build/test-cross-origin-storage.json');
 let requests = 0, credentialRequests = 0;
 const server = http.createServer((req, res) => {
@@ -57,6 +59,17 @@ const server = http.createServer((req, res) => {
       assert(Math.abs((typeof reward === 'number' ? reward : reward.reward) * 100 - selected.score) < 1e-7);
     }
     const sol = snapshot.entries.find(e => e.model === 'gpt-6.1-sol');
+    for (const [model, provider] of [['gpt-6-astra', 'OpenAI'],
+      ['deepseek/deepseek-v4.1-flash-1017', 'DeepSeek (via OpenRouter)']]) {
+      const entry = snapshot.entries.find(e => e.model === model);
+      assert.equal(entry.agent, 'Codex');
+      assert.equal(entry.agent_version, '0.164.0');
+      await page.goto(`${origin}/leaderboard/entries/${entry.id}/`);
+      const label = provider === 'DeepSeek (via OpenRouter)' ? 'DeepSeek' : provider;
+      assert.deepEqual(await page.locator('tbody .provider-cell').allTextContents(), Array(47).fill(label));
+      assert.equal(await page.locator('tbody .provider-cell').first().getAttribute('title'), provider);
+      if (label === 'DeepSeek') assert.match(await page.locator('.entry-subtitle').innerText(), /DeepSeek via OpenRouter/);
+    }
     await page.goto(`${origin}/leaderboard/entries/${sol.id}/`);
     assert.deepEqual(await page.locator('tbody .provider-cell').allTextContents(), Array(47).fill('OpenAI'));
     const recovered = snapshot.trials.find(t => t.entry === sol.id && t.task === 'large-scale-formula-retrieval');

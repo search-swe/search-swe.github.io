@@ -13,11 +13,18 @@ class CurrentArchiveTests(unittest.TestCase):
     def test_only_requested_models_and_complete_fixed_task_set(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            rows = [{'task': t, 'model': m} for t in ['one', 'two'] for m in MODELS]
+            rows = [{'task': t, 'model': m, 'model_label':
+                     'deepseek-v4.1-flash-1017-codex-max' if m.startswith('deepseek/') else ''}
+                    for t in ['one', 'two'] for m in MODELS]
             rows.append({'task': 'one', 'model': 'incomplete-other-model'})
+            # The archive also contains incomplete Claude Code and Pi runs of
+            # the same DeepSeek model. They must not enter the Codex cohort.
+            rows.extend({'task': 'one', 'model': 'deepseek/deepseek-v4.1-flash-1017',
+                         'model_label': f'deepseek-v4.1-flash-1017-{agent}-max'}
+                        for agent in ('claude-code', 'pi'))
             def save():
                 with (root / 'INDEX.csv').open('w') as f:
-                    writer = csv.DictWriter(f, ['task', 'model'])
+                    writer = csv.DictWriter(f, ['task', 'model', 'model_label'])
                     writer.writeheader()
                     writer.writerows(rows)
             save()

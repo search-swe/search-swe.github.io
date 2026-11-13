@@ -1,12 +1,14 @@
 {
   "schema": 2,
-  "updated_at": "2026-11-12",
+  "updated_at": "2026-11-13",
   "included_models": [
     "openai/gpt-6-luna",
     "openai/gpt-6.1-terra",
     "gpt-6.1-sol",
     "kimi-k3.1-pro",
-    "anthropic/claude-opus-5.5"
+    "anthropic/claude-opus-5.5",
+    "gpt-6-astra",
+    "deepseek/deepseek-v4.1-flash-1017"
   ],
   "model_substitutions": [
     {

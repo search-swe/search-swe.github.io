@@ -21,9 +21,20 @@ from prepare_hf_release import finalize, referenced_files
 from publication import CURRENT_RELEASE, DEFAULT_PACKAGE, PublicText, load_package, safe_path
 from claude_code_usage import claude_usage
 
-MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1-pro', 'anthropic/claude-opus-5.5')
+MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1-pro',
+          'anthropic/claude-opus-5.5', 'gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017')
 DEFAULT_FINAL = Path('/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs/final-trajectories')
 CONTENT = ROOT / 'content/leaderboard'
+AGENT_TIME_BUDGET_ASSIGNMENTS = {
+    'd3f3eb57779186e628427437bba10ee3a085739d7745e555bd2d709a40dac54d': 'spoken-query-search',
+    'd047ea53a65844db9d17be5eb00c580bab4909fa888fd35e396d72d85b07ac77': 'agentic-search',
+    '494754ffb91d8f70e07c6b64a438de79c2afe48a65412bbbc68f213cea3b8692': 'scientific-paper-qa',
+    'a817d496cb32b56606961dc410cdb77bb53922a294931751c6bd424cc8a7e428': 'visual-document-qa',
+    '7520c7cb474837fccbd554b696625c79a9f699c74ed4277b178980365d065692': 'evolving-personal-memory',
+    'a697b8a84f15c325bd97f8978d2fa52735db4cd6bf6c12116ba37e3eaaf7063c': 'incremental-vector-search',
+    '6ef74415d53b1b913f4c19cd76262feac8302fbe73e9fe88e86783e81ce0b972': 'long-pdf-evidence-vectorless',
+    'f5a3cdc50c401e7f0c341e6730f407b2743012b4f72ee2193083ce75aba29ac8': 'paper-metadata-retrieval',
+}
 
 
 def entry_model(row):
@@ -37,7 +48,10 @@ def entry_model(row):
 
 def selected_rows(final, tasks):
     with (final / 'INDEX.csv').open() as source:
-        rows = [r for r in csv.DictReader(source) if r['model'] in (*MODELS, 'anthropic/claude-opus-5')]
+        rows = [r for r in csv.DictReader(source)
+                if r['model'] in (*MODELS, 'anthropic/claude-opus-5')
+                and (r['model'] != 'deepseek/deepseek-v4.1-flash-1017'
+                     or r.get('model_label') == 'deepseek-v4.1-flash-1017-codex-max')]
     keys = [(r['task'], entry_model(r)) for r in rows]
     if len(keys) != len(set(keys)) or set(keys) != {(t, m) for t in tasks for m in MODELS}:
         raise ValueError('Selected models must each cover exactly the complete task catalog')
@@ -119,6 +133,20 @@ def coding_time(result, starts, finishes):
     return start, finish, seconds, basis
 
 
+def apply_agent_time_override(trial):
+    # Maintainer-approved assignments are bound to the reviewed trajectories.
+    # Preserve timestamps, termination status and any already recorded duration.
+    if (AGENT_TIME_BUDGET_ASSIGNMENTS.get(trial['trajectory_sha256']) == trial['task'] and
+            trial['agent_seconds'] is None):
+        trial['agent_seconds'] = 7200
+        trial['agent_time_basis'] = ('7200-second task budget assigned by the benchmark maintainer; '
+                                   'original coding end timestamp unavailable; regrade duration excluded.')
+        if trial['task'] == 'visual-document-qa':
+            trial['agent_time_basis'] = ('7200-second task budget assigned by the benchmark maintainer; '
+                                        'original Harbor AgentTimeoutError confirms 7200.519128 seconds; '
+                                        'selected regrade has no coding timing; regrade duration excluded.')
+
+
 def prepare(final, package, base_package=None):
     final, package = final.resolve(), package.resolve()
     catalog = read(ROOT / 'content/tasks/catalog.json')
@@ -132,10 +160,10 @@ def prepare(final, package, base_package=None):
     archive = read(final / 'MANIFEST.json')
     if archive['index_sha256'] != digest((final / 'INDEX.csv').read_bytes()):
         raise ValueError('Archive manifest and index differ')
-    settings = {(s['task'], s['model']): s for s in archive['settings']}
+    settings = {(s['task'], s['model'], s['model_label']): s for s in archive['settings']}
     source_hashes = {'index': archive['index_sha256'], 'archive': digest((final / 'MANIFEST.json').read_bytes()),
                      'model_metadata': digest(encode(metadata)), 'selection': digest(encode(policy))}
-    release_id = policy['updated_at'] + '-luna-terra-sol-kimi-opus-' + digest(encode(source_hashes))[:10]
+    release_id = policy['updated_at'] + '-selected-' + digest(encode(source_hashes))[:10]
     # Appending retains the physical corpus directory. Immutable commit URLs keep
     # the previously published snapshot available without duplicating its remote payloads.
     release_path = load_package(base_package)['release_path'] if base_package else CURRENT_RELEASE
@@ -175,6 +203,7 @@ def prepare(final, package, base_package=None):
             if (old['trajectory_sha256'] != row['primary_trajectory_sha256'] or
                     not math.isclose(old['score'], float(row['score']), abs_tol=1e-8)):
                 raise ValueError('Previously published selection changed; cannot append')
+            apply_agent_time_override(old)
             snapshot['trials'].append(old)
             continue
         root = safe_path(final, row['task'] + '/' + row['model_label'])
@@ -257,6 +286,8 @@ def prepare(final, package, base_package=None):
                 time_basis = 'Original Claude Code cost-state startTime/totalDuration; regrade duration excluded.'
         else:
             agent = 'Codex'
+            if raw['agent']['name'] != 'codex' or raw['agent']['version'] != '0.164.0' or row['effort'] != 'max':
+                raise ValueError('Codex harness or effort differs from the selected configuration')
             events = [json.loads(line) for line in source(coding_session(trial_root)).splitlines() if line.strip()]
             provider = coding_provider(pointer, events, raw['session_id'])
             tokens, requests, starts, finishes = session_usage(events)
@@ -276,13 +307,17 @@ def prepare(final, package, base_package=None):
                     raise ValueError(f'Exported evidence differs from source inventory: {group}/{item["name"]}')
         model = entry_model(row)
         info = metadata['models'][model]
+        if model == 'deepseek/deepseek-v4.1-flash-1017':
+            if provider != 'OpenRouter':
+                raise ValueError('DeepSeek selection must retain its OpenRouter routing provenance')
+            provider = 'DeepSeek (via OpenRouter)'
         entry = {'id': entry_id, 'model': model, 'name': NAMES[model], 'effort': row['effort'],
                  'agent': agent, 'agent_version': raw['agent']['version'], 'provider': provider,
                  'release_date': info['release_date'], 'release_date_source': info['source']}
         if entry_id in entries and entries[entry_id] != entry:
             raise ValueError('Mixed agent configurations in one model entry')
         entries[entry_id] = entry
-        selected = settings[(row['task'], row['model'])]['selection']
+        selected = settings[(row['task'], row['model'], row['model_label'])]['selection']
         qualification = {k: selected.get(k) or pointer.get(k) for k in
                          ('qualification_flag', 'judge_semantic_quality_flag', 'qualification_limitations')}
         qualification = sanitize({k: v for k, v in qualification.items() if v}, public)
@@ -300,6 +335,7 @@ def prepare(final, package, base_package=None):
                  'qualification': qualification, 'trajectory_url': f'trials/{trial_id}/manifest.json',
                  'trajectory_sha256': digest(trajectory), 'reward_sha256': digest(reward_bytes),
                  'reward': sanitize(reward, public), 'redacted_fields': redactions}
+        apply_agent_time_override(trial)
         if model != row['model']:
             if not pointer.get('actual_model_substitution') or pointer.get('requested_scoreboard_model') != model:
                 raise ValueError('Model substitution lacks explicit archive provenance')

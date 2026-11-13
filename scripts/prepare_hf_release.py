@@ -111,7 +111,8 @@ score validity. Only the final selected trial per model and task is published;
 regrading replaces verification and does not count agent usage a second time.
 
 Input tokens include cached input. Total tokens = input + output; cached and
-reasoning counters are not added again. Missing values remain null. Agent time
+reasoning counters are not added again. Missing values remain null unless an
+explicit maintainer assignment is documented in `agent_time_basis`. Agent time
 includes original tool execution and waiting, excluding separate verification.
 Provider billing is not inferred from these token counts.
 

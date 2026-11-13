@@ -46,7 +46,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
       const key = node.querySelector('.pareto-key').getBoundingClientRect();
       return Math.abs(title.y + title.height / 2 - key.y - key.height / 2) < 1;
     }));
-    assert.deepEqual((await page.locator('.pareto-point[data-frontier="true"]').evaluateAll(nodes => nodes.map(n => n.dataset.entry))).map(id => byId.get(id).model).sort(), ['anthropic/claude-opus-5.5', 'gpt-6.1-sol', 'openai/gpt-6-luna', 'openai/gpt-6.1-terra']);
+    assert.deepEqual((await page.locator('.pareto-point[data-frontier="true"]').evaluateAll(nodes => nodes.map(n => n.dataset.entry))).map(id => byId.get(id).model).sort(), ['anthropic/claude-opus-5.5', 'deepseek/deepseek-v4.1-flash-1017', 'gpt-6.1-sol', 'openai/gpt-6-luna', 'openai/gpt-6.1-terra']);
     await page.locator('.pareto-point').first().hover();
     assert.equal(await page.locator('.pareto-tooltip').isVisible(), true);
     await page.locator('#filter').fill('glm');
