@@ -206,14 +206,15 @@ in USD with two decimal places; totals and sorting use unrounded values.
 
 The leaderboard defaults to **Table**; **Pareto** compares mean task score with
 **Cost**, **Tokens** or **Time** for the same All / CPU / GPU selection. Cost is
-the default and uses a logarithmic axis (linear if a free model is present).
+the default. All three horizontal axes use a zero-based linear scale with evenly
+spaced, rounded ticks and fewer ticks on narrow screens.
 Tokens sums input and output, counting cache and reasoning only once. Time sums
 reported agent durations, including tools and waiting but excluding verification.
 This includes the eight maintainer-assigned 7200-second coding budgets.
 Missing durations are omitted, with timed/selected task coverage shown in each
 model's legend and tooltip. A model with no duration is omitted from Time.
-Tokens and Time use linear axes, with time ticks in hours. Release Date is not a
-Pareto option. Hover or keyboard-focus points for values, and follow points or
+Time ticks use hours. Release Date is not a Pareto option. Hover or keyboard-focus
+points to see `Model / Harness`, reasoning effort and values, and follow points or
 legend links to model results. View, x-axis (`x=cost|tokens|time`), search,
 scope and sort survive reloads and the return link from an entry. Search hides
 models without redefining which models are Pareto-optimal in the selected

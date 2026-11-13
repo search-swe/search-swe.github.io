@@ -29,4 +29,18 @@ assert.deepEqual(frontier(differentAxes, 'time'), ['fast', 'efficient', 'best'])
 assert.deepEqual(frontier([
   {id: 'faster', time: 1.001, score: 3}, {id: 'rounded-tie', time: 1.004, score: 3},
 ], 'time'), ['faster']);
-console.log('Pareto dominance checks passed.');
+const ticks = (max, intervals) => Array.from(context.window.SearchSwePareto.linearTicks(max, intervals));
+for (const max of [0, 0.03, 1, 93.65, 1339.09, 2.25e9]) {
+  for (const intervals of [3, 5]) {
+    const values = ticks(max, intervals);
+    assert.equal(values[0], 0);
+    assert(values.length >= 2 && values.length <= intervals + 1);
+    assert(values.at(-1) >= max && values.at(-1) > 0);
+    const step = values[1];
+    values.forEach((value, i) => {
+      assert(Number.isFinite(value));
+      assert(Math.abs(value - i * step) < step * 1e-9);
+    });
+  }
+}
+console.log('Pareto dominance and linear-axis checks passed.');

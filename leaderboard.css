@@ -70,15 +70,19 @@ th[aria-sort=ascending] .sort-indicator, th[aria-sort=descending] .sort-indicato
 .pareto-axis-control select { min-width: 100px; padding: 6px 34px 6px 10px; font-size: 14px; appearance: none; background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23485467' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center / 12px 12px; }
 .lb-main .pareto-note { margin: 14px 0 0; font-size: 12px; }
 .pareto-key { display: inline-flex; align-items: center; gap: 9px; color: var(--home-muted); font-size: 13px; }
-.pareto-key::before { content: ''; width: 25px; border-top: 2px dashed #87a9ce; }
+.pareto-key::before { content: ''; width: 25px; border-top: 2px solid #6089b7; }
 .pareto-chart { position: relative; width: 100%; }
 .pareto-chart svg { display: block; width: 100%; overflow: visible; }
-.pareto-grid { stroke: #e9edf2; stroke-width: 1; }
-.pareto-grid-vertical { stroke-dasharray: 3 5; }
+.pareto-plot { fill: #fafbfc; }
+.pareto-grid { stroke: #e6eaf0; stroke-width: 1; }
+.pareto-axis { fill: none; stroke: #c9d1db; stroke-width: 1; }
+.pareto-plot, .pareto-grid, .pareto-axis, .pareto-frontier { pointer-events: none; }
 .pareto-tick { font-size: 12px; fill: #76808d; font-variant-numeric: tabular-nums; }
 .pareto-axis-label { font-size: 13px; fill: #626d7c; }
-.pareto-frontier { fill: none; stroke: #87a9ce; stroke-width: 2; stroke-dasharray: 5 5; }
+.pareto-frontier { fill: none; stroke: #6089b7; stroke-width: 2; stroke-linejoin: round; }
 .pareto-dot { stroke: white; stroke-width: 2; }
+.pareto-point[data-frontier=false] .pareto-dot { opacity: .65; }
+.pareto-point[data-frontier=false] .pareto-point-label { fill: #7a8491; }
 .pareto-point:hover .pareto-dot, .pareto-point:focus .pareto-dot { stroke: #202124; }
 .pareto-point-label { font-size: 13px; font-weight: 500; fill: #394352; paint-order: stroke; stroke: white; stroke-width: 4px; stroke-linejoin: round; }
 .pareto-tooltip { position: absolute; z-index: 1; pointer-events: none; background: #fff; border: 1px solid var(--home-line); border-radius: 6px; padding: 10px 13px; box-shadow: 0 4px 16px #182d4514; font-size: 13px; max-width: calc(100% - 16px); }

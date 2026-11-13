@@ -47,8 +47,17 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
       return Math.abs(title.y + title.height / 2 - key.y - key.height / 2) < 1;
     }));
     assert.deepEqual((await page.locator('.pareto-point[data-frontier="true"]').evaluateAll(nodes => nodes.map(n => n.dataset.entry))).map(id => byId.get(id).model).sort(), ['anthropic/claude-opus-5.5', 'deepseek/deepseek-v4.1-flash-1017', 'gpt-6.1-sol', 'openai/gpt-6-luna', 'openai/gpt-6.1-terra']);
-    await page.locator('.pareto-point').first().hover();
+    await page.locator('.pareto-point .pareto-dot').first().hover();
     assert.equal(await page.locator('.pareto-tooltip').isVisible(), true);
+    for (const entry of data.entries) {
+      const point = page.locator(`.pareto-point[data-entry="${entry.id}"]`);
+      await point.locator('.pareto-dot').hover();
+      assert.equal(await page.locator('.pareto-tooltip strong').innerText(), `${entry.name} / ${entry.agent}`);
+      assert.match(await page.locator('.pareto-tooltip span').innerText(), /max effort/);
+      await point.focus();
+      assert.equal(await page.locator('.pareto-tooltip').isVisible(), true);
+      assert((await point.getAttribute('aria-label')).includes(`${entry.name} / ${entry.agent}`));
+    }
     await page.locator('#filter').fill('glm');
     assert.equal(await page.locator('.pareto-point').count(), 0);
     assert.equal(await page.locator('#pareto-empty').isVisible(), true);
@@ -87,10 +96,21 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
           frontier: n.dataset.frontier === 'true', x: Number(n.querySelector('.pareto-dot').getAttribute('cx')),
         })));
         assert.equal(points.length, expected.length);
+        const ticks = await page.locator('.pareto-tick-x').evaluateAll(nodes => nodes.map(node => ({
+          value: Number(node.dataset.value), x: Number(node.getAttribute('x')),
+        })));
+        assert.equal(ticks[0].value, 0);
+        assert.equal(await page.locator('#pareto-chart svg').getAttribute('data-x-scale'), 'linear');
+        assert(!(await page.locator('.pareto-axis-label').allTextContents()).join(' ').includes('log scale'));
+        const lastTick = ticks[ticks.length - 1];
+        const tickSpacing = ticks[1].x - ticks[0].x;
+        ticks.forEach((tick, i) => assert(Math.abs(tick.x - ticks[0].x - i * tickSpacing) < 1e-6));
         for (const point of points) {
           const e = expected.find(e => e.id === point.id);
           assert.equal(point.axis, axis);
           assert.equal(point.value, e[axis]);
+          const linearX = ticks[0].x + e[axis] / lastTick.value * (lastTick.x - ticks[0].x);
+          assert(Math.abs(point.x - linearX) < 1e-6, `${axis} positions must be linear from zero`);
           assert.equal(point.score, e.score);
           assert.equal(point.frontier, !expected.some(other => other[axis] <= e[axis] && other.score >= e.score &&
             (other[axis] < e[axis] || other.score > e.score)));

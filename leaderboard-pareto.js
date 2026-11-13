@@ -1,7 +1,7 @@
 /* Compare score with cost, tokens or reported time over the selected tasks. */
 (() => {
   'use strict';
-  const colors = ['#16847c', '#bd7b27', '#3976c6', '#9562bb', '#bd5b76'];
+  const colors = ['#16847c', '#bd7b27', '#3976c6', '#9562bb', '#bd5b76', '#5a7994', '#69833c'];
   const money = value => value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
   const compact = value => value.toLocaleString('en-US', {notation: 'compact', maximumFractionDigits: value >= 1e9 ? 2 : 1});
   const duration = seconds => {
@@ -10,7 +10,7 @@
     return minutes < 60 ? `${minutes}min` : `${Math.floor(minutes / 60)}h ${minutes % 60}min`;
   };
   const axes = {
-    cost: {name: 'cost', label: 'Cost (USD)', title: 'total agent cost', unit: 1, log: true,
+    cost: {name: 'cost', label: 'Cost (USD)', title: 'total agent cost', unit: 1,
       format: money, tick: value => '$' + value.toLocaleString('en-US', {maximumFractionDigits: value < 1 ? 3 : value < 10 ? 2 : 0}),
       note: 'Total estimated agent cost across the selected tasks, using official API rates.'},
     tokens: {name: 'tokens', label: 'Total tokens', title: 'total agent tokens', unit: 1,
@@ -24,6 +24,14 @@
     other[axis] <= entry[axis] && other.score >= entry.score &&
     (other[axis] < entry[axis] || other.score > entry.score)
   )).sort((a, b) => a[axis] - b[axis] || b.score - a.score);
+
+  function linearTicks(maxValue, intervals = 5) {
+    const roughStep = (maxValue > 0 ? maxValue : 1) / intervals;
+    const magnitude = 10 ** Math.floor(Math.log10(roughStep));
+    const step = [1, 2, 2.5, 5, 10].find(n => n * magnitude >= roughStep) * magnitude;
+    const count = Math.max(1, Math.ceil(maxValue / step));
+    return Array.from({length: count + 1}, (_, i) => Number((step * i).toPrecision(12)));
+  }
 
   function svgNode(tag, attributes = {}, text) {
     const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
@@ -55,50 +63,34 @@
     const frontierIds = new Set(frontier(eligible, axis).map(e => e.id));
     const width = Math.max(300, chart.clientWidth), height = width < 600 ? 330 : 420;
     const left = 58, right = width - 32, top = 42, bottom = height - 54;
-    const minValue = Math.min(...eligible.map(e => e[axis] / metric.unit));
     const maxValue = Math.max(...eligible.map(e => e[axis] / metric.unit));
-    const logarithmic = metric.log && minValue > 0;
-    const xMin = logarithmic ? minValue / 1.25 : 0;
-    const roughStep = Math.max(maxValue, 0.01) / 4;
-    const magnitude = 10 ** Math.floor(Math.log10(roughStep));
-    const step = [1, 2, 2.5, 5, 10].find(n => n * magnitude >= roughStep) * magnitude;
-    const xMax = logarithmic ? maxValue * 1.25 : Math.max(step, Math.ceil(maxValue / step) * step);
-    const transform = value => logarithmic ? Math.log10(value) : value;
-    const x = value => left + (transform(value / metric.unit) - transform(xMin)) /
-      (transform(xMax) - transform(xMin)) * (right - left);
+    const ticks = linearTicks(maxValue, width < 600 ? 3 : 5);
+    const xMax = ticks[ticks.length - 1];
+    const x = value => left + value / metric.unit / xMax * (right - left);
     const yMax = Math.min(100, Math.max(5, Math.ceil(Math.max(...eligible.map(e => e.score)) * 1.15 / 5) * 5));
     const y = value => bottom - value / yMax * (bottom - top);
-    const svg = svgNode('svg', {viewBox: `0 0 ${width} ${height}`, 'aria-labelledby': 'pareto-title pareto-description'});
+    const svg = svgNode('svg', {viewBox: `0 0 ${width} ${height}`, 'aria-labelledby': 'pareto-title pareto-description',
+      'data-x-scale': 'linear'});
     svg.append(svgNode('title', {id: 'pareto-title'}, `Mean task score versus ${metric.title}`));
     svg.append(svgNode('desc', {id: 'pareto-description'},
-      `The chart covers ${taskCount} selected tasks. Higher scores and lower ${metric.name} are better. ${metric.note} ` +
+      `The chart covers ${taskCount} selected tasks. The horizontal axis is linear and starts at zero. Higher scores and lower ${metric.name} are better. ${metric.note} ` +
       `The frontier connects models for which no model has both an equal or higher score and an equal or lower ${metric.name}, with at least one strict improvement. Select a model to open its results.`));
     svg.append(svgNode('text', {x: left, y: 18, class: 'pareto-axis-label'}, 'Mean task score (0–100)'));
+    svg.append(svgNode('rect', {x: left, y: top, width: right - left, height: bottom - top, class: 'pareto-plot'}));
     const yStep = yMax <= 25 ? 5 : yMax <= 50 ? 10 : 20;
     for (let tick = 0; tick <= yMax; tick += yStep) {
       svg.append(svgNode('line', {x1: left, x2: right, y1: y(tick), y2: y(tick), class: 'pareto-grid'}));
       svg.append(svgNode('text', {x: left - 12, y: y(tick) + 4, 'text-anchor': 'end', class: 'pareto-tick'}, String(tick)));
     }
-    let ticks = [];
-    if (logarithmic) {
-      for (let power = Math.floor(Math.log10(xMin)); power <= Math.ceil(Math.log10(xMax)); power++) {
-        for (const multiple of [1, 2, 5]) {
-          const value = multiple * 10 ** power;
-          if (value >= xMin && value <= xMax) ticks.push(value);
-        }
-      }
-    } else {
-      ticks = Array.from({length: Math.round(xMax / step) + 1}, (_, i) => step * i);
-    }
-    // Keep tick labels readable on small screens.
-    if (width < 600 && ticks.length > 4) ticks = ticks.filter((_, i) => i % 2 === 0);
     ticks.forEach(tick => {
       const position = x(tick * metric.unit);
       svg.append(svgNode('line', {x1: position, x2: position, y1: top, y2: bottom, class: 'pareto-grid pareto-grid-vertical'}));
-      svg.append(svgNode('text', {x: position, y: bottom + 23, 'text-anchor': 'middle', class: 'pareto-tick'}, metric.tick(tick)));
+      svg.append(svgNode('text', {x: position, y: bottom + 23, 'text-anchor': 'middle',
+        class: 'pareto-tick pareto-tick-x', 'data-value': tick * metric.unit}, metric.tick(tick)));
     });
+    svg.append(svgNode('path', {d: `M${left},${top}V${bottom}H${right}`, class: 'pareto-axis'}));
     svg.append(svgNode('text', {x: (left + right) / 2, y: height - 6, 'text-anchor': 'middle', class: 'pareto-axis-label'},
-      `${metric.label}${logarithmic ? ' · log scale' : ''}`));
+      metric.label));
     const line = frontier(eligible, axis).filter(e => e.visible);
     if (line.length > 1) {
       svg.append(svgNode('path', {class: 'pareto-frontier', d: line.map((e, i) => `${i ? 'L' : 'M'}${x(e[axis])},${y(e.score)}`).join(' ')}));
@@ -113,12 +105,13 @@
       const color = colors[entry.colorIndex % colors.length];
       const onFrontier = frontierIds.has(entry.id);
       const label = `${entry.name} (${entry.effort})`;
+      const identity = entry.agent ? `${entry.name} / ${entry.agent}` : entry.name;
       const coverage = axis === 'time' ? ` · ${entry.timedTasks}/${taskCount} tasks timed` : '';
       const summary = `${entry.score.toFixed(1)} · ${metric.format(entry[axis])}`;
       const link = svgNode('a', {href: entry.url, tabindex: 0, class: 'pareto-point',
         'data-entry': entry.id, 'data-cost': entry.cost, 'data-score': entry.score,
         'data-axis': axis, 'data-value': entry[axis],
-        'data-frontier': onFrontier, 'aria-label': `${label}: ${summary}${coverage}${onFrontier ? ', Pareto frontier' : ''}. View results.`});
+        'data-frontier': onFrontier, 'aria-label': `${identity} (${entry.effort}): ${summary}${coverage}${onFrontier ? ', Pareto frontier' : ''}. View results.`});
       if (onFrontier) link.append(svgNode('circle', {cx: x(entry[axis]), cy: y(entry.score), r: 11, fill: color, opacity: '.13'}));
       link.append(svgNode('circle', {cx: x(entry[axis]), cy: y(entry.score), r: 6, fill: color, class: 'pareto-dot'}));
       const end = x(entry[axis]) > width * .6;
@@ -126,10 +119,10 @@
         'text-anchor': end ? 'end' : 'start', class: 'pareto-point-label'}, entry.name));
       const showTooltip = () => {
         const name = document.createElement('strong');
-        name.textContent = label;
+        name.textContent = identity;
         const details = document.createElement('span');
         const exact = axis === 'tokens' ? `${entry[axis].toLocaleString('en-US')} tokens` : metric.format(entry[axis]);
-        details.textContent = `${entry.score.toFixed(1)} · ${exact}${coverage || ` · ${taskCount} tasks`}`;
+        details.textContent = `${entry.effort} effort · ${entry.score.toFixed(1)} · ${exact}${coverage || ` · ${taskCount} tasks`}`;
         tooltip.replaceChildren(name, details);
         tooltip.hidden = false;
         tooltip.style.left = `${Math.max(8, Math.min(x(entry[axis]) + 14, width - tooltip.offsetWidth - 8))}px`;
@@ -180,5 +173,5 @@
       label.style.display = 'none';
     });
   }
-  window.SearchSwePareto = {render, frontier};
+  window.SearchSwePareto = {render, frontier, linearTicks};
 })();
