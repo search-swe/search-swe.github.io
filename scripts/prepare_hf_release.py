@@ -6,8 +6,8 @@ import gzip
 import json
 from pathlib import Path
 
-from import_results import ROOT, digest, encode, import_snapshot, read, write
-from publication import DEFAULT_PACKAGE, REPO_ID, check_text, fingerprints, load_package, safe_path
+from import_results import ROOT, encode, import_snapshot, read, write
+from publication import CURRENT_RELEASE, DEFAULT_PACKAGE, REPO_ID, check_text, fingerprints, load_package, safe_path
 
 
 def referenced_files(release, snapshot):
@@ -83,6 +83,10 @@ and {len(snapshot['entries'])} model configurations. Observation date: {snapshot
 
 ## Files
 
+The active corpus uses `releases/current/`, independent of model names. The
+commit SHA identifies its version; historical releases remain accessible at
+their original commits even after obsolete directories are removed from `main`.
+
 - `{release_path}/snapshot.json`: scores, token counts, original agent durations,
   model metadata, task catalog and per-trial provenance.
 - `{release_path}/trials/<trial-id>/manifest.json`: ordered step index.
@@ -139,14 +143,9 @@ def prepare(jobs, output):
     output = Path(output).absolute()
     if output.exists() and any(output.iterdir()):
         raise ValueError('Output is not empty. Use --check for a prepared package, or choose a new --output directory.')
-    # Derive only the directory name here; the importer validates all source hashes.
-    jobs = Path(jobs)
-    results = jobs / 'traj-analysis/leaderboard-data/results.json'
-    selected = jobs / 'final-trajectories/INDEX.csv'
-    release_id = read(results)['observed_at'][:10] + '-' + digest(selected.read_bytes() + results.read_bytes())[:10]
-    release_path = f'releases/{release_id}'
-    snapshot = import_snapshot(jobs, public_output=output / release_path)
-    return finalize(output, snapshot, release_path)
+    # Snapshot provenance and the pinned commit identify the version.
+    snapshot = import_snapshot(Path(jobs), public_output=output / CURRENT_RELEASE)
+    return finalize(output, snapshot, CURRENT_RELEASE)
 
 
 def finalize(output, snapshot, release_path):

@@ -31,56 +31,62 @@ Claude Code 的本地合成错误消息不计 token；恢复会话取最终累�
 但最终累计数完整，使用累计数对齐总量。JSONL 中的 Unicode 行分隔符属于
 字符串内容，不作为记录边界。既有 Kimi 的 7 个 token 回退任务沿用已有口径。
 
-公开包为 `.build/hf-trajectories-luna-terra-sol-kimi-opus`，**99,100 个文件、
-约 3.34 GiB**，含 235 个 ATIF 和 243 份原始会话文本。之前四个模型的
-188 份 trial 摘要及全部 payload 逐字节保留。基线包为
-`.build/hf-trajectories-luna-terra-sol-kimi`。
+当前公开包为 `.build/hf-trajectories-current`，**99,100 个文件、约 3.34 GiB**，
+含 235 个 ATIF 和 243 份原始会话文本。之前四个模型的 188 份结果和全部
+payload 保持不变。已验证 HF SHA 以 `content/leaderboard/storage.json` 为准，
+本地回执为 `.build/hf-trajectories-current-uploaded.json`。
+
+## 2026-11-13：统一目录并清理重复发布
+
+HF 当前分支只保留 `releases/current/`，不在目录名中列举模型或日期。
+固定 commit SHA 负责版本标识；网站依然使用固定 SHA 下载，不读取可变的 `main`。
+
+- 将 `releases/2026-11-11-luna-terra-sol-0b5b811770/` 原样迁移为 `releases/current/`。
+- 从 `main` 删除 `releases/2026-11-09-luna-terra-a9eb7c2ac3/`。其中 94 条结果的
+  score、原始轨迹和 reward 哈希均与当前选择一致，32,467 个轨迹文件也逐字节重复。
+- 235 条 trial、snapshot 内容以及网站 entry/trial URL 均不变。旧目录在历史
+  commit 中仍然存在，既有固定 SHA 下载链接继续有效；未重写 Git 历史。
+
+迁移复用 Git tree/blob 对象，只需上传修改后的 README 和压缩清单。
+普通 fast-forward push 防止覆盖并发发布；全量远端哈希、大小、匿名下载和 CORS
+校验通过后才更新本地 storage 并生成生产页面。迁移脚本不提交或推送官网仓库。
 
 ```bash
-python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-luna-terra-sol-kimi \
-  --package .build/hf-trajectories-luna-terra-sol-kimi-opus --upload
+python scripts/normalize_hf_layout.py --source-package .build/hf-trajectories-luna-terra-sol-kimi-opus --package .build/hf-trajectories-current
+python scripts/normalize_hf_layout.py --source-package .build/hf-trajectories-luna-terra-sol-kimi-opus --package .build/hf-trajectories-current --apply
 ```
 
-不带 `--upload` 只准备并检查本地预览。上传经过全量哈希、大小、匿名下载
-与 CORS 校验后才写入固定 HF SHA，生成 242 个 HTML 页面和结果 JSON。
-物理 release 目录沿用原目录，旧 SHA 链接继续有效。脚本不执行 Git add、
-commit、push。中断后从固定包直接续传：
+第一条命令只准备和检查；第二条执行迁移，网络中断后可使用同一命令续做校验。
+依赖 Git 及 `python -m pip install -r scripts/requirements-hf.txt`，使用现有 HF 登录。
+
+## 后续追加模型
+
+完成模型选择、元数据及导入配置更新后，以最近的已验证包为基线，指定新的本地包：
 
 ```bash
-python scripts/append_hf_trajectories.py \
-  --base-package .build/hf-trajectories-luna-terra-sol-kimi \
-  --package .build/hf-trajectories-luna-terra-sol-kimi-opus --upload
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-current --package .build/hf-trajectories-next --upload
 ```
 
-已验证 SHA 见 `content/leaderboard/storage.json`，本地回执为
-`.build/hf-trajectories-luna-terra-sol-kimi-opus-uploaded.json`。远端元数据
-与基线和新包均不匹配时中止；保留所有旧文件。仓库读取使用现有 HF 登录，
-浏览器匿名下载。只读网络请求使用有限重试；不重放结果不确定的写请求。
-依赖：`python -m pip install -r scripts/requirements-hf.txt`。
-
-本次上传及全量校验已完成，固定 HF 版本为
-[`bbaaac80df3c6e6eae532705aeec26c627cdc37b`](https://huggingface.co/datasets/search-swe/trajectories/commit/bbaaac80df3c6e6eae532705aeec26c627cdc37b)。
-99,100 个文件通过远端大小、哈希以及匿名 JSON/gzip 下载和 CORS 校验。
-本地生产页面已绑定该版本；上传脚本不执行网站仓库的 add、commit、push。
+不带 `--upload` 只准备本地预览。增量上传只新增 trial，保留 `releases/current/`
+及旧 trial 的字节内容。远端元数据与基线和新包均不匹配时中止。续传时使用
+`append_hf_trajectories.py`，传入相同的 `--base-package`、`--package` 和 `--upload`。
+发布成功后的新包作为下一次追加的基线。网站仓库的 add、commit、push 独立执行。
 
 ## 本地重建与审计
 
 ```bash
-python scripts/publish_final_results.py --base-package .build/hf-trajectories-luna-terra-sol-kimi
 python scripts/import_final_results.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-luna-terra-sol-kimi-opus.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-current.usage.json --check
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/build_tasks.py --check
+python scripts/build_leaderboard.py --production --check
 ```
 
-公开包、原始用量回执和网站备份位于 `.build/hf-trajectories-luna-terra-sol*`，
-不会进入 Git。若源归档已经变化，应指定新的 `--package` 路径，不覆盖旧包。
-本地预览重建会切换 storage 配置；已上传版本可用完整 HF SHA 重新验证并激活：
+公开包、原始用量回执和网站备份位于 `.build/hf-trajectories-*`，不会进入 Git。
+若源归档已经变化，应指定新的 `--package` 路径，不覆盖旧包。恢复生产配置可使用：
 
 ```bash
-python scripts/upload_hf_release.py --package .build/hf-trajectories-luna-terra-sol-kimi-opus --verify-revision <FULL_HF_SHA>
-python scripts/build_leaderboard.py --production --check
+python scripts/upload_hf_release.py --package .build/hf-trajectories-current --verify-revision <FULL_HF_SHA>
 ```
 
 评分沿 `FINAL_RESULT.json` 的最终 reward 指针读取，原生 reward × 100 必须
@@ -257,7 +263,7 @@ python scripts/upload_hf_release.py --package .build/hf-trajectories-next --uplo
 ```text
 README.md
 publication.json.gz                 # 完整文件清单、字节数、SHA-256、Git blob hash
-releases/<date-selection-hash>/
+releases/current/
   snapshot.json                     # 当前选中 trial 的评分、用量、模型及来源摘要
   trials/<trial-id>/
     manifest.json                   # 轨迹步骤索引
@@ -299,7 +305,7 @@ releases/<date-selection-hash>/
 ```bash
 PYTHONPATH=scripts python -m unittest \
   scripts/test_publication.py scripts/test_leaderboard.py scripts/test_trial_files.py
-HF_PACKAGE=.build/hf-trajectories-luna-terra-sol-kimi-opus NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
+HF_PACKAGE=.build/hf-trajectories-current NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
 ```
 
 浏览器检查使用另一个真实 HTTP origin 提供公开发布包，验证匿名跨域加载、

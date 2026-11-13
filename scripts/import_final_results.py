@@ -18,12 +18,11 @@ from export_trial_files import export_files, sanitize
 from import_results import ROOT, NAMES, TOKEN_FIELDS, digest, encode, export_trajectory, read, scrub, write
 from leaderboard_costs import calculate
 from prepare_hf_release import finalize, referenced_files
-from publication import PublicText, load_package, safe_path
+from publication import CURRENT_RELEASE, DEFAULT_PACKAGE, PublicText, load_package, safe_path
 from claude_code_usage import claude_usage
 
 MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1-pro', 'anthropic/claude-opus-5.5')
 DEFAULT_FINAL = Path('/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs/final-trajectories')
-DEFAULT_PACKAGE = ROOT / '.build/hf-trajectories-luna-terra-sol-kimi-opus'
 CONTENT = ROOT / 'content/leaderboard'
 
 
@@ -139,7 +138,7 @@ def prepare(final, package, base_package=None):
     release_id = policy['updated_at'] + '-luna-terra-sol-kimi-opus-' + digest(encode(source_hashes))[:10]
     # Appending retains the physical corpus directory. Immutable commit URLs keep
     # the previously published snapshot available without duplicating its remote payloads.
-    release_path = load_package(base_package)['release_path'] if base_package else 'releases/' + release_id
+    release_path = load_package(base_package)['release_path'] if base_package else CURRENT_RELEASE
     if (package / 'publication.json.gz').exists():
         manifest = load_package(package)
         if manifest['source_hashes'] != source_hashes or manifest['release_path'] != release_path:

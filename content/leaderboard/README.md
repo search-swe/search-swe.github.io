@@ -29,47 +29,52 @@ JSONL parsing respects literal Unicode line separators inside JSON strings.
 Kimi uses Moonshot AI; Sol uses OpenAI directly; Luna and Terra use OpenRouter.
 Their 188 published trial summaries and payloads are unchanged.
 
-The public package is `.build/hf-trajectories-luna-terra-sol-kimi-opus/`:
-**99,100 public files**, approximately **3.34 GiB**, with 235 ATIF trajectories
-and 243 original session JSONL exports (141 Codex, 102 Claude Code).
-Credentials are redacted and host paths normalized. Large binary artifacts remain
-listed without content downloads. Original benchmark records are never modified.
-The verified HF revision and receipt are recorded in `storage.json` and
-`.build/hf-trajectories-luna-terra-sol-kimi-opus-uploaded.json`.
+The public package is `.build/hf-trajectories-current/`: **99,100 public files**,
+approximately **3.34 GiB**, with 235 ATIF trajectories and 243 original session
+JSONL exports (141 Codex, 102 Claude Code). Credentials are redacted and host paths
+normalized. Large binary artifacts remain listed without content downloads.
+Original benchmark records are never modified.
 
-**Publication verified:** [bbaaac80df3c6e6eae532705aeec26c627cdc37b](https://huggingface.co/datasets/search-swe/trajectories/commit/bbaaac80df3c6e6eae532705aeec26c627cdc37b).
-All 99,100 remote files passed size/hash checks and anonymous JSON/gzip downloads
-with CORS. The local production pages pin this revision. Website Git staging,
-commit and push remain separate from the uploader.
+The active HF directory is **`releases/current/`**, independent of model names or
+publication dates. Full commit SHAs identify immutable versions. The verified
+revision is recorded in [`storage.json`](storage.json) and the private receipt
+`.build/hf-trajectories-current-uploaded.json`. The website pins that SHA rather
+than reading the mutable `main` branch.
 
-Prepare, append, verify and build with the existing HF login:
+On 2026-11-13, the current 235-trial corpus was moved from
+`releases/2026-11-11-luna-terra-sol-0b5b811770/`. The obsolete
+`releases/2026-11-09-luna-terra-a9eb7c2ac3/` was removed from `main`: its 94 trials
+and all 32,467 trial payload files were already present byte-for-byte in the
+current corpus. Snapshot, entry and trial identities remain unchanged; previous
+commit-pinned downloads still work. The migration reuses Git trees and updates
+only the dataset card and publication inventory.
+
+Reproduce or resume this migration with the existing HF login:
+
+```bash
+python scripts/normalize_hf_layout.py \
+  --source-package .build/hf-trajectories-luna-terra-sol-kimi-opus \
+  --package .build/hf-trajectories-current --apply
+```
+
+Without `--apply`, it checks and prepares the layout locally. The script verifies
+all file hashes and anonymous JSON/gzip downloads with CORS before activating
+production pages. It does not commit or push the homepage repository.
+
+For a future model addition, update the selection/import configuration, retain
+the current verified package as the base, and use a fresh output package:
 
 ```bash
 python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-luna-terra-sol-kimi \
-  --package .build/hf-trajectories-luna-terra-sol-kimi-opus --upload
+  --base-package .build/hf-trajectories-current \
+  --package .build/hf-trajectories-next --upload
 ```
 
-Without `--upload`, this prepares and checks the local preview only. The append
-script preserves all old payload bytes, uploads only the 47 new trial directories
-through the Hub SDK's resumable Xet pipeline, and verifies remote files before
-atomically publishing snapshot, dataset card and inventory. Final anonymous
-JSON/gzip downloads and CORS checks precede production activation. The physical
-release directory is retained; old immutable commit URLs remain valid.
-Git add, commit and push are separate user actions.
-
-Resume an interrupted upload directly from the frozen package:
-
-```bash
-python scripts/append_hf_trajectories.py \
-  --base-package .build/hf-trajectories-luna-terra-sol-kimi \
-  --package .build/hf-trajectories-luna-terra-sol-kimi-opus --upload
-```
-
-No files are deleted. Remote metadata changes abort the append. Hub reads use
-the current login and bounded HTTP 429/transient-failure retries; browser reads
-remain anonymous. Packages, private usage receipts and backups stay gitignored
-under `.build/`. Production builds reject preview URLs.
+To resume that upload, use `append_hf_trajectories.py` with the same arguments.
+Append preserves existing payloads and the `releases/current/` directory. Remote
+metadata changes abort the append; it never removes old trials. Each successful
+publication has a new pinned commit and becomes the base for the next addition.
+Packages, private usage receipts and backups remain gitignored under `.build/`.
 See [the publication guide](../../docs/leaderboard-publication.md).
 
 For local preview, omit `--upload` and reuse <http://localhost:7788/leaderboard/>,
@@ -268,7 +273,7 @@ unchanged; exported JSON contains no local host source paths in its metadata.
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/import_final_results.py --check
 python scripts/build_leaderboard.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-luna-terra-sol-kimi-opus.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-current.usage.json --check
 python scripts/build_tasks.py --check
 node --check leaderboard.js
 node --check leaderboard-pareto.js
