@@ -11,7 +11,7 @@ Astra and DeepSeek each add 47 tasks using **Codex 0.164.0 / max**, the
 benchmark default. Their 28,868 source files (59,761,934,520 bytes) passed size
 and SHA-256 verification. Native response receipts reconcile with all final
 thread counters: Astra uses 700,858,145 tokens ($1,339.084603 estimated),
-DeepSeek uses 1,800,519,562 ($23.883737988 estimated at official peak list rates).
+DeepSeek uses 1,800,519,562 ($11.941868994 estimated at official off-peak list rates).
 Astra has 47 original coding durations; DeepSeek has 46 recorded durations and
 one maintainer-assigned duration. DeepSeek's regraded `spoken-query-search` uses
 7200 seconds for display and aggregation; its original end timestamp remains
@@ -155,13 +155,16 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   time. Verifier/task-internal API usage is excluded. Regrading uses original
   coding usage once. Missing values remain missing.
 - Cost sums selected coding responses at the frozen official USD API rates in
-  `official-pricing.json`, checked 2026-11-13. The OpenAI models use standard
+  `official-pricing.json`, updated 2026-11-14. The OpenAI models use standard
   processing, 30-minute cache writes and per-request context tiers above 272,000
   input tokens. Kimi uses standard USD rates: input/write $2, read $0.20 and
   output $10 per million tokens, uniform across context lengths. Opus 5.5 uses
   input/read/write/output $4/$0.20/$5/$20, and the Opus 5 substitution uses
   $5/$0.50/$6.25/$25 per million tokens (5-minute writes). Cache reads/writes are subsets of input and charged once; reasoning
-  is already included in output. DeepSeek uses peak list prices ($0.30/$0.006/$1.20 for input/cache read/output per million), without time-of-day discounts; these estimates are not an OpenRouter invoice. Sources and pricing assumptions remain public.
+  is already included in output. DeepSeek uses official off-peak list prices
+  ($0.15/$0.003/$0.60 for input/cache read/output per million) for all selected
+  requests, regardless of request time, as a fixed comparison basis. These
+  estimates are not an OpenRouter invoice. Sources and pricing assumptions remain public.
 - Claude Code receipts are deduplicated by message ID across streaming blocks
   and subagent sessions. For 40 Kimi trials, recorded modelUsage counters also include
   background/compaction usage. Seven Kimi trials have no aggregate counter: the fallback

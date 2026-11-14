@@ -12,7 +12,7 @@
   const axes = {
     cost: {name: 'cost', label: 'Cost (USD)', title: 'total agent cost', unit: 1,
       format: money, tick: value => '$' + value.toLocaleString('en-US', {maximumFractionDigits: value < 1 ? 3 : value < 10 ? 2 : 0}),
-      note: 'Total estimated agent cost across the selected tasks, using official API rates.'},
+      note: 'Total estimated agent cost across the selected tasks, using official API rates. DeepSeek uses official off-peak rates for all requests.'},
     tokens: {name: 'tokens', label: 'Total tokens', title: 'total agent tokens', unit: 1,
       format: value => `${compact(value)} tokens`, tick: compact,
       note: 'Total agent input and output tokens across the selected tasks. Cached tokens are included in input; reasoning is included in output.'},

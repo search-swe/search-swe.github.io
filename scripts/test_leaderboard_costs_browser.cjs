@@ -28,6 +28,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     assert.equal(await page.locator('#panel-pareto').isVisible(), false);
     assert.match(await page.locator('thead th').last().innerText(), /Cost/);
     assert.match(await page.locator('.cost-note:not(.model-substitution-note)').first().innerText(), /estimated.*official API rates/);
+    assert.match(await page.locator('.cost-note:not(.model-substitution-note)').first().innerText(), /DeepSeek uses official off-peak rates for all requests/);
     assert.deepEqual(await page.locator('tbody .cost-cell').allTextContents(), totals('all').sort((a, b) => b.score - a.score).map(e => money(e.cost)));
     for (const direction of ['asc', 'desc']) {
       await page.locator('#sort').selectOption(`cost-${direction}`);
@@ -46,7 +47,8 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
       const key = node.querySelector('.pareto-key').getBoundingClientRect();
       return Math.abs(title.y + title.height / 2 - key.y - key.height / 2) < 1;
     }));
-    assert.deepEqual((await page.locator('.pareto-point[data-frontier="true"]').evaluateAll(nodes => nodes.map(n => n.dataset.entry))).map(id => byId.get(id).model).sort(), ['anthropic/claude-opus-5.5', 'deepseek/deepseek-v4.1-flash-1017', 'gpt-6.1-sol', 'openai/gpt-6-luna', 'openai/gpt-6.1-terra']);
+    assert.deepEqual((await page.locator('.pareto-point[data-frontier="true"]').evaluateAll(nodes => nodes.map(n => n.dataset.entry))).map(id => byId.get(id).model).sort(), ['anthropic/claude-opus-5.5', 'deepseek/deepseek-v4.1-flash-1017', 'gpt-6.1-sol', 'openai/gpt-6.1-terra']);
+    assert.match(await page.locator('#pareto-note').innerText(), /DeepSeek uses official off-peak rates for all requests/);
     await page.locator('.pareto-point .pareto-dot').first().hover();
     assert.equal(await page.locator('.pareto-tooltip').isVisible(), true);
     for (const entry of data.entries) {

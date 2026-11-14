@@ -44,7 +44,9 @@ python scripts/append_hf_trajectories.py --base-package .build/hf-trajectories-c
 本地审查记录在 `.build/astra-deepseek-review/`；已验证版本以 storage.json
 及 `.build/hf-trajectories-astra-deepseek-uploaded.json` 为准。
 费用沿用官方公开费率估算口径：Astra 为 $1,339.084603，DeepSeek 为
-$23.883737988。DeepSeek 使用官方高峰列表价，未应用分时折扣，不是实际账单。
+$11.941868994。2026-11-14 起，DeepSeek 全部请求统一使用官方谷价：
+每百万未缓存输入/缓存读取/输出为 $0.15/$0.003/$0.60。此固定比较口径
+不按请求时间切换峰谷价，也不代表实际 OpenRouter 账单。
 
 ## 历史更新：加入 Claude Opus 5.5，五个榜单条目共 235 条轨迹
 
@@ -150,6 +152,8 @@ Cost 使用 `official-pricing.json` 保存的官方标准处理 USD 价格，包
 [模型文档](https://developers.openai.com/api/docs/models/gpt-6.1-sol)及
 [官方更新日志](https://developers.openai.com/api/docs/changelog)，核实日期为 2026-11-11。
 Kimi 使用上述官方平价 USD 费率和独立的 Claude Code 会话计数口径。
+DeepSeek 使用上述官方谷价作为所有请求的固定估算费率；主榜、模型页、
+任务详情和 Cost 帕累托图均注明该口径，结果下载保留完整价格表。
 费用是按官方费率估算的解题开销，不是账户账单，
 不包含 verifier、任务内 API 或基础设施。仅更新价格可单独重算，不必重传轨迹。
 

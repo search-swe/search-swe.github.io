@@ -1,5 +1,5 @@
 {
-  "pricing_sha256": "494c9c91899f8eb93ea9dbabc405abc37fbbc3dc8563963a358532e31e40fb72",
+  "pricing_sha256": "873f816e071c27249ed9b06f78724437a98190a7247dcfd7797316d112adf20d",
   "schema": 1,
   "snapshot_id": "2026-11-13-selected-d84eb0d92a",
   "snapshot_sha256": "9d6291611848ff294324b76014ac87f7a5129a801ec3f3b029919f7c0c25fc60",
@@ -9,7 +9,7 @@
       "response_count": 54
     },
     "agentic-search-deepseek-v4.1-flash-1017-codex-max-4f525dddfbd2": {
-      "cost_usd": "0.497054760",
+      "cost_usd": "0.248527380",
       "response_count": 258
     },
     "agentic-search-gpt-6-astra-max-69d94cf803f4": {
@@ -37,7 +37,7 @@
       "response_count": 54
     },
     "agentic-search-vectorless-deepseek-v4.1-flash-1017-codex-max-3070b3f07659": {
-      "cost_usd": "0.426298860",
+      "cost_usd": "0.213149430",
       "response_count": 177
     },
     "agentic-search-vectorless-gpt-6-astra-max-28bced5a51e7": {
@@ -65,7 +65,7 @@
       "response_count": 67
     },
     "biomedical-graph-retrieval-deepseek-v4.1-flash-1017-codex-max-72c03b3e4645": {
-      "cost_usd": "0.542783484",
+      "cost_usd": "0.271391742",
       "response_count": 171
     },
     "biomedical-graph-retrieval-gpt-6-astra-max-3c63b2816822": {
@@ -93,7 +93,7 @@
       "response_count": 91
     },
     "budgeted-bimetric-retrieval-deepseek-v4.1-flash-1017-codex-max-ffb64912c8b4": {
-      "cost_usd": "0.320128896",
+      "cost_usd": "0.160064448",
       "response_count": 153
     },
     "budgeted-bimetric-retrieval-gpt-6-astra-max-9ca8a69ed0c1": {
@@ -121,7 +121,7 @@
       "response_count": 114
     },
     "budgeted-candidate-reranking-deepseek-v4.1-flash-1017-codex-max-de5feb185964": {
-      "cost_usd": "0.299022444",
+      "cost_usd": "0.149511222",
       "response_count": 131
     },
     "budgeted-candidate-reranking-gpt-6-astra-max-09ac6abd4506": {
@@ -149,7 +149,7 @@
       "response_count": 127
     },
     "chunqiu-temporal-retrieval-deepseek-v4.1-flash-1017-codex-max-b04f9a448ab5": {
-      "cost_usd": "0.779038236",
+      "cost_usd": "0.389519118",
       "response_count": 265
     },
     "chunqiu-temporal-retrieval-gpt-6-astra-max-439e89fa743e": {
@@ -177,7 +177,7 @@
       "response_count": 68
     },
     "code-context-retrieval-deepseek-v4.1-flash-1017-codex-max-f2d91a1f3b94": {
-      "cost_usd": "1.108846236",
+      "cost_usd": "0.554423118",
       "response_count": 312
     },
     "code-context-retrieval-gpt-6-astra-max-bb0032b6c504": {
@@ -205,7 +205,7 @@
       "response_count": 105
     },
     "code-embedding-finetuning-deepseek-v4.1-flash-1017-codex-max-49d715ef0857": {
-      "cost_usd": "0.418714260",
+      "cost_usd": "0.209357130",
       "response_count": 245
     },
     "code-embedding-finetuning-gpt-6-astra-max-cee432032c3a": {
@@ -233,7 +233,7 @@
       "response_count": 103
     },
     "code-reranker-finetuning-deepseek-v4.1-flash-1017-codex-max-9266be68c417": {
-      "cost_usd": "0.296044956",
+      "cost_usd": "0.148022478",
       "response_count": 175
     },
     "code-reranker-finetuning-gpt-6-astra-max-50d945d2d8e8": {
@@ -261,7 +261,7 @@
       "response_count": 110
     },
     "composed-image-search-deepseek-v4.1-flash-1017-codex-max-b55fdbf4b9f5": {
-      "cost_usd": "0.479393652",
+      "cost_usd": "0.239696826",
       "response_count": 188
     },
     "composed-image-search-gpt-6-astra-max-ae054086518e": {
@@ -289,7 +289,7 @@
       "response_count": 189
     },
     "constrained-molecular-search-deepseek-v4.1-flash-1017-codex-max-7fc949892056": {
-      "cost_usd": "0.778928544",
+      "cost_usd": "0.389464272",
       "response_count": 239
     },
     "constrained-molecular-search-gpt-6-astra-max-cce58ef0fe3b": {
@@ -317,7 +317,7 @@
       "response_count": 141
     },
     "decision-model-training-deepseek-v4.1-flash-1017-codex-max-1039cb3dc6ec": {
-      "cost_usd": "0.747263784",
+      "cost_usd": "0.373631892",
       "response_count": 298
     },
     "decision-model-training-gpt-6-astra-max-48346842dc0a": {
@@ -345,7 +345,7 @@
       "response_count": 124
     },
     "document-page-search-deepseek-v4.1-flash-1017-codex-max-d4649005f383": {
-      "cost_usd": "0.469606296",
+      "cost_usd": "0.234803148",
       "response_count": 196
     },
     "document-page-search-gpt-6-astra-max-cacabedee2b0": {
@@ -373,7 +373,7 @@
       "response_count": 58
     },
     "evolving-personal-memory-deepseek-v4.1-flash-1017-codex-max-b57fe6acee46": {
-      "cost_usd": "0.656232576",
+      "cost_usd": "0.328116288",
       "response_count": 175
     },
     "evolving-personal-memory-gpt-6-astra-max-5d2682dc0425": {
@@ -401,7 +401,7 @@
       "response_count": 49
     },
     "filtered-ann-retrieval-deepseek-v4.1-flash-1017-codex-max-11aef5666287": {
-      "cost_usd": "0.401643360",
+      "cost_usd": "0.200821680",
       "response_count": 145
     },
     "filtered-ann-retrieval-gpt-6-astra-max-fee2f164c3db": {
@@ -429,7 +429,7 @@
       "response_count": 55
     },
     "financial-report-qa-deepseek-v4.1-flash-1017-codex-max-0d98ae2a1983": {
-      "cost_usd": "0.467901288",
+      "cost_usd": "0.233950644",
       "response_count": 152
     },
     "financial-report-qa-gpt-6-astra-max-b2b72a628d22": {
@@ -457,7 +457,7 @@
       "response_count": 42
     },
     "icsi-meeting-memory-deepseek-v4.1-flash-1017-codex-max-607ccbe1eb32": {
-      "cost_usd": "0.380709024",
+      "cost_usd": "0.190354512",
       "response_count": 146
     },
     "icsi-meeting-memory-gpt-6-astra-max-41695a3f2a03": {
@@ -485,7 +485,7 @@
       "response_count": 46
     },
     "incremental-vector-search-deepseek-v4.1-flash-1017-codex-max-1a679a2f2aaf": {
-      "cost_usd": "0.335784240",
+      "cost_usd": "0.167892120",
       "response_count": 172
     },
     "incremental-vector-search-gpt-6-astra-max-ef46b00132bb": {
@@ -513,7 +513,7 @@
       "response_count": 81
     },
     "instruction-following-embedding-deepseek-v4.1-flash-1017-codex-max-be93fa7efeb6": {
-      "cost_usd": "0.371885208",
+      "cost_usd": "0.185942604",
       "response_count": 206
     },
     "instruction-following-embedding-gpt-6-astra-max-4e5725cfa6d9": {
@@ -541,7 +541,7 @@
       "response_count": 42
     },
     "join-aware-table-retrieval-deepseek-v4.1-flash-1017-codex-max-69c56b6af8e3": {
-      "cost_usd": "0.229436412",
+      "cost_usd": "0.114718206",
       "response_count": 92
     },
     "join-aware-table-retrieval-gpt-6-astra-max-d283966b561d": {
@@ -569,7 +569,7 @@
       "response_count": 192
     },
     "khmer-embedding-training-deepseek-v4.1-flash-1017-codex-max-134e5e00683d": {
-      "cost_usd": "0.390612108",
+      "cost_usd": "0.195306054",
       "response_count": 221
     },
     "khmer-embedding-training-gpt-6-astra-max-b040ad10da9b": {
@@ -597,7 +597,7 @@
       "response_count": 97
     },
     "large-scale-formula-retrieval-deepseek-v4.1-flash-1017-codex-max-3702cc431e3d": {
-      "cost_usd": "0.370294092",
+      "cost_usd": "0.185147046",
       "response_count": 130
     },
     "large-scale-formula-retrieval-gpt-6-astra-max-88126f4c7745": {
@@ -625,7 +625,7 @@
       "response_count": 147
     },
     "layout-page-search-deepseek-v4.1-flash-1017-codex-max-67884594808a": {
-      "cost_usd": "1.337107308",
+      "cost_usd": "0.668553654",
       "response_count": 383
     },
     "layout-page-search-gpt-6-astra-max-25c0b2785f4c": {
@@ -653,7 +653,7 @@
       "response_count": 202
     },
     "legal-stance-retrieval-deepseek-v4.1-flash-1017-codex-max-fbe2adfdcb39": {
-      "cost_usd": "0.595363224",
+      "cost_usd": "0.297681612",
       "response_count": 249
     },
     "legal-stance-retrieval-gpt-6-astra-max-f23313b5095c": {
@@ -681,7 +681,7 @@
       "response_count": 207
     },
     "lightweight-query-retrieval-deepseek-v4.1-flash-1017-codex-max-a4f3c220a108": {
-      "cost_usd": "1.242803376",
+      "cost_usd": "0.621401688",
       "response_count": 462
     },
     "lightweight-query-retrieval-gpt-6-astra-max-1597f3b4d54a": {
@@ -709,7 +709,7 @@
       "response_count": 96
     },
     "long-document-reranking-deepseek-v4.1-flash-1017-codex-max-c2c27a80b813": {
-      "cost_usd": "0.211012572",
+      "cost_usd": "0.105506286",
       "response_count": 132
     },
     "long-document-reranking-gpt-6-astra-max-0f481641d7c3": {
@@ -737,7 +737,7 @@
       "response_count": 108
     },
     "long-pdf-evidence-deepseek-v4.1-flash-1017-codex-max-29eca12986ee": {
-      "cost_usd": "0.298189164",
+      "cost_usd": "0.149094582",
       "response_count": 147
     },
     "long-pdf-evidence-gpt-6-astra-max-a1a38cca3cc6": {
@@ -765,7 +765,7 @@
       "response_count": 45
     },
     "long-pdf-evidence-vectorless-deepseek-v4.1-flash-1017-codex-max-17b8fc75d67a": {
-      "cost_usd": "0.343441392",
+      "cost_usd": "0.171720696",
       "response_count": 144
     },
     "long-pdf-evidence-vectorless-gpt-6-astra-max-ec0cd879eed6": {
@@ -793,7 +793,7 @@
       "response_count": 64
     },
     "memory-constrained-dense-retrieval-deepseek-v4.1-flash-1017-codex-max-7e0449664e23": {
-      "cost_usd": "0.351096708",
+      "cost_usd": "0.175548354",
       "response_count": 143
     },
     "memory-constrained-dense-retrieval-gpt-6-astra-max-21fa5051d447": {
@@ -821,7 +821,7 @@
       "response_count": 273
     },
     "methodology-inspiration-retrieval-deepseek-v4.1-flash-1017-codex-max-3c10cfa04c72": {
-      "cost_usd": "0.779117388",
+      "cost_usd": "0.389558694",
       "response_count": 315
     },
     "methodology-inspiration-retrieval-gpt-6-astra-max-2d3fcab745ba": {
@@ -849,7 +849,7 @@
       "response_count": 106
     },
     "multilingual-vector-postprocessing-deepseek-v4.1-flash-1017-codex-max-1a1f880195fe": {
-      "cost_usd": "0.031837680",
+      "cost_usd": "0.015918840",
       "response_count": 24
     },
     "multilingual-vector-postprocessing-gpt-6-astra-max-723f7952e68d": {
@@ -877,7 +877,7 @@
       "response_count": 104
     },
     "narrative-clue-search-deepseek-v4.1-flash-1017-codex-max-437a272940c7": {
-      "cost_usd": "0.489567864",
+      "cost_usd": "0.244783932",
       "response_count": 202
     },
     "narrative-clue-search-gpt-6-astra-max-e3b2380dae0a": {
@@ -905,7 +905,7 @@
       "response_count": 111
     },
     "negative-constraint-retrieval-deepseek-v4.1-flash-1017-codex-max-41672e2a6468": {
-      "cost_usd": "0.719572500",
+      "cost_usd": "0.359786250",
       "response_count": 254
     },
     "negative-constraint-retrieval-gpt-6-astra-max-ebb3c8f19418": {
@@ -933,7 +933,7 @@
       "response_count": 52
     },
     "paper-metadata-retrieval-deepseek-v4.1-flash-1017-codex-max-05e63a2ef4be": {
-      "cost_usd": "0.422657916",
+      "cost_usd": "0.211328958",
       "response_count": 198
     },
     "paper-metadata-retrieval-gpt-6-astra-max-3378e6f8ed12": {
@@ -961,7 +961,7 @@
       "response_count": 83
     },
     "protein-text-bidirectional-retrieval-deepseek-v4.1-flash-1017-codex-max-c143d5ea24e5": {
-      "cost_usd": "0.190274208",
+      "cost_usd": "0.095137104",
       "response_count": 114
     },
     "protein-text-bidirectional-retrieval-gpt-6-astra-max-6f6df571cd91": {
@@ -989,7 +989,7 @@
       "response_count": 282
     },
     "quantity-aware-retrieval-deepseek-v4.1-flash-1017-codex-max-255a655d104a": {
-      "cost_usd": "0.843443568",
+      "cost_usd": "0.421721784",
       "response_count": 354
     },
     "quantity-aware-retrieval-gpt-6-astra-max-2f777d12e5ba": {
@@ -1017,7 +1017,7 @@
       "response_count": 129
     },
     "query-encoder-alignment-deepseek-v4.1-flash-1017-codex-max-0ef6f1e8d3b8": {
-      "cost_usd": "0.469292268",
+      "cost_usd": "0.234646134",
       "response_count": 192
     },
     "query-encoder-alignment-gpt-6-astra-max-02def5f6c39e": {
@@ -1045,7 +1045,7 @@
       "response_count": 50
     },
     "reasoning-query-rewriting-deepseek-v4.1-flash-1017-codex-max-371635830325": {
-      "cost_usd": "0.349094388",
+      "cost_usd": "0.174547194",
       "response_count": 135
     },
     "reasoning-query-rewriting-gpt-6-astra-max-f00371272574": {
@@ -1073,7 +1073,7 @@
       "response_count": 99
     },
     "rust-bm25-search-deepseek-v4.1-flash-1017-codex-max-e3741d5e1fc6": {
-      "cost_usd": "1.255708320",
+      "cost_usd": "0.627854160",
       "response_count": 339
     },
     "rust-bm25-search-gpt-6-astra-max-f6274a8f2a6c": {
@@ -1101,7 +1101,7 @@
       "response_count": 86
     },
     "same-place-image-search-deepseek-v4.1-flash-1017-codex-max-755575b56042": {
-      "cost_usd": "0.163433892",
+      "cost_usd": "0.081716946",
       "response_count": 112
     },
     "same-place-image-search-gpt-6-astra-max-1d2d824afd06": {
@@ -1129,7 +1129,7 @@
       "response_count": 91
     },
     "scientific-paper-qa-deepseek-v4.1-flash-1017-codex-max-449f3d468278": {
-      "cost_usd": "0.301037400",
+      "cost_usd": "0.150518700",
       "response_count": 159
     },
     "scientific-paper-qa-gpt-6-astra-max-08e910f5b4fb": {
@@ -1157,7 +1157,7 @@
       "response_count": 123
     },
     "sketch-text-search-deepseek-v4.1-flash-1017-codex-max-07aab4b7fa3e": {
-      "cost_usd": "0.703143084",
+      "cost_usd": "0.351571542",
       "response_count": 291
     },
     "sketch-text-search-gpt-6-astra-max-1271082e7864": {
@@ -1185,7 +1185,7 @@
       "response_count": 102
     },
     "sparse-retrieval-pruning-deepseek-v4.1-flash-1017-codex-max-6182e5bf568b": {
-      "cost_usd": "0.322275888",
+      "cost_usd": "0.161137944",
       "response_count": 137
     },
     "sparse-retrieval-pruning-gpt-6-astra-max-8b78d579b7af": {
@@ -1213,7 +1213,7 @@
       "response_count": 96
     },
     "spoken-query-search-deepseek-v4.1-flash-1017-codex-max-36b870a065d9": {
-      "cost_usd": "0.542995404",
+      "cost_usd": "0.271497702",
       "response_count": 186
     },
     "spoken-query-search-gpt-6-astra-max-00f84f524f84": {
@@ -1241,7 +1241,7 @@
       "response_count": 128
     },
     "training-error-tracing-deepseek-v4.1-flash-1017-codex-max-8617676ba891": {
-      "cost_usd": "0.498585936",
+      "cost_usd": "0.249292968",
       "response_count": 156
     },
     "training-error-tracing-gpt-6-astra-max-d5ad0f29aacf": {
@@ -1269,7 +1269,7 @@
       "response_count": 170
     },
     "video-moment-search-deepseek-v4.1-flash-1017-codex-max-770d19202bfe": {
-      "cost_usd": "0.458572320",
+      "cost_usd": "0.229286160",
       "response_count": 203
     },
     "video-moment-search-gpt-6-astra-max-ae81e4970157": {
@@ -1297,7 +1297,7 @@
       "response_count": 89
     },
     "visual-document-qa-deepseek-v4.1-flash-1017-codex-max-bdf77740fe51": {
-      "cost_usd": "0.196491504",
+      "cost_usd": "0.098245752",
       "response_count": 52
     },
     "visual-document-qa-gpt-6-astra-max-df2a0741963a": {

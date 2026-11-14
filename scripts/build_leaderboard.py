@@ -101,7 +101,7 @@ def methodology(task_scores=False):
 
 
 def cost_note(snapshot):
-    return f'<p class="cost-note">Cost is estimated from recorded agent tokens at <a href="/content/leaderboard/official-pricing.json">official API rates</a> in USD ({snapshot["cost_methodology"]["as_of"]}; standard processing, including model-specific cache writes and context rates).</p>'
+    return f'<p class="cost-note">Cost is estimated from recorded agent tokens at <a href="/content/leaderboard/official-pricing.json">official API rates</a> in USD ({snapshot["cost_methodology"]["as_of"]}; including model-specific cache writes and context rates). DeepSeek uses official off-peak rates for all requests.</p>'
 
 
 def substitution_note(trials, detailed=False):
