@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "checked_at": "2026-11-13",
+  "checked_at": "2026-11-16",
   "models": {
     "openai/gpt-6-luna": {
       "release_date": "2026-09-22",
@@ -39,6 +39,12 @@
       "inference_provider": "DeepSeek",
       "provider_basis": "The evaluation operator confirmed the applied provider allowlist on 2026-11-13. Its intersection with the model endpoints contains only DeepSeek. Native sessions record OpenRouter.",
       "provider_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash-1017/endpoints"
+    },
+    "kimi-k3": {
+      "release_date": "2026-07-16",
+      "source": "https://www.kimi.com/blog/kimi-k3",
+      "provider": "Moonshot AI",
+      "provider_basis": "All 47 selected native Claude Code configurations allow api.moonshot.cn and record kimi-k3."
     }
   }
 }

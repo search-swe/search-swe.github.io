@@ -25,6 +25,7 @@ NAMES = {
     "gpt-6.1-sol": "GPT-6.1 Sol",
     "gpt-6-astra": "GPT-6 Astra",
     "kimi-k3.1-pro": "Kimi K3.1 Pro",
+    "kimi-k3": "Kimi K3",
     "anthropic/claude-opus-5.5": "Claude Opus 5.5",
     "deepseek/deepseek-v4.1-flash-1017": "DeepSeek V4.1 Flash 1017",
     "xiaomi/mimo-v2.6-flash": "MiMo-V2.6-Flash",

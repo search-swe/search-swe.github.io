@@ -4,7 +4,43 @@
 从公开的 HF Dataset [`search-swe/trajectories`](https://huggingface.co/datasets/search-swe/trajectories)
 匿名按需读取。浏览器不需要 HF Token。
 
-## 当前更新：加入 GPT-6 Astra 和 DeepSeek V4.1 Flash 1017
+## 当前更新：DeepSeek Claude Code / Pi 与 Kimi K3
+
+2026-11-16 新增三个 max settings，各 47 项，共 141 条：DeepSeek / Claude Code
+2.1.309 平均 27.5927375730；DeepSeek / Pi 1.4.0 平均 18.4387816458；
+Kimi K3 / Claude Code 2.1.309 平均 25.3719202415。现有 8 个模型、10 个 settings、
+470 条结果，主榜保留 DeepSeek 的 Codex、Claude Code、Pi 三行。
+帕累托图各维度和硬件范围仅保留整体平均分最高的 DeepSeek / Claude Code。
+
+新增结果的原始文件大小与 SHA-256 全部通过。8 条重评分缺失耗时从源机器原始
+Harbor result 恢复，原生会话哈希与归档匹配，证据固定在
+`content/leaderboard/coding-time-evidence.json`。本次无新增估算耗时。
+Pi 的 agentic-search-vectorless、budgeted-candidate-reranking、document-page-search
+原生会话比 CLI/ATIF 多出末尾响应，按 response ID 合并去重后计入用量。
+DeepSeek Claude Code 的 6 条与 Kimi K3 的 14 条缺少最终累计计数，沿用已记录响应
+汇总口径；不完整零 token 流头不当作完整回执，存在累计计数时由累计数覆盖。
+
+DeepSeek 三种 harness 均采用官方谷价；Kimi K3 每百万 input/cache read/5-minute
+write/output 为 $3/$0.30/$3/$15，来源为 [Moonshot 官方价格表](https://platform.kimi.ai/)。
+Provider 分别为 DeepSeek via OpenRouter 和 Moonshot AI。
+Step-5-preview、PR #3、Sonnet、Argon 继续暂缓，不包含在本次发布中。
+
+当前包为 `.build/hf-trajectories-ds-cc-pi-kimik3`，基线为
+`.build/hf-trajectories-astra-deepseek`，保留原 329 条结果和全部 payload 字节。
+公开包共 206,227 个文件，约 7.09 GiB，包含 470 个 ATIF 和 478 份原始会话文本；
+本次新增公开数据约 3.01 GB。新增费用为 DeepSeek / Claude Code $16.609308594、
+DeepSeek / Pi $7.392789384、Kimi K3 / Claude Code $290.1819234。
+
+```bash
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-astra-deepseek --package .build/hf-trajectories-ds-cc-pi-kimik3 --upload
+```
+
+上传并核验后更新本地 production 页面；网站 Git 提交与推送独立于 HF 上传执行。
+已核验 HF 固定版本为
+[`5b68ad4b54187858faab15eebc2603f63d7a1bcd`](https://huggingface.co/datasets/search-swe/trajectories/commit/5b68ad4b54187858faab15eebc2603f63d7a1bcd)，
+全部 206,227 个远端文件哈希及匿名下载/CORS 通过；本地 storage.json 与该版本一致。
+
+## 历史更新：加入 GPT-6 Astra 和 DeepSeek V4.1 Flash 1017
 
 共 7 个榜单条目、329 条结果。两组新增结果均为 **Codex 0.164.0 / max**，
 各覆盖 47 个任务，均分分别为 **45.9273539796** 和 **21.0540612397**。
@@ -32,8 +68,8 @@ Guardrail 与官方端点清单的交集；保留 OpenRouter 渠道，避免误�
 其余 OpenRouter 模型不展开列举可能的上游服务商，也不宣称已核实逐请求路由。
 
 新包为 `.build/hf-trajectories-astra-deepseek/`，复用先前 235 条结果及全部 payload。
-包含 329 个 ATIF、337 份原始会话文本；当前导入器、上传器和浏览器检查默认均使用
-这个包。`.build/hf-trajectories-current/` 保留为旧的 235 条结果基线。上传及续传命令如下：
+包含 329 个 ATIF、337 份原始会话文本；该次导入器、上传器和浏览器检查默认使用
+这个包；现在默认使用本文开头的十 settings 包。`.build/hf-trajectories-current/` 保留为旧的 235 条结果基线。上传及续传命令如下：
 
 ```bash
 python scripts/publish_final_results.py --base-package .build/hf-trajectories-current --package .build/hf-trajectories-astra-deepseek --upload
@@ -109,7 +145,7 @@ python scripts/normalize_hf_layout.py --source-package .build/hf-trajectories-lu
 完成模型选择、元数据及导入配置更新后，以最近的已验证包为基线，指定新的本地包：
 
 ```bash
-python scripts/publish_final_results.py --base-package .build/hf-trajectories-astra-deepseek --package .build/hf-trajectories-next --upload
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-ds-cc-pi-kimik3 --package .build/hf-trajectories-next --upload
 ```
 
 不带 `--upload` 只准备本地预览。增量上传只新增 trial，保留 `releases/current/`
@@ -120,8 +156,8 @@ python scripts/publish_final_results.py --base-package .build/hf-trajectories-as
 ## 本地重建与审计
 
 ```bash
-python scripts/import_final_results.py --package .build/hf-trajectories-astra-deepseek --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-astra-deepseek.usage.json --check
+python scripts/import_final_results.py --package .build/hf-trajectories-ds-cc-pi-kimik3 --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-ds-cc-pi-kimik3.usage.json --check
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/build_tasks.py --check
 python scripts/build_leaderboard.py --production --check
@@ -131,7 +167,7 @@ python scripts/build_leaderboard.py --production --check
 若源归档已经变化，应指定新的 `--package` 路径，不覆盖旧包。恢复生产配置可使用：
 
 ```bash
-python scripts/upload_hf_release.py --package .build/hf-trajectories-astra-deepseek --verify-revision <FULL_HF_SHA>
+python scripts/upload_hf_release.py --package .build/hf-trajectories-ds-cc-pi-kimik3 --verify-revision <FULL_HF_SHA>
 ```
 
 评分沿 `FINAL_RESULT.json` 的最终 reward 指针读取，原生 reward × 100 必须
@@ -166,7 +202,7 @@ Pareto 图横轴可选 Cost、Tokens、Time，默认 Cost，没有 Release Date 
 缺失时间，仍跳过并显示覆盖数。切换横轴会重算前沿，
 并通过 `x=cost|tokens|time` 保存到链接，刷新和从模型详情返回时保留。
 
-公开包包含全部 329 个 ATIF 下载及 337 份原始会话文本导出；预览与下载
+公开包包含全部 470 个 ATIF 下载及各 setting 的原始会话文本导出；预览与下载
 使用相同的脱敏文本。主机路径替换为别名，凭证和环境值脱敏。
 二进制索引、权重等只列名称、大小和不可预览原因，不上传其内容。
 
@@ -358,7 +394,7 @@ releases/current/
 ```bash
 PYTHONPATH=scripts python -m unittest \
   scripts/test_publication.py scripts/test_leaderboard.py scripts/test_trial_files.py
-HF_PACKAGE=.build/hf-trajectories-astra-deepseek NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
+HF_PACKAGE=.build/hf-trajectories-ds-cc-pi-kimik3 NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
 ```
 
 浏览器检查使用另一个真实 HTTP origin 提供公开发布包，验证匿名跨域加载、

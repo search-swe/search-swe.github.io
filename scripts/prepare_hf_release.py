@@ -107,7 +107,7 @@ The website pins a full commit SHA after upload and verification. It never uses
 
 Task scores are native reward × 100, on a 0–100 percent scale. Model scores use
 equal task weights. A valid zero is included. Agent termination is separate from
-score validity. Only the final selected trial per model and task is published;
+score validity. Only the final selected trial per model, harness and task is published;
 regrading replaces verification and does not count agent usage a second time.
 
 Input tokens include cached input. Total tokens = input + output; cached and

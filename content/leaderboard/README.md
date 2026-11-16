@@ -1,11 +1,37 @@
 # Leaderboard data and publication
 
-The current homepage contains **47 tasks (24 CPU, 23 GPU), seven leaderboard
-entries, and 329 selected trials**. Mean task scores: Claude Opus 5.5 48.4108822466,
+The current homepage contains **47 tasks (24 CPU, 23 GPU), ten leaderboard
+settings across eight models, and 470 selected trials**. All settings use max effort.
+The three new settings are DeepSeek V4.1 Flash 1017 / Claude Code 2.1.309
+(mean 27.5927375730), DeepSeek / Pi 1.4.0 (18.4387816458), and Kimi K3 /
+Claude Code 2.1.309 (25.3719202415). Step-5-preview remains on hold.
+
+All ten settings retain separate main-table rows and downloadable results.
+The Pareto chart shows only DeepSeek's best harness by overall mean score,
+Claude Code, across Cost, Tokens, Time and all hardware scopes. Searching does
+not select another DeepSeek harness for the chart.
+
+The 141 new trials passed original archive file-size and SHA-256 verification.
+Eight missing coding durations were recovered from source-host Harbor results,
+with coding session SHA-256 matched against the archive. The frozen timing
+and provenance are in `coding-time-evidence.json`; no new duration estimates
+are used. Pi usage joins CLI and native-session response IDs once; three tasks
+include native tail responses absent from the ATIF summary. Six DeepSeek Claude
+Code trials and fourteen Kimi K3 trials use recorded-response fallback totals.
+Incomplete streaming headers have no finalized usage and are excluded from
+response counts; available aggregate counters cover their usage.
+
+Kimi K3 uses official USD rates of $3 input/write, $0.30 cache read and $15
+output per million tokens, with default 5-minute writes. All DeepSeek harnesses
+use the same official off-peak rates. Costs are derived from recorded usage,
+not the harness's guessed cost or a provider invoice.
+
+The previous seven settings keep their selected results, usage, durations and
+payload bytes. Their mean scores remain Claude Opus 5.5 48.4108822466,
 GPT-6.1 Sol 46.4303712901, GPT-6 Astra 45.9273539796,
 GPT-6.1 Terra 42.5322347241, Kimi K3.1 Pro 26.5999307981,
-DeepSeek V4.1 Flash 1017 21.0540612397, GPT-6 Luna 13.1030991867.
-`selection.json` explicitly records the included models and the sole substitution.
+DeepSeek / Codex 21.0540612397 and GPT-6 Luna 13.1030991867.
+`selection.json` explicitly records included models, DeepSeek settings and the sole substitution.
 
 Astra and DeepSeek each add 47 tasks using **Codex 0.164.0 / max**, the
 benchmark default. Their 28,868 source files (59,761,934,520 bytes) passed size
@@ -22,7 +48,7 @@ and Kimi's `evolving-personal-memory`, `incremental-vector-search`,
 `long-pdf-evidence-vectorless` and `paper-metadata-retrieval`. Six native session
 spans reach the two-hour deadline window. Terra's recovered original Harbor
 result records 7200.519128 seconds and `AgentTimeoutError`, with the original
-session hash matching the archive. All seven models now have 47/47 reported
+session hash matching the archive. Those seven original settings have 47/47 reported
 durations. These eight assignments change only duration and its provenance.
 
 The reviewed exceptions remain visible in individual evidence: Astra's
@@ -32,8 +58,7 @@ audits completed healthily. DeepSeek's `multilingual-vector-postprocessing`
 retains a valid zero after its own `pkill` terminated Codex; its
 `query-encoder-alignment` retains a healthy integrity rejection for bypassing
 the required query encoder. `filtered-ann-retrieval` retains its build-timeout
-zero. These are not replaced by new attempts. The incomplete DeepSeek
-Claude Code/Pi cohorts are excluded from this Codex entry.
+zero. These are not replaced by new attempts. DeepSeek Claude Code/Pi results have separate entries and are never merged into the Codex entry.
 
 The Opus entry uses **Claude Code 2.1.309 / max / OpenRouter** for all 47 tasks,
 matching the benchmark default harness version. It contains 46 actual Opus 5.5
@@ -67,9 +92,9 @@ and [DeepSeek endpoint list](https://openrouter.ai/api/v1/models/deepseek/deepse
 Scores, tokens, configurations and payloads for all 235 earlier trials are
 unchanged; the seven duration assignments above update their timing summaries.
 
-The public package is `.build/hf-trajectories-astra-deepseek/`: **133,257 files**,
-approximately **4.28 GiB**, with 329 ATIF
-trajectories and 337 original session JSONL exports (235 Codex, 102 Claude Code). Credentials are redacted and host paths
+The public package is `.build/hf-trajectories-ds-cc-pi-kimik3/`: **206,227 files**,
+approximately **7.09 GiB**, with 470 ATIF trajectories
+and 478 original session JSONL exports (235 Codex, 196 Claude Code, 47 Pi). Credentials are redacted and host paths
 normalized. Large binary artifacts remain listed without content downloads.
 Original benchmark records are never modified.
 This is also the default package for the current importer, uploader and browser
@@ -78,7 +103,7 @@ checks; `.build/hf-trajectories-current/` remains the older 235-trial append bas
 The active HF directory is **`releases/current/`**, independent of model names or
 publication dates. Full commit SHAs identify immutable versions. The verified
 revision is recorded in [`storage.json`](storage.json) and the private receipt
-`.build/hf-trajectories-astra-deepseek-uploaded.json`. The website pins that SHA rather
+`.build/hf-trajectories-ds-cc-pi-kimik3-uploaded.json`. The website pins that SHA rather
 than reading the mutable `main` branch.
 
 On 2026-11-13, the then-current 235-trial corpus was moved from
@@ -90,7 +115,7 @@ commit-pinned downloads still work. The migration reuses Git trees and updates
 only the dataset card and publication inventory.
 
 The following commands document that historical migration, not the current
-seven-model publication:
+ten-setting publication:
 
 ```bash
 python scripts/normalize_hf_layout.py \
@@ -107,7 +132,7 @@ the current verified package as the base, and use a fresh output package:
 
 ```bash
 python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-astra-deepseek \
+  --base-package .build/hf-trajectories-ds-cc-pi-kimik3 \
   --package .build/hf-trajectories-next --upload
 ```
 
@@ -146,7 +171,7 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   are used. Missing original end timestamps remain missing; regrade time is never
   substituted. Eight reviewed runs use the maintainer-assigned 7200-second
   coding budget, with provenance in `agent_time_basis` and exact source trajectory
-  hashes in the importer. All 329 selected trials now have a reported duration.
+  hashes in the importer. All 470 selected trials have a reported duration, including eight newly recovered original timings.
 - Total tokens in the main leaderboard sum input (including cache) + output
   across the selected All / CPU / GPU task set, not a per-task average. Entry rows
   show Input Tokens, Output Tokens and Cached Tokens; trial summaries show the
@@ -155,10 +180,12 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   time. Verifier/task-internal API usage is excluded. Regrading uses original
   coding usage once. Missing values remain missing.
 - Cost sums selected coding responses at the frozen official USD API rates in
-  `official-pricing.json`, updated 2026-11-14. The OpenAI models use standard
+  `official-pricing.json`, updated 2026-11-16. The OpenAI models use standard
   processing, 30-minute cache writes and per-request context tiers above 272,000
-  input tokens. Kimi uses standard USD rates: input/write $2, read $0.20 and
-  output $10 per million tokens, uniform across context lengths. Opus 5.5 uses
+  input tokens. Kimi K3.1 Pro uses standard USD rates: input/write $2, read $0.20
+  and output $10 per million tokens. Kimi K3 uses input/write $3, read $0.30
+  and output $15 per million tokens with default 5-minute writes. Both Kimi
+  tariffs are uniform across context lengths. Opus 5.5 uses
   input/read/write/output $4/$0.20/$5/$20, and the Opus 5 substitution uses
   $5/$0.50/$6.25/$25 per million tokens (5-minute writes). Cache reads/writes are subsets of input and charged once; reasoning
   is already included in output. DeepSeek uses official off-peak list prices
@@ -166,18 +193,19 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   requests, regardless of request time, as a fixed comparison basis. These
   estimates are not an OpenRouter invoice. Sources and pricing assumptions remain public.
 - Claude Code receipts are deduplicated by message ID across streaming blocks
-  and subagent sessions. For 40 Kimi trials, recorded modelUsage counters also include
-  background/compaction usage. Seven Kimi trials have no aggregate counter: the fallback
-  uses deduplicated recorded responses as the final reported token totals and the
+  and subagent sessions. Available final modelUsage counters also include
+  background/compaction usage. Seven Kimi K3.1 Pro, fourteen Kimi K3 and six
+  DeepSeek / Claude Code trials have no aggregate counter: the fallback uses
+  deduplicated recorded responses as the final reported token totals and the
   basis for estimated cost. Unrecorded usage is not estimated. Aggregate
   remainders are priced only with a flat tariff; no extra response IDs are invented.
   Claude Code guessed costUSD values are never used.
   This reporting policy applies to generated pages and `/leaderboard/results.json`;
   the verified HF snapshot and its original accounting notes remain unchanged.
   Only affected trial pages show a short fallback explanation in Agent details;
-  Kimi accounting notes do not appear on the leaderboard or model overview. The Opus model-substitution note is separate.
+  Usage fallback notes do not appear on the leaderboard or model overview. The Opus model-substitution note is separate.
 - `scripts/leaderboard_costs.py` matches native response usage to every selected
-  task/model/effort, verifies trajectory hashes and all published token totals,
+  task/model/effort (and harness for DeepSeek), verifies trajectory hashes and all published token totals,
   deduplicates response IDs, and calculates with decimal arithmetic before
   display rounding. `costs.json` binds the derived amounts to the exact result,
   usage and pricing snapshots. Rebuild it when any of these inputs change;
@@ -320,9 +348,9 @@ unchanged; exported JSON contains no local host source paths in its metadata.
 
 ```bash
 python -m unittest discover -s scripts -p 'test_*.py'
-python scripts/import_final_results.py --package .build/hf-trajectories-astra-deepseek --check
+python scripts/import_final_results.py --package .build/hf-trajectories-ds-cc-pi-kimik3 --check
 python scripts/build_leaderboard.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-astra-deepseek.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-ds-cc-pi-kimik3.usage.json --check
 python scripts/build_tasks.py --check
 node --check leaderboard.js
 node --check leaderboard-pareto.js
@@ -332,9 +360,9 @@ node --check trial-files.js
 ```
 
 With Playwright available in the Node module search path and the preview server
-running, run `HF_PACKAGE=.build/hf-trajectories-astra-deepseek node scripts/test_leaderboard_browser.cjs`. Set
+running, run `HF_PACKAGE=.build/hf-trajectories-ds-cc-pi-kimik3 node scripts/test_leaderboard_browser.cjs`. Set
 `LEADERBOARD_ORIGIN` to use a different local server address.
-Run `HF_PACKAGE=.build/hf-trajectories-astra-deepseek node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
+Run `HF_PACKAGE=.build/hf-trajectories-ds-cc-pi-kimik3 node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
 Run `node scripts/test_leaderboard_costs_browser.cjs` for cost sorting, chart/table
 parity across hardware scopes, keyboard tabs, links, empty states and mobile layout.
 

@@ -65,6 +65,18 @@ class CostTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             costs.calculate(snapshot, usage, self.prices)
 
+    def test_same_model_with_multiple_harnesses_has_separate_cost_rows(self):
+        snapshot, usage = self.fixture()
+        model = 'deepseek/deepseek-v4.1-flash-1017'
+        snapshot['trials'][0]['configuration'].update(model=model, agent='Codex')
+        usage['rows'][0]['model'] = model
+        other = copy.deepcopy(snapshot['trials'][0]);other['id'] = 'other'
+        other['configuration']['agent'] = 'Pi'
+        snapshot['trials'].append(other)
+        row = copy.deepcopy(usage['rows'][0]);row['agent'] = 'Pi'
+        row['requests'][0]['response_id'] = 'two';usage['rows'].append(row)
+        self.assertEqual(set(costs.calculate(snapshot, usage, self.prices)), {'trial', 'other'})
+
     def test_only_explicitly_withdrawn_models_are_excluded_from_usage(self):
         snapshot, usage = self.fixture()
         snapshot['selection'] = {'excluded_models': ['z-ai/glm-5.3-flash']}

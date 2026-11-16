@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "as_of": "2026-11-14",
+  "as_of": "2026-11-16",
   "currency": "USD",
   "unit": "USD per million tokens",
   "policy": "Official real-time USD API list prices, using DeepSeek off-peak rates for all selected requests as a fixed comparison basis. Cache-write and context-tier rates are model-specific. No batch, fast-mode, account or regional adjustments.",
@@ -129,6 +129,17 @@
         "output": "0.60"
       },
       "note": "Official off-peak list rates applied to all selected requests, regardless of request time, as a fixed comparison basis; not the actual OpenRouter bill. Cache misses include cache population at the ordinary input rate."
+    },
+    "kimi-k3": {
+      "official_model": "kimi-k3",
+      "source": "https://platform.kimi.ai/",
+      "rates": {
+        "input": "3.00",
+        "cached_input": "0.30",
+        "cache_write_input": "3.00",
+        "output": "15.00"
+      },
+      "note": "Standard USD K3 rates, with default 5-minute cache writes; uniform across context lengths. Recorded responses and available final aggregate counters are counted once; unrecorded usage is not estimated."
     }
   }
 }

@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "recovered_at": "2026-11-16",
+  "trials": [
+    {
+      "task": "agentic-search",
+      "setting": "deepseek-v4.1-flash-1017-pi-max",
+      "trajectory_sha256": "343debd370f8c032acc5531df13e10904715d8f864e4aa657bf6e56164bbd2df",
+      "session_sha256": "9bf88153ca0ff3b7522e382c1ca2c395bdec488e7effc5f1c5587b109a618de7",
+      "source_result_sha256": "858443af2a50fbb8f0e8e86bd0eb124765057beb3ce29f056f9191d4ec4efc24",
+      "source_trial_id": "3a5dd491-5b20-4406-8ea6-d8603fc5fc28",
+      "started_at": "2026-11-14T19:15:24.365681Z",
+      "finished_at": "2026-11-14T21:15:25.074459Z",
+      "exception": "AgentTimeoutError",
+      "basis": "Original Harbor agent_execution recovered from source host; coding session SHA-256 matches the selected archive."
+    },
+    {
+      "task": "evolving-personal-memory",
+      "setting": "kimi-k3-claude-code-max",
+      "trajectory_sha256": "38045068a3c1f3355ac70d6703c404feeebe201c145b330378e2b4b82aed3bf4",
+      "session_sha256": "297f1af4242f3e3f7b080d16d20632036f1c3194cab3b35b3fd8f7ce65f0d7cd",
+      "source_result_sha256": "22f7a19bd2c5a25d14c1fc4a8e19fe43350e4be17f1b636619c1d6bb6512e87c",
+      "source_trial_id": "c38b198b-7693-4c9c-9e32-06c0c03bfc95",
+      "started_at": "2026-11-14T08:45:00.726200Z",
+      "finished_at": "2026-11-14T10:45:01.940267Z",
+      "exception": "AgentTimeoutError",
+      "basis": "Original Harbor agent_execution recovered from source host; coding session SHA-256 matches the selected archive."
+    },
+    {
+      "task": "long-document-reranking",
+      "setting": "deepseek-v4.1-flash-1017-pi-max",
+      "trajectory_sha256": "192f4fbf8cd5848fa84c620d870f62e046f7784d248e6bff7d14353cd601303a",
+      "session_sha256": "77ebcd2f64f16e2144258ee709285fb08be4c80369ef7a03be53579909b5530d",
+      "source_result_sha256": "e1728c18b586b80da7fccf81def17bcf9468d036e7c548e86a0bfa117b68e7ed",
+      "source_trial_id": "1747a714-c148-447d-a928-7d0fdff63a79",
+      "started_at": "2026-11-12T08:15:17.317912Z",
+      "finished_at": "2026-11-12T09:47:00.199903Z",
+      "exception": null,
+      "basis": "Original Harbor agent_execution recovered from source host; coding session SHA-256 matches the selected archive."
+    },
+    {
+      "task": "sparse-retrieval-pruning",
+      "setting": "deepseek-v4.1-flash-1017-pi-max",
+      "trajectory_sha256": "1c1e77f1c30acff8647b560e5113c3f855b544ad66324cc30db9437ef7cd5674",
+      "session_sha256": "1f75e9750bd23907e10b28b3254c08bba03d4f6cf4f545b8f9d4cc1556458b21",
+      "source_result_sha256": "5153a265acd0e46bfe152e3a732b2df92737d4afbc0ea6937cb1b7bc26510f8f",
+      "source_trial_id": "60aa7503-ebf1-4f95-9059-9a0ebd09ef44",
+      "started_at": "2026-11-12T09:50:43.404520Z",
+      "finished_at": "2026-11-12T10:53:43.295424Z",
+      "exception": null,
+      "basis": "Original Harbor agent_execution recovered from source host; coding session SHA-256 matches the selected archive."
+    },
+    {
+      "task": "visual-document-qa",
+      "setting": "deepseek-v4.1-flash-1017-claude-code-max",
+      "trajectory_sha256": "e88e1f6372d71789932b7fea1cf8e868317ee378652bd90d4991c006617672b6",
+      "session_sha256": "fbcdb361804bdbba55f8d110601e3d755a202675a5f81af2a05a185758859e36",
+      "source_result_sha256": "8c6feb2d81d1d922328e46de93ba97dfc522292c1ea9a1741fe94864ad52a88e",
+      "source_trial_id": "b4ab2629-ee92-49c4-a1b6-9324fd1ccd58",
+      "started_at": "2026-11-13T04:25:29.889142Z",
+      "finished_at": "2026-11-13T06:25:29.900423Z",
+      "exception": "AgentTimeoutError",
+      "basis": "Original Harbor agent_execution recovered from source host; coding session SHA-256 matches the selected archive."
+    },
+    {
+      "task": "visual-document-qa",
+      "setting": "deepseek-v4.1-flash-1017-pi-max",
+      "trajectory_sha256": "7cbcf689e4dca198f935548e036f8c02c053ba162ca6e4c7c6a1cc83c561fa5d",
+      "session_sha256": "7678b9c941e81a69a453e4b35967c8c9c13c2325c3d7222b20c2daceeb0acd98",
+      "source_result_sha256": "5084b2645f5b01bf42e6fd0da88c3d3b3fa65996557e9ff9ce97fbf16658de18",
+      "source_trial_id": "3758d09e-6f11-44f1-ac0d-c4d445899ae7",
+      "started_at": "2026-11-13T17:23:45.507516Z",
+      "finished_at": "2026-11-13T18:56:16.941762Z",
+      "exception": null,
+      "basis": "Original Harbor agent_execution recovered from source host; coding session SHA-256 matches the selected archive."
+    },
+    {
+      "task": "icsi-meeting-memory",
+      "setting": "deepseek-v4.1-flash-1017-pi-max",
+      "trajectory_sha256": "f02d4d4c0072d40e5d4d79d7ead5fc5c10f953f982caf37f3cef9316f4be7a49",
+      "session_sha256": "541e8cc8ec8fc4954602f7ff189f7b25e8b64b5c82ee1b85882c115ef1a81c49",
+      "source_result_sha256": "42aec8e6b51ff8ec1a95c918e2d816cc5a682d7a41b2d563842fdd9d50069f2d",
+      "source_trial_id": "40ec7182-0139-4eac-9bca-7042e4bd6190",
+      "started_at": "2026-11-13T09:10:06.185208Z",
+      "finished_at": "2026-11-13T09:49:17.920610Z",
+      "exception": null,
+      "basis": "Original Harbor agent_execution recovered from source host; coding session SHA-256 matches the selected archive."
+    },
+    {
+      "task": "query-encoder-alignment",
+      "setting": "deepseek-v4.1-flash-1017-pi-max",
+      "trajectory_sha256": "3fc2ad3fce8678c2185b92cd7db1c7d1a0a41c5ae0bcaf446549089a95a3d144",
+      "session_sha256": "d559365f9648eed80dd9f8b4cd7afa47324dbdf122d84bb6af88a333541592b9",
+      "source_result_sha256": "337a5e7f2b9ce0ff3fbbf8c49237894bc14c2d8ead1504fe41cc6e7c532c12f6",
+      "source_trial_id": "6efb5b2e-bc94-45a0-a756-c87a6233461a",
+      "started_at": "2026-11-13T11:40:09.475717Z",
+      "finished_at": "2026-11-13T15:00:17.005708Z",
+      "exception": null,
+      "basis": "Original Harbor agent_execution recovered from source host; coding session SHA-256 matches the selected archive."
+    },
+    {
+      "task": "large-scale-formula-retrieval",
+      "setting": "deepseek-v4.1-flash-1017-pi-max",
+      "trajectory_sha256": "e03424683d2fd0229c0e6f89a1a12c7ce11181f2996cce4cc6d8c8e2e53331b5",
+      "session_sha256": "971274cc96538a2f4afd673780b46182505f7d61e806a89b628fd0411744e414",
+      "source_result_sha256": "354dac1f8dda30f5596fc2fc18afe5f72f69de53bbba336f945da3f2002faa6d",
+      "source_trial_id": "e224040f-5019-42f7-8a60-76c9bb456847",
+      "started_at": "2026-11-13T09:49:30.427974Z",
+      "finished_at": "2026-11-13T11:46:39.282370Z",
+      "exception": null,
+      "basis": "Original Harbor agent_execution recovered from local source trial; coding session SHA-256 matches the selected archive."
+    }
+  ]
+}

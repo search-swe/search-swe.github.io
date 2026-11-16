@@ -53,18 +53,21 @@ def calculate(snapshot, usage, prices):
     for row in usage['rows']:
         if row['model'] in excluded:
             continue
-        key = (row['task'], row['model'], row['effort'])
+        key = (row['task'], row['model'], row['effort'], row.get('agent', 'Codex' if row['model'].startswith('deepseek/') else ''))
         if key in rows:
             raise ValueError(f'Duplicate usage selection: {key}')
         rows[key] = row
-    expected = {(t['task'], t['configuration']['model'], t['configuration']['effort'])
+    def trial_key(t):
+        c = t['configuration']
+        return (t['task'], c['model'], c['effort'], c.get('agent', 'Codex') if c['model'].startswith('deepseek/') else '')
+    expected = {trial_key(t)
                 for t in snapshot['trials']}
     if set(rows) != expected:
         raise ValueError('Usage and selected trials do not cover the same task/model set')
     costs, all_ids = {}, set()
     for trial in snapshot['trials']:
         config = trial['configuration']
-        row = rows[(trial['task'], config['model'], config['effort'])]
+        row = rows[trial_key(trial)]
         if row.get('primary_trajectory_sha256') != trial['trajectory_sha256']:
             raise ValueError(f'Coding trajectory changed: {trial["id"]}')
         unique = {}

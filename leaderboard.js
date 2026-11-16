@@ -39,6 +39,10 @@
     return;
   }
   const tasks = new Map(data.tasks.map(t => [t.name, t]));
+  const deepseekModel = 'deepseek/deepseek-v4.1-flash-1017';
+  const bestDeepSeek = (data.entries || []).filter(e => e.model === deepseekModel).sort((a, b) =>
+    stats(data.trials.filter(t => t.entry === b.id)).score - stats(data.trials.filter(t => t.entry === a.id)).score
+    || a.id.localeCompare(b.id))[0]?.id;
   const tbody = document.querySelector('tbody');
   const rows = [...tbody.rows];
   const input = document.getElementById('filter');
@@ -111,8 +115,8 @@
         row.querySelectorAll('a').forEach(a => a.href = url);
         tbody.append(row);
       });
-      if (view === 'pareto') window.SearchSwePareto.render(entries, count, axis.value);
-      set('scope-caption', `${scope === 'all' ? 'All' : scope.toUpperCase()} ${count} tasks · one selected evaluation per model and task`);
+      if (view === 'pareto') window.SearchSwePareto.render(entries.filter(e => e.model !== deepseekModel || e.id === bestDeepSeek), count, axis.value);
+      set('scope-caption', `${scope === 'all' ? 'All' : scope.toUpperCase()} ${count} tasks · one selected evaluation per model, harness and task`);
     } else {
       const [key, direction] = sort.value.split('-');
       const byTask = (a, b) => tasks.get(a.task).hardware.localeCompare(tasks.get(b.task).hardware) || a.task.localeCompare(b.task);

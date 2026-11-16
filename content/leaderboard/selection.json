@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "updated_at": "2026-11-13",
+  "updated_at": "2026-11-16",
   "included_models": [
     "openai/gpt-6-luna",
     "openai/gpt-6.1-terra",
@@ -8,7 +8,8 @@
     "kimi-k3.1-pro",
     "anthropic/claude-opus-5.5",
     "gpt-6-astra",
-    "deepseek/deepseek-v4.1-flash-1017"
+    "deepseek/deepseek-v4.1-flash-1017",
+    "kimi-k3"
   ],
   "model_substitutions": [
     {
@@ -53,5 +54,10 @@
         }
       ]
     }
+  ],
+  "included_settings": [
+    "deepseek-v4.1-flash-1017-codex-max",
+    "deepseek-v4.1-flash-1017-claude-code-max",
+    "deepseek-v4.1-flash-1017-pi-max"
   ]
 }

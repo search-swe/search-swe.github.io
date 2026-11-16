@@ -20,9 +20,10 @@ from leaderboard_costs import calculate
 from prepare_hf_release import finalize, referenced_files
 from publication import CURRENT_RELEASE, DEFAULT_PACKAGE, PublicText, load_package, safe_path
 from claude_code_usage import claude_usage
+from pi_usage import pi_usage
 
 MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1-pro',
-          'anthropic/claude-opus-5.5', 'gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017')
+          'anthropic/claude-opus-5.5', 'gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017', 'kimi-k3')
 DEFAULT_FINAL = Path('/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs/final-trajectories')
 CONTENT = ROOT / 'content/leaderboard'
 AGENT_TIME_BUDGET_ASSIGNMENTS = {
@@ -46,16 +47,26 @@ def entry_model(row):
     return row['model']
 
 
+DEEPSEEK_SETTINGS = ('deepseek-v4.1-flash-1017-codex-max',
+                     'deepseek-v4.1-flash-1017-claude-code-max',
+                     'deepseek-v4.1-flash-1017-pi-max')
+
+
+def setting_key(row):
+    model = entry_model(row)
+    return row['model_label'] if model.startswith('deepseek/') else model
+
+
 def selected_rows(final, tasks):
     with (final / 'INDEX.csv').open() as source:
         rows = [r for r in csv.DictReader(source)
                 if r['model'] in (*MODELS, 'anthropic/claude-opus-5')
-                and (r['model'] != 'deepseek/deepseek-v4.1-flash-1017'
-                     or r.get('model_label') == 'deepseek-v4.1-flash-1017-codex-max')]
-    keys = [(r['task'], entry_model(r)) for r in rows]
-    if len(keys) != len(set(keys)) or set(keys) != {(t, m) for t in tasks for m in MODELS}:
-        raise ValueError('Selected models must each cover exactly the complete task catalog')
-    return sorted(rows, key=lambda r: (r['task'], r['model']))
+                and (not r['model'].startswith('deepseek/') or r.get('model_label') in DEEPSEEK_SETTINGS)]
+    keys = [(r['task'], setting_key(r)) for r in rows]
+    settings = [m for m in MODELS if not m.startswith('deepseek/')] + list(DEEPSEEK_SETTINGS)
+    if len(keys) != len(set(keys)) or set(keys) != {(t, m) for t in tasks for m in settings}:
+        raise ValueError('Selected settings must each cover exactly the complete task catalog')
+    return sorted(rows, key=lambda r: (r['task'], r['model_label']))
 
 
 def verified_bytes(path, expected):
@@ -154,7 +165,7 @@ def prepare(final, package, base_package=None):
     if len(catalog) != 47:
         raise ValueError('This publication expects 47 tasks')
     policy = read(CONTENT / 'selection.json')
-    if policy.get('included_models') != list(MODELS):
+    if policy.get('included_models') != list(MODELS) or policy.get('included_settings') != list(DEEPSEEK_SETTINGS):
         raise ValueError('Website selection must explicitly contain the selected models')
     metadata = read(CONTENT / 'model-metadata.json')
     archive = read(final / 'MANIFEST.json')
@@ -162,7 +173,8 @@ def prepare(final, package, base_package=None):
         raise ValueError('Archive manifest and index differ')
     settings = {(s['task'], s['model'], s['model_label']): s for s in archive['settings']}
     source_hashes = {'index': archive['index_sha256'], 'archive': digest((final / 'MANIFEST.json').read_bytes()),
-                     'model_metadata': digest(encode(metadata)), 'selection': digest(encode(policy))}
+                     'model_metadata': digest(encode(metadata)), 'selection': digest(encode(policy)),
+                     'coding_time_evidence': digest((CONTENT / 'coding-time-evidence.json').read_bytes())}
     release_id = policy['updated_at'] + '-selected-' + digest(encode(source_hashes))[:10]
     # Appending retains the physical corpus directory. Immutable commit URLs keep
     # the previously published snapshot available without duplicating its remote payloads.
@@ -191,14 +203,15 @@ def prepare(final, package, base_package=None):
     if base_package:
         base_snapshot = read(base_package / release_path / 'snapshot.json')
         base_usage = read(base_package.with_suffix('.usage.json'))
-        previous = {(t['task'], t['configuration']['model']): t for t in base_snapshot['trials']}
+        previous = {(t['task'], t['configuration']['model'], t['configuration']['agent']): t for t in base_snapshot['trials']}
         entries.update({e['id']: e for e in base_snapshot['entries']})
         usage_rows.extend(base_usage['rows'])
         # Reuse immutable payloads, including their original redaction/export
         # format. Re-importing old trials would change published evidence bytes.
         shutil.copytree(base_package / release_path / 'trials', package / release_path / 'trials', dirs_exist_ok=True)
     for number, row in enumerate(rows, 1):
-        old = previous.get((row['task'], row['model']))
+        harness = 'Pi' if row['model_label'].endswith('-pi-max') else ('Claude Code' if '-claude-code-' in row['model_label'] else 'Codex')
+        old = previous.get((row['task'], row['model'], harness))
         if old:
             if (old['trajectory_sha256'] != row['primary_trajectory_sha256'] or
                     not math.isclose(old['score'], float(row['score']), abs_tol=1e-8)):
@@ -245,16 +258,16 @@ def prepare(final, package, base_package=None):
         if not math.isclose(float(native_result_reward), float(native), abs_tol=1e-9):
             raise ValueError('Native result and selected reward differ')
         raw = json.loads(trajectory)
-        if raw['agent']['model_name'] != row['model']:
+        if raw['agent']['model_name'] != ('openrouter/' + row['model'] if harness == 'Pi' else row['model']):
             raise ValueError('Selected trajectory model differs')
         extra_usage = None
         usage_note = 'Per-response native coding receipts, deduplicated by response ID.'
-        if row['model'] == 'kimi-k3.1-pro' or row['model'].startswith('anthropic/claude-opus-5'):
+        if harness == 'Claude Code':
             agent = 'Claude Code'
-            provider = 'OpenRouter' if row['model'].startswith('anthropic/') else metadata['models'][row['model']]['provider']
+            provider = 'OpenRouter' if pointer.get('provider') == 'openrouter' else metadata['models'][row['model']]['provider']
             if (raw['agent']['name'] != 'claude-code' or raw['agent']['version'] != '2.1.309' or
                     (provider == 'OpenRouter' and (pointer.get('provider') != 'openrouter' or row['effort'] != 'max')) or
-                    (row['model'] == 'kimi-k3.1-pro' and provider != 'Moonshot AI')):
+                    (row['model'].startswith('kimi-') and provider != 'Moonshot AI')):
                 raise ValueError('Claude Code provider or harness differs from the confirmed configuration')
             if provider == 'OpenRouter':
                 coding_config = json.loads(source(trial_root / 'config.json'))['agent']
@@ -284,6 +297,26 @@ def prepare(final, package, base_package=None):
             start, finish, seconds, time_basis = coding_time(result, starts, finishes)
             if time_basis.startswith('Native coding session'):
                 time_basis = 'Original Claude Code cost-state startTime/totalDuration; regrade duration excluded.'
+        elif harness == 'Pi':
+            agent, provider = 'Pi', 'OpenRouter'
+            coding_config = json.loads(source(trial_root / 'config.json'))['agent']
+            harness_info = json.loads(source(trial_root / 'agent/harness.json'))
+            if (raw['agent']['version'] != '1.4.0' or raw['agent']['name'] != 'pi'
+                    or raw['agent']['model_name'] != 'openrouter/' + row['model']
+                    or pointer.get('provider') != 'openrouter'
+                    or coding_config['name'] != 'scripts.evaluation.harbor_agents:ManagedPi'
+                    or harness_info['actual_version'] != '1.4.0'):
+                raise ValueError('Pi harness/provider/model differs from the selected configuration')
+            session_paths = sorted((trial_root / 'agent/pi/sessions').rglob('*.jsonl'))
+            sessions = [[json.loads(line) for line in source(p).splitlines() if line.strip()] for p in session_paths]
+            stream = []
+            for line in source(trial_root / 'agent/pi.txt').splitlines():
+                try:
+                    stream.append(json.loads(line))
+                except json.JSONDecodeError:
+                    pass
+            tokens, requests, completed, usage_note = pi_usage(sessions, stream, raw['session_id'], row['model'])
+            start, finish, seconds, time_basis = coding_time(result, [], [])
         else:
             agent = 'Codex'
             if raw['agent']['name'] != 'codex' or raw['agent']['version'] != '0.164.0' or row['effort'] != 'max':
@@ -293,6 +326,17 @@ def prepare(final, package, base_package=None):
             tokens, requests, starts, finishes = session_usage(events)
             completed = bool(finishes)
             start, finish, seconds, time_basis = coding_time(result, starts, finishes)
+        if seconds is None:
+            evidence = [e for e in read(CONTENT / 'coding-time-evidence.json')['trials']
+                        if e['task'] == row['task'] and e['setting'] == row['model_label']
+                        and e['trajectory_sha256'] == row['primary_trajectory_sha256']]
+            if len(evidence) != 1:
+                raise ValueError('Missing verified original coding timing')
+            evidence = evidence[0]
+            if not any(digest(source(p)) == evidence['session_sha256'] for p in session_paths):
+                raise ValueError('Recovered timing is bound to a different coding session')
+            start, finish, seconds, _ = coding_time({'agent_execution': evidence}, [], [])
+            time_basis = evidence['basis'] + ' Source result SHA-256: ' + evidence['source_result_sha256']
         entry_id = release_id + '-' + row['model_label']
         trial_id = row['task'] + '-' + row['model_label'] + '-' + digest(trajectory + reward_bytes)[:12]
         destination = package / release_path / 'trials' / trial_id
@@ -345,6 +389,7 @@ def prepare(final, package, base_package=None):
         write(destination / 'evaluation.json', {k: trial[k] for k in ('score', 'reward', 'configuration', 'qualification')})
         snapshot['trials'].append(trial)
         usage_rows.append({'task': row['task'], 'model': row['model'], 'effort': row['effort'],
+                           **({'agent': agent} if row['model'].startswith('deepseek/') else {}),
                            'primary_trajectory_sha256': digest(trajectory), 'requests': requests})
         if extra_usage is not None:
             usage_rows[-1]['aggregate_remainder'] = extra_usage

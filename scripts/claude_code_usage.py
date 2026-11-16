@@ -38,7 +38,7 @@ def claude_usage(sessions, stream, session_id, model, version):
     Their aggregate remainder can only be priced with a flat (not per-request tiered)
     model tariff. Missing final counters fall back to deduplicated recorded usage.
     """
-    requests, states, partial = {}, [], {}
+    requests, states, partial, placeholders = {}, [], {}, set()
     for events in sessions:
         for event in events:
             if event.get('type') == 'cost-state' and event.get('sessionId') == session_id:
@@ -58,6 +58,14 @@ def claude_usage(sessions, stream, session_id, model, version):
             if not key:
                 raise ValueError('Claude Code response has no ID')
             raw_usage = message['usage']
+            if (raw_usage.get('input_tokens') == 0 and raw_usage.get('output_tokens') == 0
+                    and raw_usage.get('cache_read_input_tokens') is None
+                    and raw_usage.get('cache_creation_input_tokens') is None):
+                # An interrupted streaming header has no finalized usage. Final
+                # counters cover it when available; otherwise retain the same
+                # recorded-response fallback used for interrupted sessions.
+                placeholders.add(key)
+                continue
             if raw_usage.get('output_tokens', 0) > 0 and not raw_usage.get('output_tokens_details'):
                 # An interrupted response can lack its reasoning breakdown. Keep
                 # its known buckets for reconciliation; never invent that count.
@@ -123,5 +131,7 @@ def claude_usage(sessions, stream, session_id, model, version):
             note += ' An interrupted response lacks its reasoning breakdown; final counters include its usage, and the response count excludes this partial receipt.'
     else:
         note = RECORDED_USAGE_FALLBACK_NOTE
+    if placeholders - requests.keys():
+        note += ' Incomplete streaming headers without finalized usage are excluded from the response count; available aggregate counters cover their usage.'
     return (dict(totals), [{'response_id': k, 'usage': v} for k, v in requests.items()],
             remainder, start, finish, bool(results), note)

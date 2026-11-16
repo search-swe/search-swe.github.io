@@ -1,7 +1,7 @@
 /* Compare score with cost, tokens or reported time over the selected tasks. */
 (() => {
   'use strict';
-  const colors = ['#16847c', '#bd7b27', '#3976c6', '#9562bb', '#bd5b76', '#5a7994', '#69833c'];
+  const colors = ['#16847c', '#bd7b27', '#3976c6', '#9562bb', '#bd5b76', '#5a7994', '#69833c', '#b35439', '#5964c4', '#8d7438'];
   const money = value => value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
   const compact = value => value.toLocaleString('en-US', {notation: 'compact', maximumFractionDigits: value >= 1e9 ? 2 : 1});
   const duration = seconds => {
@@ -50,7 +50,9 @@
     const empty = document.getElementById('pareto-empty');
     empty.textContent = `No matching models with recorded ${metric.name} data.`;
     empty.hidden = visible.length > 0;
-    document.getElementById('pareto-note').textContent = metric.note;
+    const deepseek = entries.find(e => e.model === 'deepseek/deepseek-v4.1-flash-1017');
+    document.getElementById('pareto-note').textContent = metric.note + (deepseek
+      ? ` DeepSeek shows its highest-scoring harness overall (${deepseek.agent}).` : '');
     chart.hidden = visible.length === 0;
     if (!visible.length) {
       chart.replaceChildren();

@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from import_final_results import MODELS, coding_provider, coding_session, coding_time, entry_model, selected_rows, session_usage
+from import_final_results import MODELS, DEEPSEEK_SETTINGS, coding_provider, coding_session, coding_time, entry_model, selected_rows, session_usage
 from import_results import export_trajectory, read
 
 
@@ -13,22 +13,19 @@ class CurrentArchiveTests(unittest.TestCase):
     def test_only_requested_models_and_complete_fixed_task_set(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            rows = [{'task': t, 'model': m, 'model_label':
-                     'deepseek-v4.1-flash-1017-codex-max' if m.startswith('deepseek/') else ''}
-                    for t in ['one', 'two'] for m in MODELS]
+            rows = [{'task': t, 'model': m, 'model_label': ''}
+                    for t in ['one', 'two'] for m in MODELS if not m.startswith('deepseek/')]
+            rows.extend({'task': t, 'model': 'deepseek/deepseek-v4.1-flash-1017', 'model_label': setting}
+                        for t in ['one', 'two'] for setting in DEEPSEEK_SETTINGS)
             rows.append({'task': 'one', 'model': 'incomplete-other-model'})
-            # The archive also contains incomplete Claude Code and Pi runs of
-            # the same DeepSeek model. They must not enter the Codex cohort.
-            rows.extend({'task': 'one', 'model': 'deepseek/deepseek-v4.1-flash-1017',
-                         'model_label': f'deepseek-v4.1-flash-1017-{agent}-max'}
-                        for agent in ('claude-code', 'pi'))
+            rows.append({'task': 'one', 'model': 'step-5-preview', 'model_label': 'step-5-preview-claude-code-max'})
             def save():
                 with (root / 'INDEX.csv').open('w') as f:
                     writer = csv.DictWriter(f, ['task', 'model', 'model_label'])
                     writer.writeheader()
                     writer.writerows(rows)
             save()
-            self.assertEqual(len(selected_rows(root, ['one', 'two'])), 2 * len(MODELS))
+            self.assertEqual(len(selected_rows(root, ['one', 'two'])), 2 * (len(MODELS) + 2))
             rows.pop(0)
             save()
             with self.assertRaisesRegex(ValueError, 'complete task catalog'):

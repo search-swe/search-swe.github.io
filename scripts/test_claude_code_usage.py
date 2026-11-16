@@ -62,6 +62,16 @@ class ClaudeUsageTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'counters disagree'):
             self.read(sessions, stream)
 
+    def test_interrupted_streaming_header_has_no_finalized_usage(self):
+        sessions, stream = self.fixture()
+        sessions[0].append({'type': 'assistant', 'version': '2.1.309', 'message': {
+            'id': 'header', 'model': 'kimi-k3.1-pro', 'usage': {'input_tokens': 0,
+            'output_tokens': 0, 'cache_creation_input_tokens': None, 'cache_read_input_tokens': None}}})
+        totals, _, _, _, _, _, note = self.read(sessions, stream)
+        self.assertEqual(totals['response_count'], 2)
+        self.assertEqual(totals['total_tokens'], 230)
+        self.assertIn('Incomplete streaming headers', note)
+
     def test_wrong_model_and_regressing_stream_usage_fail(self):
         sessions, stream = self.fixture()
         sessions[1][0]['message']['model'] = 'other'

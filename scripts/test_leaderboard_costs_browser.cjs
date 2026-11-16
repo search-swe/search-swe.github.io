@@ -14,6 +14,8 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     await page.goto(`${origin}/leaderboard/`);
     const data = await page.locator('#page-data').evaluate(node => JSON.parse(node.textContent));
     const byId = new Map(data.entries.map(e => [e.id, e]));
+    const plotted = data.entries.filter(e => e.model !== 'deepseek/deepseek-v4.1-flash-1017' || e.agent === 'Claude Code');
+    const plottedIds = new Set(plotted.map(e => e.id));
     const totals = scope => data.entries.map(entry => {
       const tasks = new Set(data.tasks.filter(t => scope === 'all' || t.hardware === scope).map(t => t.name));
       const trials = data.trials.filter(t => t.entry === entry.id && tasks.has(t.task));
@@ -41,17 +43,22 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     assert.equal(await page.locator('#panel-table').isVisible(), false);
     assert.equal(await page.locator('.sort-label').isVisible(), false);
     assert.deepEqual(await page.locator('#pareto-x option').allTextContents(), ['Cost', 'Tokens', 'Time']);
-    assert.equal(await page.locator('.pareto-point').count(), data.entries.length);
+    assert.equal(await page.locator('.pareto-point').count(), plotted.length);
     assert(await page.locator('.pareto-heading').evaluate(node => {
       const title = node.querySelector('h2').getBoundingClientRect();
       const key = node.querySelector('.pareto-key').getBoundingClientRect();
       return Math.abs(title.y + title.height / 2 - key.y - key.height / 2) < 1;
     }));
-    assert.deepEqual((await page.locator('.pareto-point[data-frontier="true"]').evaluateAll(nodes => nodes.map(n => n.dataset.entry))).map(id => byId.get(id).model).sort(), ['anthropic/claude-opus-5.5', 'deepseek/deepseek-v4.1-flash-1017', 'gpt-6.1-sol', 'openai/gpt-6.1-terra']);
+    const plottedTotals = totals('all').filter(e => plottedIds.has(e.id));
+    const costFrontier = plottedTotals.filter(e => !plottedTotals.some(o => o.cost <= e.cost && o.score >= e.score && (o.cost < e.cost || o.score > e.score)));
+    assert.deepEqual((await page.locator('.pareto-point[data-frontier="true"]').evaluateAll(nodes => nodes.map(n => n.dataset.entry))).sort(), costFrontier.map(e => e.id).sort());
+    const dsPoint = page.locator('.pareto-point').filter({has: page.locator('text', {hasText: 'DeepSeek'})});
+    assert.equal(await dsPoint.count(), 1);
+    assert.equal(byId.get(await dsPoint.getAttribute('data-entry')).agent, 'Claude Code');
     assert.match(await page.locator('#pareto-note').innerText(), /DeepSeek uses official off-peak rates for all requests/);
     await page.locator('.pareto-point .pareto-dot').first().hover();
     assert.equal(await page.locator('.pareto-tooltip').isVisible(), true);
-    for (const entry of data.entries) {
+    for (const entry of plotted) {
       const point = page.locator(`.pareto-point[data-entry="${entry.id}"]`);
       await point.locator('.pareto-dot').hover();
       assert.equal(await page.locator('.pareto-tooltip strong').innerText(), `${entry.name} / ${entry.agent}`);
@@ -76,7 +83,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
         const {x, y, width, height} = node.getBoundingClientRect();
         return {x, y, width, height};
       }));
-      assert.equal(labels.length, data.entries.length);
+      assert.equal(labels.length, plotted.length);
       assert(!labels.some((a, i) => labels.slice(i + 1).some(b =>
         a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y)));
       const points = await page.locator('.pareto-point').evaluateAll(nodes => nodes.map(n => ({id: n.dataset.entry, cost: Number(n.dataset.cost), score: Number(n.dataset.score)})));
@@ -92,7 +99,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
       await page.locator('#pareto-x').selectOption(axis);
       for (const scope of ['all', 'cpu', 'gpu']) {
         await page.locator(`[data-scope="${scope}"]`).click();
-        const expected = totals(scope).filter(e => Number.isFinite(e[axis]));
+        const expected = totals(scope).filter(e => plottedIds.has(e.id) && Number.isFinite(e[axis]));
         const points = await page.locator('.pareto-point').evaluateAll(nodes => nodes.map(n => ({
           id: n.dataset.entry, axis: n.dataset.axis, value: Number(n.dataset.value), score: Number(n.dataset.score),
           frontier: n.dataset.frontier === 'true', x: Number(n.querySelector('.pareto-dot').getAttribute('cx')),
@@ -117,7 +124,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
           assert.equal(point.frontier, !expected.some(other => other[axis] <= e[axis] && other.score >= e.score &&
             (other[axis] < e[axis] || other.score > e.score)));
           if (axis === 'time') {
-            const legend = page.locator('.pareto-legend-item').filter({hasText: e.name});
+            const legend = page.locator(`.pareto-legend-item[href^="/leaderboard/entries/${e.id}/"]`);
             assert((await legend.innerText()).includes(`${e.timedTasks}/${e.taskCount} tasks timed`));
           }
         }
@@ -151,12 +158,12 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     await page.setViewportSize({width: 390, height: 844});
     await page.waitForTimeout(150);
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-    assert.equal(await page.locator('.pareto-legend-item').count(), data.entries.length);
+    assert.equal(await page.locator('.pareto-legend-item').count(), plotted.length);
     assert(!(await page.locator('#pareto-chart').innerHTML()).match(/NaN|Infinity/));
     for (const axis of ['time', 'cost', 'tokens']) {
       await page.locator('#pareto-x').selectOption(axis);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-      assert.equal(await page.locator('.pareto-point').count(), data.entries.length);
+      assert.equal(await page.locator('.pareto-point').count(), plotted.length);
       assert(!(await page.locator('#pareto-chart').innerHTML()).match(/NaN|Infinity/));
     }
     await page.goto(`${origin}/leaderboard/?view=pareto&x=release-date`);
@@ -236,7 +243,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
         assert(Math.abs(position.y - initial) <= 1, `${width}x${height}, ${axis}: scrolled from ${initial} to ${position.y}`);
         assert.equal(position.focused, 'pareto-x');
         assert.equal(navigations, navigationCount, 'Changing the axis must not reload the document');
-        assert.equal(await scrollPage.locator(`.pareto-point[data-axis="${axis}"]`).count(), data.entries.length);
+        assert.equal(await scrollPage.locator(`.pareto-point[data-axis="${axis}"]`).count(), plotted.length);
       }
     }
     await scrollPage.close();

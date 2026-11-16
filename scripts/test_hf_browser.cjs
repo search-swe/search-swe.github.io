@@ -8,7 +8,7 @@ const {gunzipSync} = require('node:zlib');
 const {spawn, spawnSync} = require('node:child_process');
 const {chromium} = require('playwright');
 const root = path.resolve(__dirname, '..');
-const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-astra-deepseek'));
+const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-ds-cc-pi-kimik3'));
 const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const manifest = JSON.parse(gunzipSync(fs.readFileSync(path.join(packageRoot, 'publication.json.gz'))));
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'content/leaderboard/release.json')));
@@ -59,11 +59,9 @@ const server = http.createServer((req, res) => {
       assert(Math.abs((typeof reward === 'number' ? reward : reward.reward) * 100 - selected.score) < 1e-7);
     }
     const sol = snapshot.entries.find(e => e.model === 'gpt-6.1-sol');
-    for (const [model, provider] of [['gpt-6-astra', 'OpenAI'],
-      ['deepseek/deepseek-v4.1-flash-1017', 'DeepSeek (via OpenRouter)']]) {
-      const entry = snapshot.entries.find(e => e.model === model);
-      assert.equal(entry.agent, 'Codex');
-      assert.equal(entry.agent_version, '0.164.0');
+    for (const entry of snapshot.entries.filter(e => ['gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017', 'kimi-k3'].includes(e.model))) {
+      const provider = entry.model === 'gpt-6-astra' ? 'OpenAI' : entry.model === 'kimi-k3' ? 'Moonshot AI' : 'DeepSeek (via OpenRouter)';
+      assert.equal(entry.agent_version, entry.agent === 'Pi' ? '1.4.0' : entry.agent === 'Codex' ? '0.164.0' : '2.1.309');
       await page.goto(`${origin}/leaderboard/entries/${entry.id}/`);
       const label = provider === 'DeepSeek (via OpenRouter)' ? 'DeepSeek' : provider;
       assert.deepEqual(await page.locator('tbody .provider-cell').allTextContents(), Array(47).fill(label));
