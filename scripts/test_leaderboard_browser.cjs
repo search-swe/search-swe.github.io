@@ -8,7 +8,7 @@ const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'leaderboard/results.json')));
 const read = name => {
   const file = /^https?:/.test(name)
-    ? path.join(path.resolve(root, process.env.HF_PACKAGE || '.build/hf-trajectories-ds-cc-pi-kimik3'),
+    ? path.join(path.resolve(root, process.env.HF_PACKAGE || '.build/hf-trajectories-mimo'),
       new URL(name).pathname.replace(/^\/datasets\/search-swe\/trajectories\/resolve\/[a-f0-9]{40}(?=\/)/, ''))
     : path.join(root, name);
   return JSON.parse(fs.readFileSync(file));
@@ -27,9 +27,9 @@ const read = name => {
       return {...e, score: trials.reduce((n, t) => n + t.score, 0) / trials.length,
         tokens: trials.reduce((n, t) => n + t.tokens.total_tokens, 0)};
     }).sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
-    assert.equal(await page.locator('tbody tr:visible').count(), 10);
+    assert.equal(await page.locator('tbody tr:visible').count(), 12);
     assert.deepEqual(await page.locator('.score-value').allTextContents(), ranked.map(e => e.score.toFixed(1)));
-    assert.deepEqual(await page.locator('tbody .coverage').allTextContents(), Array(10).fill('47 / 47'));
+    assert.deepEqual(await page.locator('tbody .coverage').allTextContents(), Array(12).fill('47 / 47'));
     assert(!requests.some(url => url.includes('/traces/')));
     assert.equal(await page.locator('.model-name').first().innerText(), 'Claude Opus 5.5 (max)');
     assert.equal(await page.locator('.agent-cell').first().innerText(), 'Claude Code (v2.1.309)');
@@ -63,7 +63,7 @@ const read = name => {
     await page.locator('[data-sort-key="tokens"]').click();
     assert.equal(await page.locator('#sort').inputValue(), 'tokens-desc');
     await page.getByRole('button', {name: 'GPU', exact: true}).click();
-    assert.deepEqual(await page.locator('tbody .coverage').allTextContents(), Array(10).fill('23 / 23'));
+    assert.deepEqual(await page.locator('tbody .coverage').allTextContents(), Array(12).fill('23 / 23'));
     const gpu = new Set(snapshot.tasks.filter(t => t.hardware === 'gpu').map(t => t.name));
     const luna = snapshot.entries.find(e => e.model === 'openai/gpt-6-luna');
     const gpuTotal = snapshot.trials.filter(t => t.entry === luna.id && gpu.has(t.task)).reduce((sum, t) => sum + t.tokens.total_tokens, 0);
@@ -319,7 +319,7 @@ const read = name => {
     }
     const noJS = await browser.newPage({javaScriptEnabled: false});
     await noJS.goto(`${origin}/leaderboard/`);
-    assert.equal(await noJS.locator('tbody tr').count(), 10);
+    assert.equal(await noJS.locator('tbody tr').count(), 12);
     await noJS.goto(`${origin}/leaderboard/trials/${many.id}/`);
     assert(await noJS.locator('#panel-verifier').isVisible());
     assert.equal(errors.length, 0, errors.join('\n'));

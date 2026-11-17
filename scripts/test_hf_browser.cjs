@@ -8,7 +8,7 @@ const {gunzipSync} = require('node:zlib');
 const {spawn, spawnSync} = require('node:child_process');
 const {chromium} = require('playwright');
 const root = path.resolve(__dirname, '..');
-const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-ds-cc-pi-kimik3'));
+const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-mimo'));
 const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const manifest = JSON.parse(gunzipSync(fs.readFileSync(path.join(packageRoot, 'publication.json.gz'))));
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'content/leaderboard/release.json')));
@@ -59,14 +59,15 @@ const server = http.createServer((req, res) => {
       assert(Math.abs((typeof reward === 'number' ? reward : reward.reward) * 100 - selected.score) < 1e-7);
     }
     const sol = snapshot.entries.find(e => e.model === 'gpt-6.1-sol');
-    for (const entry of snapshot.entries.filter(e => ['gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017', 'kimi-k3'].includes(e.model))) {
-      const provider = entry.model === 'gpt-6-astra' ? 'OpenAI' : entry.model === 'kimi-k3' ? 'Moonshot AI' : 'DeepSeek (via OpenRouter)';
+    for (const entry of snapshot.entries.filter(e => e.model.startsWith('xiaomi/mimo-v2.6-') || ['gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017', 'kimi-k3'].includes(e.model))) {
+      const provider = entry.model.startsWith('xiaomi/') ? 'Xiaomi (via OpenRouter)' : entry.model === 'gpt-6-astra' ? 'OpenAI' : entry.model === 'kimi-k3' ? 'Moonshot AI' : 'DeepSeek (via OpenRouter)';
       assert.equal(entry.agent_version, entry.agent === 'Pi' ? '1.4.0' : entry.agent === 'Codex' ? '0.164.0' : '2.1.309');
       await page.goto(`${origin}/leaderboard/entries/${entry.id}/`);
-      const label = provider === 'DeepSeek (via OpenRouter)' ? 'DeepSeek' : provider;
+      const label = provider.replace(' (via OpenRouter)', '');
       assert.deepEqual(await page.locator('tbody .provider-cell').allTextContents(), Array(47).fill(label));
       assert.equal(await page.locator('tbody .provider-cell').first().getAttribute('title'), provider);
       if (label === 'DeepSeek') assert.match(await page.locator('.entry-subtitle').innerText(), /DeepSeek via OpenRouter/);
+      if (label === 'Xiaomi') assert.match(await page.locator('.entry-subtitle').innerText(), /Xiaomi via OpenRouter/);
     }
     await page.goto(`${origin}/leaderboard/entries/${sol.id}/`);
     assert.deepEqual(await page.locator('tbody .provider-cell').allTextContents(), Array(47).fill('OpenAI'));
@@ -76,6 +77,25 @@ const server = http.createServer((req, res) => {
     const fileIndex = JSON.parse(fs.readFileSync(path.join(packageRoot, manifest.release_path, 'trials', recovered.id, 'files/index.json')));
     const session = fileIndex.groups.agent.find(f => f.name.startsWith('original-codex-sessions/') && f.name.endsWith('.jsonl'));
     assert(session && session.download && session.parts.length, 'Recovered original session must be publicly readable');
+    for (const [task, seconds] of [['budgeted-bimetric-retrieval', 7201.120332], ['constrained-molecular-search', 16127.410464]]) {
+      const selected = snapshot.trials.find(t => t.task === task && t.configuration.model === 'xiaomi/mimo-v2.6-flash');
+      assert.equal(selected.configuration.run_mode, 'regrade');
+      assert(Math.abs(selected.agent_seconds - seconds) < 1e-6);
+      const inventory = JSON.parse(fs.readFileSync(path.join(packageRoot, manifest.release_path, 'trials', selected.id, 'files/index.json')));
+      const originals = inventory.groups.agent.filter(f => f.name.startsWith('original-coding/'));
+      assert.equal(originals.length, 5);
+      assert(originals.every(f => f.download && f.parts.length));
+      const originalResult = originals.find(f => f.name === 'original-coding/result.json');
+      const original = await page.evaluate(async url => {
+        const response = await fetch(url, {credentials: 'omit'});
+        return JSON.parse(await response.json());
+      }, `${dataOrigin}/${manifest.release_path}/trials/${selected.id}/files/${originalResult.parts[0]}`);
+      assert.equal(original.id, selected.configuration.coding_source_trial_id);
+      assert.notEqual(original.id, selected.configuration.grading_trial_id);
+    }
+    const timedRegrade = snapshot.trials.find(t => t.task === 'instruction-following-embedding' && t.configuration.model === 'xiaomi/mimo-v2.6-flash');
+    assert(Math.abs(timedRegrade.agent_seconds - 7201.244785) < 1e-6);
+    assert.equal(timedRegrade.agent_status, 'AgentTimeoutError');
     const kimi = snapshot.entries.find(e => e.model === 'kimi-k3.1-pro');
     assert.equal(kimi.agent, 'Claude Code');
     assert.equal(kimi.agent_version, '2.1.309');

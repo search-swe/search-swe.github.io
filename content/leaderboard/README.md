@@ -1,17 +1,42 @@
 # Leaderboard data and publication
 
-The current homepage contains **47 tasks (24 CPU, 23 GPU), ten leaderboard
-settings across eight models, and 470 selected trials**. All settings use max effort.
-The three new settings are DeepSeek V4.1 Flash 1017 / Claude Code 2.1.309
-(mean 27.5927375730), DeepSeek / Pi 1.4.0 (18.4387816458), and Kimi K3 /
-Claude Code 2.1.309 (25.3719202415). Step-5-preview remains on hold.
+The current homepage contains **47 tasks (24 CPU, 23 GPU), twelve leaderboard
+settings across ten models, and 564 selected trials**. All settings use max effort.
+The new settings are MiMo-V2.6-Flash / Claude Code 2.1.309 / OpenRouter / max
+(mean 15.2727619964) and MiMo-V2.6-Pro with the same configuration (18.6302226440),
+47 tasks each. Provider rows show **Xiaomi**, with **Xiaomi via OpenRouter**
+in entry subtitles and the full route in details/downloads. Step-5-preview,
+PR #3, Sonnet and Argon remain on hold.
 
-All ten settings retain separate main-table rows and downloadable results.
+All 81,855 original files for the additions passed size and SHA-256 checks.
+Flash's `budgeted-bimetric-retrieval` and `constrained-molecular-search` are
+verifier-only regrades. Their original coding sessions, CLI logs, harness,
+config and result are verified against `coding-source-evidence.json` and
+exported under `original-coding/` in Agent. Coding time and tokens use those
+original runs once; the selected reward remains the regraded reward. Their
+actual coding durations are 7201.120332 and 16127.410464 seconds. Molecular's
+final counters add 352,574 tokens absent from the ATIF summary; its Source2
+coding eligibility and the NoP observation-profile provenance are retained.
+Flash instruction-following-embedding retains its archived native session and adds
+a hash-bound original result for its 7201.244785-second coding duration.
+Both new settings have 47/47 real durations, without new estimates.
+Flash has 25 recorded-response fallback trials, Pro 15; both follow the
+established accounting policy. Tokens total 474,136,575 and 565,324,699.
+
+Xiaomi official standard USD rates per million input/cache-read/output tokens
+are **$0.14/$0.0028/$0.28** for Flash and **$0.435/$0.0036/$0.87** for Pro.
+Sources are the official [Flash](https://mimo.mi.com/models/en-US/mimo-v2.6-flash)
+and [Pro](https://mimo.mi.com/models/en-US/mimo-v2.6-pro) model pages. Subscription
+and batch prices are excluded. Estimated totals are **$6.0017513024** for Flash
+and **$17.1207614100** for Pro. The original 470 trial selections, payloads,
+usage, durations and estimated costs are preserved.
+
+All twelve settings retain separate main-table rows and downloadable results.
 The Pareto chart shows only DeepSeek's best harness by overall mean score,
 Claude Code, across Cost, Tokens, Time and all hardware scopes. Searching does
 not select another DeepSeek harness for the chart.
 
-The 141 new trials passed original archive file-size and SHA-256 verification.
+The previous 141 additions passed original archive file-size and SHA-256 verification.
 Eight missing coding durations were recovered from source-host Harbor results,
 with coding session SHA-256 matched against the archive. The frozen timing
 and provenance are in `coding-time-evidence.json`; no new duration estimates
@@ -26,7 +51,7 @@ output per million tokens, with default 5-minute writes. All DeepSeek harnesses
 use the same official off-peak rates. Costs are derived from recorded usage,
 not the harness's guessed cost or a provider invoice.
 
-The previous seven settings keep their selected results, usage, durations and
+The original seven settings keep their selected results, usage, durations and
 payload bytes. Their mean scores remain Claude Opus 5.5 48.4108822466,
 GPT-6.1 Sol 46.4303712901, GPT-6 Astra 45.9273539796,
 GPT-6.1 Terra 42.5322347241, Kimi K3.1 Pro 26.5999307981,
@@ -92,9 +117,9 @@ and [DeepSeek endpoint list](https://openrouter.ai/api/v1/models/deepseek/deepse
 Scores, tokens, configurations and payloads for all 235 earlier trials are
 unchanged; the seven duration assignments above update their timing summaries.
 
-The public package is `.build/hf-trajectories-ds-cc-pi-kimik3/`: **206,227 files**,
-approximately **7.09 GiB**, with 470 ATIF trajectories
-and 478 original session JSONL exports (235 Codex, 196 Claude Code, 47 Pi). Credentials are redacted and host paths
+The public package is `.build/hf-trajectories-mimo/`: **267,627 files**,
+approximately **9.45 GiB**, with 564 ATIF trajectories
+and 573 original session JSONL exports (235 Codex, 291 Claude Code, 47 Pi). Credentials are redacted and host paths
 normalized. Large binary artifacts remain listed without content downloads.
 Original benchmark records are never modified.
 This is also the default package for the current importer, uploader and browser
@@ -103,8 +128,13 @@ checks; `.build/hf-trajectories-current/` remains the older 235-trial append bas
 The active HF directory is **`releases/current/`**, independent of model names or
 publication dates. Full commit SHAs identify immutable versions. The verified
 revision is recorded in [`storage.json`](storage.json) and the private receipt
-`.build/hf-trajectories-ds-cc-pi-kimik3-uploaded.json`. The website pins that SHA rather
+`.build/hf-trajectories-mimo-uploaded.json`. The website pins that SHA rather
 than reading the mutable `main` branch.
+The current verified publication is
+[`16c6a5e364e2a09609cf85df85484795dcbbe4e8`](https://huggingface.co/datasets/search-swe/trajectories/commit/16c6a5e364e2a09609cf85df85484795dcbbe4e8).
+All 267,627 remote files passed size and content-hash checks. Anonymous downloads
+and CORS passed, including 13 additional samples covering both MiMo settings
+and the supplemented original coding records.
 
 On 2026-11-13, the then-current 235-trial corpus was moved from
 `releases/2026-11-11-luna-terra-sol-0b5b811770/`. The obsolete
@@ -115,7 +145,7 @@ commit-pinned downloads still work. The migration reuses Git trees and updates
 only the dataset card and publication inventory.
 
 The following commands document that historical migration, not the current
-ten-setting publication:
+twelve-setting publication:
 
 ```bash
 python scripts/normalize_hf_layout.py \
@@ -132,7 +162,7 @@ the current verified package as the base, and use a fresh output package:
 
 ```bash
 python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-ds-cc-pi-kimik3 \
+  --base-package .build/hf-trajectories-mimo \
   --package .build/hf-trajectories-next --upload
 ```
 
@@ -171,7 +201,7 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   are used. Missing original end timestamps remain missing; regrade time is never
   substituted. Eight reviewed runs use the maintainer-assigned 7200-second
   coding budget, with provenance in `agent_time_basis` and exact source trajectory
-  hashes in the importer. All 470 selected trials have a reported duration, including eight newly recovered original timings.
+  hashes in the importer. All 564 selected trials have a reported duration, including the eight previously recovered original timings and the three original coding durations recovered for this update.
 - Total tokens in the main leaderboard sum input (including cache) + output
   across the selected All / CPU / GPU task set, not a per-task average. Entry rows
   show Input Tokens, Output Tokens and Cached Tokens; trial summaries show the
@@ -180,7 +210,7 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   time. Verifier/task-internal API usage is excluded. Regrading uses original
   coding usage once. Missing values remain missing.
 - Cost sums selected coding responses at the frozen official USD API rates in
-  `official-pricing.json`, updated 2026-11-16. The OpenAI models use standard
+  `official-pricing.json`, updated 2026-11-17. The OpenAI models use standard
   processing, 30-minute cache writes and per-request context tiers above 272,000
   input tokens. Kimi K3.1 Pro uses standard USD rates: input/write $2, read $0.20
   and output $10 per million tokens. Kimi K3 uses input/write $3, read $0.30
@@ -194,8 +224,8 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   estimates are not an OpenRouter invoice. Sources and pricing assumptions remain public.
 - Claude Code receipts are deduplicated by message ID across streaming blocks
   and subagent sessions. Available final modelUsage counters also include
-  background/compaction usage. Seven Kimi K3.1 Pro, fourteen Kimi K3 and six
-  DeepSeek / Claude Code trials have no aggregate counter: the fallback uses
+  background/compaction usage. Seven Kimi K3.1 Pro, fourteen Kimi K3, six DeepSeek / Claude Code,
+  twenty-five MiMo Flash and fifteen MiMo Pro trials have no aggregate counter: the fallback uses
   deduplicated recorded responses as the final reported token totals and the
   basis for estimated cost. Unrecorded usage is not estimated. Aggregate
   remainders are priced only with a flat tariff; no extra response IDs are invented.
@@ -348,9 +378,9 @@ unchanged; exported JSON contains no local host source paths in its metadata.
 
 ```bash
 python -m unittest discover -s scripts -p 'test_*.py'
-python scripts/import_final_results.py --package .build/hf-trajectories-ds-cc-pi-kimik3 --check
+python scripts/import_final_results.py --package .build/hf-trajectories-mimo --check
 python scripts/build_leaderboard.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-ds-cc-pi-kimik3.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-mimo.usage.json --check
 python scripts/build_tasks.py --check
 node --check leaderboard.js
 node --check leaderboard-pareto.js
@@ -360,9 +390,9 @@ node --check trial-files.js
 ```
 
 With Playwright available in the Node module search path and the preview server
-running, run `HF_PACKAGE=.build/hf-trajectories-ds-cc-pi-kimik3 node scripts/test_leaderboard_browser.cjs`. Set
+running, run `HF_PACKAGE=.build/hf-trajectories-mimo node scripts/test_leaderboard_browser.cjs`. Set
 `LEADERBOARD_ORIGIN` to use a different local server address.
-Run `HF_PACKAGE=.build/hf-trajectories-ds-cc-pi-kimik3 node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
+Run `HF_PACKAGE=.build/hf-trajectories-mimo node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
 Run `node scripts/test_leaderboard_costs_browser.cjs` for cost sorting, chart/table
 parity across hardware scopes, keyboard tabs, links, empty states and mobile layout.
 

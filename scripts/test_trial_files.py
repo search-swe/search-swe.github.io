@@ -1,14 +1,58 @@
 import gzip
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from export_trial_files import export_files
 from import_results import scrub, write
 
 
 class TrialFileTests(unittest.TestCase):
+    def test_native_session_keeps_export_budget_ahead_of_redundant_cli(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source, output = root / 'trial', root / 'export'
+            (source / 'agent/sessions').mkdir(parents=True)
+            (source / 'verifier').mkdir()
+            (source / 'agent/trajectory.json').write_text('{}')
+            (source / 'agent/claude-code.txt').write_text('progress\n')
+            (source / 'agent/sessions/native.jsonl').write_text('{"type":"session"}\n')
+            original_stat = Path.stat
+            def sizes(path, *args, **kwargs):
+                result = original_stat(path, *args, **kwargs)
+                if path.name in {'trajectory.json', 'claude-code.txt'}:
+                    values = list(result)
+                    values[6] = 32 * 1024**2  # Exercise the budget without large fixtures.
+                    return os.stat_result(values)
+                return result
+            with patch.object(Path, 'stat', sizes):
+                index = export_files(source, source / 'verifier', output, scrub, write)
+            files = {f['name']: f for f in index['groups']['agent']}
+            self.assertTrue(files['sessions/native.jsonl']['download'])
+            self.assertTrue(files['sessions/native.jsonl']['parts'])
+            self.assertIsNone(files['claude-code.txt']['download'])
+
+    def test_original_coding_supplement_preserves_selected_grading_and_redacts_secrets(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            selected, original, output = root / 'selected', root / 'original', root / 'export'
+            (selected / 'verifier').mkdir(parents=True)
+            original.mkdir()
+            (selected / 'verifier/reward.json').write_text('{"reward": 0.75}')
+            (original / 'result.json').write_text(json.dumps({'id': 'coding-uuid', 'env': {'API_KEY': 'private'}}))
+            index = export_files(selected, selected / 'verifier', output, scrub, write,
+                                 extra_agent_files={'original-coding/result.json': original / 'result.json'})
+            supplemental = index['groups']['agent'][0]
+            text = ''.join(json.loads((output / 'files' / p).read_text()) for p in supplemental['parts'])
+            self.assertEqual(supplemental['name'], 'original-coding/result.json')
+            self.assertEqual(json.loads(text)['id'], 'coding-uuid')
+            self.assertEqual(json.loads(text)['env']['API_KEY'], '[REDACTED: environment value]')
+            reward = index['groups']['verifier'][0]
+            self.assertEqual(json.loads(json.loads((output / 'files' / reward['parts'][0]).read_text()))['reward'], 0.75)
+
     def test_final_grading_provenance_redaction_and_artifact_boundaries(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

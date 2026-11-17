@@ -23,7 +23,8 @@ from claude_code_usage import claude_usage
 from pi_usage import pi_usage
 
 MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1-pro',
-          'anthropic/claude-opus-5.5', 'gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017', 'kimi-k3')
+          'anthropic/claude-opus-5.5', 'gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017', 'kimi-k3',
+          'xiaomi/mimo-v2.6-flash', 'xiaomi/mimo-v2.6-pro')
 DEFAULT_FINAL = Path('/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs/final-trajectories')
 CONTENT = ROOT / 'content/leaderboard'
 AGENT_TIME_BUDGET_ASSIGNMENTS = {
@@ -74,6 +75,28 @@ def verified_bytes(path, expected):
     if len(data) != expected['bytes'] or digest(data) != expected['sha256']:
         raise ValueError(f'Archived source changed: {path.name}')
     return data
+
+
+def original_claude_source(pointer, row, trajectory):
+    """Bind a verifier-only regrade to its reviewed original coding evidence."""
+    if pointer.get('actual_agent') != 'nop' or not pointer.get('no_new_coding'):
+        raise ValueError('Original coding supplements require an explicit NoP regrade')
+    evidence = [e for e in read(CONTENT / 'coding-source-evidence.json')['trials']
+                if e['task'] == row['task'] and e['setting'] == row['model_label']
+                and e['trajectory_sha256'] == digest(trajectory)]
+    if len(evidence) != 1:
+        raise ValueError('Missing verified original coding source')
+    evidence = evidence[0]
+    root = Path(pointer['coding_source_original_trial']).resolve()
+    if digest((root / 'agent/trajectory.json').read_bytes()) != digest(trajectory):
+        raise ValueError('Original coding trajectory differs from the selected regrade')
+    files = evidence['files']
+    for relative, expected in files.items():
+        verified_bytes(safe_path(root, relative), expected)
+    result = json.loads(verified_bytes(root / 'result.json', files['result.json']))
+    if result['id'] != evidence['source_trial_id'] or result['id'] != pointer['coding_source_UUID']:
+        raise ValueError('Original coding UUID differs from the reviewed source')
+    return root, files, result
 
 
 def coding_session(trial_root):
@@ -174,7 +197,8 @@ def prepare(final, package, base_package=None):
     settings = {(s['task'], s['model'], s['model_label']): s for s in archive['settings']}
     source_hashes = {'index': archive['index_sha256'], 'archive': digest((final / 'MANIFEST.json').read_bytes()),
                      'model_metadata': digest(encode(metadata)), 'selection': digest(encode(policy)),
-                     'coding_time_evidence': digest((CONTENT / 'coding-time-evidence.json').read_bytes())}
+                     'coding_time_evidence': digest((CONTENT / 'coding-time-evidence.json').read_bytes()),
+                     'coding_source_evidence': digest((CONTENT / 'coding-source-evidence.json').read_bytes())}
     release_id = policy['updated_at'] + '-selected-' + digest(encode(source_hashes))[:10]
     # Appending retains the physical corpus directory. Immutable commit URLs keep
     # the previously published snapshot available without duplicating its remote payloads.
@@ -261,32 +285,44 @@ def prepare(final, package, base_package=None):
         if raw['agent']['model_name'] != ('openrouter/' + row['model'] if harness == 'Pi' else row['model']):
             raise ValueError('Selected trajectory model differs')
         extra_usage = None
+        extra_agent_files = {}
+        extra_source_hashes = {}
+        coding_result = result
         usage_note = 'Per-response native coding receipts, deduplicated by response ID.'
         if harness == 'Claude Code':
             agent = 'Claude Code'
+            coding_root, coding_read = trial_root, source
+            if pointer.get('no_new_coding') and not any((trial_root / 'agent/sessions').rglob('*.jsonl')):
+                coding_root, coding_inventory, coding_result = original_claude_source(pointer, row, trajectory)
+                def coding_read(path):
+                    return verified_bytes(path, coding_inventory[path.relative_to(coding_root).as_posix()])
+                extra_agent_files = {'original-coding/' + relative: coding_root / relative
+                                     for relative in coding_inventory}
+                extra_source_hashes = {'original-coding/' + relative: expected
+                                       for relative, expected in coding_inventory.items()}
             provider = 'OpenRouter' if pointer.get('provider') == 'openrouter' else metadata['models'][row['model']]['provider']
             if (raw['agent']['name'] != 'claude-code' or raw['agent']['version'] != '2.1.309' or
                     (provider == 'OpenRouter' and (pointer.get('provider') != 'openrouter' or row['effort'] != 'max')) or
                     (row['model'].startswith('kimi-') and provider != 'Moonshot AI')):
                 raise ValueError('Claude Code provider or harness differs from the confirmed configuration')
             if provider == 'OpenRouter':
-                coding_config = json.loads(source(trial_root / 'config.json'))['agent']
+                coding_config = json.loads(coding_read(coding_root / 'config.json'))['agent']
                 if (coding_config['name'] != 'scripts.evaluation.harbor_agents:ManagedOpenRouterClaudeCode' or
                         coding_config['model_name'] != row['model'] or
                         coding_config['kwargs'].get('version') != '2.1.309' or
                         coding_config['kwargs'].get('reasoning_effort') != 'max'):
-                    raise ValueError('Opus coding configuration differs from the selected model/provider/effort')
-            harness_path = trial_root / 'agent/harness.json'
+                    raise ValueError('Claude Code configuration differs from the selected model/provider/effort')
+            harness_path = coding_root / 'agent/harness.json'
             if harness_path.exists():
-                harness = json.loads(source(harness_path))
+                harness = json.loads(coding_read(harness_path))
                 if harness['actual_version'] != '2.1.309' or harness['requested_version'] != '2.1.309':
                     raise ValueError('Claude Code installed harness version differs')
-            session_paths = sorted((trial_root / 'agent/sessions').rglob('*.jsonl'))
+            session_paths = sorted((coding_root / 'agent/sessions').rglob('*.jsonl'))
             if not any(p.stem == raw['session_id'] for p in session_paths):
                 raise ValueError('Original Claude Code main session missing')
-            sessions = [[json.loads(line) for line in source(p).splitlines() if line.strip()] for p in session_paths]
+            sessions = [[json.loads(line) for line in coding_read(p).splitlines() if line.strip()] for p in session_paths]
             stream = []
-            for line in source(trial_root / 'agent/claude-code.txt').splitlines():
+            for line in coding_read(coding_root / 'agent/claude-code.txt').splitlines():
                 try:
                     stream.append(json.loads(line))
                 except json.JSONDecodeError:
@@ -294,7 +330,9 @@ def prepare(final, package, base_package=None):
             tokens, requests, extra_usage, start, finish, completed, usage_note = claude_usage(
                 sessions, stream, raw['session_id'], row['model'], raw['agent']['version'])
             starts, finishes = [start] if start else [], [finish] if finish else []
-            start, finish, seconds, time_basis = coding_time(result, starts, finishes)
+            start, finish, seconds, time_basis = coding_time(coding_result, starts, finishes)
+            if extra_agent_files:
+                time_basis += '; original coding reused for verifier-only regrade; source UUID and trajectory SHA-256 verified.'
             if time_basis.startswith('Native coding session'):
                 time_basis = 'Original Claude Code cost-state startTime/totalDuration; regrade duration excluded.'
         elif harness == 'Pi':
@@ -337,24 +375,34 @@ def prepare(final, package, base_package=None):
                 raise ValueError('Recovered timing is bound to a different coding session')
             start, finish, seconds, _ = coding_time({'agent_execution': evidence}, [], [])
             time_basis = evidence['basis'] + ' Source result SHA-256: ' + evidence['source_result_sha256']
+            if evidence.get('source_result_bytes') is not None:
+                original_result = Path(pointer['coding_source_original_trial']) / 'result.json'
+                expected = {'bytes': evidence['source_result_bytes'], 'sha256': evidence['source_result_sha256']}
+                coding_result = json.loads(verified_bytes(original_result, expected))
+                if coding_result['id'] != evidence['source_trial_id'] or coding_result['id'] != pointer['coding_source_UUID']:
+                    raise ValueError('Recovered coding timing belongs to another trial')
+                extra_agent_files['original-coding/result.json'] = original_result
+                extra_source_hashes['original-coding/result.json'] = expected
         entry_id = release_id + '-' + row['model_label']
         trial_id = row['task'] + '-' + row['model_label'] + '-' + digest(trajectory + reward_bytes)[:12]
         destination = package / release_path / 'trials' / trial_id
         count, redactions = export_trajectory(raw, destination, scrubber=public, public=True)
-        files = export_files(trial_root, reward_path.parent, destination, public, write)
+        files = export_files(trial_root, reward_path.parent, destination, public, write,
+                             extra_agent_files=extra_agent_files)
         folders = {'agent': trial_root / 'agent', 'verifier': reward_path.parent, 'artifacts': trial_root / 'artifacts'}
         for group, items in files['groups'].items():
             for item in items:
                 path = folders.get(group, trial_root) / item['name']
-                expected = inventory[path.relative_to(output).as_posix()]
+                expected = (extra_source_hashes[item['name']] if group == 'agent' and item['name'] in extra_source_hashes
+                            else inventory[path.relative_to(output).as_posix()])
                 if item['bytes'] != expected['bytes'] or (item['source_sha256'] and item['source_sha256'] != expected['sha256']):
                     raise ValueError(f'Exported evidence differs from source inventory: {group}/{item["name"]}')
         model = entry_model(row)
         info = metadata['models'][model]
-        if model == 'deepseek/deepseek-v4.1-flash-1017':
+        if info.get('inference_provider'):
             if provider != 'OpenRouter':
-                raise ValueError('DeepSeek selection must retain its OpenRouter routing provenance')
-            provider = 'DeepSeek (via OpenRouter)'
+                raise ValueError('Inferred upstream provider must retain its OpenRouter routing provenance')
+            provider = info['inference_provider'] + ' (via OpenRouter)'
         entry = {'id': entry_id, 'model': model, 'name': NAMES[model], 'effort': row['effort'],
                  'agent': agent, 'agent_version': raw['agent']['version'], 'provider': provider,
                  'release_date': info['release_date'], 'release_date_source': info['source']}
@@ -364,14 +412,19 @@ def prepare(final, package, base_package=None):
         selected = settings[(row['task'], row['model'], row['model_label'])]['selection']
         qualification = {k: selected.get(k) or pointer.get(k) for k in
                          ('qualification_flag', 'judge_semantic_quality_flag', 'qualification_limitations')}
+        if pointer.get('source_profile_and_coding_qualification_provenance'):
+            qualification['coding_source_provenance'] = pointer['source_profile_and_coding_qualification_provenance']
         qualification = sanitize({k: v for k, v in qualification.items() if v}, public)
-        exception = (result.get('exception_info') or {}).get('exception_type')
+        exception = (coding_result.get('exception_info') or {}).get('exception_type')
         fm = raw.get('final_metrics', {})
         if agent == 'Codex' and any(tokens[k] != fm.get(f) for k, f in [('input_tokens', 'total_prompt_tokens'), ('output_tokens', 'total_completion_tokens')]):
             usage_note += ' The ATIF summary lags the final receipt; totals include that recorded response.'
         config = {'agent': agent, 'version': raw['agent']['version'], 'model': row['model'],
-                  'effort': row['effort'], 'provider': provider, 'run_mode': pointer.get('mode') or 'native',
+                  'effort': row['effort'], 'provider': provider,
+                  'run_mode': 'regrade' if extra_agent_files else pointer.get('mode') or 'native',
                   'task_commit': pointer.get('source_revision'), 'verifier_commit': pointer.get('source_revision')}
+        if extra_agent_files:
+            config.update(coding_source_trial_id=coding_result['id'], grading_trial_id=result['id'])
         trial = {'id': trial_id, 'entry': entry_id, 'task': row['task'], 'score': score, 'valid': True,
                  'agent_status': exception or ('completed' if completed else 'Completion not recorded in the archived session'),
                  'agent_seconds': seconds, 'started_at': start, 'finished_at': finish, 'agent_time_basis': time_basis,

@@ -109,6 +109,19 @@
       "finished_at": "2026-11-13T11:46:39.282370Z",
       "exception": null,
       "basis": "Original Harbor agent_execution recovered from local source trial; coding session SHA-256 matches the selected archive."
+    },
+    {
+      "task": "instruction-following-embedding",
+      "setting": "mimo-v26-flash-claude-code-openrouter-max",
+      "trajectory_sha256": "d4ae408ee4cd3177d3d279dd661a2448bab7e414710d4087dd0043bf7f8b84c5",
+      "session_sha256": "da95417846df6d95fd5d0d3299b47e4bbfd66ce92ae99958a13e25c51810b400",
+      "source_result_sha256": "8a5c358745ce0159e8a73f3244ace67001373c0a38e58be67ef4a8ed12597bab",
+      "source_result_bytes": 9987,
+      "source_trial_id": "65b48025-2318-476e-a12e-66ac588879bf",
+      "started_at": "2026-11-15T16:32:22.373579Z",
+      "finished_at": "2026-11-15T18:32:23.618364Z",
+      "exception": "AgentTimeoutError",
+      "basis": "Original Harbor agent_execution recovered from the verified original coding result; native coding session SHA-256 matches the selected regrade archive."
     }
   ]
 }

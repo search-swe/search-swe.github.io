@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "recovered_at": "2026-11-17",
+  "trials": [
+    {
+      "task": "budgeted-bimetric-retrieval",
+      "setting": "mimo-v26-flash-claude-code-openrouter-max",
+      "trajectory_sha256": "d188a60b743ed99c6945fe3eb39e050dc3117e6651e64cdfd72c24599c184ebd",
+      "source_trial_id": "dd1114e8-9ac7-48ab-80fe-b5c0942ddd80",
+      "files": {
+        "result.json": {
+          "bytes": 9813,
+          "sha256": "a98779dd10bcd51567daf43b507796d532537bf8aef21896193a90d754036f2c"
+        },
+        "config.json": {
+          "bytes": 1713,
+          "sha256": "c149f7337cb51d989b728eb7ea3f26eceea19c0854b5182c18a4e565ce9b2da4"
+        },
+        "agent/harness.json": {
+          "bytes": 283,
+          "sha256": "ae1841547e01f5d10cecb00875e42cdd174fb4975b685e88bcfd19560184388e"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 13501869,
+          "sha256": "15324667207e31c5c481ecd63a23e66ea154855e18b1c28c3b769a42d76abfdf"
+        },
+        "agent/sessions/projects/-app/a0243926-6779-4d5f-9229-18fa8ff64725.jsonl": {
+          "bytes": 1821716,
+          "sha256": "2348724c46184b9b8560a8b24396b8fb6e312808022b355bda405b23c606f9b4"
+        }
+      }
+    },
+    {
+      "task": "constrained-molecular-search",
+      "setting": "mimo-v26-flash-claude-code-openrouter-max",
+      "trajectory_sha256": "6a6bc939f1d4a1609906b6db34788088778c30787c2b7940827f240608d4e96b",
+      "source_trial_id": "9e6e0296-d4a6-490c-ae03-36fa8e438f90",
+      "files": {
+        "result.json": {
+          "bytes": 5458,
+          "sha256": "9b54eb3cf88eec87bfab73dd9e4f08026a41889639c16c62220f4d758aaafee9"
+        },
+        "config.json": {
+          "bytes": 1800,
+          "sha256": "3c7a12846fd848e947f2849d2112c08da4dfd74ab0fb58b3764cbcbe659a5d14"
+        },
+        "agent/harness.json": {
+          "bytes": 283,
+          "sha256": "f8577fc3677d470310369789406f0bdfe831175492810b631110890af4101714"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 17474347,
+          "sha256": "b12d7b38b309f6fc10a727cce28e61f94b38ba49561d26fe99edea9dfc5bd25d"
+        },
+        "agent/sessions/projects/-app/e47b5a34-a525-4ad2-9a71-08a3a3186e48.jsonl": {
+          "bytes": 4458642,
+          "sha256": "8ed164e36875e769b4b1ecb5ea76066f9e6c1173d1e5d7080e595be7dfbfd504"
+        }
+      }
+    }
+  ]
+}

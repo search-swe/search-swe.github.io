@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "as_of": "2026-11-16",
+  "as_of": "2026-11-17",
   "currency": "USD",
   "unit": "USD per million tokens",
   "policy": "Official real-time USD API list prices, using DeepSeek off-peak rates for all selected requests as a fixed comparison basis. Cache-write and context-tier rates are model-specific. No batch, fast-mode, account or regional adjustments.",
@@ -140,6 +140,28 @@
         "output": "15.00"
       },
       "note": "Standard USD K3 rates, with default 5-minute cache writes; uniform across context lengths. Recorded responses and available final aggregate counters are counted once; unrecorded usage is not estimated."
+    },
+    "xiaomi/mimo-v2.6-flash": {
+      "official_model": "mimo-v2.6-flash",
+      "source": "https://mimo.mi.com/models/en-US/mimo-v2.6-flash",
+      "rates": {
+        "input": "0.14",
+        "cached_input": "0.0028",
+        "cache_write_input": "0.14",
+        "output": "0.28"
+      },
+      "note": "Official standard real-time USD API list rates, uniform across context lengths. Implicit cache population is part of ordinary input; selected receipts have no separate cache-write tokens. No subscription, batch or third-party routing discount. Recorded responses and available final counters counted once; unrecorded usage is not estimated."
+    },
+    "xiaomi/mimo-v2.6-pro": {
+      "official_model": "mimo-v2.6-pro",
+      "source": "https://mimo.mi.com/models/en-US/mimo-v2.6-pro",
+      "rates": {
+        "input": "0.435",
+        "cached_input": "0.0036",
+        "cache_write_input": "0.435",
+        "output": "0.87"
+      },
+      "note": "Official standard real-time USD API list rates, uniform across context lengths. Implicit cache population is part of ordinary input; selected receipts have no separate cache-write tokens. No subscription, batch or third-party routing discount. Recorded responses and available final counters counted once; unrecorded usage is not estimated."
     }
   }
 }

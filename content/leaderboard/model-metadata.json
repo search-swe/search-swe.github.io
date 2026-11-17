@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "checked_at": "2026-11-16",
+  "checked_at": "2026-11-17",
   "models": {
     "openai/gpt-6-luna": {
       "release_date": "2026-09-22",
@@ -45,6 +45,24 @@
       "source": "https://www.kimi.com/blog/kimi-k3",
       "provider": "Moonshot AI",
       "provider_basis": "All 47 selected native Claude Code configurations allow api.moonshot.cn and record kimi-k3."
+    },
+    "xiaomi/mimo-v2.6-flash": {
+      "release_date": "2026-09-21",
+      "source": "https://mimo.xiaomi.com/mimo-v2-6",
+      "provider": "Xiaomi (via OpenRouter)",
+      "api_platform": "OpenRouter",
+      "inference_provider": "Xiaomi",
+      "provider_basis": "The evaluation operator confirmed the applied provider allowlist on 2026-11-17. Its intersection with the official OpenRouter model endpoints contains only Xiaomi. Native configurations use OpenRouter.",
+      "provider_source": "https://openrouter.ai/api/v1/models/xiaomi/mimo-v2.6-flash/endpoints"
+    },
+    "xiaomi/mimo-v2.6-pro": {
+      "release_date": "2026-09-21",
+      "source": "https://mimo.xiaomi.com/mimo-v2-6",
+      "provider": "Xiaomi (via OpenRouter)",
+      "api_platform": "OpenRouter",
+      "inference_provider": "Xiaomi",
+      "provider_basis": "The evaluation operator confirmed the applied provider allowlist on 2026-11-17. Its intersection with the official OpenRouter model endpoints contains only Xiaomi. Native configurations use OpenRouter.",
+      "provider_source": "https://openrouter.ai/api/v1/models/xiaomi/mimo-v2.6-pro/endpoints"
     }
   }
 }

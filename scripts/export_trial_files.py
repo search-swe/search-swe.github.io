@@ -33,7 +33,7 @@ def sanitize(value, scrub, key=''):
     return value
 
 
-def export_files(source_trial, final_verifier, output, scrub, write, check=False):
+def export_files(source_trial, final_verifier, output, scrub, write, check=False, extra_agent_files=None):
     output = output / 'files'
     groups = {key: [] for key in ('agent', 'verifier', 'artifacts', 'config', 'lock', 'log', 'exception')}
     notes = {
@@ -48,6 +48,10 @@ def export_files(source_trial, final_verifier, output, scrub, write, check=False
     if final_verifier != source_trial / 'verifier':
         notes['verifier'] += ' This trial was regraded separately; these files follow the final reward pointer.'
     candidates = []
+    for name, path in (extra_agent_files or {}).items():
+        candidates.append(('agent', path, name))
+    if extra_agent_files:
+        notes['agent'] += ' Original coding files are included separately for this verifier-only regrade.'
     for group, folder in [('agent', source_trial / 'agent'), ('verifier', final_verifier),
                           ('artifacts', source_trial / 'artifacts')]:
         for path in sorted(folder.rglob('*')):
@@ -62,7 +66,13 @@ def export_files(source_trial, final_verifier, output, scrub, write, check=False
     # Prefer entry points and final reports before optional files exhaust a budget.
     priority = ['reward.json', 'evaluation.json', 'reward-details.json', 'test-stdout.txt',
                 'codex.txt', 'trajectory.json', 'build.sh', 'run.sh', 'README.md']
-    candidates.sort(key=lambda item: (item[0], priority.index(item[1].name) if item[1].name in priority else len(priority), item[2]))
+    def priority_key(item):
+        group, path, name = item
+        rank = priority.index(path.name) if path.name in priority else len(priority) + 1
+        if group == 'agent' and path.suffix == '.jsonl':
+            rank = len(priority)  # Native receipts precede redundant CLI/progress logs.
+        return group, rank, name
+    candidates.sort(key=priority_key)
     budgets = {group: 64 * 1024**2 if group == 'agent' else 8 * 1024**2 for group in groups}
     for group, path, name in candidates:
         size = path.stat().st_size

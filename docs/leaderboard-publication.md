@@ -4,7 +4,50 @@
 从公开的 HF Dataset [`search-swe/trajectories`](https://huggingface.co/datasets/search-swe/trajectories)
 匿名按需读取。浏览器不需要 HF Token。
 
-## 当前更新：DeepSeek Claude Code / Pi 与 Kimi K3
+## 当前更新：MiMo-V2.6-Flash / Pro
+
+2026-11-17 新增两组 Claude Code 2.1.309 / OpenRouter / max，各 47 项：Flash
+平均 15.2727619964，Pro 平均 18.6302226440。现为 10 个模型、12 个 settings、
+564 条结果。原 470 条结果、用量、耗时、费用和公开 payload 字节保持不变。
+
+Provider 简写 Xiaomi，详情保留 Xiaomi (via OpenRouter)。依据是用户确认生效的
+provider allowlist 与官方 OpenRouter 模型端点的交集；保留 OpenRouter API 渠道。
+DeepSeek 的 Pareto 选择仍为整体均分最高的 Claude Code；MiMo 两模型均正常展示。
+
+94 项原始档案的 81,855 个文件通过大小与 SHA-256 核验。Flash 的
+budgeted-bimetric-retrieval 和 constrained-molecular-search 是 NoP 重评分，原编码
+材料通过 UUID、轨迹和逐文件哈希绑定后，在公开 Agent 文件组的 original-coding/
+补充导出。固定证据为 content/leaderboard/coding-source-evidence.json，不修改原始
+final-trajectories。真实耗时为 7201.120332 / 16127.410464 秒，无新增耗时估算。
+Flash instruction-following-embedding 已有原生会话，另在 coding-time-evidence.json
+固定其原始 result 和 7201.244785 秒耗时，并导出原始 result。
+Molecular 使用原始最终累计数，多计入 ATIF 未汇总的 352,574 tokens；保留 Source2
+条件性 coding eligibility、只读 observation 扩展与额外 NoP 机会的来源记录。
+
+Flash 总 tokens 474,136,575，Pro 565,324,699；分别 25/15 项没有最终累计计数，
+沿用已记录主/子 agent 响应按 message ID 去重后的最终报告口径，不推算后台缺失用量。
+小米官方标准实时 USD 每百万 input/cache read/output 费率分别为
+Flash $0.14/$0.0028/$0.28、Pro $0.435/$0.0036/$0.87，来源为
+[Flash](https://mimo.mi.com/models/en-US/mimo-v2.6-flash) 和
+[Pro](https://mimo.mi.com/models/en-US/mimo-v2.6-pro)。不用订阅、batch 或 harness 猜测费用。
+两组估算总费用分别为 Flash $6.0017513024、Pro $17.1207614100。
+
+当前包为 .build/hf-trajectories-mimo，基线为 .build/hf-trajectories-ds-cc-pi-kimik3。
+公开包 267,627 个文件、约 9.45 GiB；本次新增约 2.54 GB，含 564 个 ATIF 和
+573 份原始会话 JSONL（235 Codex、291 Claude Code、47 Pi）。
+Step-5-preview、PR #3、Sonnet、Argon 继续暂缓。
+
+```bash
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-ds-cc-pi-kimik3 --package .build/hf-trajectories-mimo --upload
+```
+
+已完成上传并固定 HF 版本
+[`16c6a5e364e2a09609cf85df85484795dcbbe4e8`](https://huggingface.co/datasets/search-swe/trajectories/commit/16c6a5e364e2a09609cf85df85484795dcbbe4e8)。
+267,627 个远端文件的大小、内容哈希及匿名下载/CORS 均通过；另对两组 MiMo
+及补充的原始编码材料完成 13 项匿名下载抽查。本地 storage.json 和 579 个
+production 文件已更新到该版本；网站 Git 提交与推送单独执行。
+
+## 历史更新：DeepSeek Claude Code / Pi 与 Kimi K3
 
 2026-11-16 新增三个 max settings，各 47 项，共 141 条：DeepSeek / Claude Code
 2.1.309 平均 27.5927375730；DeepSeek / Pi 1.4.0 平均 18.4387816458；
@@ -38,7 +81,7 @@ python scripts/publish_final_results.py --base-package .build/hf-trajectories-as
 上传并核验后更新本地 production 页面；网站 Git 提交与推送独立于 HF 上传执行。
 已核验 HF 固定版本为
 [`5b68ad4b54187858faab15eebc2603f63d7a1bcd`](https://huggingface.co/datasets/search-swe/trajectories/commit/5b68ad4b54187858faab15eebc2603f63d7a1bcd)，
-全部 206,227 个远端文件哈希及匿名下载/CORS 通过；本地 storage.json 与该版本一致。
+全部 206,227 个远端文件哈希及匿名下载/CORS 通过；该次发布后的本地 storage.json 与该版本一致。
 
 ## 历史更新：加入 GPT-6 Astra 和 DeepSeek V4.1 Flash 1017
 
@@ -69,7 +112,7 @@ Guardrail 与官方端点清单的交集；保留 OpenRouter 渠道，避免误�
 
 新包为 `.build/hf-trajectories-astra-deepseek/`，复用先前 235 条结果及全部 payload。
 包含 329 个 ATIF、337 份原始会话文本；该次导入器、上传器和浏览器检查默认使用
-这个包；现在默认使用本文开头的十 settings 包。`.build/hf-trajectories-current/` 保留为旧的 235 条结果基线。上传及续传命令如下：
+这个包；现在默认使用本文开头的十二 settings 包。`.build/hf-trajectories-current/` 保留为旧的 235 条结果基线。上传及续传命令如下：
 
 ```bash
 python scripts/publish_final_results.py --base-package .build/hf-trajectories-current --package .build/hf-trajectories-astra-deepseek --upload
@@ -145,7 +188,7 @@ python scripts/normalize_hf_layout.py --source-package .build/hf-trajectories-lu
 完成模型选择、元数据及导入配置更新后，以最近的已验证包为基线，指定新的本地包：
 
 ```bash
-python scripts/publish_final_results.py --base-package .build/hf-trajectories-ds-cc-pi-kimik3 --package .build/hf-trajectories-next --upload
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-mimo --package .build/hf-trajectories-next --upload
 ```
 
 不带 `--upload` 只准备本地预览。增量上传只新增 trial，保留 `releases/current/`
@@ -156,8 +199,8 @@ python scripts/publish_final_results.py --base-package .build/hf-trajectories-ds
 ## 本地重建与审计
 
 ```bash
-python scripts/import_final_results.py --package .build/hf-trajectories-ds-cc-pi-kimik3 --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-ds-cc-pi-kimik3.usage.json --check
+python scripts/import_final_results.py --package .build/hf-trajectories-mimo --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-mimo.usage.json --check
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/build_tasks.py --check
 python scripts/build_leaderboard.py --production --check
@@ -167,7 +210,7 @@ python scripts/build_leaderboard.py --production --check
 若源归档已经变化，应指定新的 `--package` 路径，不覆盖旧包。恢复生产配置可使用：
 
 ```bash
-python scripts/upload_hf_release.py --package .build/hf-trajectories-ds-cc-pi-kimik3 --verify-revision <FULL_HF_SHA>
+python scripts/upload_hf_release.py --package .build/hf-trajectories-mimo --verify-revision <FULL_HF_SHA>
 ```
 
 评分沿 `FINAL_RESULT.json` 的最终 reward 指针读取，原生 reward × 100 必须
@@ -202,7 +245,7 @@ Pareto 图横轴可选 Cost、Tokens、Time，默认 Cost，没有 Release Date 
 缺失时间，仍跳过并显示覆盖数。切换横轴会重算前沿，
 并通过 `x=cost|tokens|time` 保存到链接，刷新和从模型详情返回时保留。
 
-公开包包含全部 470 个 ATIF 下载及各 setting 的原始会话文本导出；预览与下载
+公开包包含全部 564 个 ATIF 下载及各 setting 的原始会话文本导出；预览与下载
 使用相同的脱敏文本。主机路径替换为别名，凭证和环境值脱敏。
 二进制索引、权重等只列名称、大小和不可预览原因，不上传其内容。
 
@@ -394,7 +437,7 @@ releases/current/
 ```bash
 PYTHONPATH=scripts python -m unittest \
   scripts/test_publication.py scripts/test_leaderboard.py scripts/test_trial_files.py
-HF_PACKAGE=.build/hf-trajectories-ds-cc-pi-kimik3 NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
+HF_PACKAGE=.build/hf-trajectories-mimo NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
 ```
 
 浏览器检查使用另一个真实 HTTP origin 提供公开发布包，验证匿名跨域加载、

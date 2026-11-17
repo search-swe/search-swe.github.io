@@ -163,13 +163,15 @@ def entry_page(entry, snapshot):
             ('cached-tokens', trial['tokens']['cached_input_tokens']),
         ])
         provider = trial['configuration'].get('provider') or '—'
-        provider_label = 'DeepSeek' if provider == 'DeepSeek (via OpenRouter)' else provider
+        provider_label = provider.removesuffix(' (via OpenRouter)')
         rows.append(f'''<tr data-trial="{trial['id']}" data-href="/leaderboard/trials/{trial['id']}/"><td><a class="task-title" href="/leaderboard/trials/{trial['id']}/">{esc(task['name'])}</a></td>
 <td class="hardware-cell"><span class="hardware">{task['hardware'].upper()}</span></td><td class="agent-cell">{esc(trial['configuration']['agent'])} <span class="inline-meta">(v{esc(trial['configuration']['version'].removeprefix('v'))})</span></td><td class="provider-cell" title="{esc(provider)}">{esc(provider_label)}</td><td class="score-cell numeric"><span class="score-value">{trial['score']:.1f}</span></td><td class="duration-cell numeric" title="Agent execution time">{esc(duration(trial['agent_seconds']))}</td>{token_cells}<td class="cost-cell numeric">{money(trial.get('cost_usd'))}</td><td class="trajectory-cell"><a href="/leaderboard/trials/{trial['id']}/">Trace →</a></td></tr>''')
     sorts = [('task', 'Hardware, then task')]
     for key, label in [('score', 'Score'), ('time', 'Agent time'), ('input', 'Input tokens'), ('output', 'Output tokens'), ('cached', 'Cached tokens'), ('tokens', 'Total tokens'), ('cost', 'Cost')]:
         sorts.extend([(f'{key}-desc', f'{label}: highest first'), (f'{key}-asc', f'{label}: lowest first')])
-    route_note = ' <span class="dot">·</span> DeepSeek via OpenRouter' if entry.get('provider') == 'DeepSeek (via OpenRouter)' else ''
+    provider = entry.get('provider', '')
+    route_note = (' <span class="dot">·</span> ' + esc(provider.removesuffix(' (via OpenRouter)')) + ' via OpenRouter'
+                  if provider.endswith(' (via OpenRouter)') else '')
     body = f'''<nav class="breadcrumbs"><a id="back-leaderboard" href="/leaderboard/">← Leaderboard</a><span>/ Evaluation entry</span></nav>
 <h1>{esc(entry['name'])}</h1><div class="entry-meta"><p class="entry-subtitle">reasoning effort {esc(entry['effort'])}{route_note} <span class="dot">·</span> Last Updated <time datetime="{snapshot['observed_at'][:10]}">{snapshot['observed_at'][:10]}</time></p>
 <div class="id-line"><code>{entry['model']}</code><button class="copy-button" data-copy="{entry['model']}" hidden>Copy model ID</button></div></div>

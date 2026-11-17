@@ -1,15 +1,48 @@
 """Current-archive edge cases: exact selection, native receipts, timing and anonymous calls."""
 import copy
 import csv
+import hashlib
+import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-from import_final_results import MODELS, DEEPSEEK_SETTINGS, coding_provider, coding_session, coding_time, entry_model, selected_rows, session_usage
+from import_final_results import MODELS, DEEPSEEK_SETTINGS, coding_provider, coding_session, coding_time, entry_model, original_claude_source, selected_rows, session_usage
 from import_results import export_trajectory, read
 
 
 class CurrentArchiveTests(unittest.TestCase):
+    def test_regrade_original_coding_requires_matching_uuid_trajectory_and_frozen_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source, content = root / 'original', root / 'content'
+            (source / 'agent').mkdir(parents=True)
+            content.mkdir()
+            trajectory = b'{"steps": []}'
+            (source / 'agent/trajectory.json').write_bytes(trajectory)
+            result = b'{"id": "original-uuid"}'
+            (source / 'result.json').write_bytes(result)
+            evidence = {'task': 'one', 'setting': 'selected',
+                        'trajectory_sha256': hashlib.sha256(trajectory).hexdigest(),
+                        'source_trial_id': 'original-uuid', 'files': {'result.json': {
+                            'bytes': len(result), 'sha256': hashlib.sha256(result).hexdigest()}}}
+            (content / 'coding-source-evidence.json').write_text(json.dumps({'trials': [evidence]}))
+            pointer = {'actual_agent': 'nop', 'no_new_coding': True,
+                       'coding_source_original_trial': str(source), 'coding_source_UUID': 'original-uuid'}
+            row = {'task': 'one', 'model_label': 'selected'}
+            with patch('import_final_results.CONTENT', content):
+                self.assertEqual(original_claude_source(pointer, row, trajectory)[2]['id'], 'original-uuid')
+                with self.assertRaisesRegex(ValueError, 'UUID'):
+                    original_claude_source({**pointer, 'coding_source_UUID': 'different'}, row, trajectory)
+                (source / 'agent/trajectory.json').write_bytes(b'changed')
+                with self.assertRaisesRegex(ValueError, 'trajectory differs'):
+                    original_claude_source(pointer, row, trajectory)
+                (source / 'agent/trajectory.json').write_bytes(trajectory)
+                (source / 'result.json').write_bytes(b'{"id": "tampered"}')
+                with self.assertRaisesRegex(ValueError, 'Archived source changed'):
+                    original_claude_source(pointer, row, trajectory)
+
     def test_only_requested_models_and_complete_fixed_task_set(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

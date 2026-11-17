@@ -29,6 +29,7 @@ NAMES = {
     "anthropic/claude-opus-5.5": "Claude Opus 5.5",
     "deepseek/deepseek-v4.1-flash-1017": "DeepSeek V4.1 Flash 1017",
     "xiaomi/mimo-v2.6-flash": "MiMo-V2.6-Flash",
+    "xiaomi/mimo-v2.6-pro": "MiMo-V2.6-Pro",
     "z-ai/glm-5.3-flash": "GLM 5.3 Flash",
 }
 TOKEN_FIELDS = ("input_tokens", "cached_input_tokens", "cache_write_input_tokens",

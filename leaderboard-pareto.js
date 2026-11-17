@@ -1,7 +1,7 @@
 /* Compare score with cost, tokens or reported time over the selected tasks. */
 (() => {
   'use strict';
-  const colors = ['#16847c', '#bd7b27', '#3976c6', '#9562bb', '#bd5b76', '#5a7994', '#69833c', '#b35439', '#5964c4', '#8d7438'];
+  const colors = ['#16847c', '#bd7b27', '#3976c6', '#9562bb', '#bd5b76', '#5a7994', '#69833c', '#b35439', '#5964c4', '#8d7438', '#287e9b', '#a16690'];
   const money = value => value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
   const compact = value => value.toLocaleString('en-US', {notation: 'compact', maximumFractionDigits: value >= 1e9 ? 2 : 1});
   const duration = seconds => {
@@ -160,10 +160,12 @@
       a.y < b.y + b.height + 4 && a.y + a.height + 4 > b.y;
     const labels = [...svg.querySelectorAll('.pareto-point-label')]
       .sort((a, b) => Number(a.getAttribute('y')) - Number(b.getAttribute('y')) || a.textContent.localeCompare(b.textContent));
+    const labelOffsets = [0, 36, -22, 58];
+    for (let distance = 44; distance <= bottom - top; distance += 22) labelOffsets.push(-distance, distance);
     labels.forEach(label => {
       if (!label.getBBox().width) return; // Point labels are hidden on mobile.
       const originalY = Number(label.getAttribute('y'));
-      for (const offset of [0, 36, -22, 58]) {
+      for (const offset of labelOffsets) {
         label.setAttribute('y', originalY + offset);
         const box = label.getBBox();
         if (box.x >= 0 && box.x + box.width <= width && box.y >= top && box.y + box.height <= bottom &&
