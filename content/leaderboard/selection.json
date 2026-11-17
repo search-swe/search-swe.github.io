@@ -11,7 +11,8 @@
     "deepseek/deepseek-v4.1-flash-1017",
     "kimi-k3",
     "xiaomi/mimo-v2.6-flash",
-    "xiaomi/mimo-v2.6-pro"
+    "xiaomi/mimo-v2.6-pro",
+    "tencent/hy4"
   ],
   "model_substitutions": [
     {
@@ -61,5 +62,8 @@
     "deepseek-v4.1-flash-1017-codex-max",
     "deepseek-v4.1-flash-1017-claude-code-max",
     "deepseek-v4.1-flash-1017-pi-max"
+  ],
+  "community_models": [
+    "tencent/hy4"
   ]
 }

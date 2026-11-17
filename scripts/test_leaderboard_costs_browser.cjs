@@ -62,7 +62,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
       const point = page.locator(`.pareto-point[data-entry="${entry.id}"]`);
       await point.locator('.pareto-dot').hover();
       assert.equal(await page.locator('.pareto-tooltip strong').innerText(), `${entry.name} / ${entry.agent}`);
-      assert.match(await page.locator('.pareto-tooltip span').innerText(), /max effort/);
+      assert((await page.locator('.pareto-tooltip span').innerText()).includes(`${entry.effort} effort`));
       await point.focus();
       assert.equal(await page.locator('.pareto-tooltip').isVisible(), true);
       assert((await point.getAttribute('aria-label')).includes(`${entry.name} / ${entry.agent}`));

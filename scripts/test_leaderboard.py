@@ -128,9 +128,10 @@ class SnapshotTests(unittest.TestCase):
                     'anthropic/claude-opus-5.5': 48.41088224661941,
                     'gpt-6-astra': 45.927353979642724,
                     'deepseek/deepseek-v4.1-flash-1017': 21.054061239674596, 'kimi-k3': 25.371920241505414,
-                    'xiaomi/mimo-v2.6-flash': 15.272761996392159, 'xiaomi/mimo-v2.6-pro': 18.630222644023586}
+                    'xiaomi/mimo-v2.6-flash': 15.272761996392159, 'xiaomi/mimo-v2.6-pro': 18.630222644023586,
+                    'tencent/hy4': 21.54786487047164}
         self.assertEqual(len(snapshot['tasks']), 47)
-        self.assertEqual(len(snapshot['trials']), 564)
+        self.assertEqual(len(snapshot['trials']), 611)
         self.assertEqual({entry['model'] for entry in snapshot['entries']}, set(expected))
         for entry in snapshot['entries']:
             trials = [t for t in snapshot['trials'] if t['entry'] == entry['id']]
@@ -144,12 +145,28 @@ class SnapshotTests(unittest.TestCase):
 
     def test_generated_routes_and_no_script_injection(self):
         pages = build.generate()
-        self.assertEqual(len(pages), 579)  # 578 pages plus the cost-enriched download.
+        self.assertEqual(len(pages), 627)  # 626 pages plus the cost-enriched download.
         for trial in self.snapshot['trials']:
             self.assertIn(build.ROOT / f'leaderboard/trials/{trial["id"]}/index.html', pages)
         rendered = build.page('<script>', '<p>test</p>', 'trial', {'message': '</script><script>alert(1)'}, self.snapshot)
         self.assertIn('&lt;script&gt;', rendered)
         self.assertNotIn('</script><script>alert(1)', rendered)
+
+    def test_hy4_provider_effort_usage_and_recorded_refusal(self):
+        trials = [t for t in self.snapshot['trials'] if t['configuration']['model'] == 'tencent/hy4']
+        self.assertEqual(len(trials), 47)
+        for trial in trials:
+            self.assertEqual(trial['configuration']['provider'], 'Tencent')
+            self.assertEqual(trial['configuration']['effort'], 'high')
+            self.assertEqual(trial['configuration']['version'], '2.1.309')
+            self.assertIsNotNone(trial['agent_seconds'])
+            self.assertEqual(trial['qualification'], {})
+        cli_only = {t['task'] for t in trials if t['tokens']['response_count'] == 0}
+        self.assertEqual(cli_only, {'code-context-retrieval', 'code-reranker-finetuning',
+                                   'decision-model-training', 'rust-bm25-search'})
+        refused = next(t for t in trials if t['task'] == 'incremental-vector-search')
+        self.assertEqual(refused['score'], 0)
+        self.assertEqual(refused['agent_status'], 'UnknownApiError')
 
     def test_opus_fallback_keeps_actual_model_and_discloses_substitution(self):
         trials = [t for t in self.snapshot['trials'] if t.get('model_substitution')]

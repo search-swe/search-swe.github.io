@@ -1,12 +1,30 @@
 # Leaderboard data and publication
 
-The current homepage contains **47 tasks (24 CPU, 23 GPU), twelve leaderboard
-settings across ten models, and 564 selected trials**. All settings use max effort.
-The new settings are MiMo-V2.6-Flash / Claude Code 2.1.309 / OpenRouter / max
-(mean 15.2727619964) and MiMo-V2.6-Pro with the same configuration (18.6302226440),
-47 tasks each. Provider rows show **Xiaomi**, with **Xiaomi via OpenRouter**
-in entry subtitles and the full route in details/downloads. Step-5-preview,
-PR #3, Sonnet and Argon remain on hold.
+The current homepage contains **47 tasks (24 CPU, 23 GPU), thirteen leaderboard
+settings across eleven models, and 611 selected trials**. Hy4 uses high effort;
+the other twelve settings use max.
+
+Hy4 / Claude Code 2.1.309 / high covers 47/47 tasks, combining the reviewed
+43-task community export with four selected local trials. Its mean score is
+**21.5478648705**, with **795,131,123 tokens** and **$143.890236356** estimated cost.
+Provider is **Tencent** throughout the entry and task rows. All 47 original
+coding durations are available. Final cumulative counters take precedence over
+response summaries, adding 10,260,191 tokens missing from the original export.
+Four CLI-only tasks retain their complete transcripts: derived ATIF versions and
+final totals are repaired, while missing per-step output counts stay unknown.
+No per-response IDs or token allocations are invented. Source hashes are frozen
+in `community-source-evidence.json`; the original execution records are retained.
+
+Hy4 uses Tencent's standard USD list rates per million input/cache-read/output
+tokens of **$0.834/$0.042/$2.501**, excluding temporary promotions and account
+discounts. Cache hits use reported buckets, and reasoning is included in output.
+Source: [Tencent Cloud model pricing](https://www.tencentcloud.com/document/product/1300/78937).
+Step-5-preview, PR #3, Sonnet and Argon remain on hold.
+
+The previous additions were MiMo-V2.6-Flash / Claude Code 2.1.309 / OpenRouter /
+max (mean 15.2727619964) and MiMo-V2.6-Pro with the same configuration
+(18.6302226440), 47 tasks each. Their task rows show **Xiaomi**, with
+**Xiaomi via OpenRouter** in entry subtitles.
 
 All 81,855 original files for the additions passed size and SHA-256 checks.
 Flash's `budgeted-bimetric-retrieval` and `constrained-molecular-search` are
@@ -31,7 +49,7 @@ and batch prices are excluded. Estimated totals are **$6.0017513024** for Flash
 and **$17.1207614100** for Pro. The original 470 trial selections, payloads,
 usage, durations and estimated costs are preserved.
 
-All twelve settings retain separate main-table rows and downloadable results.
+All thirteen settings retain separate main-table rows and downloadable results.
 The Pareto chart shows only DeepSeek's best harness by overall mean score,
 Claude Code, across Cost, Tokens, Time and all hardware scopes. Searching does
 not select another DeepSeek harness for the chart.
@@ -105,7 +123,7 @@ One interrupted response in `layout-page-search` lacks a reasoning breakdown;
 its complete aggregate counters cover the usage without inventing per-call values.
 JSONL parsing respects literal Unicode line separators inside JSON strings.
 
-Provider labels preserve the API route: Astra and Sol show **OpenAI**, Kimi
+Provider labels for the preceding settings preserve the API route: Astra and Sol show **OpenAI**, Kimi
 shows **Moonshot AI**, and Luna, Terra and Opus show **OpenRouter**. DeepSeek
 shows **DeepSeek** in task rows, with **DeepSeek via OpenRouter** in the entry
 subtitle and the full route in tooltips, trial details and downloads. The operator-confirmed provider allowlist
@@ -117,20 +135,30 @@ and [DeepSeek endpoint list](https://openrouter.ai/api/v1/models/deepseek/deepse
 Scores, tokens, configurations and payloads for all 235 earlier trials are
 unchanged; the seven duration assignments above update their timing summaries.
 
-The public package is `.build/hf-trajectories-mimo/`: **267,627 files**,
+The current public package is `.build/hf-trajectories-hy4/`: **286,268 files**,
+approximately **10.48 GiB**, with 611 ATIF trajectories and 619 original
+session JSONL exports. The new setting adds 18,641 files, excluding shared metadata.
+Prepare it with `python scripts/import_hy4_results.py`; publish with `--upload`.
+Subsequent native imports must retain this verified package with `--base-package`
+to preserve the community trials and their immutable payloads.
+
+The preceding MiMo package was `.build/hf-trajectories-mimo/`: **267,627 files**,
 approximately **9.45 GiB**, with 564 ATIF trajectories
 and 573 original session JSONL exports (235 Codex, 291 Claude Code, 47 Pi). Credentials are redacted and host paths
 normalized. Large binary artifacts remain listed without content downloads.
-Original benchmark records are never modified.
-This is also the default package for the current importer, uploader and browser
-checks; `.build/hf-trajectories-current/` remains the older 235-trial append base.
+Source execution jobs remain unchanged.
+The current default package is `.build/hf-trajectories-hy4/`; `.build/hf-trajectories-current/` remains the older 235-trial append base.
 
 The active HF directory is **`releases/current/`**, independent of model names or
 publication dates. Full commit SHAs identify immutable versions. The verified
 revision is recorded in [`storage.json`](storage.json) and the private receipt
-`.build/hf-trajectories-mimo-uploaded.json`. The website pins that SHA rather
+`.build/hf-trajectories-hy4-uploaded.json`. The website pins that SHA rather
 than reading the mutable `main` branch.
-The current verified publication is
+The Hy4 publication uses the immutable revision
+[`75abb07ad387c478060ece8d216a854ffdfdf2c4`](https://huggingface.co/datasets/search-swe/trajectories/commit/75abb07ad387c478060ece8d216a854ffdfdf2c4). Its full verification receipt is
+`.build/hf-trajectories-hy4-uploaded.json`.
+
+The preceding MiMo publication was
 [`16c6a5e364e2a09609cf85df85484795dcbbe4e8`](https://huggingface.co/datasets/search-swe/trajectories/commit/16c6a5e364e2a09609cf85df85484795dcbbe4e8).
 All 267,627 remote files passed size and content-hash checks. Anonymous downloads
 and CORS passed, including 13 additional samples covering both MiMo settings
@@ -145,7 +173,7 @@ commit-pinned downloads still work. The migration reuses Git trees and updates
 only the dataset card and publication inventory.
 
 The following commands document that historical migration, not the current
-twelve-setting publication:
+thirteen-setting publication:
 
 ```bash
 python scripts/normalize_hf_layout.py \
@@ -162,7 +190,7 @@ the current verified package as the base, and use a fresh output package:
 
 ```bash
 python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-mimo \
+  --base-package .build/hf-trajectories-hy4 \
   --package .build/hf-trajectories-next --upload
 ```
 
@@ -187,8 +215,9 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
 
 ## Data and statistics
 
-- Final selections come only from `final-trajectories/INDEX.csv` and each
-  `FINAL_RESULT.json`. Native result/reward files and source file inventories
+- Native selections come from `final-trajectories/INDEX.csv` and each
+  `FINAL_RESULT.json`; Hy4 also includes the reviewed community selections bound
+  by `community-source-evidence.json`. Result/reward files and source inventories
   authenticate the selected evidence. Analysis summaries from older releases
   are not used.
 - Native reward × 100 equals the selected task score. Selection scores already
@@ -201,7 +230,7 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   are used. Missing original end timestamps remain missing; regrade time is never
   substituted. Eight reviewed runs use the maintainer-assigned 7200-second
   coding budget, with provenance in `agent_time_basis` and exact source trajectory
-  hashes in the importer. All 564 selected trials have a reported duration, including the eight previously recovered original timings and the three original coding durations recovered for this update.
+  hashes in the importer. All 611 selected trials have a reported duration, including the eight previously recovered original timings, three MiMo coding durations and all 47 Hy4 durations.
 - Total tokens in the main leaderboard sum input (including cache) + output
   across the selected All / CPU / GPU task set, not a per-task average. Entry rows
   show Input Tokens, Output Tokens and Cached Tokens; trial summaries show the
@@ -229,6 +258,9 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   deduplicated recorded responses as the final reported token totals and the
   basis for estimated cost. Unrecorded usage is not estimated. Aggregate
   remainders are priced only with a flat tariff; no extra response IDs are invented.
+  Four Hy4 CLI-only trials use their final modelUsage totals without individual
+  receipts; their recorded complete-response count is zero and per-step output
+  remains unknown. Final totals still cover their coding cost in full.
   Claude Code guessed costUSD values are never used.
   This reporting policy applies to generated pages and `/leaderboard/results.json`;
   the verified HF snapshot and its original accounting notes remain unchanged.

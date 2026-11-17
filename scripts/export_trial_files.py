@@ -12,7 +12,8 @@ CODE_EXTENSIONS = {'.py', '.sh', '.md', '.toml', '.yaml', '.yml', '.rs', '.c',
 REPORT_NAMES = {'reward.json', 'reward.txt', 'evaluation.json', 'reward-details.json',
                 'task-score.json', 'task-score.txt', 'test-stdout.txt',
                 'jailbreak-result.json', 'jailbreak-status.json', 'run_manifest.json',
-                'provenance.json'}
+                'provenance.json', 'evaluation-summary.json', 'audit-status.json',
+                'judge.json', 'judge-status.json'}
 SECRET_KEY = re.compile(r'(?:^|_)(?:api_key|access_token|auth_token|password|secret|authorization)$', re.I)
 PART_CHARS = 48_000
 
@@ -33,7 +34,8 @@ def sanitize(value, scrub, key=''):
     return value
 
 
-def export_files(source_trial, final_verifier, output, scrub, write, check=False, extra_agent_files=None):
+def export_files(source_trial, final_verifier, output, scrub, write, check=False, extra_agent_files=None,
+                 extra_files=None):
     output = output / 'files'
     groups = {key: [] for key in ('agent', 'verifier', 'artifacts', 'config', 'lock', 'log', 'exception')}
     notes = {
@@ -48,6 +50,13 @@ def export_files(source_trial, final_verifier, output, scrub, write, check=False
     if final_verifier != source_trial / 'verifier':
         notes['verifier'] += ' This trial was regraded separately; these files follow the final reward pointer.'
     candidates = []
+    for group, files in (extra_files or {}).items():
+        if group not in groups:
+            raise ValueError(f'Unknown evidence group: {group}')
+        for name, path in files.items():
+            if Path(name).is_absolute() or '..' in Path(name).parts or path.is_symlink():
+                raise ValueError('Unsafe additional evidence path')
+            candidates.append((group, path, name))
     for name, path in (extra_agent_files or {}).items():
         candidates.append(('agent', path, name))
     if extra_agent_files:

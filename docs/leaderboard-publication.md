@@ -4,7 +4,46 @@
 从公开的 HF Dataset [`search-swe/trajectories`](https://huggingface.co/datasets/search-swe/trajectories)
 匿名按需读取。浏览器不需要 HF Token。
 
-## 当前更新：MiMo-V2.6-Flash / Pro
+## 当前更新：Hy4 / Claude Code / high
+
+2026-11-17 接纳、2026-11-18 发布 Hy4 / Claude Code 2.1.309 / high，覆盖 47/47 题，平均
+21.5478648705。现为 11 个模型、13 个 settings、611 条结果。43 题来自已审查的
+社区包，4 题来自本地选中档案；Provider 在前端统一显示 Tencent，采用常规榜单展示。
+原 564 条结果、用量、耗时、费用与公开 payload 保持不变。Step-5-preview、
+PR #3、Sonnet、Argon 继续暂缓。
+
+使用最终 modelUsage 累计数恢复原导出遗漏的 10,260,191 tokens；总用量为
+795,131,123 tokens。四道仅有 CLI 的题修正了派生 ATIF 版本和最终累计指标，
+逐步输出用量仍为未知，不虚构逐响应计数或请求 ID。全部 47 题都有原始 coding
+时长，无新增估算。原始执行记录不改写，源材料哈希固定在
+content/leaderboard/community-source-evidence.json。
+
+费用按腾讯官方标准实时 USD 目录价估算：每百万未缓存输入／缓存读取／输出为
+$0.834／$0.042／$2.501，不应用临时促销与账户折扣；最终计数与逐响应记录只计一次。
+总费用为 $143.890236356，不代表内部端点或 OpenRouter 的实际账单。
+来源：[腾讯官方价格表](https://www.tencentcloud.com/document/product/1300/78937)。
+
+当前包为 .build/hf-trajectories-hy4，基线为 .build/hf-trajectories-mimo。
+公开包共 286,268 个文件、约 10.48 GiB，包含 611 份 ATIF 和 619 份原始会话 JSONL。
+脚本仅导出选中记录，不包含 Mac 附加元数据。首次准备及上传：
+
+```bash
+python scripts/import_hy4_results.py --upload
+```
+
+准备完成后，中断续传可直接使用：
+
+```bash
+python scripts/append_hf_trajectories.py --base-package .build/hf-trajectories-mimo --package .build/hf-trajectories-hy4 --upload
+```
+
+上传、逐文件远端核验与匿名下载/CORS 校验通过后，脚本固定 HF 版本并生成本地
+production 页面；官网 Git 提交和推送仍单独执行。本次 HF 固定版本为
+[`75abb07ad387c478060ece8d216a854ffdfdf2c4`](https://huggingface.co/datasets/search-swe/trajectories/commit/75abb07ad387c478060ece8d216a854ffdfdf2c4)。
+后续原生结果增量导入须将
+包含 Hy4 的已验证包作为 --base-package，以保留社区结果及其 payload。
+
+## 历史更新：MiMo-V2.6-Flash / Pro
 
 2026-11-17 新增两组 Claude Code 2.1.309 / OpenRouter / max，各 47 项：Flash
 平均 15.2727619964，Pro 平均 18.6302226440。现为 10 个模型、12 个 settings、
@@ -112,7 +151,7 @@ Guardrail 与官方端点清单的交集；保留 OpenRouter 渠道，避免误�
 
 新包为 `.build/hf-trajectories-astra-deepseek/`，复用先前 235 条结果及全部 payload。
 包含 329 个 ATIF、337 份原始会话文本；该次导入器、上传器和浏览器检查默认使用
-这个包；现在默认使用本文开头的十二 settings 包。`.build/hf-trajectories-current/` 保留为旧的 235 条结果基线。上传及续传命令如下：
+这个包；现在默认使用本文开头的十三 settings 包。`.build/hf-trajectories-current/` 保留为旧的 235 条结果基线。上传及续传命令如下：
 
 ```bash
 python scripts/publish_final_results.py --base-package .build/hf-trajectories-current --package .build/hf-trajectories-astra-deepseek --upload
@@ -158,7 +197,7 @@ Claude Code 的本地合成错误消息不计 token；恢复会话取最终累�
 含 235 个 ATIF 和 243 份原始会话文本。之前四个模型的 188 份结果和全部
 payload 保持不变。该次已验证 HF SHA 见历史回执
 `.build/hf-trajectories-current-uploaded.json`；`content/leaderboard/storage.json`
-现在记录的是本文开头的七模型版本。
+现在记录的是本文开头的十三 settings 版本。
 
 ## 历史记录：2026-11-13 统一目录并清理重复发布
 
@@ -188,7 +227,7 @@ python scripts/normalize_hf_layout.py --source-package .build/hf-trajectories-lu
 完成模型选择、元数据及导入配置更新后，以最近的已验证包为基线，指定新的本地包：
 
 ```bash
-python scripts/publish_final_results.py --base-package .build/hf-trajectories-mimo --package .build/hf-trajectories-next --upload
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-hy4 --package .build/hf-trajectories-next --upload
 ```
 
 不带 `--upload` 只准备本地预览。增量上传只新增 trial，保留 `releases/current/`
@@ -199,8 +238,8 @@ python scripts/publish_final_results.py --base-package .build/hf-trajectories-mi
 ## 本地重建与审计
 
 ```bash
-python scripts/import_final_results.py --package .build/hf-trajectories-mimo --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-mimo.usage.json --check
+python scripts/import_final_results.py --package .build/hf-trajectories-hy4 --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-hy4.usage.json --check
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/build_tasks.py --check
 python scripts/build_leaderboard.py --production --check
@@ -210,7 +249,7 @@ python scripts/build_leaderboard.py --production --check
 若源归档已经变化，应指定新的 `--package` 路径，不覆盖旧包。恢复生产配置可使用：
 
 ```bash
-python scripts/upload_hf_release.py --package .build/hf-trajectories-mimo --verify-revision <FULL_HF_SHA>
+python scripts/upload_hf_release.py --package .build/hf-trajectories-hy4 --verify-revision <FULL_HF_SHA>
 ```
 
 评分沿 `FINAL_RESULT.json` 的最终 reward 指针读取，原生 reward × 100 必须

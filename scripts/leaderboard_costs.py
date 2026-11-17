@@ -76,7 +76,10 @@ def calculate(snapshot, usage, prices):
             if not key or (key in unique and unique[key] != request['usage']):
                 raise ValueError('Missing response ID or conflicting repeated usage')
             unique[key] = request['usage']
-        if not unique or all_ids.intersection(unique):
+        aggregate_only = row.get('usage_basis') == 'final_model_usage_only'
+        if (aggregate_only and (unique or row.get('aggregate_remainder') is None)):
+            raise ValueError('Aggregate-only usage must contain final counters and no individual receipts')
+        if (not unique and not aggregate_only) or all_ids.intersection(unique):
             raise ValueError('Missing requests or a response assigned to multiple trials')
         all_ids.update(unique)
         totals, cost = Counter(), Decimal(0)

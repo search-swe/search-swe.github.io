@@ -30,6 +30,7 @@ NAMES = {
     "deepseek/deepseek-v4.1-flash-1017": "DeepSeek V4.1 Flash 1017",
     "xiaomi/mimo-v2.6-flash": "MiMo-V2.6-Flash",
     "xiaomi/mimo-v2.6-pro": "MiMo-V2.6-Pro",
+    "tencent/hy4": "Hy4",
     "z-ai/glm-5.3-flash": "GLM 5.3 Flash",
 }
 TOKEN_FIELDS = ("input_tokens", "cached_input_tokens", "cache_write_input_tokens",
@@ -218,6 +219,8 @@ def export_trajectory(raw, directory, check=False, scrubber=scrub, public=False)
     exported['agent'] = {k: raw.get('agent', {}).get(k) for k in ('name', 'version', 'model_name')}
     exported['steps'] = download_steps
     exported['export_note'] = ('Public export. Host paths normalized to documented aliases. ' if public else 'Local preview. ') + 'Credential/environment values redacted; raw agent extra fields omitted.'
+    if raw.get('export_note'):
+        exported['export_note'] += ' ' + scrubber(raw['export_note'])
     write(directory / 'trajectory.json.gz', gzip.compress(encode(sanitize(exported, scrubber)), mtime=0), check)
     return len(steps), redactions
 

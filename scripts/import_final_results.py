@@ -188,8 +188,13 @@ def prepare(final, package, base_package=None):
     if len(catalog) != 47:
         raise ValueError('This publication expects 47 tasks')
     policy = read(CONTENT / 'selection.json')
-    if policy.get('included_models') != list(MODELS) or policy.get('included_settings') != list(DEEPSEEK_SETTINGS):
+    community_models = policy.get('community_models', [])
+    if (any(m != 'tencent/hy4' for m in community_models) or
+            policy.get('included_models') != list(MODELS) + community_models or
+            policy.get('included_settings') != list(DEEPSEEK_SETTINGS)):
         raise ValueError('Website selection must explicitly contain the selected models')
+    if community_models and not base_package:
+        raise ValueError('Community results must be retained from a verified --base-package')
     metadata = read(CONTENT / 'model-metadata.json')
     archive = read(final / 'MANIFEST.json')
     if archive['index_sha256'] != digest((final / 'INDEX.csv').read_bytes()):
@@ -199,6 +204,8 @@ def prepare(final, package, base_package=None):
                      'model_metadata': digest(encode(metadata)), 'selection': digest(encode(policy)),
                      'coding_time_evidence': digest((CONTENT / 'coding-time-evidence.json').read_bytes()),
                      'coding_source_evidence': digest((CONTENT / 'coding-source-evidence.json').read_bytes())}
+    if community_models:
+        source_hashes['community_source_evidence'] = digest((CONTENT / 'community-source-evidence.json').read_bytes())
     release_id = policy['updated_at'] + '-selected-' + digest(encode(source_hashes))[:10]
     # Appending retains the physical corpus directory. Immutable commit URLs keep
     # the previously published snapshot available without duplicating its remote payloads.
@@ -447,6 +454,11 @@ def prepare(final, package, base_package=None):
         if extra_usage is not None:
             usage_rows[-1]['aggregate_remainder'] = extra_usage
         print(f'Prepared {number:3}/{len(rows)}: {row["task"]} / {row["model_label"]}', flush=True)
+    retained = [t for t in previous.values() if t['configuration']['model'] in community_models]
+    if {(t['task'], t['configuration']['model']) for t in retained} != {
+            (t['name'], m) for t in catalog for m in community_models}:
+        raise ValueError('Verified base package must cover every selected community model and task')
+    snapshot['trials'].extend(retained)
     snapshot['entries'] = sorted(entries.values(), key=lambda e: e['id'])
     # Freeze usage outside the upload package, so source receipts are never uploaded accidentally.
     usage = {'schema': 1, 'rows': usage_rows}
