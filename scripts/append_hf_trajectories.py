@@ -59,7 +59,7 @@ def main():
     parser.add_argument('--site-origin', default='https://search-swe.github.io')
     args = parser.parse_args()
     base_package, package = args.base_package.resolve(), args.package.resolve()
-    base, manifest = load_package(base_package), load_package(package)
+    base, manifest = load_package(base_package, check_content=False), load_package(package)
     additions = append_plan(base_package, package, base, manifest)
     source_sha = check_site_snapshot(package, manifest)
     print(f'Append {len(additions)} trials; preserve {base["trials"]} existing trials. No files will be deleted.', flush=True)

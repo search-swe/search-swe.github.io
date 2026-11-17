@@ -1,7 +1,7 @@
 /* Compare score with cost, tokens or reported time over the selected tasks. */
 (() => {
   'use strict';
-  const colors = ['#16847c', '#bd7b27', '#3976c6', '#9562bb', '#bd5b76', '#5a7994', '#69833c', '#b35439', '#5964c4', '#8d7438', '#287e9b', '#a16690'];
+  const colors = ['#16847c', '#bd7b27', '#3976c6', '#9562bb', '#bd5b76', '#5a7994', '#69833c', '#b35439', '#5964c4', '#8d7438', '#287e9b', '#a16690', '#3e8757', '#c06c3a'];
   const money = value => value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
   const compact = value => value.toLocaleString('en-US', {notation: 'compact', maximumFractionDigits: value >= 1e9 ? 2 : 1});
   const duration = seconds => {
@@ -63,7 +63,7 @@
 
     // Search hides models, but does not turn a dominated model into a frontier point.
     const frontierIds = new Set(frontier(eligible, axis).map(e => e.id));
-    const width = Math.max(300, chart.clientWidth), height = width < 600 ? 330 : 420;
+    const width = Math.max(300, chart.clientWidth), height = width < 600 ? 330 : 520;
     const left = 58, right = width - 32, top = 42, bottom = height - 54;
     const maxValue = Math.max(...eligible.map(e => e[axis] / metric.unit));
     const ticks = linearTicks(maxValue, width < 600 ? 3 : 5);
@@ -114,11 +114,14 @@
         'data-entry': entry.id, 'data-cost': entry.cost, 'data-score': entry.score,
         'data-axis': axis, 'data-value': entry[axis],
         'data-frontier': onFrontier, 'aria-label': `${identity} (${entry.effort}): ${summary}${coverage}${onFrontier ? ', Pareto frontier' : ''}. View results.`});
-      if (onFrontier) link.append(svgNode('circle', {cx: x(entry[axis]), cy: y(entry.score), r: 11, fill: color, opacity: '.13'}));
-      link.append(svgNode('circle', {cx: x(entry[axis]), cy: y(entry.score), r: 6, fill: color, class: 'pareto-dot'}));
+      if (onFrontier) link.append(svgNode('circle', {cx: x(entry[axis]), cy: y(entry.score), r: 11, fill: color, opacity: '.13', class: 'pareto-halo'}));
+      const dot = svgNode('circle', {cx: x(entry[axis]), cy: y(entry.score), r: 6, fill: color, class: 'pareto-dot'});
+      link.append(dot);
       const end = x(entry[axis]) > width * .6;
-      link.append(svgNode('text', {x: x(entry[axis]) + (end ? -14 : 14), y: y(entry.score) - 12,
-        'text-anchor': end ? 'end' : 'start', class: 'pareto-point-label'}, entry.name));
+      const pointLabel = svgNode('text', {x: x(entry[axis]) + (end ? -18 : 18), y: y(entry.score) + 4,
+        'text-anchor': end ? 'end' : 'start', class: 'pareto-point-label',
+        'data-entry': entry.id, 'data-frontier': onFrontier, 'data-point-x': x(entry[axis]),
+        'data-point-y': y(entry.score), 'aria-hidden': 'true'}, entry.name);
       const showTooltip = () => {
         const name = document.createElement('strong');
         name.textContent = identity;
@@ -127,55 +130,102 @@
         details.textContent = `${entry.effort} effort · ${entry.score.toFixed(1)} · ${exact}${coverage || ` · ${taskCount} tasks`}`;
         tooltip.replaceChildren(name, details);
         tooltip.hidden = false;
-        tooltip.style.left = `${Math.max(8, Math.min(x(entry[axis]) + 14, width - tooltip.offsetWidth - 8))}px`;
-        tooltip.style.top = `${Math.max(0, y(entry.score) - tooltip.offsetHeight - 18)}px`;
+        const marker = dot.getBoundingClientRect(), bounds = chart.getBoundingClientRect();
+        const centerX = marker.x + marker.width / 2 - bounds.x;
+        const centerY = marker.y + marker.height / 2 - bounds.y;
+        tooltip.style.left = `${Math.max(8, Math.min(centerX + 14, bounds.width - tooltip.offsetWidth - 8))}px`;
+        tooltip.style.top = `${Math.max(0, centerY - tooltip.offsetHeight - 18)}px`;
       };
-      link.addEventListener('mouseenter', showTooltip);
+      dot.addEventListener('mouseenter', showTooltip);
       link.addEventListener('focus', showTooltip);
-      link.addEventListener('mouseleave', () => { tooltip.hidden = true; });
+      dot.addEventListener('mouseleave', () => { tooltip.hidden = true; });
       link.addEventListener('blur', () => { tooltip.hidden = true; });
-      svg.append(link);
+      svg.append(link, pointLabel);
 
       const item = document.createElement('a');
       item.href = entry.url;
       item.className = 'pareto-legend-item';
-      const dot = document.createElement('span');
-      dot.className = 'pareto-legend-dot';
-      dot.style.backgroundColor = color;
+      const legendDot = document.createElement('span');
+      legendDot.className = 'pareto-legend-dot';
+      legendDot.style.backgroundColor = color;
       const name = document.createElement('span');
       name.textContent = label;
       const details = document.createElement('span');
       details.className = 'pareto-legend-summary';
       details.textContent = summary + coverage;
-      item.append(dot, name, details);
+      item.append(legendDot, name, details);
       legendItems.append(item);
     });
     // Keep the previous chart in place until its replacement is ready. Measuring
     // an empty chart collapses the page and clamps the user's scroll position.
     chart.replaceChildren(svg, tooltip);
     legend.replaceChildren(legendItems);
-    // Keep nearby model labels apart; the legend retains every model on crowded charts.
-    const occupied = visible.map(e => ({x: x(e[axis]) - 9, y: y(e.score) - 9, width: 18, height: 18}));
-    const overlaps = (a, b) => a.x < b.x + b.width + 4 && a.x + a.width + 4 > b.x &&
-      a.y < b.y + b.height + 4 && a.y + a.height + 4 > b.y;
-    const labels = [...svg.querySelectorAll('.pareto-point-label')]
-      .sort((a, b) => Number(a.getAttribute('y')) - Number(b.getAttribute('y')) || a.textContent.localeCompare(b.textContent));
-    const labelOffsets = [0, 36, -22, 58];
-    for (let distance = 44; distance <= bottom - top; distance += 22) labelOffsets.push(-distance, distance);
-    labels.forEach(label => {
-      if (!label.getBBox().width) return; // Point labels are hidden on mobile.
-      const originalY = Number(label.getAttribute('y'));
-      for (const offset of labelOffsets) {
-        label.setAttribute('y', originalY + offset);
-        const box = label.getBBox();
-        if (box.x >= 0 && box.x + box.width <= width && box.y >= top && box.y + box.height <= bottom &&
-            !occupied.some(other => overlaps(box, other))) {
-          occupied.push(box);
-          return;
+    function layoutLabels() {
+      // Keep nearby model labels apart; the legend retains every model on crowded charts.
+      const occupied = visible.map(e => ({x: x(e[axis]) - 8, y: y(e.score) - 8, width: 16, height: 16}));
+      const overlaps = (a, b) => a.x < b.x + b.width + 1 && a.x + a.width + 1 > b.x &&
+        a.y < b.y + b.height + 1 && a.y + a.height + 1 > b.y;
+      const labels = [...svg.querySelectorAll('.pareto-point-label')].map(label => {
+        label.style.display = '';
+        const size = label.getBBox();
+        if (!size.width) return null; // Point labels are hidden on mobile.
+        const px = Number(label.dataset.pointX), py = Number(label.dataset.pointY);
+        const sides = px > width * .6 ? [-1, 1] : [1, -1];
+        const options = [];
+        // Keep names local to their marker; crowded names remain available in the legend.
+        for (const offset of [4, 0, 8, -4, 12, -8, 16, -12, 20, -16, 24, -20, 28, -24, 32, -28, 36]) {
+          for (const side of sides) {
+            label.setAttribute('x', px + side * 18);
+            label.setAttribute('y', py + offset);
+            label.setAttribute('text-anchor', side === 1 ? 'start' : 'end');
+            const box = label.getBBox();
+            if (box.x >= left && box.x + box.width <= right && box.y >= top && box.y + box.height <= bottom &&
+                !occupied.some(other => overlaps(box, other))) {
+              options.push({x: px + side * 18, y: py + offset, anchor: side === 1 ? 'start' : 'end', box});
+            }
+          }
         }
+        return {label, options, width: size.width};
+      }).filter(Boolean).sort((a, b) => a.options.length - b.options.length || b.width - a.width);
+      const choices = [];
+      let attempts = 0;
+      const fit = remaining => {
+        if (!remaining.length) return true;
+        let next, available;
+        for (const index of remaining) {
+          const free = labels[index].options.filter(option => !occupied.some(other => overlaps(option.box, other)));
+          if (!free.length) return false;
+          if (!available || free.length < available.length) { next = index; available = free; }
+        }
+        for (const option of available) {
+          if (++attempts > 10000) return false;
+          occupied.push(option.box);
+          choices[next] = option;
+          if (fit(remaining.filter(index => index !== next))) return true;
+          occupied.pop();
+        }
+        return false;
+      };
+      // Try local alternatives before hiding a name; cap work for dense charts.
+      if (!fit(labels.map((_, index) => index))) {
+        occupied.length = visible.length;
+        labels.forEach(({options}, index) => {
+          choices[index] = options.find(option => !occupied.some(other => overlaps(option.box, other)));
+          if (choices[index]) occupied.push(choices[index].box);
+        });
       }
-      label.style.display = 'none';
-    });
+      labels.forEach(({label}, index) => {
+        const chosen = choices[index];
+        if (!chosen) { label.style.display = 'none'; return; }
+        label.setAttribute('x', chosen.x);
+        label.setAttribute('y', chosen.y);
+        label.setAttribute('text-anchor', chosen.anchor);
+      });
+    }
+    layoutLabels();
+    if (document.fonts?.status === 'loading') {
+      document.fonts.ready.then(() => { if (svg.isConnected) layoutLabels(); });
+    }
   }
   window.SearchSwePareto = {render, frontier, linearTicks};
 })();

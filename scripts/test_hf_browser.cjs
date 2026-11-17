@@ -8,7 +8,7 @@ const {gunzipSync} = require('node:zlib');
 const {spawn, spawnSync} = require('node:child_process');
 const {chromium} = require('playwright');
 const root = path.resolve(__dirname, '..');
-const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-hy4'));
+const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-step5'));
 const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const manifest = JSON.parse(gunzipSync(fs.readFileSync(path.join(packageRoot, 'publication.json.gz'))));
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'content/leaderboard/release.json')));
@@ -116,6 +116,35 @@ const server = http.createServer((req, res) => {
       assert(!inventory.groups.agent.some(f => f.name.endsWith('.jsonl')));
       await page.goto(`${origin}/leaderboard/trials/${selected.id}/`);
       await page.locator('.trajectory-step').first().waitFor();
+    }
+    const step5 = snapshot.entries.find(e => e.model === 'step-5-preview');
+    assert.equal(step5.agent_version, '2.1.309');
+    assert.equal(step5.effort, 'max');
+    assert.equal(step5.provider, 'StepFun');
+    await page.goto(`${origin}/leaderboard/entries/${step5.id}/`);
+    assert.deepEqual(await page.locator('tbody .provider-cell').allTextContents(), Array(47).fill('StepFun'));
+    let step5Sessions = 0;
+    for (const selected of snapshot.trials.filter(t => t.entry === step5.id)) {
+      const inventory = JSON.parse(fs.readFileSync(path.join(packageRoot, manifest.release_path, 'trials', selected.id, 'files/index.json')));
+      const native = inventory.groups.agent.filter(f => f.name.endsWith('.jsonl'));
+      assert(native.length > 0 && native.every(f => f.download && f.parts.length), 'Step 5 native sessions must be downloadable');
+      step5Sessions += native.length;
+    }
+    assert.equal(step5Sessions, 50);
+    for (const [task, seconds] of [['evolving-personal-memory', 7201.643989], ['instruction-following-embedding', 7201.056449]]) {
+      const selected = snapshot.trials.find(t => t.entry === step5.id && t.task === task);
+      assert(Math.abs(selected.agent_seconds - seconds) < 1e-6);
+      const inventory = JSON.parse(fs.readFileSync(path.join(packageRoot, manifest.release_path, 'trials', selected.id, 'files/index.json')));
+      const proof = inventory.groups.agent.find(f => f.name === 'original-coding/result.json');
+      assert(proof && proof.download && proof.parts.length);
+      const original = await page.evaluate(async url => {
+        const response = await fetch(url, {credentials: 'omit'});
+        if (!response.ok) throw new Error(`Original coding proof failed: ${response.status}`);
+        return JSON.parse(await response.json());
+      }, `${dataOrigin}/${manifest.release_path}/trials/${selected.id}/files/${proof.parts[0]}`);
+      assert.equal(original.id, selected.configuration.coding_source_trial_id);
+      await page.goto(`${origin}/leaderboard/trials/${selected.id}/?tab=agent`);
+      await page.locator('#panel-agent .file-text').waitFor();
     }
     const kimi = snapshot.entries.find(e => e.model === 'kimi-k3.1-pro');
     assert.equal(kimi.agent, 'Claude Code');

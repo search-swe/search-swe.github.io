@@ -122,6 +122,28 @@
       "finished_at": "2026-11-15T18:32:23.618364Z",
       "exception": "AgentTimeoutError",
       "basis": "Original Harbor agent_execution recovered from the verified original coding result; native coding session SHA-256 matches the selected regrade archive."
+    },
+    {
+      "task": "evolving-personal-memory",
+      "setting": "step-5-preview-claude-code-max",
+      "trajectory_sha256": "1add0a985c63c3614f4638ddf7baafb108b48b367c346923659dc590f30267f1",
+      "session_sha256": "cff05a41ff616c32e8d123ae8267d761f77327f78c304002642abbe9f1592cdb",
+      "source_result_sha256": "1f1c2300ef94526780e8a22b9f1c15a407bb91867bce632e90aa131529c4f8ba",
+      "source_trial_id": "235e8624-919e-4c5d-829c-f8cd293bd0b5",
+      "started_at": "2026-11-14T05:59:21.260293Z",
+      "finished_at": "2026-11-14T07:59:22.904282Z",
+      "basis": "Original Harbor agent_execution, bound to the selected archive by matching coding trajectory and native session SHA-256; separate grading time excluded."
+    },
+    {
+      "task": "instruction-following-embedding",
+      "setting": "step-5-preview-claude-code-max",
+      "trajectory_sha256": "f96ca249c0c3b2d78f10cdb99b0633ad5a674df267cd9741b0978c8b12eeee68",
+      "session_sha256": "af8d36825e06f4de88d3011d6a8fa4848f765f9147d090f2a08c4883cb71cd4f",
+      "source_result_sha256": "f457c122ace395c9fcc62eab3177fceb704ab676a1cd3bc6f10c93eef438aaf1",
+      "source_trial_id": "c0214ab6-d355-4e6d-bfe6-60a9d27a8194",
+      "started_at": "2026-11-08T08:08:20.079089Z",
+      "finished_at": "2026-11-08T10:08:21.135538Z",
+      "basis": "Original Harbor agent_execution, bound to the selected archive by matching coding trajectory and native session SHA-256; separate grading time excluded."
     }
   ]
 }

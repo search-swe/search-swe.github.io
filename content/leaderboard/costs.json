@@ -1,8 +1,8 @@
 {
-  "pricing_sha256": "a761dc3bae7243b35f057e80b669629de29f2316304f876e7aedcd7a75d64034",
+  "pricing_sha256": "dd9d06adb3af3d76c01d477486cc0ff4ceb34d1138490aaeb97b43149288efe7",
   "schema": 1,
-  "snapshot_id": "2026-11-17-selected-21db9717a1",
-  "snapshot_sha256": "26a6f280c806ac1d50a271bae90d200c64c4e96562ce99bff4e3fd8d6e9829ed",
+  "snapshot_id": "2026-11-18-selected-7cf478b094",
+  "snapshot_sha256": "3761ec9aba5b8f5b7ad3e74b7cc135766908467fcfacc2198728a5f99d6b2fc2",
   "trials": {
     "agentic-search-claude-opus-5.5-claude-code-max-86cfc69e97be": {
       "cost_usd": "4.4698314",
@@ -56,6 +56,10 @@
       "cost_usd": "0.3358022286",
       "response_count": 146
     },
+    "agentic-search-step-5-preview-claude-code-max-71000dd199a2": {
+      "cost_usd": "0.8669810",
+      "response_count": 88
+    },
     "agentic-search-vectorless-claude-opus-5.5-claude-code-max-b86d26efb97d": {
       "cost_usd": "6.4205018",
       "response_count": 54
@@ -107,6 +111,10 @@
     "agentic-search-vectorless-mimo-v26-pro-claude-code-openrouter-max-2903da9df462": {
       "cost_usd": "0.3038226954",
       "response_count": 123
+    },
+    "agentic-search-vectorless-step-5-preview-claude-code-max-2acce543a99b": {
+      "cost_usd": "2.2195207",
+      "response_count": 157
     },
     "biomedical-graph-retrieval-claude-opus-5.5-claude-code-max-a43e334b275d": {
       "cost_usd": "4.9146776",
@@ -160,6 +168,10 @@
       "cost_usd": "0.3320988912",
       "response_count": 180
     },
+    "biomedical-graph-retrieval-step-5-preview-claude-code-max-b8f02e39d7a7": {
+      "cost_usd": "1.4208747",
+      "response_count": 99
+    },
     "budgeted-bimetric-retrieval-claude-opus-5.5-claude-code-max-ca51574c5de5": {
       "cost_usd": "6.0373980",
       "response_count": 91
@@ -211,6 +223,10 @@
     "budgeted-bimetric-retrieval-mimo-v26-pro-claude-code-openrouter-max-74966471b475": {
       "cost_usd": "0.2653837782",
       "response_count": 70
+    },
+    "budgeted-bimetric-retrieval-step-5-preview-claude-code-max-87253bdb1164": {
+      "cost_usd": "0.7546712",
+      "response_count": 65
     },
     "budgeted-candidate-reranking-claude-opus-5.5-claude-code-max-0778ebf4b611": {
       "cost_usd": "6.0626426",
@@ -264,6 +280,10 @@
       "cost_usd": "0.3005104272",
       "response_count": 87
     },
+    "budgeted-candidate-reranking-step-5-preview-claude-code-max-20c73912762b": {
+      "cost_usd": "0.9796386",
+      "response_count": 81
+    },
     "chunqiu-temporal-retrieval-claude-opus-5.5-claude-code-max-d1c4a1455cd5": {
       "cost_usd": "14.4633710",
       "response_count": 127
@@ -315,6 +335,10 @@
     "chunqiu-temporal-retrieval-mimo-v26-pro-claude-code-openrouter-max-d04db5f48f85": {
       "cost_usd": "0.5301596454",
       "response_count": 131
+    },
+    "chunqiu-temporal-retrieval-step-5-preview-claude-code-max-144b6c61b15d": {
+      "cost_usd": "3.2678376",
+      "response_count": 234
     },
     "code-context-retrieval-claude-opus-5.5-claude-code-max-bdf6467a7091": {
       "cost_usd": "6.1760912",
@@ -368,6 +392,10 @@
       "cost_usd": "0.3903533964",
       "response_count": 147
     },
+    "code-context-retrieval-step-5-preview-claude-code-max-415189c04552": {
+      "cost_usd": "2.5808294",
+      "response_count": 204
+    },
     "code-embedding-finetuning-claude-opus-5.5-claude-code-max-facc836bb496": {
       "cost_usd": "5.8027074",
       "response_count": 105
@@ -419,6 +447,10 @@
     "code-embedding-finetuning-mimo-v26-pro-claude-code-openrouter-max-9af85c3ffff1": {
       "cost_usd": "0.2145449562",
       "response_count": 85
+    },
+    "code-embedding-finetuning-step-5-preview-claude-code-max-a2c348839391": {
+      "cost_usd": "2.5272948",
+      "response_count": 214
     },
     "code-reranker-finetuning-claude-opus-5.5-claude-code-max-b10c04eeb056": {
       "cost_usd": "21.2885022",
@@ -472,6 +504,10 @@
       "cost_usd": "0.2817072030",
       "response_count": 116
     },
+    "code-reranker-finetuning-step-5-preview-claude-code-max-f32ac7dbe2c3": {
+      "cost_usd": "3.3559215",
+      "response_count": 295
+    },
     "composed-image-search-claude-opus-5.5-claude-code-max-44687ff86305": {
       "cost_usd": "6.6462642",
       "response_count": 110
@@ -523,6 +559,10 @@
     "composed-image-search-mimo-v26-pro-claude-code-openrouter-max-a6fa5d3fe9fb": {
       "cost_usd": "0.3446140524",
       "response_count": 159
+    },
+    "composed-image-search-step-5-preview-claude-code-max-b3503beee2ff": {
+      "cost_usd": "1.6036785",
+      "response_count": 126
     },
     "constrained-molecular-search-claude-opus-5.5-claude-code-max-6e703bd1e81d": {
       "cost_usd": "25.16832525",
@@ -576,6 +616,10 @@
       "cost_usd": "0.5188092054",
       "response_count": 178
     },
+    "constrained-molecular-search-step-5-preview-claude-code-max-2007a84fb986": {
+      "cost_usd": "4.9416280",
+      "response_count": 350
+    },
     "decision-model-training-claude-opus-5.5-claude-code-max-f2068ed9442f": {
       "cost_usd": "29.9976106",
       "response_count": 141
@@ -627,6 +671,10 @@
     "decision-model-training-mimo-v26-pro-claude-code-openrouter-max-258f2fff7859": {
       "cost_usd": "0.4625429136",
       "response_count": 168
+    },
+    "decision-model-training-step-5-preview-claude-code-max-0fe7d3aa0e53": {
+      "cost_usd": "3.9804818",
+      "response_count": 310
     },
     "document-page-search-claude-opus-5.5-claude-code-max-d587a9912257": {
       "cost_usd": "7.8425986",
@@ -680,6 +728,10 @@
       "cost_usd": "0.1929301836",
       "response_count": 94
     },
+    "document-page-search-step-5-preview-claude-code-max-95155eca2b31": {
+      "cost_usd": "3.7346584",
+      "response_count": 285
+    },
     "evolving-personal-memory-claude-opus-5.5-claude-code-max-1ab711f3fa24": {
       "cost_usd": "5.0970390",
       "response_count": 58
@@ -731,6 +783,10 @@
     "evolving-personal-memory-mimo-v26-pro-claude-code-openrouter-max-7e3a8c10029f": {
       "cost_usd": "0.3657985662",
       "response_count": 140
+    },
+    "evolving-personal-memory-step-5-preview-claude-code-max-2d58ffcbd954": {
+      "cost_usd": "3.7688481",
+      "response_count": 253
     },
     "filtered-ann-retrieval-claude-opus-5.5-claude-code-max-575914a1488a": {
       "cost_usd": "5.8632750",
@@ -784,6 +840,10 @@
       "cost_usd": "0.5563025580",
       "response_count": 136
     },
+    "filtered-ann-retrieval-step-5-preview-claude-code-max-969cbb89bd43": {
+      "cost_usd": "2.6514397",
+      "response_count": 101
+    },
     "financial-report-qa-claude-opus-5.5-claude-code-max-017ba9d861e0": {
       "cost_usd": "3.9334978",
       "response_count": 55
@@ -835,6 +895,10 @@
     "financial-report-qa-mimo-v26-pro-claude-code-openrouter-max-ef6a2ee44517": {
       "cost_usd": "0.3709513902",
       "response_count": 98
+    },
+    "financial-report-qa-step-5-preview-claude-code-max-eaac51a1341d": {
+      "cost_usd": "2.1444908",
+      "response_count": 171
     },
     "icsi-meeting-memory-claude-opus-5.5-claude-code-max-5654014db4ac": {
       "cost_usd": "3.1090026",
@@ -888,6 +952,10 @@
       "cost_usd": "0.3395557950",
       "response_count": 107
     },
+    "icsi-meeting-memory-step-5-preview-claude-code-max-fdcf21bb3a8c": {
+      "cost_usd": "1.0577002",
+      "response_count": 69
+    },
     "incremental-vector-search-claude-opus-5.5-claude-code-max-e76f4beabf10": {
       "cost_usd": "5.8810366",
       "response_count": 46
@@ -939,6 +1007,10 @@
     "incremental-vector-search-mimo-v26-pro-claude-code-openrouter-max-8a804969b11a": {
       "cost_usd": "0.3647803902",
       "response_count": 63
+    },
+    "incremental-vector-search-step-5-preview-claude-code-max-7d7dc9becf09": {
+      "cost_usd": "3.6988869",
+      "response_count": 245
     },
     "instruction-following-embedding-claude-opus-5.5-claude-code-max-3f71cf9bda16": {
       "cost_usd": "5.3352530",
@@ -992,6 +1064,10 @@
       "cost_usd": "0.3767470968",
       "response_count": 105
     },
+    "instruction-following-embedding-step-5-preview-claude-code-max-893d1be56068": {
+      "cost_usd": "1.7041746",
+      "response_count": 154
+    },
     "join-aware-table-retrieval-claude-opus-5.5-claude-code-max-dd5c84974f0c": {
       "cost_usd": "2.7843918",
       "response_count": 42
@@ -1043,6 +1119,10 @@
     "join-aware-table-retrieval-mimo-v26-pro-claude-code-openrouter-max-9e79a30a0b28": {
       "cost_usd": "0.2243408310",
       "response_count": 80
+    },
+    "join-aware-table-retrieval-step-5-preview-claude-code-max-bbea97df3d6c": {
+      "cost_usd": "1.0971001",
+      "response_count": 100
     },
     "khmer-embedding-training-claude-opus-5.5-claude-code-max-50de383f5810": {
       "cost_usd": "12.5092694",
@@ -1096,6 +1176,10 @@
       "cost_usd": "0.4306050528",
       "response_count": 180
     },
+    "khmer-embedding-training-step-5-preview-claude-code-max-682dff132c3b": {
+      "cost_usd": "2.7756056",
+      "response_count": 223
+    },
     "large-scale-formula-retrieval-claude-opus-5.5-claude-code-max-cfb10de9f270": {
       "cost_usd": "7.2490888",
       "response_count": 97
@@ -1147,6 +1231,10 @@
     "large-scale-formula-retrieval-mimo-v26-pro-claude-code-openrouter-max-5bf12b96a3ff": {
       "cost_usd": "0.4013113704",
       "response_count": 101
+    },
+    "large-scale-formula-retrieval-step-5-preview-claude-code-max-a55b8068d89a": {
+      "cost_usd": "2.8229735",
+      "response_count": 181
     },
     "layout-page-search-claude-opus-5.5-claude-code-max-ded87aa844a3": {
       "cost_usd": "12.1888112",
@@ -1200,6 +1288,10 @@
       "cost_usd": "0.1623839418",
       "response_count": 102
     },
+    "layout-page-search-step-5-preview-claude-code-max-ea3ae528e2a7": {
+      "cost_usd": "3.1635810",
+      "response_count": 271
+    },
     "legal-stance-retrieval-claude-opus-5.5-claude-code-max-956e3728bb7e": {
       "cost_usd": "30.3562446",
       "response_count": 202
@@ -1251,6 +1343,10 @@
     "legal-stance-retrieval-mimo-v26-pro-claude-code-openrouter-max-bf0edce36580": {
       "cost_usd": "0.3312501282",
       "response_count": 222
+    },
+    "legal-stance-retrieval-step-5-preview-claude-code-max-4ca0f716cf9c": {
+      "cost_usd": "3.3588559",
+      "response_count": 268
     },
     "lightweight-query-retrieval-claude-opus-5.5-claude-code-max-d91d8684b107": {
       "cost_usd": "23.2663576",
@@ -1304,6 +1400,10 @@
       "cost_usd": "0.4786935378",
       "response_count": 193
     },
+    "lightweight-query-retrieval-step-5-preview-claude-code-max-f2c615408f48": {
+      "cost_usd": "3.2989703",
+      "response_count": 259
+    },
     "long-document-reranking-claude-opus-5.5-claude-code-max-89394e427511": {
       "cost_usd": "8.5436356",
       "response_count": 96
@@ -1355,6 +1455,10 @@
     "long-document-reranking-mimo-v26-pro-claude-code-openrouter-max-b3e78da52f46": {
       "cost_usd": "0.3994200750",
       "response_count": 129
+    },
+    "long-document-reranking-step-5-preview-claude-code-max-261c84c0038f": {
+      "cost_usd": "1.3904012",
+      "response_count": 114
     },
     "long-pdf-evidence-claude-opus-5.5-claude-code-max-f4d9166bfadc": {
       "cost_usd": "7.1094058",
@@ -1408,6 +1512,10 @@
       "cost_usd": "0.3025023840",
       "response_count": 110
     },
+    "long-pdf-evidence-step-5-preview-claude-code-max-6b895299e5f9": {
+      "cost_usd": "1.3926252",
+      "response_count": 123
+    },
     "long-pdf-evidence-vectorless-claude-opus-5.5-claude-code-max-e8db0d2913ec": {
       "cost_usd": "4.0837078",
       "response_count": 45
@@ -1459,6 +1567,10 @@
     "long-pdf-evidence-vectorless-mimo-v26-pro-claude-code-openrouter-max-84f27af286c6": {
       "cost_usd": "0.1461524964",
       "response_count": 72
+    },
+    "long-pdf-evidence-vectorless-step-5-preview-claude-code-max-7379ab79e3eb": {
+      "cost_usd": "1.3735166",
+      "response_count": 116
     },
     "memory-constrained-dense-retrieval-claude-opus-5.5-claude-code-max-1fd4f2cefef9": {
       "cost_usd": "7.4591504",
@@ -1512,6 +1624,10 @@
       "cost_usd": "0.5596017288",
       "response_count": 149
     },
+    "memory-constrained-dense-retrieval-step-5-preview-claude-code-max-6e0bef267410": {
+      "cost_usd": "1.2261351",
+      "response_count": 79
+    },
     "methodology-inspiration-retrieval-claude-opus-5.5-claude-code-max-76be64b8e0ce": {
       "cost_usd": "24.2616526",
       "response_count": 273
@@ -1563,6 +1679,10 @@
     "methodology-inspiration-retrieval-mimo-v26-pro-claude-code-openrouter-max-7eec98c67795": {
       "cost_usd": "0.2151105324",
       "response_count": 130
+    },
+    "methodology-inspiration-retrieval-step-5-preview-claude-code-max-540b95309ce6": {
+      "cost_usd": "4.7487045",
+      "response_count": 361
     },
     "multilingual-vector-postprocessing-claude-opus-5.5-claude-code-max-6f41d0a59090": {
       "cost_usd": "9.7178346",
@@ -1616,6 +1736,10 @@
       "cost_usd": "0.2043731628",
       "response_count": 69
     },
+    "multilingual-vector-postprocessing-step-5-preview-claude-code-max-ce65b0de64b1": {
+      "cost_usd": "1.3608573",
+      "response_count": 94
+    },
     "narrative-clue-search-claude-opus-5.5-claude-code-max-149995cece5b": {
       "cost_usd": "6.5363872",
       "response_count": 104
@@ -1667,6 +1791,10 @@
     "narrative-clue-search-mimo-v26-pro-claude-code-openrouter-max-2d2751a50d7c": {
       "cost_usd": "0.1922874744",
       "response_count": 99
+    },
+    "narrative-clue-search-step-5-preview-claude-code-max-96d466508a4f": {
+      "cost_usd": "2.0474692",
+      "response_count": 162
     },
     "negative-constraint-retrieval-claude-opus-5.5-claude-code-max-58d98d1d4518": {
       "cost_usd": "9.5601342",
@@ -1720,6 +1848,10 @@
       "cost_usd": "0.3935757486",
       "response_count": 148
     },
+    "negative-constraint-retrieval-step-5-preview-claude-code-max-8c2f0a0d7886": {
+      "cost_usd": "2.9935030",
+      "response_count": 238
+    },
     "paper-metadata-retrieval-claude-opus-5.5-claude-code-max-a47528a6abcb": {
       "cost_usd": "4.0457848",
       "response_count": 52
@@ -1771,6 +1903,10 @@
     "paper-metadata-retrieval-mimo-v26-pro-claude-code-openrouter-max-f73da9fa0b4a": {
       "cost_usd": "0.3985682106",
       "response_count": 138
+    },
+    "paper-metadata-retrieval-step-5-preview-claude-code-max-d18964c4baf6": {
+      "cost_usd": "1.7408319",
+      "response_count": 133
     },
     "protein-text-bidirectional-retrieval-claude-opus-5.5-claude-code-max-6aa04e4b75c0": {
       "cost_usd": "4.1192266",
@@ -1824,6 +1960,10 @@
       "cost_usd": "0.1553520402",
       "response_count": 46
     },
+    "protein-text-bidirectional-retrieval-step-5-preview-claude-code-max-43c324cad10e": {
+      "cost_usd": "0.6094782",
+      "response_count": 63
+    },
     "quantity-aware-retrieval-claude-opus-5.5-claude-code-max-58024ae716d1": {
       "cost_usd": "30.3032268",
       "response_count": 282
@@ -1875,6 +2015,10 @@
     "quantity-aware-retrieval-mimo-v26-pro-claude-code-openrouter-max-63e942e7468c": {
       "cost_usd": "1.0352045364",
       "response_count": 356
+    },
+    "quantity-aware-retrieval-step-5-preview-claude-code-max-3fb96f0beb15": {
+      "cost_usd": "3.2308004",
+      "response_count": 244
     },
     "query-encoder-alignment-claude-opus-5.5-claude-code-max-f034475de7eb": {
       "cost_usd": "12.9439692",
@@ -1928,6 +2072,10 @@
       "cost_usd": "0.2835601494",
       "response_count": 89
     },
+    "query-encoder-alignment-step-5-preview-claude-code-max-65d723d8a818": {
+      "cost_usd": "2.9722035",
+      "response_count": 223
+    },
     "reasoning-query-rewriting-claude-opus-5.5-claude-code-max-23465d28f21b": {
       "cost_usd": "4.6012424",
       "response_count": 50
@@ -1979,6 +2127,10 @@
     "reasoning-query-rewriting-mimo-v26-pro-claude-code-openrouter-max-9278c45343d2": {
       "cost_usd": "0.2288970504",
       "response_count": 93
+    },
+    "reasoning-query-rewriting-step-5-preview-claude-code-max-f2cd1dd87d4a": {
+      "cost_usd": "0.7514568",
+      "response_count": 72
     },
     "rust-bm25-search-claude-opus-5.5-claude-code-max-3f222c83726a": {
       "cost_usd": "15.1871636",
@@ -2032,6 +2184,10 @@
       "cost_usd": "0.8145796344",
       "response_count": 157
     },
+    "rust-bm25-search-step-5-preview-claude-code-max-f6dea8734f54": {
+      "cost_usd": "6.8574993",
+      "response_count": 441
+    },
     "same-place-image-search-claude-opus-5.5-claude-code-max-5e0b1666aad3": {
       "cost_usd": "6.7404676",
       "response_count": 86
@@ -2083,6 +2239,10 @@
     "same-place-image-search-mimo-v26-pro-claude-code-openrouter-max-71a3be762949": {
       "cost_usd": "0.3013700166",
       "response_count": 148
+    },
+    "same-place-image-search-step-5-preview-claude-code-max-89e73936fe91": {
+      "cost_usd": "1.6492969",
+      "response_count": 154
     },
     "scientific-paper-qa-claude-opus-5.5-claude-code-max-a730a5940796": {
       "cost_usd": "5.9200260",
@@ -2136,6 +2296,10 @@
       "cost_usd": "0.1407248718",
       "response_count": 74
     },
+    "scientific-paper-qa-step-5-preview-claude-code-max-43082712f618": {
+      "cost_usd": "1.7534753",
+      "response_count": 153
+    },
     "sketch-text-search-claude-opus-5.5-claude-code-max-30f1305b3b48": {
       "cost_usd": "11.2343282",
       "response_count": 123
@@ -2187,6 +2351,10 @@
     "sketch-text-search-mimo-v26-pro-claude-code-openrouter-max-99fb2222b629": {
       "cost_usd": "0.5743086336",
       "response_count": 304
+    },
+    "sketch-text-search-step-5-preview-claude-code-max-179c6f6cf05c": {
+      "cost_usd": "3.2000064",
+      "response_count": 268
     },
     "sparse-retrieval-pruning-claude-opus-5.5-claude-code-max-9af8d711968b": {
       "cost_usd": "20.1127336",
@@ -2240,6 +2408,10 @@
       "cost_usd": "0.4584119268",
       "response_count": 69
     },
+    "sparse-retrieval-pruning-step-5-preview-claude-code-max-3f905550b5aa": {
+      "cost_usd": "3.2316844",
+      "response_count": 185
+    },
     "spoken-query-search-claude-opus-5.5-claude-code-max-cde8a51e57c4": {
       "cost_usd": "7.5480870",
       "response_count": 96
@@ -2291,6 +2463,10 @@
     "spoken-query-search-mimo-v26-pro-claude-code-openrouter-max-186e6b41d106": {
       "cost_usd": "0.4092222774",
       "response_count": 133
+    },
+    "spoken-query-search-step-5-preview-claude-code-max-9b14ecaa7ac4": {
+      "cost_usd": "2.2435773",
+      "response_count": 169
     },
     "training-error-tracing-claude-opus-5.5-claude-code-max-ba26d9ce597a": {
       "cost_usd": "17.9510230",
@@ -2344,6 +2520,10 @@
       "cost_usd": "0.5194769988",
       "response_count": 119
     },
+    "training-error-tracing-step-5-preview-claude-code-max-bc3a73020769": {
+      "cost_usd": "5.7933920",
+      "response_count": 346
+    },
     "video-moment-search-claude-opus-5.5-claude-code-max-0c3eb1614a3d": {
       "cost_usd": "12.3901012",
       "response_count": 170
@@ -2396,6 +2576,10 @@
       "cost_usd": "0.3124171782",
       "response_count": 173
     },
+    "video-moment-search-step-5-preview-claude-code-max-fc60f7760409": {
+      "cost_usd": "3.0955107",
+      "response_count": 262
+    },
     "visual-document-qa-claude-opus-5.5-claude-code-max-26c605c3a702": {
       "cost_usd": "5.5085412",
       "response_count": 89
@@ -2447,7 +2631,11 @@
     "visual-document-qa-mimo-v26-pro-claude-code-openrouter-max-7c89cbe2c128": {
       "cost_usd": "0.1996440480",
       "response_count": 106
+    },
+    "visual-document-qa-step-5-preview-claude-code-max-908b1e3de7ed": {
+      "cost_usd": "1.6662466",
+      "response_count": 135
     }
   },
-  "usage_sha256": "ef9dea4341a01785f738d32b3e05c8e3230e8778a26a1dfb4c974b5a06a860c7"
+  "usage_sha256": "6d37479ce9f4924e3ab58c0a713d8ce204f5dda71f48bc4a4d98e70ac2cc836a"
 }

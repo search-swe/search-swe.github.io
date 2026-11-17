@@ -1,8 +1,29 @@
 # Leaderboard data and publication
 
-The current homepage contains **47 tasks (24 CPU, 23 GPU), thirteen leaderboard
-settings across eleven models, and 611 selected trials**. Hy4 uses high effort;
-the other twelve settings use max.
+The current homepage contains **47 tasks (24 CPU, 23 GPU), fourteen leaderboard
+settings across twelve models, and 658 selected trials**. Hy4 uses high effort;
+the other thirteen settings use max.
+
+Step 5 Preview / Claude Code 2.1.309 / max adds 47/47 tasks with provider
+**StepFun**, mean score **19.4745596453**, **800,569,286 tokens**, and
+**$119.1053147** estimated cost. All 16,255 archived source files passed size and
+SHA-256 checks. Large binary artifacts are inventoried rather than uploaded.
+The original 611 results, usage, durations, costs and public payloads are retained.
+
+Seven regraded selections use hash-bound original coding evidence in
+`coding-source-evidence.json`, including exported `original-coding/` result,
+config and harness records. All 47 coding durations are available; recovered
+original timings for evolving-personal-memory and instruction-following-embedding
+are 7201.643989 and 7201.056449 seconds. No new timing estimates are used.
+Thirteen trials without final cumulative counters use deduplicated recorded
+responses under the existing accounting policy. Three archived
+`API_TRANSPORT_DEGRADATION_RECORDED` flags remain in their individual evidence.
+
+StepFun's official standard USD rates per million input/cache-read/output tokens
+are **$1.00/$0.10/$2.70**. Cache population uses the ordinary input rate; reasoning
+is already included in output. Subscription and account discounts are excluded.
+Source: [StepFun API pricing](https://platform.stepfun.ai/docs/en/guides/pricing/details).
+PR #3, Sonnet and Argon remain on hold.
 
 Hy4 / Claude Code 2.1.309 / high covers 47/47 tasks, combining the reviewed
 43-task community export with four selected local trials. Its mean score is
@@ -19,7 +40,6 @@ Hy4 uses Tencent's standard USD list rates per million input/cache-read/output
 tokens of **$0.834/$0.042/$2.501**, excluding temporary promotions and account
 discounts. Cache hits use reported buckets, and reasoning is included in output.
 Source: [Tencent Cloud model pricing](https://www.tencentcloud.com/document/product/1300/78937).
-Step-5-preview, PR #3, Sonnet and Argon remain on hold.
 
 The previous additions were MiMo-V2.6-Flash / Claude Code 2.1.309 / OpenRouter /
 max (mean 15.2727619964) and MiMo-V2.6-Pro with the same configuration
@@ -49,10 +69,17 @@ and batch prices are excluded. Estimated totals are **$6.0017513024** for Flash
 and **$17.1207614100** for Pro. The original 470 trial selections, payloads,
 usage, durations and estimated costs are preserved.
 
-All thirteen settings retain separate main-table rows and downloadable results.
+All fourteen settings retain separate main-table rows and downloadable results.
 The Pareto chart shows only DeepSeek's best harness by overall mean score,
 Claude Code, across Cost, Tokens, Time and all hardware scopes. Searching does
 not select another DeepSeek harness for the chart.
+Only the plotted circle triggers its hover tooltip; model names are separate,
+non-interactive text placed beside their corresponding dots. Tooltips show
+model / harness and use the actual marker position at the current screen size.
+Keyboard focus still exposes the tooltip and result link. Nearby label placement
+avoids overlaps without moving names across the plot; the legend retains every
+model on crowded or narrow screens. Desktop plots are 520px tall and narrow
+plots remain 330px tall. Cost, Tokens and Time retain linear axes.
 
 The previous 141 additions passed original archive file-size and SHA-256 verification.
 Eight missing coding durations were recovered from source-host Harbor results,
@@ -135,25 +162,31 @@ and [DeepSeek endpoint list](https://openrouter.ai/api/v1/models/deepseek/deepse
 Scores, tokens, configurations and payloads for all 235 earlier trials are
 unchanged; the seven duration assignments above update their timing summaries.
 
-The current public package is `.build/hf-trajectories-hy4/`: **286,268 files**,
-approximately **10.48 GiB**, with 611 ATIF trajectories and 619 original
-session JSONL exports. The new setting adds 18,641 files, excluding shared metadata.
-Prepare it with `python scripts/import_hy4_results.py`; publish with `--upload`.
+The current public package is `.build/hf-trajectories-step5/`: **314,927 files**,
+approximately **11.59 GiB**, with 658 ATIF trajectories and 669 original
+session JSONL exports. Step 5 adds 28,659 trial files, excluding shared metadata.
+Prepare and publish it with `publish_final_results.py`, using
+`.build/hf-trajectories-hy4/` as `--base-package` and `--upload` to publish.
 Subsequent native imports must retain this verified package with `--base-package`
 to preserve the community trials and their immutable payloads.
+
+The preceding Hy4 package was `.build/hf-trajectories-hy4/`: **286,268 files**,
+approximately **10.48 GiB**, with 611 ATIF trajectories and 619 original sessions.
 
 The preceding MiMo package was `.build/hf-trajectories-mimo/`: **267,627 files**,
 approximately **9.45 GiB**, with 564 ATIF trajectories
 and 573 original session JSONL exports (235 Codex, 291 Claude Code, 47 Pi). Credentials are redacted and host paths
 normalized. Large binary artifacts remain listed without content downloads.
 Source execution jobs remain unchanged.
-The current default package is `.build/hf-trajectories-hy4/`; `.build/hf-trajectories-current/` remains the older 235-trial append base.
+The current default package is `.build/hf-trajectories-step5/`; `.build/hf-trajectories-current/` remains the older 235-trial append base.
 
 The active HF directory is **`releases/current/`**, independent of model names or
 publication dates. Full commit SHAs identify immutable versions. The verified
 revision is recorded in [`storage.json`](storage.json) and the private receipt
-`.build/hf-trajectories-hy4-uploaded.json`. The website pins that SHA rather
+`.build/hf-trajectories-step5-uploaded.json`. The website pins that SHA rather
 than reading the mutable `main` branch.
+The Step 5 publication uses the immutable revision
+[`a4d445dc0b8f8324fbc959fe57885c5474c7b939`](https://huggingface.co/datasets/search-swe/trajectories/commit/a4d445dc0b8f8324fbc959fe57885c5474c7b939).
 The Hy4 publication uses the immutable revision
 [`75abb07ad387c478060ece8d216a854ffdfdf2c4`](https://huggingface.co/datasets/search-swe/trajectories/commit/75abb07ad387c478060ece8d216a854ffdfdf2c4). Its full verification receipt is
 `.build/hf-trajectories-hy4-uploaded.json`.
@@ -173,7 +206,7 @@ commit-pinned downloads still work. The migration reuses Git trees and updates
 only the dataset card and publication inventory.
 
 The following commands document that historical migration, not the current
-thirteen-setting publication:
+fourteen-setting publication:
 
 ```bash
 python scripts/normalize_hf_layout.py \
@@ -190,7 +223,7 @@ the current verified package as the base, and use a fresh output package:
 
 ```bash
 python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-hy4 \
+  --base-package .build/hf-trajectories-step5 \
   --package .build/hf-trajectories-next --upload
 ```
 
@@ -230,7 +263,9 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   are used. Missing original end timestamps remain missing; regrade time is never
   substituted. Eight reviewed runs use the maintainer-assigned 7200-second
   coding budget, with provenance in `agent_time_basis` and exact source trajectory
-  hashes in the importer. All 611 selected trials have a reported duration, including the eight previously recovered original timings, three MiMo coding durations and all 47 Hy4 durations.
+  hashes in the importer. All 658 selected trials have a reported duration,
+  including the eight previously recovered original timings, three MiMo coding
+  durations and all 47 Hy4 and 47 Step 5 durations.
 - Total tokens in the main leaderboard sum input (including cache) + output
   across the selected All / CPU / GPU task set, not a per-task average. Entry rows
   show Input Tokens, Output Tokens and Cached Tokens; trial summaries show the
@@ -239,7 +274,7 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   time. Verifier/task-internal API usage is excluded. Regrading uses original
   coding usage once. Missing values remain missing.
 - Cost sums selected coding responses at the frozen official USD API rates in
-  `official-pricing.json`, updated 2026-11-17. The OpenAI models use standard
+  `official-pricing.json`, updated 2026-11-18. The OpenAI models use standard
   processing, 30-minute cache writes and per-request context tiers above 272,000
   input tokens. Kimi K3.1 Pro uses standard USD rates: input/write $2, read $0.20
   and output $10 per million tokens. Kimi K3 uses input/write $3, read $0.30
@@ -254,7 +289,7 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
 - Claude Code receipts are deduplicated by message ID across streaming blocks
   and subagent sessions. Available final modelUsage counters also include
   background/compaction usage. Seven Kimi K3.1 Pro, fourteen Kimi K3, six DeepSeek / Claude Code,
-  twenty-five MiMo Flash and fifteen MiMo Pro trials have no aggregate counter: the fallback uses
+  twenty-five MiMo Flash, fifteen MiMo Pro and thirteen Step 5 trials have no aggregate counter: the fallback uses
   deduplicated recorded responses as the final reported token totals and the
   basis for estimated cost. Unrecorded usage is not estimated. Aggregate
   remainders are priced only with a flat tariff; no extra response IDs are invented.
@@ -410,9 +445,9 @@ unchanged; exported JSON contains no local host source paths in its metadata.
 
 ```bash
 python -m unittest discover -s scripts -p 'test_*.py'
-python scripts/import_final_results.py --package .build/hf-trajectories-mimo --check
+python scripts/import_final_results.py --package .build/hf-trajectories-step5 --check
 python scripts/build_leaderboard.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-mimo.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-step5.usage.json --check
 python scripts/build_tasks.py --check
 node --check leaderboard.js
 node --check leaderboard-pareto.js
@@ -422,9 +457,9 @@ node --check trial-files.js
 ```
 
 With Playwright available in the Node module search path and the preview server
-running, run `HF_PACKAGE=.build/hf-trajectories-mimo node scripts/test_leaderboard_browser.cjs`. Set
+running, run `HF_PACKAGE=.build/hf-trajectories-step5 node scripts/test_leaderboard_browser.cjs`. Set
 `LEADERBOARD_ORIGIN` to use a different local server address.
-Run `HF_PACKAGE=.build/hf-trajectories-mimo node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
+Run `HF_PACKAGE=.build/hf-trajectories-step5 node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
 Run `node scripts/test_leaderboard_costs_browser.cjs` for cost sorting, chart/table
 parity across hardware scopes, keyboard tabs, links, empty states and mobile layout.
 

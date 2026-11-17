@@ -4,12 +4,59 @@
 从公开的 HF Dataset [`search-swe/trajectories`](https://huggingface.co/datasets/search-swe/trajectories)
 匿名按需读取。浏览器不需要 HF Token。
 
-## 当前更新：Hy4 / Claude Code / high
+## 当前更新：Step 5 Preview / Claude Code / max
+
+2026-11-18 新增 Step 5 Preview / Claude Code 2.1.309 / max，Provider 为 StepFun，
+覆盖 47/47 题，平均 19.4745596453。现为 12 个模型、14 个 settings、658 条结果。
+原 611 条结果、用量、耗时、费用和公开 payload 字节全部保留。PR #3、Sonnet、Argon
+继续暂缓。
+
+16,255 个原始归档文件（41,169,460,843 bytes）再次通过大小及 SHA-256 核验。
+大二进制产物仍只列清单，公开包包含轨迹、会话、文本日志和证据。
+七道重评分题的原编码材料通过冻结的逐文件哈希与原始 UUID 绑定，证据保存在
+coding-source-evidence.json；公开 Agent 文件组补充 original-coding/ 下的 result、
+config 和 harness。全部 47 题有原始编码时长；evolving-personal-memory 和
+instruction-following-embedding 恢复为 7201.643989 / 7201.056449 秒，无新增估算。
+
+总用量 800,569,286 tokens；34 题使用最终累计计数，13 题沿用去重的已记录响应
+回退规则，不估算未记录用量。三道题原有 API_TRANSPORT_DEGRADATION_RECORDED
+标记保留在单题证据中。费用按阶跃星辰官方标准 USD 实时价估算，每百万未缓存
+输入／缓存读取／输出为 $1.00／$0.10／$2.70；缓存填充按普通输入价，思考已包含
+在输出中，不叠加计费。总费用 $119.1053147，不应用订阅或账户优惠。
+来源：[StepFun 官方价格表](https://platform.stepfun.ai/docs/en/guides/pricing/details)。
+
+当前包为 .build/hf-trajectories-step5，基线为 .build/hf-trajectories-hy4；公开包共
+314,927 个文件、约 11.59 GiB，包含 658 份 ATIF 和 669 份原始会话 JSONL。
+准备及上传：
+
+```bash
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-hy4 --package .build/hf-trajectories-step5 --upload
+```
+
+准备完成后的续传命令：
+
+```bash
+python scripts/append_hf_trajectories.py --base-package .build/hf-trajectories-hy4 --package .build/hf-trajectories-step5 --upload
+```
+
+逐文件远端核验、匿名下载及 CORS 校验通过后，脚本固定 HF SHA 并生成生产页面。
+当前版本记录在 content/leaderboard/storage.json，完整私有回执为
+.build/hf-trajectories-step5-uploaded.json。后续追加以 Step 5 包为 --base-package，
+保留社区结果及所有既有 payload。
+本次固定版本为
+[`a4d445dc0b8f8324fbc959fe57885c5474c7b939`](https://huggingface.co/datasets/search-swe/trajectories/commit/a4d445dc0b8f8324fbc959fe57885c5474c7b939)。
+
+本次帕累托图将模型名称从圆点链接中拆出，名称本身不触发悬浮；仅圆点触发，
+提示按实际屏幕位置定位并显示模型 / harness。标签在对应点附近避让，桌面图高
+520px，窄屏保持 330px 并使用完整图例；键盘聚焦与点击入口保留。Cost、Tokens、
+Time 继续使用线性横轴，DeepSeek 仍只展示整体均分最高的 Claude Code。
+
+## 历史更新：Hy4 / Claude Code / high
 
 2026-11-17 接纳、2026-11-18 发布 Hy4 / Claude Code 2.1.309 / high，覆盖 47/47 题，平均
 21.5478648705。现为 11 个模型、13 个 settings、611 条结果。43 题来自已审查的
 社区包，4 题来自本地选中档案；Provider 在前端统一显示 Tencent，采用常规榜单展示。
-原 564 条结果、用量、耗时、费用与公开 payload 保持不变。Step-5-preview、
+原 564 条结果、用量、耗时、费用与公开 payload 保持不变。当时 Step-5-preview、
 PR #3、Sonnet、Argon 继续暂缓。
 
 使用最终 modelUsage 累计数恢复原导出遗漏的 10,260,191 tokens；总用量为
@@ -23,7 +70,7 @@ $0.834／$0.042／$2.501，不应用临时促销与账户折扣；最终计数�
 总费用为 $143.890236356，不代表内部端点或 OpenRouter 的实际账单。
 来源：[腾讯官方价格表](https://www.tencentcloud.com/document/product/1300/78937)。
 
-当前包为 .build/hf-trajectories-hy4，基线为 .build/hf-trajectories-mimo。
+该次包为 .build/hf-trajectories-hy4，基线为 .build/hf-trajectories-mimo。
 公开包共 286,268 个文件、约 10.48 GiB，包含 611 份 ATIF 和 619 份原始会话 JSONL。
 脚本仅导出选中记录，不包含 Mac 附加元数据。首次准备及上传：
 
@@ -74,7 +121,7 @@ Flash $0.14/$0.0028/$0.28、Pro $0.435/$0.0036/$0.87，来源为
 当前包为 .build/hf-trajectories-mimo，基线为 .build/hf-trajectories-ds-cc-pi-kimik3。
 公开包 267,627 个文件、约 9.45 GiB；本次新增约 2.54 GB，含 564 个 ATIF 和
 573 份原始会话 JSONL（235 Codex、291 Claude Code、47 Pi）。
-Step-5-preview、PR #3、Sonnet、Argon 继续暂缓。
+当时 Step-5-preview、PR #3、Sonnet、Argon 继续暂缓。
 
 ```bash
 python scripts/publish_final_results.py --base-package .build/hf-trajectories-ds-cc-pi-kimik3 --package .build/hf-trajectories-mimo --upload
@@ -105,7 +152,7 @@ DeepSeek Claude Code 的 6 条与 Kimi K3 的 14 条缺少最终累计计数，�
 DeepSeek 三种 harness 均采用官方谷价；Kimi K3 每百万 input/cache read/5-minute
 write/output 为 $3/$0.30/$3/$15，来源为 [Moonshot 官方价格表](https://platform.kimi.ai/)。
 Provider 分别为 DeepSeek via OpenRouter 和 Moonshot AI。
-Step-5-preview、PR #3、Sonnet、Argon 继续暂缓，不包含在本次发布中。
+当时 Step-5-preview、PR #3、Sonnet、Argon 继续暂缓，不包含在该次发布中。
 
 当前包为 `.build/hf-trajectories-ds-cc-pi-kimik3`，基线为
 `.build/hf-trajectories-astra-deepseek`，保留原 329 条结果和全部 payload 字节。
@@ -227,7 +274,7 @@ python scripts/normalize_hf_layout.py --source-package .build/hf-trajectories-lu
 完成模型选择、元数据及导入配置更新后，以最近的已验证包为基线，指定新的本地包：
 
 ```bash
-python scripts/publish_final_results.py --base-package .build/hf-trajectories-hy4 --package .build/hf-trajectories-next --upload
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-step5 --package .build/hf-trajectories-next --upload
 ```
 
 不带 `--upload` 只准备本地预览。增量上传只新增 trial，保留 `releases/current/`
@@ -238,8 +285,8 @@ python scripts/publish_final_results.py --base-package .build/hf-trajectories-hy
 ## 本地重建与审计
 
 ```bash
-python scripts/import_final_results.py --package .build/hf-trajectories-hy4 --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-hy4.usage.json --check
+python scripts/import_final_results.py --package .build/hf-trajectories-step5 --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-step5.usage.json --check
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/build_tasks.py --check
 python scripts/build_leaderboard.py --production --check
@@ -249,7 +296,7 @@ python scripts/build_leaderboard.py --production --check
 若源归档已经变化，应指定新的 `--package` 路径，不覆盖旧包。恢复生产配置可使用：
 
 ```bash
-python scripts/upload_hf_release.py --package .build/hf-trajectories-hy4 --verify-revision <FULL_HF_SHA>
+python scripts/upload_hf_release.py --package .build/hf-trajectories-step5 --verify-revision <FULL_HF_SHA>
 ```
 
 评分沿 `FINAL_RESULT.json` 的最终 reward 指针读取，原生 reward × 100 必须
@@ -476,7 +523,7 @@ releases/current/
 ```bash
 PYTHONPATH=scripts python -m unittest \
   scripts/test_publication.py scripts/test_leaderboard.py scripts/test_trial_files.py
-HF_PACKAGE=.build/hf-trajectories-mimo NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
+HF_PACKAGE=.build/hf-trajectories-step5 NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
 ```
 
 浏览器检查使用另一个真实 HTTP origin 提供公开发布包，验证匿名跨域加载、

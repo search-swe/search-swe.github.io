@@ -33,6 +33,14 @@ class CurrentArchiveTests(unittest.TestCase):
             row = {'task': 'one', 'model_label': 'selected'}
             with patch('import_final_results.CONTENT', content):
                 self.assertEqual(original_claude_source(pointer, row, trajectory)[2]['id'], 'original-uuid')
+                native_row = {**row, 'model': 'step-5-preview'}
+                with self.assertRaisesRegex(ValueError, 'NoP'):
+                    original_claude_source({}, native_row, trajectory, root)
+                evidence.update(purpose='step5_verified_original_coding', source_trial_relative_path='original')
+                (content / 'coding-source-evidence.json').write_text(json.dumps({'trials': [evidence]}))
+                self.assertEqual(original_claude_source({}, native_row, trajectory, root)[2]['id'], 'original-uuid')
+                with self.assertRaisesRegex(ValueError, 'NoP'):
+                    original_claude_source({}, {**row, 'model': 'unreviewed-model'}, trajectory, root)
                 with self.assertRaisesRegex(ValueError, 'UUID'):
                     original_claude_source({**pointer, 'coding_source_UUID': 'different'}, row, trajectory)
                 (source / 'agent/trajectory.json').write_bytes(b'changed')
@@ -51,7 +59,7 @@ class CurrentArchiveTests(unittest.TestCase):
             rows.extend({'task': t, 'model': 'deepseek/deepseek-v4.1-flash-1017', 'model_label': setting}
                         for t in ['one', 'two'] for setting in DEEPSEEK_SETTINGS)
             rows.append({'task': 'one', 'model': 'incomplete-other-model'})
-            rows.append({'task': 'one', 'model': 'step-5-preview', 'model_label': 'step-5-preview-claude-code-max'})
+            rows.append({'task': 'one', 'model': 'google/gemini-4-argon', 'model_label': 'argon-pending'})
             def save():
                 with (root / 'INDEX.csv').open('w') as f:
                     writer = csv.DictWriter(f, ['task', 'model', 'model_label'])

@@ -8,7 +8,7 @@ const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'leaderboard/results.json')));
 const read = name => {
   const file = /^https?:/.test(name)
-    ? path.join(path.resolve(root, process.env.HF_PACKAGE || '.build/hf-trajectories-hy4'),
+    ? path.join(path.resolve(root, process.env.HF_PACKAGE || '.build/hf-trajectories-step5'),
       new URL(name).pathname.replace(/^\/datasets\/search-swe\/trajectories\/resolve\/[a-f0-9]{40}(?=\/)/, ''))
     : path.join(root, name);
   return JSON.parse(fs.readFileSync(file));

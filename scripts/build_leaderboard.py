@@ -70,8 +70,8 @@ def page(title, body, kind, data, snapshot):
 {MARKER}
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)} — Search-SWE</title><meta name="description" content="Search-SWE evaluation results and real coding agent trajectories.">
-<link rel="icon" href="/assets/logo.png"><link rel="preload" href="/assets/fonts/Geist.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/home-sections.css?v=8"><link rel="stylesheet" href="/leaderboard.css?v=25">
-{'<script src="/leaderboard-pareto.js?v=6" defer></script>' if kind == 'leaderboard' else ''}<script src="/leaderboard.js?v=9" defer></script>{'<script src="/trajectory-viewer.js?v=10" defer></script><script src="/trial-files.js?v=4" defer></script>' if kind == 'trial' else ''}</head>
+<link rel="icon" href="/assets/logo.png"><link rel="preload" href="/assets/fonts/Geist.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/home-sections.css?v=8"><link rel="stylesheet" href="/leaderboard.css?v=26">
+{'<script src="/leaderboard-pareto.js?v=7" defer></script>' if kind == 'leaderboard' else ''}<script src="/leaderboard.js?v=9" defer></script>{'<script src="/trajectory-viewer.js?v=10" defer></script><script src="/trial-files.js?v=4" defer></script>' if kind == 'trial' else ''}</head>
 <body id="top" data-page="{kind}"><a class="skip-link" href="#main-content">Skip to content</a>
 <header class="home-header"><div class="home-header-inner"><a class="home-brand" href="/"><img src="/assets/logo.png" width="32" height="32" alt=""><span>Search-SWE</span></a>
 <nav class="home-nav" aria-label="Main navigation"><a href="/">Overview</a><a href="/evaluation/">Run</a><a href="/leaderboard/" aria-current="page">Leaderboard</a><a href="/tasks/">Tasks</a><a href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub ↗</a></nav></div></header>

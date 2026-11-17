@@ -57,6 +57,244 @@
           "sha256": "8ed164e36875e769b4b1ecb5ea76066f9e6c1173d1e5d7080e595be7dfbfd504"
         }
       }
+    },
+    {
+      "task": "composed-image-search",
+      "setting": "step-5-preview-claude-code-max",
+      "trajectory_sha256": "f38b8a704305de823636eef30217cfcf8bf775e024ced3b923cbb67d54674dfc",
+      "source_trial_id": "ec9f4056-1957-459d-bfcd-7d83514a068e",
+      "purpose": "step5_verified_original_coding",
+      "source_trial_relative_path": "release/step5-native-resume-20261113/composed-image-search/step5/attempt-1/composed-image-search/2026-11-14__15-39-56/composed-image-search__R9TPSNr",
+      "files": {
+        "result.json": {
+          "bytes": 6721,
+          "sha256": "a0c70d2d68db035752ca21fcc274f6b176de61dc21fe030c53f30d81a6d4bd9a"
+        },
+        "config.json": {
+          "bytes": 2941,
+          "sha256": "c23ddc2af0fc4bcf05c434b725c34c0f4076600aa18d39a69b40de21cac6b12b"
+        },
+        "agent/harness.json": {
+          "bytes": 283,
+          "sha256": "3f7de8f9315b706c7738bee3d723bfb4dbc43fe9a214bb0aafcb02aeed053c32"
+        },
+        "agent/trajectory.json": {
+          "bytes": 9031302,
+          "sha256": "f38b8a704305de823636eef30217cfcf8bf775e024ced3b923cbb67d54674dfc"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 9301869,
+          "sha256": "66b6e787f16f2e2fde54827009bb3f4ec5dd302b8c1fca30a89904262c875064"
+        },
+        "agent/sessions/projects/-app/36fe0f28-0091-47e6-b640-5343a9b8eb2f.jsonl": {
+          "bytes": 5186715,
+          "sha256": "ffab73f8bd805ecc9fcf5c409338d158be3e21aa9075e3232ffe2616ce8d0333"
+        }
+      }
+    },
+    {
+      "task": "document-page-search",
+      "setting": "step-5-preview-claude-code-max",
+      "trajectory_sha256": "58c7e57653559bc79908604ef0e3048e5c3307461a2c2fb49513e76627fa3433",
+      "source_trial_id": "89c5b978-b19e-4a5f-8060-5e977e7e2acd",
+      "purpose": "step5_verified_original_coding",
+      "source_trial_relative_path": "release/step5-native-resume-20261113/document-page-search/step5/attempt-1/document-page-search/2026-11-15__05-21-58/document-page-search__UPSGjr3",
+      "files": {
+        "result.json": {
+          "bytes": 11422,
+          "sha256": "87e2048466d5cf6d3d3dbfa1a497dd52f63acbd469e138d92acebfafca004995"
+        },
+        "config.json": {
+          "bytes": 2949,
+          "sha256": "371e2fd996c76748e6d36baa6a3ff600de09df0de95284ade446e72aae91a814"
+        },
+        "agent/harness.json": {
+          "bytes": 283,
+          "sha256": "c6e4450f2e44ded2aafd049ea225bb6d1d65536f35ca1f09e42a9ec473c807b1"
+        },
+        "agent/trajectory.json": {
+          "bytes": 3504269,
+          "sha256": "58c7e57653559bc79908604ef0e3048e5c3307461a2c2fb49513e76627fa3433"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 11129374,
+          "sha256": "6ca5ffc28d2d575f0bbbfdbc6b3455d696461f8a419411366545ae71177727d5"
+        },
+        "agent/sessions/projects/-app/11f53442-6677-48f0-8883-c9c0beac9f7b.jsonl": {
+          "bytes": 3686654,
+          "sha256": "eceab0fa9e6e8e909c06bf3ad3f2c3a8226ea328c25a2ac2b9e2b62cb3a352f1"
+        }
+      }
+    },
+    {
+      "task": "evolving-personal-memory",
+      "setting": "step-5-preview-claude-code-max",
+      "trajectory_sha256": "1add0a985c63c3614f4638ddf7baafb108b48b367c346923659dc590f30267f1",
+      "source_trial_id": "235e8624-919e-4c5d-829c-f8cd293bd0b5",
+      "purpose": "step5_verified_original_coding",
+      "source_trial_relative_path": "release/step5-native-resume-20261113/evolving-personal-memory/step5/attempt-1/evolving-personal-memory/2026-11-14__13-58-36/evolving-personal-memory__FE8rW2s",
+      "files": {
+        "result.json": {
+          "bytes": 11369,
+          "sha256": "1f1c2300ef94526780e8a22b9f1c15a407bb91867bce632e90aa131529c4f8ba"
+        },
+        "config.json": {
+          "bytes": 2867,
+          "sha256": "192df1d7bb42c9c5b5a29d61cc906773474afa715fe2add345a1612d51b51337"
+        },
+        "agent/harness.json": {
+          "bytes": 283,
+          "sha256": "28c49b4ff267dfc36f49b062eee09551bc38fd4f51b178c2ee15df329881c442"
+        },
+        "agent/trajectory.json": {
+          "bytes": 4712227,
+          "sha256": "1add0a985c63c3614f4638ddf7baafb108b48b367c346923659dc590f30267f1"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 14348764,
+          "sha256": "8db4acf6eee1c433cc2f42ab4ed9c64d344bf25ef92aed9c0ca0e4d16413a26b"
+        },
+        "agent/sessions/projects/-app/a3d247c4-c9dc-42c0-af41-019f8fd22194.jsonl": {
+          "bytes": 4295465,
+          "sha256": "cff05a41ff616c32e8d123ae8267d761f77327f78c304002642abbe9f1592cdb"
+        }
+      }
+    },
+    {
+      "task": "instruction-following-embedding",
+      "setting": "step-5-preview-claude-code-max",
+      "trajectory_sha256": "f96ca249c0c3b2d78f10cdb99b0633ad5a674df267cd9741b0978c8b12eeee68",
+      "source_trial_id": "c0214ab6-d355-4e6d-bfe6-60a9d27a8194",
+      "purpose": "step5_verified_original_coding",
+      "source_trial_relative_path": "release/luna-dual-20261106/instruction-following-embedding/step5/attempt-2/instruction-following-embedding/2026-11-08__15-59-09/instruction-following-embedding__mWpiYmY",
+      "files": {
+        "result.json": {
+          "bytes": 10976,
+          "sha256": "f457c122ace395c9fcc62eab3177fceb704ab676a1cd3bc6f10c93eef438aaf1"
+        },
+        "config.json": {
+          "bytes": 2977,
+          "sha256": "8327a285f974ce719f4739d67e3bebcc69a5e087a461cfdda9100cfd9d89833e"
+        },
+        "agent/harness.json": {
+          "bytes": 283,
+          "sha256": "d8ee74b004c95cb4ae9c7b2dc095a1936f760147d4ded4ca1903462ae52abd47"
+        },
+        "agent/trajectory.json": {
+          "bytes": 1793451,
+          "sha256": "f96ca249c0c3b2d78f10cdb99b0633ad5a674df267cd9741b0978c8b12eeee68"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 6342992,
+          "sha256": "eda3a023ed4e01d2b5c3ef3b06a1ba68d882b4b32fec25c5d557a9fcccecc047"
+        },
+        "agent/sessions/projects/-app/18892507-d590-47b1-8edc-da83636c4998.jsonl": {
+          "bytes": 1974534,
+          "sha256": "af8d36825e06f4de88d3011d6a8fa4848f765f9147d090f2a08c4883cb71cd4f"
+        }
+      }
+    },
+    {
+      "task": "join-aware-table-retrieval",
+      "setting": "step-5-preview-claude-code-max",
+      "trajectory_sha256": "e4ab2e0c205186dfb1af1787d3f27cd169235b88e844b9112331af25ada28fe6",
+      "source_trial_id": "50dadd9c-fb5b-44e5-8a02-5e04c7b0aca6",
+      "purpose": "step5_verified_original_coding",
+      "source_trial_relative_path": "release/step5-native-resume-20261113/join-aware-table-retrieval/step5/attempt-2/join-aware-table-retrieval/2026-11-15__08-51-04/join-aware-table-retrieval__mTukePT",
+      "files": {
+        "result.json": {
+          "bytes": 6710,
+          "sha256": "627c94ef9b8023861ca6d9d237eace338153785a0112c7cb17a6f5c0710e1c2f"
+        },
+        "config.json": {
+          "bytes": 2894,
+          "sha256": "db802cb43738e324f0e36f4b8ba9baa3e2f0372de923c9817aef3d8804c628fe"
+        },
+        "agent/harness.json": {
+          "bytes": 283,
+          "sha256": "f0ed13a057d13a9ebc9c93d573d9d75fc3a91359c3c39ae3c4cbb2de6e9c3e64"
+        },
+        "agent/trajectory.json": {
+          "bytes": 1440212,
+          "sha256": "e4ab2e0c205186dfb1af1787d3f27cd169235b88e844b9112331af25ada28fe6"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 3286673,
+          "sha256": "45065b475c6c3edfc671bd90b78ba75882272b6ebba86e420221d29c3f87ac28"
+        },
+        "agent/sessions/projects/-app/3e8a1a4a-a2cb-4b6a-82f6-4b107d0e2bc0.jsonl": {
+          "bytes": 1266372,
+          "sha256": "4813befefdc46c016e79571538a94563fee1a034895f632bb0afc4f605a80127"
+        }
+      }
+    },
+    {
+      "task": "long-pdf-evidence-vectorless",
+      "setting": "step-5-preview-claude-code-max",
+      "trajectory_sha256": "13f3afc71fda850644ed0784e98b44a64766be5c8eedd43a9018a5d67fe00642",
+      "source_trial_id": "143e6f39-a33d-4c50-98bb-1a711912491c",
+      "purpose": "step5_verified_original_coding",
+      "source_trial_relative_path": "release/step5-native-resume-20261113/long-pdf-evidence-vectorless/step5/attempt-2/long-pdf-evidence-vectorless/2026-11-15__08-39-02/long-pdf-evidence-vectorless__8LT37mu",
+      "files": {
+        "result.json": {
+          "bytes": 6773,
+          "sha256": "9a26b3b2cd54b98602cdd1b7bc2e099c1d39b5a7ad56d1e5fdfcc47c96225550"
+        },
+        "config.json": {
+          "bytes": 2915,
+          "sha256": "dff916b6f273abf4ff31dcafad1c6e334af539e80e3a1ce7adbcf02e49b1c464"
+        },
+        "agent/harness.json": {
+          "bytes": 283,
+          "sha256": "28b3c4489b5bef61386ccb62b3c6953171b2df57bf2f6e3bb9d128d3282b8a34"
+        },
+        "agent/trajectory.json": {
+          "bytes": 1628348,
+          "sha256": "13f3afc71fda850644ed0784e98b44a64766be5c8eedd43a9018a5d67fe00642"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 3782277,
+          "sha256": "545c6052e5367dfc6a4e3f25514d9f253d90e639fbf727e2ce33a5dcf916b33c"
+        },
+        "agent/sessions/projects/-app/df160b9f-24e6-4e79-b830-3848837310d1.jsonl": {
+          "bytes": 1552695,
+          "sha256": "d790656333629d063ab1bd5ba1b61039f99ad274e25d5cb383df6955d8d23aa7"
+        }
+      }
+    },
+    {
+      "task": "scientific-paper-qa",
+      "setting": "step-5-preview-claude-code-max",
+      "trajectory_sha256": "fbc23c4e3c5e74b14a75ab29af1e39b6a76d8c1a8209542cd26847b8fd9b1faf",
+      "source_trial_id": "aed1e630-8251-483a-a65d-47b88095b918",
+      "purpose": "step5_verified_original_coding",
+      "source_trial_relative_path": "release/step5-native-resume-20261113/scientific-paper-qa/step5/attempt-1/scientific-paper-qa/2026-11-15__01-38-58/scientific-paper-qa__hceGDCx",
+      "files": {
+        "result.json": {
+          "bytes": 6698,
+          "sha256": "9228f317bfe3f26fa5dca75e728e052764c6af9b61fc560e5c16ddf150c60ebd"
+        },
+        "config.json": {
+          "bytes": 2880,
+          "sha256": "bdc3b34babc99f71a0b5b949325af8c964bceb21ebfd05127be417aba1ef28cc"
+        },
+        "agent/harness.json": {
+          "bytes": 283,
+          "sha256": "9f7b3c2ed5ef0f5bc72c47f1a80578b350571d57af81ee932c37241f26d01951"
+        },
+        "agent/trajectory.json": {
+          "bytes": 1518137,
+          "sha256": "fbc23c4e3c5e74b14a75ab29af1e39b6a76d8c1a8209542cd26847b8fd9b1faf"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 4258750,
+          "sha256": "8211d2319294b0266c32f91b2d5a24b3f769c36d95fb215fc33653a8f2284cd1"
+        },
+        "agent/sessions/projects/-app/e2bec754-3401-4453-99f2-6b8d95c22d4a.jsonl": {
+          "bytes": 1508910,
+          "sha256": "8171c3c721fcaeeedcb208bc1f5e116bf3a3413cc2bfa56fa472227f429f8f6a"
+        }
+      }
     }
   ]
 }

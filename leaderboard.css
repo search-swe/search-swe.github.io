@@ -80,11 +80,12 @@ th[aria-sort=ascending] .sort-indicator, th[aria-sort=descending] .sort-indicato
 .pareto-tick { font-size: 12px; fill: #76808d; font-variant-numeric: tabular-nums; }
 .pareto-axis-label { font-size: 13px; fill: #626d7c; }
 .pareto-frontier { fill: none; stroke: #6089b7; stroke-width: 2; stroke-linejoin: round; }
-.pareto-dot { stroke: white; stroke-width: 2; }
+.pareto-halo { pointer-events: none; }
+.pareto-dot { stroke: white; stroke-width: 2; cursor: pointer; }
 .pareto-point[data-frontier=false] .pareto-dot { opacity: .65; }
-.pareto-point[data-frontier=false] .pareto-point-label { fill: #7a8491; }
+.pareto-point-label[data-frontier=false] { fill: #7a8491; }
 .pareto-point:hover .pareto-dot, .pareto-point:focus .pareto-dot { stroke: #202124; }
-.pareto-point-label { font-size: 13px; font-weight: 500; fill: #394352; paint-order: stroke; stroke: white; stroke-width: 4px; stroke-linejoin: round; }
+.pareto-point-label { font-size: 13px; font-weight: 500; fill: #394352; paint-order: stroke; stroke: white; stroke-width: 4px; stroke-linejoin: round; pointer-events: none; }
 .pareto-tooltip { position: absolute; z-index: 1; pointer-events: none; background: #fff; border: 1px solid var(--home-line); border-radius: 6px; padding: 10px 13px; box-shadow: 0 4px 16px #182d4514; font-size: 13px; max-width: calc(100% - 16px); }
 .pareto-tooltip strong, .pareto-tooltip span { display: block; }
 .pareto-tooltip strong { font-weight: 550; margin-bottom: 4px; }.pareto-tooltip span { color: var(--home-muted); font-variant-numeric: tabular-nums; }

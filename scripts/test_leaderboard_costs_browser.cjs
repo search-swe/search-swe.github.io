@@ -52,7 +52,8 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     const plottedTotals = totals('all').filter(e => plottedIds.has(e.id));
     const costFrontier = plottedTotals.filter(e => !plottedTotals.some(o => o.cost <= e.cost && o.score >= e.score && (o.cost < e.cost || o.score > e.score)));
     assert.deepEqual((await page.locator('.pareto-point[data-frontier="true"]').evaluateAll(nodes => nodes.map(n => n.dataset.entry))).sort(), costFrontier.map(e => e.id).sort());
-    const dsPoint = page.locator('.pareto-point').filter({has: page.locator('text', {hasText: 'DeepSeek'})});
+    const dsEntry = plotted.find(e => e.model === 'deepseek/deepseek-v4.1-flash-1017');
+    const dsPoint = page.locator(`.pareto-point[data-entry="${dsEntry.id}"]`);
     assert.equal(await dsPoint.count(), 1);
     assert.equal(byId.get(await dsPoint.getAttribute('data-entry')).agent, 'Claude Code');
     assert.match(await page.locator('#pareto-note').innerText(), /DeepSeek uses official off-peak rates for all requests/);
@@ -66,6 +67,21 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
       await point.focus();
       assert.equal(await page.locator('.pareto-tooltip').isVisible(), true);
       assert((await point.getAttribute('aria-label')).includes(`${entry.name} / ${entry.agent}`));
+    }
+    assert.equal(await page.locator('.pareto-point .pareto-point-label').count(), 0,
+      'Model names must be outside the marker link/hit area');
+    await page.evaluate(() => document.activeElement?.blur());
+    await page.locator('#pareto-chart').scrollIntoViewIfNeeded();
+    for (const label of await page.locator('.pareto-point-label:visible').all()) {
+      const id = await label.getAttribute('data-entry');
+      const box = await label.boundingBox();
+      const marker = await page.locator(`.pareto-point[data-entry="${id}"] .pareto-dot`).boundingBox();
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      assert.equal(await page.locator('.pareto-tooltip').isVisible(), false, 'Names must not trigger a tooltip');
+      await page.mouse.move(marker.x + marker.width / 2, marker.y + marker.height / 2);
+      assert.equal(await page.locator('.pareto-tooltip strong').innerText(), `${byId.get(id).name} / ${byId.get(id).agent}`);
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      assert.equal(await page.locator('.pareto-tooltip').isVisible(), false, 'Leaving the dot for its name hides the tooltip');
     }
     await page.locator('#filter').fill('glm');
     assert.equal(await page.locator('.pareto-point').count(), 0);
@@ -86,6 +102,12 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
       assert.equal(labels.length, plotted.length);
       assert(!labels.some((a, i) => labels.slice(i + 1).some(b =>
         a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y)));
+      assert(await page.locator('.pareto-point-label:visible').evaluateAll(nodes => nodes.every(node => {
+        const box = node.getBBox(), px = Number(node.dataset.pointX), py = Number(node.dataset.pointY);
+        const dx = Math.max(box.x - px, px - box.x - box.width, 0);
+        const dy = Math.max(box.y - py, py - box.y - box.height, 0);
+        return Math.hypot(dx, dy) <= 40;
+      })), 'Names must remain beside their own markers');
       const points = await page.locator('.pareto-point').evaluateAll(nodes => nodes.map(n => ({id: n.dataset.entry, cost: Number(n.dataset.cost), score: Number(n.dataset.score)})));
       for (const point of points) {
         assert(Math.abs(point.cost - expected.get(point.id).cost) < 1e-9);

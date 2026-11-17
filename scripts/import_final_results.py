@@ -24,7 +24,7 @@ from pi_usage import pi_usage
 
 MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1-pro',
           'anthropic/claude-opus-5.5', 'gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017', 'kimi-k3',
-          'xiaomi/mimo-v2.6-flash', 'xiaomi/mimo-v2.6-pro')
+          'xiaomi/mimo-v2.6-flash', 'xiaomi/mimo-v2.6-pro', 'step-5-preview')
 DEFAULT_FINAL = Path('/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs/final-trajectories')
 CONTENT = ROOT / 'content/leaderboard'
 AGENT_TIME_BUDGET_ASSIGNMENTS = {
@@ -77,24 +77,28 @@ def verified_bytes(path, expected):
     return data
 
 
-def original_claude_source(pointer, row, trajectory):
+def original_claude_source(pointer, row, trajectory, jobs=None):
     """Bind a verifier-only regrade to its reviewed original coding evidence."""
-    if pointer.get('actual_agent') != 'nop' or not pointer.get('no_new_coding'):
-        raise ValueError('Original coding supplements require an explicit NoP regrade')
     evidence = [e for e in read(CONTENT / 'coding-source-evidence.json')['trials']
                 if e['task'] == row['task'] and e['setting'] == row['model_label']
                 and e['trajectory_sha256'] == digest(trajectory)]
     if len(evidence) != 1:
         raise ValueError('Missing verified original coding source')
     evidence = evidence[0]
-    root = Path(pointer['coding_source_original_trial']).resolve()
+    step5_source = (row.get('model') == 'step-5-preview' and
+                    evidence.get('purpose') == 'step5_verified_original_coding')
+    if not step5_source and (pointer.get('actual_agent') != 'nop' or not pointer.get('no_new_coding')):
+        raise ValueError('Original coding supplements require an explicit NoP regrade')
+    root = (Path(pointer['coding_source_original_trial']).resolve() if pointer.get('coding_source_original_trial')
+            else safe_path(jobs or DEFAULT_FINAL.parent, evidence['source_trial_relative_path']))
     if digest((root / 'agent/trajectory.json').read_bytes()) != digest(trajectory):
         raise ValueError('Original coding trajectory differs from the selected regrade')
     files = evidence['files']
     for relative, expected in files.items():
         verified_bytes(safe_path(root, relative), expected)
     result = json.loads(verified_bytes(root / 'result.json', files['result.json']))
-    if result['id'] != evidence['source_trial_id'] or result['id'] != pointer['coding_source_UUID']:
+    if (result['id'] != evidence['source_trial_id'] or
+            (pointer.get('coding_source_UUID') and result['id'] != pointer['coding_source_UUID'])):
         raise ValueError('Original coding UUID differs from the reviewed source')
     return root, files, result
 
@@ -209,7 +213,7 @@ def prepare(final, package, base_package=None):
     release_id = policy['updated_at'] + '-selected-' + digest(encode(source_hashes))[:10]
     # Appending retains the physical corpus directory. Immutable commit URLs keep
     # the previously published snapshot available without duplicating its remote payloads.
-    release_path = load_package(base_package)['release_path'] if base_package else CURRENT_RELEASE
+    release_path = load_package(base_package, check_content=False)['release_path'] if base_package else CURRENT_RELEASE
     if (package / 'publication.json.gz').exists():
         manifest = load_package(package)
         if manifest['source_hashes'] != source_hashes or manifest['release_path'] != release_path:
@@ -299,12 +303,17 @@ def prepare(final, package, base_package=None):
         if harness == 'Claude Code':
             agent = 'Claude Code'
             coding_root, coding_read = trial_root, source
-            if pointer.get('no_new_coding') and not any((trial_root / 'agent/sessions').rglob('*.jsonl')):
-                coding_root, coding_inventory, coding_result = original_claude_source(pointer, row, trajectory)
+            step5_original = row['model'] == 'step-5-preview' and any(
+                e['task'] == row['task'] and e['setting'] == row['model_label']
+                for e in read(CONTENT / 'coding-source-evidence.json')['trials'])
+            if step5_original or (pointer.get('no_new_coding') and not any((trial_root / 'agent/sessions').rglob('*.jsonl'))):
+                coding_root, coding_inventory, coding_result = original_claude_source(pointer, row, trajectory, final.parent)
                 def coding_read(path):
                     return verified_bytes(path, coding_inventory[path.relative_to(coding_root).as_posix()])
+                exported_originals = ({'result.json', 'config.json', 'agent/harness.json'} if step5_original
+                                      else set(coding_inventory))
                 extra_agent_files = {'original-coding/' + relative: coding_root / relative
-                                     for relative in coding_inventory}
+                                     for relative in coding_inventory if relative in exported_originals}
                 extra_source_hashes = {'original-coding/' + relative: expected
                                        for relative, expected in coding_inventory.items()}
             provider = 'OpenRouter' if pointer.get('provider') == 'openrouter' else metadata['models'][row['model']]['provider']
@@ -319,6 +328,15 @@ def prepare(final, package, base_package=None):
                         coding_config['kwargs'].get('version') != '2.1.309' or
                         coding_config['kwargs'].get('reasoning_effort') != 'max'):
                     raise ValueError('Claude Code configuration differs from the selected model/provider/effort')
+            elif row['model'] == 'step-5-preview':
+                coding_config = json.loads(coding_read(coding_root / 'config.json'))['agent']
+                if (provider != 'StepFun' or pointer.get('provider') != 'native' or row['effort'] != 'max' or
+                        coding_config.get('import_path') != 'scripts.evaluation.native_agents:NativeAgent' or
+                        coding_config.get('model_name') != row['model'] or
+                        coding_config.get('kwargs', {}).get('version') != '2.1.309' or
+                        coding_config.get('kwargs', {}).get('reasoning_effort') != 'max' or
+                        'api.stepfun.com' not in coding_config.get('extra_allowed_hosts', [])):
+                    raise ValueError('StepFun native coding model/provider/version/effort differs')
             harness_path = coding_root / 'agent/harness.json'
             if harness_path.exists():
                 harness = json.loads(coding_read(harness_path))
