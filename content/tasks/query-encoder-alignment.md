@@ -13,7 +13,7 @@ Align a **0.6B query encoder** to fixed document vectors on one GPU, using at mo
 * **Agent budget**: `6 hours`
 * **Compute**: `8` CPUs, `32 GiB` RAM, `100 GiB` storage; `1` GPU(s)
 
-Use Qwen3-Embedding-0.6B as the basis. Development has allowlisted egress, but external retrieval, reranking, embedding, generation and answer services are prohibited. Final inference is offline. Each reference/candidate invocation has 1,800 seconds; task-specific verification has 20,400 seconds within a 22,200-second overall verifier including audit.
+Use Qwen3-Embedding-0.6B as the basis. Development has allowlisted egress, but external retrieval, reranking, embedding, generation and answer services are prohibited. Final inference is offline. Each reference and candidate invocation has a 1,800-second limit. The overall verifier budget is 32,100 seconds, including up to 20,400 seconds for task-specific verification and 11,100 seconds for the integrity audit.
 
 Final query inference must use the supplied `Qwen3-Embedding-0.6B` encoder or a legitimately adapted derivative, and its outputs must contribute to candidate selection or ranking. Development-only use, loading unused weights or discarding encoder outputs does not satisfy this requirement. Lexical, structural and corpus-copy features may supplement the required encoder, but cannot replace it.
 
@@ -37,11 +37,11 @@ Preserve vector bytes and row order. Return one valid `doc_id`/finite `score` re
 
 A0 is the measured hidden Accuracy@1 of the fixed 0.6B centered-ridge baseline, fit only on public corpus text/vector pairs. Reward is `clip((Accuracy@1-A0)/(1-A0),0,1)` provided candidate runtime is at most 60% of the separate measured 4B time reference.
 
-Timing includes startup, imports, loading, encoding, retrieval/filtering, output and exit, without warmup or cache flushing. The quality reference is fit and run once, followed by five time-reference/candidate pairs. Each system’s median complete wall time determines the runtime gate; all candidate outputs must be byte-identical and the time reference must remain deterministic. The 4B accuracy is diagnostic. Reference failure or A0=1 invalidates measurement; format, vector-integrity, timeout or audit failure yields zero.
+Timing includes startup, imports, loading, encoding, retrieval, filtering, output and exit. The verifier fits the pinned quality baseline on public pairs, measures it on the same hidden queries and hardware as the candidate, and runs five time-reference and candidate pairs. The median wall times determine the runtime gate. All candidate outputs must be byte-identical and the time reference must remain deterministic. The 4B accuracy is diagnostic.
 
-A separate integrity audit must accept the trajectory and submission. Audit-service failures invalidate the measurement; a valid rejection gives zero reward.
+Candidate format or vector-integrity violations, candidate invocation timeouts, and a completed integrity rejection earn zero. Reference failure, A0=1, and integrity-audit timeouts or service failures invalidate the measurement.
 
-See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/ed7544f4aeb1fe8a072edc77ece1f2f4a742bfda/tasks/query-encoder-alignment/instruction.md),
-[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/ed7544f4aeb1fe8a072edc77ece1f2f4a742bfda/tasks/query-encoder-alignment/README.md)
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/ed7544f4aeb1fe8a072edc77ece1f2f4a742bfda/tasks/query-encoder-alignment/task.toml)
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/bec6079118beb85e1b46ad6d9de6b96e6b22ea4e/tasks/query-encoder-alignment/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/bec6079118beb85e1b46ad6d9de6b96e6b22ea4e/tasks/query-encoder-alignment/README.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/bec6079118beb85e1b46ad6d9de6b96e6b22ea4e/tasks/query-encoder-alignment/task.toml)
 for the complete contract at the synchronized benchmark revision.

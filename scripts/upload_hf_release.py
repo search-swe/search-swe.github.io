@@ -6,6 +6,7 @@ import copy
 import hashlib
 import json
 import re
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from urllib.request import Request, urlopen
 
@@ -31,25 +32,59 @@ def check_site_snapshot(package, manifest):
     return hashlib.sha256(source.read_bytes()).hexdigest()
 
 
-def verify_remote(api, package, manifest, revision, site_origin, include_metadata=True):
+def append_tree(api, release, revision, base_revision, expected):
+    """An unchanged Git subtree attests every retained file in the verified base."""
+    def tree(path, rev, recursive=False):
+        return api.list_repo_tree(REPO_ID, path_in_repo=path, recursive=recursive,
+                                  revision=rev, repo_type='dataset')
+
+    prefix = release + '/trials'
+    original = {p.path: p.tree_id for p in tree(prefix, base_revision)}
+    current = {p.path: p.tree_id for p in tree(prefix, revision)}
+    directories = {p: prefix + '/' + p[len(prefix) + 1:].split('/', 1)[0]
+                   for p in expected if p.startswith(prefix + '/')}
+    if set(current) != set(directories.values()) or any(current.get(p) != identity for p, identity in original.items()):
+        raise ValueError('Remote trial directories differ from the verified append')
+    print(f'Checked {len(original)} retained trial directories against {base_revision}.', flush=True)
+    remote = {}
+    release_root = {p.path: p for p in tree(release, revision)}
+    if set(release_root) != {prefix, release + '/snapshot.json'}:
+        raise ValueError('Remote release root contains missing or unlisted files')
+    remote[release + '/snapshot.json'] = release_root[release + '/snapshot.json']
+    added = set(current) - set(original)
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        for count, files in enumerate(pool.map(lambda path: list(tree(path, revision, recursive=True)), sorted(added)), 1):
+            remote.update((p.path, p) for p in files if hasattr(p, 'blob_id'))
+            if count % 25 == 0:
+                print(f'Enumerated {count}/{len(added)} added trial directories.', flush=True)
+    retained = {p for p, directory in directories.items() if directory in original}
+    return remote, retained
+
+
+def verify_remote(api, package, manifest, revision, site_origin, include_metadata=True, base_revision=None):
     """Verify every file at a fixed commit, then exercise anonymous browser reads."""
     expected = dict(manifest['files'])
     if include_metadata:
         expected['publication.json.gz'] = fingerprints(package / 'publication.json.gz')
     else:
         expected.pop('README.md')
-    remote = {}
-    for item in api.list_repo_tree(REPO_ID, path_in_repo=manifest['release_path'],
-                                   recursive=True, revision=revision, repo_type='dataset'):
-        if hasattr(item, 'blob_id'):
-            remote[item.path] = item
-    release_files = {p for p in expected if p.startswith(manifest['release_path'] + '/')}
+    release = manifest['release_path']
+    if base_revision:
+        remote, retained = append_tree(api, release, revision, base_revision, expected)
+    else:
+        remote = {item.path: item for item in api.list_repo_tree(REPO_ID, path_in_repo=release, recursive=True,
+                                                                revision=revision, repo_type='dataset')
+                  if hasattr(item, 'blob_id')}
+        retained = set()
+    release_files = {p for p in expected if p.startswith(release + '/')} - retained
     if set(remote) != release_files:
         raise ValueError('Remote release contains missing or unlisted files')
     if include_metadata:
         for item in api.get_paths_info(REPO_ID, ['README.md', 'publication.json.gz'], revision=revision, repo_type='dataset'):
             remote[item.path] = item
     for path, hashes in expected.items():
+        if path in retained:
+            continue
         item = remote.get(path)
         if item is None or item.size != hashes['bytes']:
             raise ValueError(f'Missing or incomplete remote file: {path}')
@@ -60,7 +95,6 @@ def verify_remote(api, package, manifest, revision, site_origin, include_metadat
             actual, wanted = item.blob_id, hashes['git_blob']
         if actual != wanted:
             raise ValueError(f'Remote content hash mismatch: {path}')
-    release = manifest['release_path']
     snapshot = read(package / release / 'snapshot.json')
     trial = snapshot['trials'][0]
     trial_dir = f'{release}/trials/{trial["id"]}'

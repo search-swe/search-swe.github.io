@@ -35,6 +35,7 @@ MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1
           'xiaomi/mimo-v2.6-flash', 'xiaomi/mimo-v2.6-pro', 'step-5-preview', *TOKENPLUS_MODELS)
 DEFAULT_FINAL = Path('/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs/final-trajectories')
 CONTENT = ROOT / 'content/leaderboard'
+COMMUNITY_MODELS = ('tencent/hy4', 'anthropic/claude-sonnet-5.5', 'google/gemini-4-argon')
 AGENT_TIME_BUDGET_ASSIGNMENTS = {
     'd3f3eb57779186e628427437bba10ee3a085739d7745e555bd2d709a40dac54d': 'spoken-query-search',
     'd047ea53a65844db9d17be5eb00c580bab4909fa888fd35e396d72d85b07ac77': 'agentic-search',
@@ -204,7 +205,7 @@ def prepare(final, package, base_package=None):
         raise ValueError('This publication expects 47 tasks')
     policy = read(CONTENT / 'selection.json')
     community_models = policy.get('community_models', [])
-    if (any(m != 'tencent/hy4' for m in community_models) or
+    if (len(set(community_models)) != len(community_models) or any(m not in COMMUNITY_MODELS for m in community_models) or
             policy.get('included_models') != list(MODELS) + community_models or
             policy.get('included_settings') != list(DEEPSEEK_SETTINGS)):
         raise ValueError('Website selection must explicitly contain the selected models')

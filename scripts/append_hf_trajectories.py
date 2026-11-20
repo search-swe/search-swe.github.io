@@ -10,7 +10,7 @@ from pathlib import Path
 
 from hf_network import authenticated_api, retry_429
 from import_results import read
-from publication import REPO_ID, fingerprints, load_package
+from publication import REPO_ID, fingerprints, load_manifest, load_package
 from upload_hf_release import activate, check_site_snapshot, verify_remote
 
 
@@ -51,15 +51,32 @@ def metadata_matches(api, package, manifest, revision):
     return True
 
 
+def published_base_payloads(package):
+    """Use a prior upload receipt to bind the retained inventory to its published bytes."""
+    receipt = read(package.with_name(package.name + '-uploaded.json'))
+    base = load_manifest(package)
+    if (receipt['repo_id'] != REPO_ID or receipt['snapshot_id'] != base['snapshot_id'] or
+            receipt['publication_sha256'] != fingerprints(package / 'publication.json.gz')['sha256']):
+        raise ValueError('Base package does not match its upload receipt')
+    prefix = base['release_path'] + '/trials/'
+    return base, {p: hashes for p, hashes in base['files'].items() if p.startswith(prefix)}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base-package', type=Path, required=True)
     parser.add_argument('--package', type=Path, required=True)
     parser.add_argument('--upload', action='store_true')
+    parser.add_argument('--published-base', action='store_true', help='Reuse retained fingerprints from the base upload receipt')
+    parser.add_argument('--payload-revision', help='Resume verification of a fully staged payload commit')
     parser.add_argument('--site-origin', default='https://search-swe.github.io')
     args = parser.parse_args()
     base_package, package = args.base_package.resolve(), args.package.resolve()
-    base, manifest = load_package(base_package, check_content=False), load_package(package)
+    if args.published_base:
+        base, retained = published_base_payloads(base_package)
+        manifest = load_package(package, retained=retained)
+    else:
+        base, manifest = load_package(base_package, check_content=False), load_package(package)
     additions = append_plan(base_package, package, base, manifest)
     source_sha = check_site_snapshot(package, manifest)
     print(f'Append {len(additions)} trials; preserve {base["trials"]} existing trials. No files will be deleted.', flush=True)
@@ -72,23 +89,31 @@ def main():
     if info.private or info.gated:
         raise ValueError('The dataset must be public and non-gated')
     revision = info.sha
+    verification = {}
+    if args.published_base:
+        receipt = read(base_package.with_name(base_package.name + '-uploaded.json'))
+        if not metadata_matches(api, base_package, base, receipt['revision']):
+            raise ValueError('Published base files differ from the upload receipt')
+        verification['base_revision'] = receipt['revision']
     # Recover a successful final commit even if its response/local activation was lost.
     if not metadata_matches(api, package, manifest, revision):
         if not metadata_matches(api, base_package, base, revision):
             raise ValueError('Remote metadata differs from both base and prepared release; rebuild the append plan')
-        print('Uploading new trial directories with resumable Xet batches; committed files are skipped.', flush=True)
-        # Current Hub + hf_xet stream and commit adaptive batches; reruns detect
-        # already committed files and deduplicate uploaded chunks on the server.
-        api.upload_folder(repo_id=REPO_ID, folder_path=package, repo_type='dataset', revision='main',
-                          allow_patterns=additions, commit_message=f'Add {len(additions)} Search-SWE trajectories: {manifest["snapshot_id"]}')
-        revision = api.repo_info(REPO_ID, repo_type='dataset').sha
+        if args.payload_revision:
+            if revision != args.payload_revision:
+                raise ValueError('Remote head differs from the staged payload commit')
+        else:
+            print('Uploading new trial directories with resumable Xet batches; committed files are skipped.', flush=True)
+            api.upload_folder(repo_id=REPO_ID, folder_path=package, repo_type='dataset', revision='main',
+                              allow_patterns=additions, commit_message=f'Add {len(additions)} Search-SWE trajectories: {manifest["snapshot_id"]}')
+            revision = api.repo_info(REPO_ID, repo_type='dataset').sha
         print(f'Payload upload finished at {revision}; verifying every remote payload before publication.', flush=True)
         if not metadata_matches(api, base_package, base, revision):
             raise ValueError('Remote publication changed during upload; metadata was not replaced')
         staged = copy.deepcopy(manifest)
         snapshot_path = manifest['release_path'] + '/snapshot.json'
         staged['files'][snapshot_path] = base['files'][snapshot_path]
-        verify_remote(api, package, staged, revision, args.site_origin, include_metadata=False)
+        verify_remote(api, package, staged, revision, args.site_origin, include_metadata=False, **verification)
         if check_site_snapshot(package, manifest) != source_sha:
             raise ValueError('Local snapshot changed during upload')
         from huggingface_hub import CommitOperationAdd
@@ -98,7 +123,7 @@ def main():
                         for p in ['README.md', 'publication.json.gz', snapshot_path]]), 'append metadata commit')
         revision = commit.oid
     print(f'Checking the complete publication at {revision} before activating the local homepage.', flush=True)
-    verify_remote(api, package, manifest, revision, args.site_origin)
+    verify_remote(api, package, manifest, revision, args.site_origin, **verification)
     if check_site_snapshot(package, manifest) != source_sha:
         raise ValueError('Local snapshot changed during upload')
     activate(package, manifest, revision, source_sha)

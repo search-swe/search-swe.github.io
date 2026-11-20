@@ -2,7 +2,11 @@
 const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
-const money = value => value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
+const number = value => value == null ? '—' : value.toLocaleString('en-US');
+const money = value => value == null ? '—' : value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
+const sum = values => values.every(Number.isFinite) ? values.reduce((a, b) => a + b, 0) : null;
+const compare = direction => (a, b) => a == null ? (b == null ? 0 : 1) :
+  b == null ? -1 : (a - b) * (direction === 'asc' ? 1 : -1);
 
 (async () => {
   const browser = await chromium.launch({headless: true, args: ['--no-sandbox']});
@@ -20,12 +24,14 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
       const tasks = new Set(data.tasks.filter(t => scope === 'all' || t.hardware === scope).map(t => t.name));
       const trials = data.trials.filter(t => t.entry === entry.id && tasks.has(t.task));
       const timed = trials.filter(t => Number.isFinite(t.agent_seconds) && t.agent_seconds >= 0);
-      return {...entry, cost: trials.reduce((sum, t) => sum + t.cost_usd, 0),
-        tokens: trials.reduce((sum, t) => sum + t.tokens.total_tokens, 0),
+      return {...entry, cost: sum(trials.map(t => t.cost_usd)),
+        tokens: sum(trials.map(t => t.tokens.total_tokens)),
         time: timed.length ? timed.reduce((sum, t) => sum + t.agent_seconds, 0) : null,
         timedTasks: timed.length, taskCount: tasks.size,
         score: trials.reduce((sum, t) => sum + t.score, 0) / trials.length};
     });
+    const costEntries = totals('all').filter(e => plottedIds.has(e.id) && Number.isFinite(e.cost));
+    const axisCount = axis => totals('all').filter(e => plottedIds.has(e.id) && Number.isFinite(e[axis])).length;
     assert.equal(await page.locator('#view-table').getAttribute('aria-selected'), 'true');
     assert.equal(await page.locator('#panel-pareto').isVisible(), false);
     assert.match(await page.locator('thead th').last().innerText(), /Cost/);
@@ -34,7 +40,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     assert.deepEqual(await page.locator('tbody .cost-cell').allTextContents(), totals('all').sort((a, b) => b.score - a.score).map(e => money(e.cost)));
     for (const direction of ['asc', 'desc']) {
       await page.locator('#sort').selectOption(`cost-${direction}`);
-      const expected = totals('all').sort((a, b) => (a.cost - b.cost) * (direction === 'asc' ? 1 : -1));
+      const expected = totals('all').sort((a, b) => compare(direction)(a.cost, b.cost));
       assert.deepEqual(await page.locator('tbody tr').evaluateAll(rows => rows.map(r => r.dataset.entry)), expected.map(e => e.id));
     }
     await page.locator('#view-table').focus();
@@ -43,13 +49,13 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     assert.equal(await page.locator('#panel-table').isVisible(), false);
     assert.equal(await page.locator('.sort-label').isVisible(), false);
     assert.deepEqual(await page.locator('#pareto-x option').allTextContents(), ['Cost', 'Tokens', 'Time']);
-    assert.equal(await page.locator('.pareto-point').count(), plotted.length);
+    assert.equal(await page.locator('.pareto-point').count(), costEntries.length);
     assert(await page.locator('.pareto-heading').evaluate(node => {
       const title = node.querySelector('h2').getBoundingClientRect();
       const key = node.querySelector('.pareto-key').getBoundingClientRect();
       return Math.abs(title.y + title.height / 2 - key.y - key.height / 2) < 1;
     }));
-    const plottedTotals = totals('all').filter(e => plottedIds.has(e.id));
+    const plottedTotals = costEntries;
     const costFrontier = plottedTotals.filter(e => !plottedTotals.some(o => o.cost <= e.cost && o.score >= e.score && (o.cost < e.cost || o.score > e.score)));
     assert.deepEqual((await page.locator('.pareto-point[data-frontier="true"]').evaluateAll(nodes => nodes.map(n => n.dataset.entry))).sort(), costFrontier.map(e => e.id).sort());
     const dsEntry = plotted.find(e => e.model === 'deepseek/deepseek-v4.1-flash-1017');
@@ -59,7 +65,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     assert.match(await page.locator('#pareto-note').innerText(), /DeepSeek uses official off-peak rates for all requests/);
     await page.locator('.pareto-point .pareto-dot').first().hover();
     assert.equal(await page.locator('.pareto-tooltip').isVisible(), true);
-    for (const entry of plotted) {
+    for (const entry of costEntries) {
       const point = page.locator(`.pareto-point[data-entry="${entry.id}"]`);
       await point.locator('.pareto-dot').hover();
       assert.equal(await page.locator('.pareto-tooltip strong').innerText(), `${entry.name} / ${entry.agent}`);
@@ -99,7 +105,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
         const {x, y, width, height} = node.getBoundingClientRect();
         return {x, y, width, height};
       }));
-      assert.equal(labels.length, plotted.length);
+      assert.equal(labels.length, axisCount('cost'));
       assert(!labels.some((a, i) => labels.slice(i + 1).some(b =>
         a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y)));
       assert(await page.locator('.pareto-point-label:visible').evaluateAll(nodes => nodes.every(node => {
@@ -180,12 +186,12 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
     await page.setViewportSize({width: 390, height: 844});
     await page.waitForTimeout(150);
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-    assert.equal(await page.locator('.pareto-legend-item').count(), plotted.length);
+    assert.equal(await page.locator('.pareto-legend-item').count(), axisCount('tokens'));
     assert(!(await page.locator('#pareto-chart').innerHTML()).match(/NaN|Infinity/));
     for (const axis of ['time', 'cost', 'tokens']) {
       await page.locator('#pareto-x').selectOption(axis);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-      assert.equal(await page.locator('.pareto-point').count(), plotted.length);
+      assert.equal(await page.locator('.pareto-point').count(), axisCount(axis));
       assert(!(await page.locator('#pareto-chart').innerHTML()).match(/NaN|Infinity/));
     }
     await page.goto(`${origin}/leaderboard/?view=pareto&x=release-date`);
@@ -213,7 +219,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
         assert.equal(await page.locator('th.cost-cell').getAttribute('aria-sort'), direction === 'asc' ? 'ascending' : 'descending');
         const ordered = await page.locator('tbody tr').evaluateAll(rows => rows.map(row => row.dataset.trial));
         const values = ordered.map(id => trials.find(t => t.id === id).cost_usd);
-        assert.deepEqual(values, [...values].sort((a, b) => (a - b) * (direction === 'asc' ? 1 : -1)));
+        assert.deepEqual(values, [...values].sort(compare(direction)));
       }
       await page.reload();
       assert.equal(await page.locator('#sort').inputValue(), 'cost-desc');
@@ -228,8 +234,12 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
       await noJS.goto(`${origin}/leaderboard/trials/${trial.id}/`);
       assert.equal(await noJS.locator('#stat-cost').innerText(), money(trial.cost_usd));
       assert.equal(await noJS.locator('.metrics > div').count(), 6);
-      assert.equal(await noJS.locator('#stat-input-tokens').innerText(), trial.tokens.input_tokens.toLocaleString('en-US'));
-      assert.equal(await noJS.locator('.metric-detail').innerText(), `including ${trial.tokens.cached_input_tokens.toLocaleString('en-US')} cached`);
+      assert.equal(await noJS.locator('#stat-input-tokens').innerText(), number(trial.tokens.input_tokens));
+      if (trial.tokens.cached_input_tokens == null) {
+        assert.equal(await noJS.locator('.metric-detail').count(), 0);
+      } else {
+        assert.equal(await noJS.locator('.metric-detail').innerText(), `including ${number(trial.tokens.cached_input_tokens)} cached`);
+      }
       assert.match(await noJS.locator('.cost-note:not(.model-substitution-note)').first().innerText(), /estimated.*official API rates/);
       for (const width of [1440, 1280, 390]) {
         await noJS.setViewportSize({width, height: 1000});
@@ -265,7 +275,7 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
         assert(Math.abs(position.y - initial) <= 1, `${width}x${height}, ${axis}: scrolled from ${initial} to ${position.y}`);
         assert.equal(position.focused, 'pareto-x');
         assert.equal(navigations, navigationCount, 'Changing the axis must not reload the document');
-        assert.equal(await scrollPage.locator(`.pareto-point[data-axis="${axis}"]`).count(), plotted.length);
+        assert.equal(await scrollPage.locator(`.pareto-point[data-axis="${axis}"]`).count(), axisCount(axis));
       }
     }
     await scrollPage.close();

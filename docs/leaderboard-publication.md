@@ -4,7 +4,34 @@
 从公开的 HF Dataset [`search-swe/trajectories`](https://huggingface.co/datasets/search-swe/trajectories)
 匿名按需读取。浏览器不需要 HF Token。
 
-## 当前更新：GLM 5.3 与 GLM 5.3 Flash
+## 当前更新：PR #3 的 Sonnet 5.5 与 Gemini 4 Argon
+
+两组各 47 题，均分分别为 38.42 和 34.02。主榜 Provider 为 Vertex AI。
+Sonnet 使用 Claude Code 2.1.309 / max。Argon 使用 Antigravity CLI 1.5.2 / high。
+贡献者提供 91 条选定轨迹。Sonnet 的 `rust-bm25-search` 和两组的
+`large-scale-formula-retrieval` 使用归档中的 OpenRouter 补跑，逐题保留实际路由。
+Sonnet 费用使用 Claude Code 记录的估算。Argon 的 token 和费用显示为缺失。
+8 条贡献者轨迹缺少完整的原始时间戳，耗时使用第一步至最后一步的记录，详情中注明估算依据。
+
+来源固定在 [PR #3](https://github.com/search-swe/search-swe.github.io/pull/3) 的第二轮复评
+及 `content/leaderboard/community-source-evidence.json` 中的 HF SHA。
+发布包 `.build/hf-trajectories-pr3` 在 GLM 包上追加 94 条轨迹，现有 846 条。
+生产榜单固定在通过远端核验的版本
+[`0d3e242e805487877b4bde293d0e831ce0f56c29`](https://huggingface.co/datasets/search-swe/trajectories/commit/0d3e242e805487877b4bde293d0e831ce0f56c29)。
+Argon 的 Rust BM25 分数与贡献者的原始评分报告一致。
+
+```bash
+python scripts/download_pr3_results.py
+python scripts/publish_pr3_results.py --upload
+```
+
+后续发布以 `.build/hf-trajectories-pr3` 为基线。发布包准备完毕后可沿用同一文件集续传。
+
+```bash
+python scripts/append_hf_trajectories.py --base-package .build/hf-trajectories-glm53-tokenplus --package .build/hf-trajectories-pr3 --published-base --upload
+```
+
+## 历史更新：GLM 5.3 与 GLM 5.3 Flash
 
 2026-11-19 新增 GLM 5.3 和 GLM 5.3 Flash，各 47 题，均为 Claude Code 2.1.309 / max。
 均分分别为 18.3592699115 和 16.3564352232。前端 Provider 显示 Z.ai，详情记录
@@ -33,8 +60,7 @@ python scripts/publish_final_results.py --base-package .build/hf-trajectories-st
 
 2026-11-18 新增 Step 5 Preview / Claude Code 2.1.309 / max，Provider 为 StepFun，
 覆盖 47/47 题，平均 19.4745596453。现为 12 个模型、14 个 settings、658 条结果。
-原 611 条结果、用量、耗时、费用和公开 payload 字节全部保留。PR #3、Sonnet、Argon
-继续暂缓。
+原 611 条结果、用量、耗时、费用和公开 payload 字节全部保留。PR #3、Sonnet、Argon 当时仍暂缓。
 
 16,255 个原始归档文件（41,169,460,843 bytes）再次通过大小及 SHA-256 核验。
 大二进制产物仍只列清单，公开包包含轨迹、会话、文本日志和证据。
@@ -299,7 +325,7 @@ python scripts/normalize_hf_layout.py --source-package .build/hf-trajectories-lu
 完成模型选择、元数据及导入配置更新后，以最近的已验证包为基线，指定新的本地包：
 
 ```bash
-python scripts/publish_final_results.py --base-package .build/hf-trajectories-glm53-tokenplus --package .build/hf-trajectories-next --upload
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-pr3 --package .build/hf-trajectories-next --upload
 ```
 
 不带 `--upload` 只准备本地预览。增量上传只新增 trial，保留 `releases/current/`
@@ -310,8 +336,8 @@ python scripts/publish_final_results.py --base-package .build/hf-trajectories-gl
 ## 本地重建与审计
 
 ```bash
-python scripts/import_final_results.py --package .build/hf-trajectories-glm53-tokenplus --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-glm53-tokenplus.usage.json --check
+python scripts/import_final_results.py --package .build/hf-trajectories-pr3 --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-pr3.usage.json --check
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/build_tasks.py --check
 python scripts/build_leaderboard.py --production --check
@@ -321,7 +347,7 @@ python scripts/build_leaderboard.py --production --check
 若源归档已经变化，应指定新的 `--package` 路径，不覆盖旧包。恢复生产配置可使用：
 
 ```bash
-python scripts/upload_hf_release.py --package .build/hf-trajectories-glm53-tokenplus --verify-revision <FULL_HF_SHA>
+python scripts/upload_hf_release.py --package .build/hf-trajectories-pr3 --verify-revision <FULL_HF_SHA>
 ```
 
 评分沿 `FINAL_RESULT.json` 的最终 reward 指针读取，原生 reward × 100 必须
@@ -548,7 +574,7 @@ releases/current/
 ```bash
 PYTHONPATH=scripts python -m unittest \
   scripts/test_publication.py scripts/test_leaderboard.py scripts/test_trial_files.py
-HF_PACKAGE=.build/hf-trajectories-glm53-tokenplus NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
+HF_PACKAGE=.build/hf-trajectories-pr3 NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
 ```
 
 浏览器检查使用另一个真实 HTTP origin 提供公开发布包，验证匿名跨域加载、

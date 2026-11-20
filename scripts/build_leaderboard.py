@@ -101,7 +101,9 @@ def methodology(task_scores=False):
 
 
 def cost_note(snapshot):
-    return f'<p class="cost-note">Cost is estimated from recorded agent tokens at <a href="/content/leaderboard/official-pricing.json">official API rates</a> in USD ({snapshot["cost_methodology"]["as_of"]}; including model-specific cache writes and context rates). DeepSeek uses official off-peak rates for all requests.</p>'
+    community = (' Sonnet 5.5 uses Claude Code’s reported estimates. Antigravity CLI runs have no recorded cost.'
+                 if any('harness_reported_cost_usd' in trial for trial in snapshot['trials']) else '')
+    return f'<p class="cost-note">Cost is estimated from recorded agent tokens at <a href="/content/leaderboard/official-pricing.json">official API rates</a> in USD ({snapshot["cost_methodology"]["as_of"]}; including model-specific cache writes and context rates). DeepSeek uses official off-peak rates for all requests.{community}</p>'
 
 
 def substitution_note(trials, detailed=False):
@@ -195,6 +197,8 @@ def entry_page(entry, snapshot):
                   if provider.endswith(' (via OpenRouter)') else '')
     if entry.get('provider_route'):
         route_note = f' <span class="dot">·</span> {esc(provider)} via {esc(entry["provider_route"])}'
+    if entry.get('provider_note'):
+        route_note += f' <span class="dot">·</span> {esc(provider)}. {esc(entry["provider_note"])}'
     body = f'''<nav class="breadcrumbs"><a id="back-leaderboard" href="/leaderboard/">← Leaderboard</a><span>/ Evaluation entry</span></nav>
 <h1>{esc(entry['name'])}</h1><div class="entry-meta"><p class="entry-subtitle">reasoning effort {esc(entry['effort'])}{route_note} <span class="dot">·</span> Last Updated <time datetime="{snapshot['observed_at'][:10]}">{snapshot['observed_at'][:10]}</time></p>
 <div class="id-line"><code>{entry['model']}</code><button class="copy-button" data-copy="{entry['model']}" hidden>Copy model ID</button></div></div>
@@ -218,8 +222,8 @@ def trial_page(trial, entry, snapshot, siblings):
         ('output-tokens', 'Output Tokens', trial['tokens']['output_tokens']),
     ]]
     cached_tokens = trial['tokens']['cached_input_tokens']
-    cached_tokens = f'{cached_tokens:,}' if cached_tokens is not None else '—'
-    token_detail = {'stat-input-tokens': f'including <span id="stat-cached-tokens">{cached_tokens}</span> cached'}
+    token_detail = ({'stat-input-tokens': f'including <span id="stat-cached-tokens">{cached_tokens:,}</span> cached'}
+                    if cached_tokens is not None else {})
     configuration = trial['configuration']
     commit = configuration.get('task_commit') or configuration.get('verifier_commit')
     revision = f'<a href="https://github.com/VectorSpaceLab/Search-SWE/tree/{commit}/tasks/{task["name"]}" target="_blank" rel="noreferrer">Task at evaluation revision ↗</a>' if commit else ''

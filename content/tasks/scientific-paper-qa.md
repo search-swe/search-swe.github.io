@@ -34,7 +34,7 @@ The index and any shared service must support up to five concurrent hidden-query
 
 ## Evaluation
 
-The hidden split contains 10 held-out questions over the same PDF corpus. A question earns credit only when its evidence document matches the reference. Its fixed answer is then judged independently three times for semantic equivalence, and the three binary decisions are averaged. `LLMJudgeAccuracy` averages these query values equally. Retrieval and answer generation run once; a failed or malformed judge call invalidates the measurement rather than reducing the number of decisions:
+The hidden split contains 10 held-out questions over the same PDF corpus. A question earns credit only when its evidence document matches the reference. Its fixed answer is then judged independently three times for semantic equivalence, and the three binary decisions are averaged. `LLMJudgeAccuracy` averages these query values equally. Retrieval and answer generation run once.
 
 ```text
 query_score = evidence_match * mean(three_answer_judgments)
@@ -42,8 +42,9 @@ reward = LLMJudgeAccuracy = mean(query_score)
 score = 100 * reward
 ```
 
-Failed execution or structurally invalid output makes the entire submission invalid. A separate trajectory audit checks task and resource compliance and sets the final reward to `0` if it fails. Submission API access, answer-judge credentials, and trajectory-audit credentials are separate security domains.
+Each judgment allows up to three 120-second attempts and starts with a 512-token output limit. An incomplete reply cut off at the limit gets four times the output budget on the next attempt, up to 8,192 tokens. If a required decision remains missing, the measurement is invalid. A separate trajectory audit checks task and resource compliance. A completed rejection sets the reward to zero.
 
-See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/ed7544f4aeb1fe8a072edc77ece1f2f4a742bfda/tasks/scientific-paper-qa/instruction.md)
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/ed7544f4aeb1fe8a072edc77ece1f2f4a742bfda/tasks/scientific-paper-qa/task.toml)
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/bec6079118beb85e1b46ad6d9de6b96e6b22ea4e/tasks/scientific-paper-qa/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/bec6079118beb85e1b46ad6d9de6b96e6b22ea4e/tasks/scientific-paper-qa/README.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/bec6079118beb85e1b46ad6d9de6b96e6b22ea4e/tasks/scientific-paper-qa/task.toml)
 for the complete contract at the reviewed benchmark revision.

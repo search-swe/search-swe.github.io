@@ -87,6 +87,16 @@
       "source": "https://docs.z.ai/release-notes/new-released",
       "provider": "Z.ai",
       "provider_basis": "The selected Claude Code configuration uses SiliconFlow TokenPlus with the request model z-ai/glm-5.3-flash?provider=z-ai."
+    },
+    "anthropic/claude-sonnet-5.5": {
+      "provider": "Vertex AI",
+      "release_date": "2026-09-28",
+      "source": "https://openrouter.ai/anthropic/claude-sonnet-5.5"
+    },
+    "google/gemini-4-argon": {
+      "provider": "Vertex AI",
+      "release_date": "2026-10-13",
+      "source": "https://openrouter.ai/google/gemini-4-argon"
     }
   }
 }

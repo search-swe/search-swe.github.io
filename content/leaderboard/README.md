@@ -1,8 +1,22 @@
 # Leaderboard data and publication
 
-The current homepage contains **47 tasks (24 CPU, 23 GPU), sixteen leaderboard
-settings across fourteen models, and 752 selected trials**. Hy4 uses high effort and
-the other fifteen settings use max.
+The current homepage contains **47 tasks (24 CPU, 23 GPU), eighteen leaderboard
+settings across sixteen models, and 846 selected trials**. Hy4 and Gemini 4 Argon
+use high effort. The other sixteen settings use max.
+
+PR #3 adds Claude Sonnet 5.5 / Claude Code 2.1.309 / max and Gemini 4 Argon /
+Antigravity CLI 1.5.2 / high, with 47 scored tasks each. The means are **38.42**
+and **34.02**, respectively. The entries display Vertex AI. Sonnet's
+`rust-bm25-search` and both models' `large-scale-formula-retrieval` use the
+maintainer's OpenRouter reruns, with the route recorded per trial.
+Sonnet costs come from the Claude Code export. Antigravity does not report
+token or cost counters, so those cells display an em dash. Eight community
+coding durations use the span of recorded trajectory timestamps.
+
+The current package is `.build/hf-trajectories-pr3/`. It appends 94 trials
+to the verified GLM package. Source revisions and local trial hashes are in
+[`community-source-evidence.json`](community-source-evidence.json).
+The active Hugging Face revision is in [`storage.json`](storage.json).
 
 GLM 5.3 and GLM 5.3 Flash each add 47 tasks using Claude Code 2.1.309 / max.
 The provider column displays **Z.ai**. The entry and trial configuration record
@@ -21,7 +35,7 @@ CLI invocation's usage counter. All original coding durations are available.
 
 Costs use [Z.ai standard USD API prices](https://docs.z.ai/guides/overview/pricing)
 per million input/cache-read/output tokens of **$1.40/$0.26/$4.40** for GLM 5.3
-and **$0.15/$0.03/$0.50** for Flash. TokenPlus billing is separate. The current
+and **$0.15/$0.03/$0.50** for Flash. TokenPlus billing is separate. That
 package is `.build/hf-trajectories-glm53-tokenplus/`, appended to the verified
 Step 5 package with its 658 existing trials. The active immutable HF revision
 is in [`storage.json`](storage.json).
@@ -45,7 +59,6 @@ StepFun's official standard USD rates per million input/cache-read/output tokens
 are **$1.00/$0.10/$2.70**. Cache population uses the ordinary input rate; reasoning
 is already included in output. Subscription and account discounts are excluded.
 Source: [StepFun API pricing](https://platform.stepfun.ai/docs/en/guides/pricing/details).
-PR #3, Sonnet and Argon remain on hold.
 
 Hy4 / Claude Code 2.1.309 / high covers 47/47 tasks, combining the reviewed
 43-task community export with four selected local trials. Its mean score is
@@ -91,7 +104,7 @@ and batch prices are excluded. Estimated totals are **$6.0017513024** for Flash
 and **$17.1207614100** for Pro. The original 470 trial selections, payloads,
 usage, durations and estimated costs are preserved.
 
-All fourteen settings retain separate main-table rows and downloadable results.
+Every setting retains a separate table row and downloadable results.
 The Pareto chart shows only DeepSeek's best harness by overall mean score,
 Claude Code, across Cost, Tokens, Time and all hardware scopes. Searching does
 not select another DeepSeek harness for the chart.
@@ -200,14 +213,13 @@ approximately **9.45 GiB**, with 564 ATIF trajectories
 and 573 original session JSONL exports (235 Codex, 291 Claude Code, 47 Pi). Credentials are redacted and host paths
 normalized. Large binary artifacts remain listed without content downloads.
 Source execution jobs remain unchanged.
-The current default package is `.build/hf-trajectories-glm53-tokenplus/`.
+The current default package is `.build/hf-trajectories-pr3/`.
 `.build/hf-trajectories-current/` remains the older 235-trial append base.
 
 The active HF directory is **`releases/current/`**, independent of model names or
 publication dates. Full commit SHAs identify immutable versions. The verified
 revision is recorded in [`storage.json`](storage.json) and the private receipt
-`.build/hf-trajectories-glm53-tokenplus-uploaded.json`. The website pins that SHA rather
-than reading the mutable `main` branch.
+`.build/hf-trajectories-pr3-uploaded.json`. The website uses that immutable revision.
 The Step 5 publication uses the immutable revision
 [`a4d445dc0b8f8324fbc959fe57885c5474c7b939`](https://huggingface.co/datasets/search-swe/trajectories/commit/a4d445dc0b8f8324fbc959fe57885c5474c7b939).
 The Hy4 publication uses the immutable revision
@@ -228,8 +240,7 @@ current corpus. Snapshot, entry and trial identities remain unchanged; previous
 commit-pinned downloads still work. The migration reuses Git trees and updates
 only the dataset card and publication inventory.
 
-The following commands document that historical migration, not the current
-fourteen-setting publication:
+The following command documents that historical migration:
 
 ```bash
 python scripts/normalize_hf_layout.py \
@@ -246,7 +257,7 @@ the current verified package as the base, and use a fresh output package:
 
 ```bash
 python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-glm53-tokenplus \
+  --base-package .build/hf-trajectories-pr3 \
   --package .build/hf-trajectories-next --upload
 ```
 
@@ -272,10 +283,8 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
 ## Data and statistics
 
 - Native selections come from `final-trajectories/INDEX.csv` and each
-  `FINAL_RESULT.json`; Hy4 also includes the reviewed community selections bound
-  by `community-source-evidence.json`. Result/reward files and source inventories
-  authenticate the selected evidence. Analysis summaries from older releases
-  are not used.
+  `FINAL_RESULT.json`. Hy4 and the two PR #3 entries also use reviewed community
+  selections bound by `community-source-evidence.json`.
 - Native reward × 100 equals the selected task score. Selection scores already
   use 0–100 and must not be scaled again. Every task has equal weight; CPU and
   GPU use fixed subsets. The importer requires matching complete coverage.
@@ -286,9 +295,8 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   are used. Missing original end timestamps remain missing; regrade time is never
   substituted. Eight reviewed runs use the maintainer-assigned 7200-second
   coding budget, with provenance in `agent_time_basis` and exact source trajectory
-  hashes in the importer. All 752 selected trials have a reported duration,
-  including the eight previously recovered original timings, three MiMo coding
-  durations and all Hy4, Step 5 and GLM durations.
+  hashes in the importer. All 846 selected trials have a reported duration.
+  Eight PR #3 trials use the span of their recorded trajectory timestamps.
 - Total tokens in the main leaderboard sum input (including cache) + output
   across the selected All / CPU / GPU task set, not a per-task average. Entry rows
   show Input Tokens, Output Tokens and Cached Tokens; trial summaries show the
@@ -319,7 +327,8 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   Four Hy4 CLI-only trials use their final modelUsage totals without individual
   receipts; their recorded complete-response count is zero and per-step output
   remains unknown. Final totals still cover their coding cost in full.
-  Claude Code guessed costUSD values are never used.
+  The 47 Sonnet selections use the exported Claude Code cost estimates.
+  Antigravity leaves token and cost values unknown.
   This reporting policy applies to generated pages and `/leaderboard/results.json`;
   the verified HF snapshot and its original accounting notes remain unchanged.
   Only affected trial pages show a short fallback explanation in Agent details;
@@ -468,9 +477,9 @@ unchanged; exported JSON contains no local host source paths in its metadata.
 
 ```bash
 python -m unittest discover -s scripts -p 'test_*.py'
-python scripts/import_final_results.py --package .build/hf-trajectories-glm53-tokenplus --check
+python scripts/import_final_results.py --package .build/hf-trajectories-pr3 --check
 python scripts/build_leaderboard.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-glm53-tokenplus.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-pr3.usage.json --check
 python scripts/build_tasks.py --check
 node --check leaderboard.js
 node --check leaderboard-pareto.js
@@ -480,9 +489,9 @@ node --check trial-files.js
 ```
 
 With Playwright available in the Node module search path and the preview server
-running, run `HF_PACKAGE=.build/hf-trajectories-glm53-tokenplus node scripts/test_leaderboard_browser.cjs`. Set
+running, run `HF_PACKAGE=.build/hf-trajectories-pr3 node scripts/test_leaderboard_browser.cjs`. Set
 `LEADERBOARD_ORIGIN` to use a different local server address.
-Run `HF_PACKAGE=.build/hf-trajectories-glm53-tokenplus node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
+Run `HF_PACKAGE=.build/hf-trajectories-pr3 node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
 Run `node scripts/test_leaderboard_costs_browser.cjs` for cost sorting, chart/table
 parity across hardware scopes, keyboard tabs, links, empty states and mobile layout.
 

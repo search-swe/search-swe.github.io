@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "updated_at": "2026-11-19",
+  "updated_at": "2026-11-20",
   "included_models": [
     "openai/gpt-6-luna",
     "openai/gpt-6.1-terra",
@@ -15,7 +15,9 @@
     "step-5-preview",
     "z-ai/glm-5.3",
     "z-ai/glm-5.3-flash",
-    "tencent/hy4"
+    "tencent/hy4",
+    "anthropic/claude-sonnet-5.5",
+    "google/gemini-4-argon"
   ],
   "model_substitutions": [
     {
@@ -67,6 +69,8 @@
     "deepseek-v4.1-flash-1017-pi-max"
   ],
   "community_models": [
-    "tencent/hy4"
+    "tencent/hy4",
+    "anthropic/claude-sonnet-5.5",
+    "google/gemini-4-argon"
   ]
 }

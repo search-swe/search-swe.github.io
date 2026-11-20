@@ -130,28 +130,57 @@ class SnapshotTests(unittest.TestCase):
                     'deepseek/deepseek-v4.1-flash-1017': 21.054061239674596, 'kimi-k3': 25.371920241505414,
                     'xiaomi/mimo-v2.6-flash': 15.272761996392159, 'xiaomi/mimo-v2.6-pro': 18.630222644023586,
                     'tencent/hy4': 21.54786487047164, 'step-5-preview': 19.47455964531325,
-                    'z-ai/glm-5.3': 18.35926991146622, 'z-ai/glm-5.3-flash': 16.356435223177584}
+                    'z-ai/glm-5.3': 18.35926991146622, 'z-ai/glm-5.3-flash': 16.356435223177584,
+                    'anthropic/claude-sonnet-5.5': 38.42, 'google/gemini-4-argon': 34.02}
         self.assertEqual(len(snapshot['tasks']), 47)
-        self.assertEqual(len(snapshot['trials']), 752)
+        self.assertEqual(len(snapshot['trials']), 846)
         self.assertEqual({entry['model'] for entry in snapshot['entries']}, set(expected))
         for entry in snapshot['entries']:
             trials = [t for t in snapshot['trials'] if t['entry'] == entry['id']]
             self.assertEqual({t['task'] for t in trials}, {t['name'] for t in snapshot['tasks']})
-            self.assertAlmostEqual(build.stats(trials)['score'], ({'Claude Code': 27.592737573013743, 'Pi': 18.43878164582429}.get(entry['agent'], expected[entry['model']]) if entry['model'].startswith('deepseek/') else expected[entry['model']]), places=10)
-            self.assertEqual(build.stats(trials)['tokens'], sum(t['tokens']['total_tokens'] for t in trials))
+            model = entry['model']
+            wanted = expected[model]
+            if model.startswith('deepseek/'):
+                wanted = {'Claude Code': 27.592737573013743, 'Pi': 18.43878164582429}.get(entry['agent'], wanted)
+            places = 2 if model in {'anthropic/claude-sonnet-5.5', 'google/gemini-4-argon'} else 10
+            self.assertAlmostEqual(build.stats(trials)['score'], wanted, places=places)
+            totals = [t['tokens']['total_tokens'] for t in trials]
+            self.assertEqual(build.stats(trials)['tokens'], None if None in totals else sum(totals))
             for trial in trials:
                 usage = trial['tokens']
+                if model == 'google/gemini-4-argon':
+                    self.assertTrue(all(value is None for value in usage.values()))
+                    continue
                 self.assertEqual(usage['input_tokens'] + usage['output_tokens'], usage['total_tokens'])
                 self.assertLessEqual(usage['cached_input_tokens'], usage['input_tokens'])
 
     def test_generated_routes_and_no_script_injection(self):
         pages = build.generate()
-        self.assertEqual(len(pages), 771)  # 770 pages plus the cost-enriched download.
+        self.assertEqual(len(pages), 867)  # 866 pages plus the cost-enriched download.
         for trial in self.snapshot['trials']:
             self.assertIn(build.ROOT / f'leaderboard/trials/{trial["id"]}/index.html', pages)
         rendered = build.page('<script>', '<p>test</p>', 'trial', {'message': '</script><script>alert(1)'}, self.snapshot)
         self.assertIn('&lt;script&gt;', rendered)
         self.assertNotIn('</script><script>alert(1)', rendered)
+
+    def test_pr3_entries_preserve_routes_and_local_selected_rewards(self):
+        expected = {
+            'anthropic/claude-sonnet-5.5': ('Claude Code', '2.1.309', 'max', {
+                'rust-bm25-search': 72.246176919, 'large-scale-formula-retrieval': 0}),
+            'google/gemini-4-argon': ('Antigravity CLI', '1.5.2', 'high', {
+                'large-scale-formula-retrieval': 0}),
+        }
+        for model, (agent, version, effort, reruns) in expected.items():
+            entry = next(e for e in self.snapshot['entries'] if e['model'] == model)
+            self.assertEqual((entry['agent'], entry['agent_version'], entry['effort'], entry['provider']),
+                             (agent, version, effort, 'Vertex AI'))
+            trials = [t for t in self.snapshot['trials'] if t['entry'] == entry['id']]
+            for trial in trials:
+                task = trial['task']
+                self.assertEqual(trial['configuration']['provider'], 'OpenRouter' if task in reruns else 'Vertex AI')
+                if task in reruns:
+                    self.assertTrue(trial['valid'])
+                    self.assertAlmostEqual(trial['score'], reruns[task])
 
     def test_hy4_provider_effort_usage_and_recorded_refusal(self):
         trials = [t for t in self.snapshot['trials'] if t['configuration']['model'] == 'tencent/hy4']

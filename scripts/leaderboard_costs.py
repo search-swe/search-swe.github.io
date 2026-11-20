@@ -70,6 +70,14 @@ def calculate(snapshot, usage, prices):
         row = rows[trial_key(trial)]
         if row.get('primary_trajectory_sha256') != trial['trajectory_sha256']:
             raise ValueError(f'Coding trajectory changed: {trial["id"]}')
+        if row.get('usage_basis') == 'exported_harness_summary':
+            if (row['requests'] or row.get('aggregate_remainder') is not None or
+                    row['tokens'] != trial['tokens'] or row['cost_usd'] != trial.get('harness_reported_cost_usd')):
+                raise ValueError(f'Exported harness summary differs: {trial["id"]}')
+            value = row['cost_usd']
+            costs[trial['id']] = {'cost_usd': None if value is None else str(value),
+                                  'response_count': trial['tokens']['response_count']}
+            continue
         unique = {}
         for request in row['requests']:
             key = request['response_id']
@@ -110,10 +118,13 @@ def apply_costs(snapshot, supplement, prices, snapshot_sha256, pricing_sha256):
     snapshot = copy.deepcopy(snapshot)
     for trial in snapshot['trials']:
         item = supplement['trials'][trial['id']]
-        cost = Decimal(item['cost_usd'])
-        if not cost.is_finite() or cost < 0 or item['response_count'] != trial['tokens']['response_count']:
+        raw = item['cost_usd']
+        cost = Decimal(raw) if raw is not None else None
+        if (item['response_count'] != trial['tokens']['response_count'] or
+                (cost is None and ('harness_reported_cost_usd' not in trial or trial['harness_reported_cost_usd'] is not None)) or
+                (cost is not None and (not cost.is_finite() or cost < 0))):
             raise ValueError(f'Invalid cost coverage: {trial["id"]}')
-        trial['cost_usd'] = float(cost)
+        trial['cost_usd'] = float(cost) if cost is not None else None
     snapshot['cost_methodology'] = {'type': 'estimated', **prices,
                                   'usage_sha256': supplement['usage_sha256'],
                                   'pricing_sha256': pricing_sha256}
@@ -141,7 +152,11 @@ def main():
     else:
         destination.write_text(rendered)
     for entry in snapshot['entries']:
-        total = sum(Decimal(costs[t['id']]['cost_usd']) for t in snapshot['trials'] if t['entry'] == entry['id'])
+        values = [costs[t['id']]['cost_usd'] for t in snapshot['trials'] if t['entry'] == entry['id']]
+        if None in values:
+            print(f'{entry["name"]}: cost unavailable')
+            continue
+        total = sum(Decimal(value) for value in values)
         print(f'{entry["name"]}: ${total:.2f} (unrounded: {total})')
     print(f'{len(costs)} selected trials priced; cost supplement {"verified" if args.check else "written"}.')
 

@@ -9,7 +9,7 @@ from pathlib import Path, PurePosixPath
 
 REPO_ID = 'search-swe/trajectories'
 CURRENT_RELEASE = 'releases/current'
-DEFAULT_PACKAGE = Path(__file__).resolve().parents[1] / '.build/hf-trajectories-glm53-tokenplus'
+DEFAULT_PACKAGE = Path(__file__).resolve().parents[1] / '.build/hf-trajectories-pr3'
 PATH_BOUNDARY = r'(?:(?<![\w/])|(?<=\\n)|(?<=\\r)|(?<=\\t))'
 PRIVATE_ROOT = re.compile(r'/data/Search-SWE-Workspace|/root/Search-SWE|' + PATH_BOUNDARY + r'(?:/home/[^/\s]+/|/root/)')
 CREDENTIAL = re.compile(r'\b(?:sk-(?:or-v1-)?[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{20,})\b')
@@ -75,15 +75,20 @@ def check_text(path):
         json.loads(text)
 
 
-def load_package(package, check_content=True):
-    """Verify exactly the manifest's files; never upload unlisted local files."""
+def load_manifest(package):
     package = Path(package)
-    manifest_path = package / 'publication.json.gz'
-    manifest = json.loads(gzip.decompress(manifest_path.read_bytes()))
+    manifest = json.loads(gzip.decompress((package / 'publication.json.gz').read_bytes()))
     if manifest.get('schema') != 1 or manifest.get('repo_id') != REPO_ID:
         raise ValueError('Unexpected publication schema or dataset repository')
     if not re.fullmatch(r'releases/[A-Za-z0-9._-]+', manifest.get('release_path', '')):
         raise ValueError('Invalid publication release path')
+    return manifest
+
+
+def load_package(package, check_content=True, retained=None):
+    """Check the package, reusing fingerprints for payloads already on the Hub."""
+    package = Path(package)
+    manifest = load_manifest(package)
     for path in package.rglob('*'):
         if path.is_symlink():
             raise ValueError(f'Symlinks are not allowed in a public package: {path.relative_to(package)}')
@@ -93,6 +98,10 @@ def load_package(package, check_content=True):
     if actual != allowed:
         raise ValueError(f'Package file set changed: {len(allowed - actual)} missing, {len(actual - allowed)} unlisted')
     for count, (relative, expected) in enumerate(manifest['files'].items(), 1):
+        if retained is not None and relative in retained:
+            if retained[relative] != expected:
+                raise ValueError(f'Retained file disagrees with the published inventory: {relative}')
+            continue
         path = safe_path(package, relative)
         if fingerprints(path) != expected:
             raise ValueError(f'Package content changed: {relative}')

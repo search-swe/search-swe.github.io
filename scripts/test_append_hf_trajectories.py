@@ -1,5 +1,6 @@
 """Appending must never replace/delete old payloads or publish unrelated files."""
 import copy
+import gzip
 import tempfile
 import unittest
 from pathlib import Path
@@ -8,10 +9,48 @@ from unittest.mock import Mock, patch
 
 import append_hf_trajectories as append
 from append_hf_trajectories import append_plan
-from import_results import write
+from import_results import digest, encode, write
+from publication import REPO_ID
+from upload_hf_release import append_tree
 
 
 class AppendTests(unittest.TestCase):
+    def test_remote_append_reuses_unchanged_tree_and_enumerates_new_files(self):
+        release = 'releases/current'
+        trials = release + '/trials'
+        old = SimpleNamespace(path=trials + '/old', tree_id='old-id')
+        new = SimpleNamespace(path=trials + '/new', tree_id='new-id')
+        snapshot = SimpleNamespace(path=release + '/snapshot.json', blob_id='snapshot')
+        payload = SimpleNamespace(path=new.path + '/manifest.json', blob_id='new-payload')
+        expected = {old.path + '/manifest.json', snapshot.path, payload.path}
+        api = Mock()
+        trees = {('base', trials): [old], ('next', trials): [old, new],
+                 ('next', release): [SimpleNamespace(path=trials), snapshot], ('next', new.path): [payload]}
+        api.list_repo_tree.side_effect = lambda repo, path_in_repo, revision, **kw: iter(trees[revision, path_in_repo])
+        remote, retained = append_tree(api, release, 'next', 'base', expected)
+        self.assertEqual(remote, {snapshot.path: snapshot, payload.path: payload})
+        self.assertEqual(retained, {old.path + '/manifest.json'})
+        trees['next', trials] = [SimpleNamespace(path=old.path, tree_id='changed'), new]
+        with self.assertRaisesRegex(ValueError, 'differ from the verified append'):
+            append_tree(api, release, 'next', 'base', expected)
+
+    def test_published_base_only_reuses_trial_fingerprints(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp) / 'base'
+            release = 'releases/current'
+            retained = {f'{release}/trials/original/manifest.json': {'sha256': 'old'}}
+            manifest = {'schema': 1, 'repo_id': REPO_ID, 'snapshot_id': 'verified', 'release_path': release,
+                        'files': {**retained, f'{release}/snapshot.json': {'sha256': 'metadata'}}}
+            body = gzip.compress(encode(manifest))
+            write(base / 'publication.json.gz', body)
+            receipt = base.with_name('base-uploaded.json')
+            info = {'repo_id': REPO_ID, 'snapshot_id': 'verified', 'publication_sha256': digest(body)}
+            write(receipt, info)
+            self.assertEqual(append.published_base_payloads(base), (manifest, retained))
+            write(receipt, {**info, 'publication_sha256': 'different'})
+            with self.assertRaisesRegex(ValueError, 'does not match its upload receipt'):
+                append.published_base_payloads(base)
+
     def test_payload_verification_precedes_atomic_metadata_and_activation(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

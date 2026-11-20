@@ -10,9 +10,9 @@ from import_results import ROOT, encode, import_snapshot, read, write
 from publication import CURRENT_RELEASE, DEFAULT_PACKAGE, REPO_ID, check_text, fingerprints, load_package, safe_path
 
 
-def referenced_files(release, snapshot):
+def referenced_files(release, snapshot, retained=()):
     """Follow every reader/download reference, including long text and parallel calls."""
-    expected = {'snapshot.json'}
+    expected = {'snapshot.json', *retained}
 
     def add(base, relative):
         path = safe_path(release, (base / relative).as_posix())
@@ -34,6 +34,8 @@ def referenced_files(release, snapshot):
 
     for trial in snapshot['trials']:
         base = Path('trials') / trial['id']
+        if (base / 'manifest.json').as_posix() in expected:
+            continue
         manifest = read(add(base, 'manifest.json'))
         add(base, 'evaluation.json')
         add(base, manifest['download'])
@@ -149,15 +151,18 @@ def prepare(jobs, output):
     return finalize(output, snapshot, CURRENT_RELEASE)
 
 
-def finalize(output, snapshot, release_path):
+def finalize(output, snapshot, release_path, retained=None):
     write(output / release_path / 'snapshot.json', snapshot)
-    referenced_files(output / release_path, snapshot)
+    files = dict(retained or {})
+    referenced_files(output / release_path, snapshot, (p.removeprefix(release_path + '/') for p in files))
     write(output / 'README.md', dataset_card(snapshot, release_path).encode())
-    files = {}
     for path in sorted(output.rglob('*')):
         if path.is_file() and path.name != 'publication.json.gz':
+            relative = path.relative_to(output).as_posix()
+            if relative in files:
+                continue
             check_text(path)
-            files[path.relative_to(output).as_posix()] = fingerprints(path)
+            files[relative] = fingerprints(path)
             if len(files) % 10000 == 0:
                 print(f'Checked and hashed {len(files):,} public files', flush=True)
     manifest = {'schema': 1, 'repo_id': REPO_ID, 'release_path': release_path,

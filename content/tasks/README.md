@@ -10,9 +10,11 @@ The 47 task settings were synchronized on 2026-11-08 against benchmark commit
 Instruction, task-documentation and runtime links in the settings pin that revision.
 Reviewed again on 2026-11-13 against benchmark commit
 [`a09bca1`](https://github.com/VectorSpaceLab/Search-SWE/commit/a09bca19014e31426a3730680970b55714d922ff).
-All 47 tasks and their resource settings remain aligned. Subsequent task changes
-repair Java runtime availability without changing the task contracts or scoring;
-the existing setting links retain their synchronized revision.
+The task inventory was reviewed again on 2026-11-20 against benchmark commit
+[`bec6079`](https://github.com/VectorSpaceLab/Search-SWE/commit/bec6079118beb85e1b46ad6d9de6b96e6b22ea4e).
+The Query-side Encoder Alignment and Scientific-Paper QA pages use that commit
+for the updated verifier limits and judge behavior. Other settings retain their
+earlier pinned source links.
 Check the invoked verifier and scoring constants as well as instructions when
 updating timing repetitions, judge aggregation, reference values and failure rules.
 Published leaderboard results remain tied to their recorded evaluation snapshots;

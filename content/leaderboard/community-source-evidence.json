@@ -28,5 +28,40 @@
         "file_manifest_sha256": "fc89709cd4577f458516b6a57234c505ced521a5ffb5c54f8f57a02268fa34d7"
       }
     }
+  },
+  "pr3": {
+    "pull_request": "https://github.com/search-swe/search-swe.github.io/pull/3",
+    "head": "f233c45807c957c502ee18a77a2cc9b2c0554638",
+    "contributor": "Wyyyb",
+    "accepted_at": "2026-11-20T00:00:00+08:00",
+    "models": {
+      "anthropic/claude-sonnet-5.5": {
+        "repo_id": "ubowang/search-swe-claude-sonnet-5-5",
+        "revision": "e0758f61d434f416627c20b74f97e3948a3d23f7",
+        "local_trials": {
+          "large-scale-formula-retrieval": {
+            "model_label": "claude-sonnet-5.5-claude-code-openrouter-max",
+            "primary_trajectory_sha256": "a8a06cc09bb8e03dc9ace88b4769092a97c4acd693367d4b75e6a0f8f20b3dc3",
+            "file_manifest_sha256": "0e2ac8c1809b0fde6a9ba6db77f2f33108fcc1e2ba9660fa5a9010df9b9ffc1f"
+          },
+          "rust-bm25-search": {
+            "model_label": "claude-sonnet-5.5-claude-code-openrouter-max",
+            "primary_trajectory_sha256": "9d89843ba214ab4c00134af6b92aecb90a07174bca8b7d5f6230227863f7876e",
+            "file_manifest_sha256": "bb01fa0f5df30038d2ffb567d43e140a512f416af145dc1eeda9cbf106773210"
+          }
+        }
+      },
+      "google/gemini-4-argon": {
+        "repo_id": "ubowang/search-swe-gemini-4-argon",
+        "revision": "76b0a0e6c349e57dbaab09888ab8732b0cf321c8",
+        "local_trials": {
+          "large-scale-formula-retrieval": {
+            "model_label": "gemini-4-argon-antigravity-cli-openrouter-high",
+            "primary_trajectory_sha256": "1ea5ab2bc06c5510d6a295a56bd5bddfdf88aa3677045eb27c9cfd4412ba6064",
+            "file_manifest_sha256": "6b277f5ed23cc87e615b875eaf91051498a84238a7baee419d30e0bff28f104a"
+          }
+        }
+      }
+    }
   }
 }

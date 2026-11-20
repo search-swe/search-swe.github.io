@@ -8,7 +8,7 @@ const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'leaderboard/results.json')));
 const read = name => {
   const file = /^https?:/.test(name)
-    ? path.join(path.resolve(root, process.env.HF_PACKAGE || '.build/hf-trajectories-glm53-tokenplus'),
+    ? path.join(path.resolve(root, process.env.HF_PACKAGE || '.build/hf-trajectories-pr3'),
       new URL(name).pathname.replace(/^\/datasets\/search-swe\/trajectories\/resolve\/[a-f0-9]{40}(?=\/)/, ''))
     : path.join(root, name);
   return JSON.parse(fs.readFileSync(file));
@@ -24,8 +24,9 @@ const read = name => {
     await page.goto(`${origin}/leaderboard/`);
     const ranked = snapshot.entries.map(e => {
       const trials = snapshot.trials.filter(t => t.entry === e.id);
+      const tokens = trials.map(t => t.tokens.total_tokens);
       return {...e, score: trials.reduce((n, t) => n + t.score, 0) / trials.length,
-        tokens: trials.reduce((n, t) => n + t.tokens.total_tokens, 0)};
+        tokens: tokens.includes(null) ? null : tokens.reduce((n, t) => n + t, 0)};
     }).sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
     assert.equal(await page.locator('tbody tr:visible').count(), snapshot.entries.length);
     assert.deepEqual(await page.locator('.score-value').allTextContents(), ranked.map(e => e.score.toFixed(1)));
@@ -38,6 +39,9 @@ const read = name => {
       for (const direction of ['desc', 'asc']) {
         const field = key === 'date' ? 'release_date' : key;
         const ordered = [...ranked].sort((a, b) => {
+          if (a[field] == null || b[field] == null) {
+            return Number(a[field] == null) - Number(b[field] == null) || a.id.localeCompare(b.id);
+          }
           const diff = typeof a[field] === 'string' ? a[field].localeCompare(b[field]) : a[field] - b[field];
           return diff * (direction === 'desc' ? -1 : 1) || a.id.localeCompare(b.id);
         });
