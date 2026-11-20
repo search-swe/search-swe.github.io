@@ -22,6 +22,16 @@ from publication import CURRENT_RELEASE, DEFAULT_PACKAGE, PublicText, load_packa
 from claude_code_usage import claude_usage
 from pi_usage import pi_usage
 
+
+def default_final_dir():
+    archive = Path('Search-SWE/jobs/final-trajectories')
+    for parent in ROOT.parents:
+        candidate = parent / 'run-eval-release' / archive
+        if (candidate / 'INDEX.csv').is_file():
+            return candidate
+    return ROOT.parent / archive
+
+
 TOKENPLUS_MODELS = ('z-ai/glm-5.3', 'z-ai/glm-5.3-flash')
 TOKENPLUS_SETTINGS = {
     'z-ai/glm-5.3?provider=z-ai': 'glm53-tokenplus-zai-official-claude-code-max',
@@ -33,7 +43,7 @@ GLM_RESUMED_USAGE_SHA256 = '64aa8c420fffef818c50720d760d76cc0bee22cc91eb3c33340a
 MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1-pro',
           'anthropic/claude-opus-5.5', 'gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017', 'kimi-k3',
           'xiaomi/mimo-v2.6-flash', 'xiaomi/mimo-v2.6-pro', 'step-5-preview', *TOKENPLUS_MODELS)
-DEFAULT_FINAL = Path('/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs/final-trajectories')
+DEFAULT_FINAL = default_final_dir()
 CONTENT = ROOT / 'content/leaderboard'
 COMMUNITY_MODELS = ('tencent/hy4', 'anthropic/claude-sonnet-5.5', 'google/gemini-4-argon')
 AGENT_TIME_BUDGET_ASSIGNMENTS = {

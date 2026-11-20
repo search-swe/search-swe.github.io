@@ -20,13 +20,15 @@ from upload_hf_release import verify_remote
 
 class PublicTextTests(unittest.TestCase):
     def setUp(self):
-        self.public = PublicText('/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs', scrub)
+        self.checkout = '/workspace/evaluation/benchmark'
+        self.public = PublicText(f'{self.checkout}/jobs', scrub)
 
     def test_host_paths_portable_container_commands_preserved(self):
-        text = 'file:///data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/tasks/demo /root/Search-SWE/env/lib.py /root/.codex/config /home/alice/private /app/run.sh /tests/test.py /tmp/log /data/train.json'
+        text = (f'file://{self.checkout}/tasks/demo /root/Search-SWE/env/lib.py /root/.codex/config '
+                '/home/alice/private /app/run.sh /tests/test.py /tmp/log /data/train.json')
         value = self.public(text)
         self.assertNotIn('file://', value)
-        self.assertNotIn('Search-SWE-Workspace', value)
+        self.assertNotIn(self.checkout, value)
         self.assertNotIn('/root/', value)
         self.assertNotIn('/home/alice', value)
         self.assertIn('${BENCHMARK_ROOT}/tasks/demo', value)
@@ -36,7 +38,7 @@ class PublicTextTests(unittest.TestCase):
         self.assertNotIn('/home/', self.public(nested))
 
     def test_paths_split_after_sanitizing_and_download_matches_viewer(self):
-        message = 'x' * 47990 + '/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs/demo/' + 'y' * 50000
+        message = 'x' * 47990 + f'{self.checkout}/jobs/demo/' + 'y' * 50000
         raw = {'steps': [{'step_id': 1, 'source': 'agent', 'message': message,
                          'tool_calls': [{'tool_call_id': 'a', 'function_name': 'exec',
                                          'arguments': {'env': {'API_KEY': 'short-private-secret'}, 'cmd': '/app/run.sh'}}]}]}
