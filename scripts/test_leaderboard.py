@@ -129,9 +129,10 @@ class SnapshotTests(unittest.TestCase):
                     'gpt-6-astra': 45.927353979642724,
                     'deepseek/deepseek-v4.1-flash-1017': 21.054061239674596, 'kimi-k3': 25.371920241505414,
                     'xiaomi/mimo-v2.6-flash': 15.272761996392159, 'xiaomi/mimo-v2.6-pro': 18.630222644023586,
-                    'tencent/hy4': 21.54786487047164, 'step-5-preview': 19.47455964531325}
+                    'tencent/hy4': 21.54786487047164, 'step-5-preview': 19.47455964531325,
+                    'z-ai/glm-5.3': 18.35926991146622, 'z-ai/glm-5.3-flash': 16.356435223177584}
         self.assertEqual(len(snapshot['tasks']), 47)
-        self.assertEqual(len(snapshot['trials']), 658)
+        self.assertEqual(len(snapshot['trials']), 752)
         self.assertEqual({entry['model'] for entry in snapshot['entries']}, set(expected))
         for entry in snapshot['entries']:
             trials = [t for t in snapshot['trials'] if t['entry'] == entry['id']]
@@ -145,7 +146,7 @@ class SnapshotTests(unittest.TestCase):
 
     def test_generated_routes_and_no_script_injection(self):
         pages = build.generate()
-        self.assertEqual(len(pages), 675)  # 674 pages plus the cost-enriched download.
+        self.assertEqual(len(pages), 771)  # 770 pages plus the cost-enriched download.
         for trial in self.snapshot['trials']:
             self.assertIn(build.ROOT / f'leaderboard/trials/{trial["id"]}/index.html', pages)
         rendered = build.page('<script>', '<p>test</p>', 'trial', {'message': '</script><script>alert(1)'}, self.snapshot)
@@ -183,6 +184,34 @@ class SnapshotTests(unittest.TestCase):
         self.assertAlmostEqual(by_task['instruction-following-embedding']['agent_seconds'], 7201.056449)
         self.assertEqual({t['task'] for t in trials if t['qualification'].get('qualification_flag') == 'API_TRANSPORT_DEGRADATION_RECORDED'},
                          {'code-reranker-finetuning', 'query-encoder-alignment', 'sparse-retrieval-pruning'})
+
+    def test_glm_provider_timing_and_image_failure_notices(self):
+        entries = {e['model']: e for e in self.snapshot['entries'] if e['model'].startswith('z-ai/glm-5.3')}
+        self.assertEqual(set(entries), {'z-ai/glm-5.3', 'z-ai/glm-5.3-flash'})
+        for model, entry in entries.items():
+            self.assertEqual(entry['provider'], 'Z.ai')
+            self.assertEqual(entry['provider_route'], 'TokenPlus (SiliconFlow)')
+            trials = [t for t in self.snapshot['trials'] if t['entry'] == entry['id']]
+            self.assertEqual(len(trials), 47)
+            self.assertTrue(all(t['agent_seconds'] > 0 for t in trials))
+            self.assertTrue(all(t['configuration']['request_model'] == model + '?provider=z-ai' for t in trials))
+        failures = [t for t in self.snapshot['trials'] if build.image_input_failed(t)]
+        self.assertEqual(len(failures), 5)
+        self.assertEqual({t['task'] for t in failures}, {'composed-image-search', 'layout-page-search',
+                         'same-place-image-search', 'sketch-text-search', 'visual-document-qa'})
+        self.assertTrue(all(t['entry'] == entries['z-ai/glm-5.3']['id'] and t['score'] == 0 for t in failures))
+        resumed = next(t for t in self.snapshot['trials'] if t['entry'] == entries['z-ai/glm-5.3']['id']
+                       and t['task'] == 'budgeted-bimetric-retrieval')
+        self.assertEqual(resumed['tokens']['total_tokens'], 6464221)
+        self.assertIn('final invocation', resumed['usage_note'])
+        page = build.generate()
+        for t in failures:
+            self.assertIn('Claude Code stopped after its Read tool tried to pass an image',
+                          page[build.ROOT / f'leaderboard/trials/{t["id"]}/index.html'])
+        for model, entry in entries.items():
+            html = page[build.ROOT / f'leaderboard/entries/{entry["id"]}/index.html']
+            self.assertEqual(html.count('class="fineprint image-input-status"'), 5 if model == 'z-ai/glm-5.3' else 0)
+            self.assertEqual(html.count('>Z.ai</td>'), 47)
 
     def test_opus_fallback_keeps_actual_model_and_discloses_substitution(self):
         trials = [t for t in self.snapshot['trials'] if t.get('model_substitution')]

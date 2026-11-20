@@ -1,8 +1,8 @@
 {
-  "pricing_sha256": "dd9d06adb3af3d76c01d477486cc0ff4ceb34d1138490aaeb97b43149288efe7",
+  "pricing_sha256": "35c7ea9b9dca66ef31cd596b1e9a847058bfb4bfadfbf1caae3eeed9aa1d4629",
   "schema": 1,
-  "snapshot_id": "2026-11-18-selected-7cf478b094",
-  "snapshot_sha256": "3761ec9aba5b8f5b7ad3e74b7cc135766908467fcfacc2198728a5f99d6b2fc2",
+  "snapshot_id": "2026-11-19-selected-bbdc642673",
+  "snapshot_sha256": "5e17b2e084a9379763b39ffc71ada3a39442907d611e263fb4675846f2457257",
   "trials": {
     "agentic-search-claude-opus-5.5-claude-code-max-86cfc69e97be": {
       "cost_usd": "4.4698314",
@@ -19,6 +19,14 @@
     "agentic-search-deepseek-v4.1-flash-1017-pi-max-9b7a725037ab": {
       "cost_usd": "0.103768578",
       "response_count": 71
+    },
+    "agentic-search-glm53-flash-tokenplus-zai-official-claude-code-max-913f1a1c6db3": {
+      "cost_usd": "0.24123355",
+      "response_count": 93
+    },
+    "agentic-search-glm53-tokenplus-zai-official-claude-code-max-e38575270b91": {
+      "cost_usd": "2.52131816",
+      "response_count": 97
     },
     "agentic-search-gpt-6-astra-max-69d94cf803f4": {
       "cost_usd": "32.3503785",
@@ -76,6 +84,14 @@
       "cost_usd": "0.060496740",
       "response_count": 57
     },
+    "agentic-search-vectorless-glm53-flash-tokenplus-zai-official-claude-code-max-a7aa5bc0f9b5": {
+      "cost_usd": "0.32236375",
+      "response_count": 116
+    },
+    "agentic-search-vectorless-glm53-tokenplus-zai-official-claude-code-max-116d01ed8f13": {
+      "cost_usd": "2.84313580",
+      "response_count": 87
+    },
     "agentic-search-vectorless-gpt-6-astra-max-28bced5a51e7": {
       "cost_usd": "35.2687590",
       "response_count": 150
@@ -131,6 +147,14 @@
     "biomedical-graph-retrieval-deepseek-v4.1-flash-1017-pi-max-eef6eee1b485": {
       "cost_usd": "0.103517262",
       "response_count": 69
+    },
+    "biomedical-graph-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-acd2e25ed328": {
+      "cost_usd": "0.31317441",
+      "response_count": 108
+    },
+    "biomedical-graph-retrieval-glm53-tokenplus-zai-official-claude-code-max-51a7274264b0": {
+      "cost_usd": "1.64784520",
+      "response_count": 67
     },
     "biomedical-graph-retrieval-gpt-6-astra-max-3c63b2816822": {
       "cost_usd": "32.1769605",
@@ -188,6 +212,14 @@
       "cost_usd": "0.082813260",
       "response_count": 97
     },
+    "budgeted-bimetric-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-7a8bf012590a": {
+      "cost_usd": "0.17505239",
+      "response_count": 55
+    },
+    "budgeted-bimetric-retrieval-glm53-tokenplus-zai-official-claude-code-max-05da8328142b": {
+      "cost_usd": "2.16726416",
+      "response_count": 89
+    },
     "budgeted-bimetric-retrieval-gpt-6-astra-max-9ca8a69ed0c1": {
       "cost_usd": "19.5485895",
       "response_count": 94
@@ -243,6 +275,14 @@
     "budgeted-candidate-reranking-deepseek-v4.1-flash-1017-pi-max-ceac4af5ab1b": {
       "cost_usd": "0.177896328",
       "response_count": 124
+    },
+    "budgeted-candidate-reranking-glm53-flash-tokenplus-zai-official-claude-code-max-038d533971e0": {
+      "cost_usd": "0.58146929",
+      "response_count": 186
+    },
+    "budgeted-candidate-reranking-glm53-tokenplus-zai-official-claude-code-max-7e07251da9ca": {
+      "cost_usd": "2.14165404",
+      "response_count": 86
     },
     "budgeted-candidate-reranking-gpt-6-astra-max-09ac6abd4506": {
       "cost_usd": "20.6017625",
@@ -300,6 +340,14 @@
       "cost_usd": "0.220691850",
       "response_count": 152
     },
+    "chunqiu-temporal-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-b7eb560441e7": {
+      "cost_usd": "0.56792056",
+      "response_count": 172
+    },
+    "chunqiu-temporal-retrieval-glm53-tokenplus-zai-official-claude-code-max-b691f328da07": {
+      "cost_usd": "11.17697920",
+      "response_count": 326
+    },
     "chunqiu-temporal-retrieval-gpt-6-astra-max-439e89fa743e": {
       "cost_usd": "44.2686100",
       "response_count": 171
@@ -355,6 +403,14 @@
     "code-context-retrieval-deepseek-v4.1-flash-1017-pi-max-dd802ebd9022": {
       "cost_usd": "0.093668280",
       "response_count": 73
+    },
+    "code-context-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-0dbb80a315ff": {
+      "cost_usd": "0.56412027",
+      "response_count": 171
+    },
+    "code-context-retrieval-glm53-tokenplus-zai-official-claude-code-max-ee5c7fd3e842": {
+      "cost_usd": "3.89413172",
+      "response_count": 136
     },
     "code-context-retrieval-gpt-6-astra-max-bb0032b6c504": {
       "cost_usd": "21.2427590",
@@ -412,6 +468,14 @@
       "cost_usd": "0.112772928",
       "response_count": 146
     },
+    "code-embedding-finetuning-glm53-flash-tokenplus-zai-official-claude-code-max-a1a5af86c065": {
+      "cost_usd": "0.34679468",
+      "response_count": 123
+    },
+    "code-embedding-finetuning-glm53-tokenplus-zai-official-claude-code-max-019522769beb": {
+      "cost_usd": "2.03411756",
+      "response_count": 98
+    },
     "code-embedding-finetuning-gpt-6-astra-max-cee432032c3a": {
       "cost_usd": "37.1261200",
       "response_count": 175
@@ -467,6 +531,14 @@
     "code-reranker-finetuning-deepseek-v4.1-flash-1017-pi-max-9766ca450dd0": {
       "cost_usd": "0.072373434",
       "response_count": 88
+    },
+    "code-reranker-finetuning-glm53-flash-tokenplus-zai-official-claude-code-max-8249ea95c3dc": {
+      "cost_usd": "0.33962798",
+      "response_count": 125
+    },
+    "code-reranker-finetuning-glm53-tokenplus-zai-official-claude-code-max-3cc0dc04ea41": {
+      "cost_usd": "2.78983892",
+      "response_count": 119
     },
     "code-reranker-finetuning-gpt-6-astra-max-50d945d2d8e8": {
       "cost_usd": "44.5284135",
@@ -524,6 +596,14 @@
       "cost_usd": "0.107294220",
       "response_count": 99
     },
+    "composed-image-search-glm53-flash-tokenplus-zai-official-claude-code-max-53d337fea287": {
+      "cost_usd": "0.43543851",
+      "response_count": 132
+    },
+    "composed-image-search-glm53-tokenplus-zai-official-claude-code-max-317bd0a8cc5f": {
+      "cost_usd": "0.07127028",
+      "response_count": 6
+    },
     "composed-image-search-gpt-6-astra-max-ae054086518e": {
       "cost_usd": "21.1902000",
       "response_count": 72
@@ -579,6 +659,14 @@
     "constrained-molecular-search-deepseek-v4.1-flash-1017-pi-max-4a96b2b74c7d": {
       "cost_usd": "0.272933364",
       "response_count": 228
+    },
+    "constrained-molecular-search-glm53-flash-tokenplus-zai-official-claude-code-max-a9bd489e3f7a": {
+      "cost_usd": "1.08791964",
+      "response_count": 316
+    },
+    "constrained-molecular-search-glm53-tokenplus-zai-official-claude-code-max-8be7114d8b1a": {
+      "cost_usd": "6.54572972",
+      "response_count": 242
     },
     "constrained-molecular-search-gpt-6-astra-max-cce58ef0fe3b": {
       "cost_usd": "40.1396460",
@@ -636,6 +724,14 @@
       "cost_usd": "0.201112890",
       "response_count": 164
     },
+    "decision-model-training-glm53-flash-tokenplus-zai-official-claude-code-max-ea93109c6e81": {
+      "cost_usd": "0.63526591",
+      "response_count": 195
+    },
+    "decision-model-training-glm53-tokenplus-zai-official-claude-code-max-402b762c2ea5": {
+      "cost_usd": "8.49388876",
+      "response_count": 309
+    },
     "decision-model-training-gpt-6-astra-max-48346842dc0a": {
       "cost_usd": "78.9056700",
       "response_count": 361
@@ -691,6 +787,14 @@
     "document-page-search-deepseek-v4.1-flash-1017-pi-max-4fd998ac621d": {
       "cost_usd": "0.135028248",
       "response_count": 139
+    },
+    "document-page-search-glm53-flash-tokenplus-zai-official-claude-code-max-96f5023d9491": {
+      "cost_usd": "0.53464935",
+      "response_count": 162
+    },
+    "document-page-search-glm53-tokenplus-zai-official-claude-code-max-83169901c9c0": {
+      "cost_usd": "2.67744692",
+      "response_count": 103
     },
     "document-page-search-gpt-6-astra-max-cacabedee2b0": {
       "cost_usd": "27.6938395",
@@ -748,6 +852,14 @@
       "cost_usd": "0.102560232",
       "response_count": 104
     },
+    "evolving-personal-memory-glm53-flash-tokenplus-zai-official-claude-code-max-ea67089fdc0b": {
+      "cost_usd": "0.41581298",
+      "response_count": 124
+    },
+    "evolving-personal-memory-glm53-tokenplus-zai-official-claude-code-max-0195c05d8d73": {
+      "cost_usd": "4.80013960",
+      "response_count": 184
+    },
     "evolving-personal-memory-gpt-6-astra-max-5d2682dc0425": {
       "cost_usd": "22.2867865",
       "response_count": 83
@@ -803,6 +915,14 @@
     "filtered-ann-retrieval-deepseek-v4.1-flash-1017-pi-max-34072a41bd31": {
       "cost_usd": "0.163084320",
       "response_count": 112
+    },
+    "filtered-ann-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-a96d9c56f6f4": {
+      "cost_usd": "0.48561405",
+      "response_count": 124
+    },
+    "filtered-ann-retrieval-glm53-tokenplus-zai-official-claude-code-max-3f4297540340": {
+      "cost_usd": "6.28390296",
+      "response_count": 160
     },
     "filtered-ann-retrieval-gpt-6-astra-max-fee2f164c3db": {
       "cost_usd": "20.8832600",
@@ -860,6 +980,14 @@
       "cost_usd": "0.153771936",
       "response_count": 93
     },
+    "financial-report-qa-glm53-flash-tokenplus-zai-official-claude-code-max-26759b967955": {
+      "cost_usd": "0.63228902",
+      "response_count": 151
+    },
+    "financial-report-qa-glm53-tokenplus-zai-official-claude-code-max-95baa30906d9": {
+      "cost_usd": "5.24524980",
+      "response_count": 181
+    },
     "financial-report-qa-gpt-6-astra-max-b2b72a628d22": {
       "cost_usd": "17.8107315",
       "response_count": 71
@@ -915,6 +1043,14 @@
     "icsi-meeting-memory-deepseek-v4.1-flash-1017-pi-max-ddacac89e1f2": {
       "cost_usd": "0.180007530",
       "response_count": 100
+    },
+    "icsi-meeting-memory-glm53-flash-tokenplus-zai-official-claude-code-max-d709e1f822ef": {
+      "cost_usd": "0.35595473",
+      "response_count": 82
+    },
+    "icsi-meeting-memory-glm53-tokenplus-zai-official-claude-code-max-b40166e81bc2": {
+      "cost_usd": "3.01438504",
+      "response_count": 105
     },
     "icsi-meeting-memory-gpt-6-astra-max-41695a3f2a03": {
       "cost_usd": "38.4566545",
@@ -972,6 +1108,14 @@
       "cost_usd": "0.206270226",
       "response_count": 88
     },
+    "incremental-vector-search-glm53-flash-tokenplus-zai-official-claude-code-max-07d5b6f28479": {
+      "cost_usd": "0.49956119",
+      "response_count": 105
+    },
+    "incremental-vector-search-glm53-tokenplus-zai-official-claude-code-max-bcf99dcd6375": {
+      "cost_usd": "3.72482616",
+      "response_count": 90
+    },
     "incremental-vector-search-gpt-6-astra-max-ef46b00132bb": {
       "cost_usd": "21.4402975",
       "response_count": 94
@@ -1027,6 +1171,14 @@
     "instruction-following-embedding-deepseek-v4.1-flash-1017-pi-max-ce9e23c19e33": {
       "cost_usd": "0.093646416",
       "response_count": 123
+    },
+    "instruction-following-embedding-glm53-flash-tokenplus-zai-official-claude-code-max-c08a6a7c0306": {
+      "cost_usd": "0.28676469",
+      "response_count": 81
+    },
+    "instruction-following-embedding-glm53-tokenplus-zai-official-claude-code-max-59384b6b5612": {
+      "cost_usd": "2.31000044",
+      "response_count": 90
     },
     "instruction-following-embedding-gpt-6-astra-max-4e5725cfa6d9": {
       "cost_usd": "16.2163645",
@@ -1084,6 +1236,14 @@
       "cost_usd": "0.127010490",
       "response_count": 103
     },
+    "join-aware-table-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-57e81ee60ddb": {
+      "cost_usd": "0.25619264",
+      "response_count": 87
+    },
+    "join-aware-table-retrieval-glm53-tokenplus-zai-official-claude-code-max-5b83b9f8d729": {
+      "cost_usd": "3.22311520",
+      "response_count": 113
+    },
     "join-aware-table-retrieval-gpt-6-astra-max-d283966b561d": {
       "cost_usd": "7.7765180",
       "response_count": 41
@@ -1139,6 +1299,14 @@
     "khmer-embedding-training-deepseek-v4.1-flash-1017-pi-max-0ae05e0be47a": {
       "cost_usd": "0.227951640",
       "response_count": 207
+    },
+    "khmer-embedding-training-glm53-flash-tokenplus-zai-official-claude-code-max-12d7ef10a35f": {
+      "cost_usd": "0.56737694",
+      "response_count": 149
+    },
+    "khmer-embedding-training-glm53-tokenplus-zai-official-claude-code-max-58a17859e35b": {
+      "cost_usd": "7.34380064",
+      "response_count": 255
     },
     "khmer-embedding-training-gpt-6-astra-max-b040ad10da9b": {
       "cost_usd": "107.7459490",
@@ -1196,6 +1364,14 @@
       "cost_usd": "0.143911560",
       "response_count": 103
     },
+    "large-scale-formula-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-7f0cbc374699": {
+      "cost_usd": "0.35755454",
+      "response_count": 97
+    },
+    "large-scale-formula-retrieval-glm53-tokenplus-zai-official-claude-code-max-f0bdb59b0b08": {
+      "cost_usd": "2.91185236",
+      "response_count": 75
+    },
     "large-scale-formula-retrieval-gpt-6-astra-max-88126f4c7745": {
       "cost_usd": "23.5339365",
       "response_count": 107
@@ -1251,6 +1427,14 @@
     "layout-page-search-deepseek-v4.1-flash-1017-pi-max-8f08c3dbe5ab": {
       "cost_usd": "0.221625582",
       "response_count": 165
+    },
+    "layout-page-search-glm53-flash-tokenplus-zai-official-claude-code-max-a767a1b94f96": {
+      "cost_usd": "0.73383970",
+      "response_count": 217
+    },
+    "layout-page-search-glm53-tokenplus-zai-official-claude-code-max-a8f5bd188630": {
+      "cost_usd": "0.26158040",
+      "response_count": 20
     },
     "layout-page-search-gpt-6-astra-max-25c0b2785f4c": {
       "cost_usd": "15.5248105",
@@ -1308,6 +1492,14 @@
       "cost_usd": "0.142560786",
       "response_count": 150
     },
+    "legal-stance-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-6cf01b48d92e": {
+      "cost_usd": "0.71404839",
+      "response_count": 240
+    },
+    "legal-stance-retrieval-glm53-tokenplus-zai-official-claude-code-max-1e3395ef145c": {
+      "cost_usd": "3.67383500",
+      "response_count": 123
+    },
     "legal-stance-retrieval-gpt-6-astra-max-f23313b5095c": {
       "cost_usd": "35.3307990",
       "response_count": 140
@@ -1363,6 +1555,14 @@
     "lightweight-query-retrieval-deepseek-v4.1-flash-1017-pi-max-cc7fab8a9e9c": {
       "cost_usd": "0.268168188",
       "response_count": 207
+    },
+    "lightweight-query-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-28236042f5d1": {
+      "cost_usd": "0.43384488",
+      "response_count": 141
+    },
+    "lightweight-query-retrieval-glm53-tokenplus-zai-official-claude-code-max-4d577b3368ea": {
+      "cost_usd": "7.62412840",
+      "response_count": 263
     },
     "lightweight-query-retrieval-gpt-6-astra-max-1597f3b4d54a": {
       "cost_usd": "67.9338045",
@@ -1420,6 +1620,14 @@
       "cost_usd": "0.087346860",
       "response_count": 110
     },
+    "long-document-reranking-glm53-flash-tokenplus-zai-official-claude-code-max-c35efdc2a2cb": {
+      "cost_usd": "0.41464703",
+      "response_count": 131
+    },
+    "long-document-reranking-glm53-tokenplus-zai-official-claude-code-max-c787bebe0d9f": {
+      "cost_usd": "3.33519764",
+      "response_count": 90
+    },
     "long-document-reranking-gpt-6-astra-max-0f481641d7c3": {
       "cost_usd": "27.7018045",
       "response_count": 109
@@ -1475,6 +1683,14 @@
     "long-pdf-evidence-deepseek-v4.1-flash-1017-pi-max-4d4433afee07": {
       "cost_usd": "0.090105480",
       "response_count": 80
+    },
+    "long-pdf-evidence-glm53-flash-tokenplus-zai-official-claude-code-max-8cffb737d85c": {
+      "cost_usd": "0.37708841",
+      "response_count": 121
+    },
+    "long-pdf-evidence-glm53-tokenplus-zai-official-claude-code-max-f7718833bdc6": {
+      "cost_usd": "3.37601472",
+      "response_count": 110
     },
     "long-pdf-evidence-gpt-6-astra-max-a1a38cca3cc6": {
       "cost_usd": "24.4018665",
@@ -1532,6 +1748,14 @@
       "cost_usd": "0.212981622",
       "response_count": 104
     },
+    "long-pdf-evidence-vectorless-glm53-flash-tokenplus-zai-official-claude-code-max-00abd4fd89a4": {
+      "cost_usd": "0.33763445",
+      "response_count": 116
+    },
+    "long-pdf-evidence-vectorless-glm53-tokenplus-zai-official-claude-code-max-98d376c1e8a1": {
+      "cost_usd": "2.49253076",
+      "response_count": 90
+    },
     "long-pdf-evidence-vectorless-gpt-6-astra-max-ec0cd879eed6": {
       "cost_usd": "31.7570145",
       "response_count": 128
@@ -1587,6 +1811,14 @@
     "memory-constrained-dense-retrieval-deepseek-v4.1-flash-1017-pi-max-0200c2e8316d": {
       "cost_usd": "0.092265222",
       "response_count": 50
+    },
+    "memory-constrained-dense-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-4e5e1241a35d": {
+      "cost_usd": "0.36164162",
+      "response_count": 87
+    },
+    "memory-constrained-dense-retrieval-glm53-tokenplus-zai-official-claude-code-max-77c57d6557c7": {
+      "cost_usd": "3.14707692",
+      "response_count": 96
     },
     "memory-constrained-dense-retrieval-gpt-6-astra-max-21fa5051d447": {
       "cost_usd": "16.7694555",
@@ -1644,6 +1876,14 @@
       "cost_usd": "0.172243356",
       "response_count": 169
     },
+    "methodology-inspiration-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-edc176668d78": {
+      "cost_usd": "0.89621178",
+      "response_count": 299
+    },
+    "methodology-inspiration-retrieval-glm53-tokenplus-zai-official-claude-code-max-9ec801d26084": {
+      "cost_usd": "10.65059492",
+      "response_count": 369
+    },
     "methodology-inspiration-retrieval-gpt-6-astra-max-2d3fcab745ba": {
       "cost_usd": "29.0447270",
       "response_count": 128
@@ -1699,6 +1939,14 @@
     "multilingual-vector-postprocessing-deepseek-v4.1-flash-1017-pi-max-c7697137beb6": {
       "cost_usd": "0.119747628",
       "response_count": 82
+    },
+    "multilingual-vector-postprocessing-glm53-flash-tokenplus-zai-official-claude-code-max-e45c65e98847": {
+      "cost_usd": "0.40101036",
+      "response_count": 111
+    },
+    "multilingual-vector-postprocessing-glm53-tokenplus-zai-official-claude-code-max-5a4009fe3500": {
+      "cost_usd": "4.04448892",
+      "response_count": 139
     },
     "multilingual-vector-postprocessing-gpt-6-astra-max-723f7952e68d": {
       "cost_usd": "8.5775960",
@@ -1756,6 +2004,14 @@
       "cost_usd": "0.108773880",
       "response_count": 119
     },
+    "narrative-clue-search-glm53-flash-tokenplus-zai-official-claude-code-max-9e0132684742": {
+      "cost_usd": "0.46571466",
+      "response_count": 153
+    },
+    "narrative-clue-search-glm53-tokenplus-zai-official-claude-code-max-7765a3106ee3": {
+      "cost_usd": "6.32067596",
+      "response_count": 229
+    },
     "narrative-clue-search-gpt-6-astra-max-e3b2380dae0a": {
       "cost_usd": "30.4421110",
       "response_count": 123
@@ -1811,6 +2067,14 @@
     "negative-constraint-retrieval-deepseek-v4.1-flash-1017-pi-max-84bfc066d136": {
       "cost_usd": "0.154691442",
       "response_count": 97
+    },
+    "negative-constraint-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-06cfc0725034": {
+      "cost_usd": "0.66751466",
+      "response_count": 203
+    },
+    "negative-constraint-retrieval-glm53-tokenplus-zai-official-claude-code-max-c73bde3c99bb": {
+      "cost_usd": "4.52514056",
+      "response_count": 147
     },
     "negative-constraint-retrieval-gpt-6-astra-max-ebb3c8f19418": {
       "cost_usd": "10.5969055",
@@ -1868,6 +2132,14 @@
       "cost_usd": "0.183731088",
       "response_count": 157
     },
+    "paper-metadata-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-de5283f321a6": {
+      "cost_usd": "0.51312382",
+      "response_count": 156
+    },
+    "paper-metadata-retrieval-glm53-tokenplus-zai-official-claude-code-max-1d7b1020259e": {
+      "cost_usd": "4.42651964",
+      "response_count": 156
+    },
     "paper-metadata-retrieval-gpt-6-astra-max-3378e6f8ed12": {
       "cost_usd": "13.1918845",
       "response_count": 58
@@ -1923,6 +2195,14 @@
     "protein-text-bidirectional-retrieval-deepseek-v4.1-flash-1017-pi-max-c75950ad7fc4": {
       "cost_usd": "0.056450940",
       "response_count": 55
+    },
+    "protein-text-bidirectional-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-889b89a5f0fe": {
+      "cost_usd": "0.13814170",
+      "response_count": 54
+    },
+    "protein-text-bidirectional-retrieval-glm53-tokenplus-zai-official-claude-code-max-0d89c2a74988": {
+      "cost_usd": "1.08702652",
+      "response_count": 42
     },
     "protein-text-bidirectional-retrieval-gpt-6-astra-max-6f6df571cd91": {
       "cost_usd": "12.9351400",
@@ -1980,6 +2260,14 @@
       "cost_usd": "0.311333268",
       "response_count": 229
     },
+    "quantity-aware-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-2f15588ad315": {
+      "cost_usd": "0.84331430",
+      "response_count": 262
+    },
+    "quantity-aware-retrieval-glm53-tokenplus-zai-official-claude-code-max-c22fa741abb4": {
+      "cost_usd": "4.00145292",
+      "response_count": 149
+    },
     "quantity-aware-retrieval-gpt-6-astra-max-2f777d12e5ba": {
       "cost_usd": "62.2413775",
       "response_count": 260
@@ -2035,6 +2323,14 @@
     "query-encoder-alignment-deepseek-v4.1-flash-1017-pi-max-44e953243a1e": {
       "cost_usd": "0.115657578",
       "response_count": 89
+    },
+    "query-encoder-alignment-glm53-flash-tokenplus-zai-official-claude-code-max-843e5f1e7bd7": {
+      "cost_usd": "0.32943851",
+      "response_count": 93
+    },
+    "query-encoder-alignment-glm53-tokenplus-zai-official-claude-code-max-5f4e0cb6a41c": {
+      "cost_usd": "4.21219612",
+      "response_count": 145
     },
     "query-encoder-alignment-gpt-6-astra-max-02def5f6c39e": {
       "cost_usd": "10.8245350",
@@ -2092,6 +2388,14 @@
       "cost_usd": "0.163751568",
       "response_count": 123
     },
+    "reasoning-query-rewriting-glm53-flash-tokenplus-zai-official-claude-code-max-1347e2d66539": {
+      "cost_usd": "0.43003546",
+      "response_count": 154
+    },
+    "reasoning-query-rewriting-glm53-tokenplus-zai-official-claude-code-max-be398c19cde4": {
+      "cost_usd": "3.37785976",
+      "response_count": 116
+    },
     "reasoning-query-rewriting-gpt-6-astra-max-f00371272574": {
       "cost_usd": "16.4692205",
       "response_count": 71
@@ -2147,6 +2451,14 @@
     "rust-bm25-search-deepseek-v4.1-flash-1017-pi-max-b1611420d381": {
       "cost_usd": "0.209767026",
       "response_count": 139
+    },
+    "rust-bm25-search-glm53-flash-tokenplus-zai-official-claude-code-max-e2bbf06b0d6a": {
+      "cost_usd": "1.44744627",
+      "response_count": 367
+    },
+    "rust-bm25-search-glm53-tokenplus-zai-official-claude-code-max-e2b481378034": {
+      "cost_usd": "8.80013164",
+      "response_count": 250
     },
     "rust-bm25-search-gpt-6-astra-max-f6274a8f2a6c": {
       "cost_usd": "7.7698585",
@@ -2204,6 +2516,14 @@
       "cost_usd": "0.111953184",
       "response_count": 101
     },
+    "same-place-image-search-glm53-flash-tokenplus-zai-official-claude-code-max-beb646f88496": {
+      "cost_usd": "0.42172190",
+      "response_count": 127
+    },
+    "same-place-image-search-glm53-tokenplus-zai-official-claude-code-max-98c852a53c0c": {
+      "cost_usd": "0.11326716",
+      "response_count": 9
+    },
     "same-place-image-search-gpt-6-astra-max-1d2d824afd06": {
       "cost_usd": "19.4605655",
       "response_count": 79
@@ -2259,6 +2579,14 @@
     "scientific-paper-qa-deepseek-v4.1-flash-1017-pi-max-7ea690e78009": {
       "cost_usd": "0.165606636",
       "response_count": 164
+    },
+    "scientific-paper-qa-glm53-flash-tokenplus-zai-official-claude-code-max-0b36d22bdb72": {
+      "cost_usd": "0.34881845",
+      "response_count": 121
+    },
+    "scientific-paper-qa-glm53-tokenplus-zai-official-claude-code-max-de84130ac92a": {
+      "cost_usd": "4.69121364",
+      "response_count": 177
     },
     "scientific-paper-qa-gpt-6-astra-max-08e910f5b4fb": {
       "cost_usd": "26.8227720",
@@ -2316,6 +2644,14 @@
       "cost_usd": "0.107950170",
       "response_count": 107
     },
+    "sketch-text-search-glm53-flash-tokenplus-zai-official-claude-code-max-bc698b70e54c": {
+      "cost_usd": "0.75525271",
+      "response_count": 267
+    },
+    "sketch-text-search-glm53-tokenplus-zai-official-claude-code-max-0e048feb2171": {
+      "cost_usd": "0.04428080",
+      "response_count": 7
+    },
     "sketch-text-search-gpt-6-astra-max-1271082e7864": {
       "cost_usd": "23.2195355",
       "response_count": 104
@@ -2371,6 +2707,14 @@
     "sparse-retrieval-pruning-deepseek-v4.1-flash-1017-pi-max-6df34c9f8301": {
       "cost_usd": "0.179751564",
       "response_count": 132
+    },
+    "sparse-retrieval-pruning-glm53-flash-tokenplus-zai-official-claude-code-max-811bbcf9bd95": {
+      "cost_usd": "0.57017705",
+      "response_count": 134
+    },
+    "sparse-retrieval-pruning-glm53-tokenplus-zai-official-claude-code-max-a0b567df0ee8": {
+      "cost_usd": "4.50901880",
+      "response_count": 117
     },
     "sparse-retrieval-pruning-gpt-6-astra-max-8b78d579b7af": {
       "cost_usd": "18.5629250",
@@ -2428,6 +2772,14 @@
       "cost_usd": "0.232230624",
       "response_count": 182
     },
+    "spoken-query-search-glm53-flash-tokenplus-zai-official-claude-code-max-fc43d8702283": {
+      "cost_usd": "0.58776751",
+      "response_count": 184
+    },
+    "spoken-query-search-glm53-tokenplus-zai-official-claude-code-max-a889a13789c9": {
+      "cost_usd": "3.76396088",
+      "response_count": 115
+    },
     "spoken-query-search-gpt-6-astra-max-00f84f524f84": {
       "cost_usd": "30.1720245",
       "response_count": 131
@@ -2483,6 +2835,14 @@
     "training-error-tracing-deepseek-v4.1-flash-1017-pi-max-7a91277a1063": {
       "cost_usd": "0.177920886",
       "response_count": 101
+    },
+    "training-error-tracing-glm53-flash-tokenplus-zai-official-claude-code-max-45ed1f611b01": {
+      "cost_usd": "1.63610049",
+      "response_count": 453
+    },
+    "training-error-tracing-glm53-tokenplus-zai-official-claude-code-max-c9bee67cdc42": {
+      "cost_usd": "9.44430920",
+      "response_count": 313
     },
     "training-error-tracing-gpt-6-astra-max-d5ad0f29aacf": {
       "cost_usd": "25.1193080",
@@ -2540,6 +2900,14 @@
       "cost_usd": "0.203895138",
       "response_count": 150
     },
+    "video-moment-search-glm53-flash-tokenplus-zai-official-claude-code-max-40c99906fc66": {
+      "cost_usd": "0.61383272",
+      "response_count": 191
+    },
+    "video-moment-search-glm53-tokenplus-zai-official-claude-code-max-01ce2aa26631": {
+      "cost_usd": "5.56656544",
+      "response_count": 194
+    },
     "video-moment-search-gpt-6-astra-max-ae81e4970157": {
       "cost_usd": "19.2722910",
       "response_count": 66
@@ -2596,6 +2964,14 @@
       "cost_usd": "0.359697936",
       "response_count": 319
     },
+    "visual-document-qa-glm53-flash-tokenplus-zai-official-claude-code-max-02d7f9ad1c6b": {
+      "cost_usd": "0.36401902",
+      "response_count": 115
+    },
+    "visual-document-qa-glm53-tokenplus-zai-official-claude-code-max-b8807477d6e4": {
+      "cost_usd": "0.05990852",
+      "response_count": 8
+    },
     "visual-document-qa-gpt-6-astra-max-df2a0741963a": {
       "cost_usd": "23.7500650",
       "response_count": 95
@@ -2637,5 +3013,5 @@
       "response_count": 135
     }
   },
-  "usage_sha256": "6d37479ce9f4924e3ab58c0a713d8ce204f5dda71f48bc4a4d98e70ac2cc836a"
+  "usage_sha256": "de33e9b2781a1fbf22ce51fe9140ca48a599277773b6d0032de0eb201520dc7a"
 }

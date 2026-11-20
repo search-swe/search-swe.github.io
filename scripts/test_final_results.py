@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from import_final_results import MODELS, DEEPSEEK_SETTINGS, coding_provider, coding_session, coding_time, entry_model, original_claude_source, selected_rows, session_usage
+from import_final_results import MODELS, DEEPSEEK_SETTINGS, TOKENPLUS_MODELS, TOKENPLUS_SETTINGS, coding_provider, coding_session, coding_time, entry_model, original_claude_source, selected_rows, session_usage
 from import_results import export_trajectory, read
 
 
@@ -55,7 +55,10 @@ class CurrentArchiveTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             rows = [{'task': t, 'model': m, 'model_label': ''}
-                    for t in ['one', 'two'] for m in MODELS if not m.startswith('deepseek/')]
+                    for t in ['one', 'two'] for m in MODELS if not m.startswith('deepseek/') and m not in TOKENPLUS_MODELS]
+            rows.extend({'task': t, 'model': m, 'model_label': setting}
+                        for t in ['one', 'two'] for m, setting in TOKENPLUS_SETTINGS.items())
+            rows.append({'task': 'one', 'model': TOKENPLUS_MODELS[0], 'model_label': 'unrouted-glm'})
             rows.extend({'task': t, 'model': 'deepseek/deepseek-v4.1-flash-1017', 'model_label': setting}
                         for t in ['one', 'two'] for setting in DEEPSEEK_SETTINGS)
             rows.append({'task': 'one', 'model': 'incomplete-other-model'})

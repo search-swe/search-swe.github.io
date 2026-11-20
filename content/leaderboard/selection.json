@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "updated_at": "2026-11-18",
+  "updated_at": "2026-11-19",
   "included_models": [
     "openai/gpt-6-luna",
     "openai/gpt-6.1-terra",
@@ -13,6 +13,8 @@
     "xiaomi/mimo-v2.6-flash",
     "xiaomi/mimo-v2.6-pro",
     "step-5-preview",
+    "z-ai/glm-5.3",
+    "z-ai/glm-5.3-flash",
     "tencent/hy4"
   ],
   "model_substitutions": [

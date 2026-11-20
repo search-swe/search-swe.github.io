@@ -22,9 +22,17 @@ from publication import CURRENT_RELEASE, DEFAULT_PACKAGE, PublicText, load_packa
 from claude_code_usage import claude_usage
 from pi_usage import pi_usage
 
+TOKENPLUS_MODELS = ('z-ai/glm-5.3', 'z-ai/glm-5.3-flash')
+TOKENPLUS_SETTINGS = {
+    'z-ai/glm-5.3?provider=z-ai': 'glm53-tokenplus-zai-official-claude-code-max',
+    'z-ai/glm-5.3-flash?provider=z-ai': 'glm53-flash-tokenplus-zai-official-claude-code-max',
+}
+GLM_IMAGE_ERRORS = frozenset({'composed-image-search', 'layout-page-search', 'same-place-image-search',
+                             'sketch-text-search', 'visual-document-qa'})
+GLM_RESUMED_USAGE_SHA256 = '64aa8c420fffef818c50720d760d76cc0bee22cc91eb3c33340acbfbf80d1721'
 MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1-pro',
           'anthropic/claude-opus-5.5', 'gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017', 'kimi-k3',
-          'xiaomi/mimo-v2.6-flash', 'xiaomi/mimo-v2.6-pro', 'step-5-preview')
+          'xiaomi/mimo-v2.6-flash', 'xiaomi/mimo-v2.6-pro', 'step-5-preview', *TOKENPLUS_MODELS)
 DEFAULT_FINAL = Path('/data/Search-SWE-Workspace/Search-SWE/run-eval-release/Search-SWE/jobs/final-trajectories')
 CONTENT = ROOT / 'content/leaderboard'
 AGENT_TIME_BUDGET_ASSIGNMENTS = {
@@ -40,6 +48,8 @@ AGENT_TIME_BUDGET_ASSIGNMENTS = {
 
 
 def entry_model(row):
+    if row['model'] in TOKENPLUS_SETTINGS:
+        return row['model'].removesuffix('?provider=z-ai')
     if row['model'] == 'anthropic/claude-opus-5':
         if (row['task'] != 'constrained-molecular-search' or
                 row.get('model_label') != 'claude-opus-5.5-claude-code-max'):
@@ -61,7 +71,8 @@ def setting_key(row):
 def selected_rows(final, tasks):
     with (final / 'INDEX.csv').open() as source:
         rows = [r for r in csv.DictReader(source)
-                if r['model'] in (*MODELS, 'anthropic/claude-opus-5')
+                if (r['model'] in (*MODELS, 'anthropic/claude-opus-5') and r['model'] not in TOKENPLUS_MODELS
+                    or (r['model'] in TOKENPLUS_SETTINGS and TOKENPLUS_SETTINGS[r['model']] == r['model_label']))
                 and (not r['model'].startswith('deepseek/') or r.get('model_label') in DEEPSEEK_SETTINGS)]
     keys = [(r['task'], setting_key(r)) for r in rows]
     settings = [m for m in MODELS if not m.startswith('deepseek/')] + list(DEEPSEEK_SETTINGS)
@@ -246,7 +257,10 @@ def prepare(final, package, base_package=None):
         shutil.copytree(base_package / release_path / 'trials', package / release_path / 'trials', dirs_exist_ok=True)
     for number, row in enumerate(rows, 1):
         harness = 'Pi' if row['model_label'].endswith('-pi-max') else ('Claude Code' if '-claude-code-' in row['model_label'] else 'Codex')
-        old = previous.get((row['task'], row['model'], harness))
+        tokenplus = row['model'] in TOKENPLUS_SETTINGS
+        model = entry_model(row)
+        coding_model = model if tokenplus else row['model']
+        old = previous.get((row['task'], coding_model, harness))
         if old:
             if (old['trajectory_sha256'] != row['primary_trajectory_sha256'] or
                     not math.isclose(old['score'], float(row['score']), abs_tol=1e-8)):
@@ -287,13 +301,35 @@ def prepare(final, package, base_package=None):
                 not math.isclose(score, 100 * float(native), abs_tol=1e-7)):
             raise ValueError('Selected score disagrees with the final native reward')
         result = json.loads(source(safe_path(root, pointer['selected_result'])))
-        if result['task_name'].removeprefix('search-swe/') != row['task'] or not (result.get('verifier') or {}).get('finished_at'):
-            raise ValueError('Native verification has not completed for the selected task')
-        native_result_reward = result['verifier_result']['rewards']['reward']
-        if not math.isclose(float(native_result_reward), float(native), abs_tol=1e-9):
-            raise ValueError('Native result and selected reward differ')
+        if result['task_name'].removeprefix('search-swe/') != row['task']:
+            raise ValueError('Native result refers to another task')
+        adjudicated_image = (tokenplus and coding_model == 'z-ai/glm-5.3' and row['task'] in GLM_IMAGE_ERRORS)
+        frozen_regrade = tokenplus and pointer.get('mode') == 'frozen_submission_regrade'
+        if adjudicated_image:
+            if (score != 0 or result.get('verifier_result') is not None
+                    or (result.get('exception_info') or {}).get('exception_type') != 'UnknownApiError'
+                    or pointer.get('selected_reward_kind') != 'explicit_user_adjudication'
+                    or pointer.get('qualification_flag') != 'user_adjudicated_image_input_failure_zero'
+                    or reward.get('diagnosis') != pointer['qualification_flag']
+                    or reward.get('decision_type') != 'explicit_user_adjudication'
+                    or reward.get('original_native_outputs_modified') is not False
+                    or reward.get('task') != row['task'] or reward.get('model_id') != row['model']
+                    or Path(reward.get('native_trial') or '').name != result['trial_name']):
+                raise ValueError('Invalid archived image-input zero adjudication')
+        else:
+            if frozen_regrade:
+                if (row['task'] != 'scientific-paper-qa'
+                        or pointer.get('qualification_flag') != 'VERIFIED_FROZEN_SUBMISSION_REGRADE'
+                        or result.get('record_type') != 'qualified_frozen_submission_regrade'
+                        or result.get('valid') is not True or not result.get('regrade_verified_at')):
+                    raise ValueError('Missing qualified frozen-submission scoring evidence')
+            elif not (result.get('verifier') or {}).get('finished_at'):
+                raise ValueError('Native verification has not completed for the selected task')
+            native_result_reward = result['verifier_result']['rewards']['reward']
+            if not math.isclose(float(native_result_reward), float(native), abs_tol=1e-9):
+                raise ValueError('Native result and selected reward differ')
         raw = json.loads(trajectory)
-        if raw['agent']['model_name'] != ('openrouter/' + row['model'] if harness == 'Pi' else row['model']):
+        if raw['agent']['model_name'] != ('openrouter/' + coding_model if harness == 'Pi' else coding_model):
             raise ValueError('Selected trajectory model differs')
         extra_usage = None
         extra_agent_files = {}
@@ -316,7 +352,7 @@ def prepare(final, package, base_package=None):
                                      for relative in coding_inventory if relative in exported_originals}
                 extra_source_hashes = {'original-coding/' + relative: expected
                                        for relative, expected in coding_inventory.items()}
-            provider = 'OpenRouter' if pointer.get('provider') == 'openrouter' else metadata['models'][row['model']]['provider']
+            provider = 'OpenRouter' if pointer.get('provider') == 'openrouter' else metadata['models'][coding_model]['provider']
             if (raw['agent']['name'] != 'claude-code' or raw['agent']['version'] != '2.1.309' or
                     (provider == 'OpenRouter' and (pointer.get('provider') != 'openrouter' or row['effort'] != 'max')) or
                     (row['model'].startswith('kimi-') and provider != 'Moonshot AI')):
@@ -328,15 +364,24 @@ def prepare(final, package, base_package=None):
                         coding_config['kwargs'].get('version') != '2.1.309' or
                         coding_config['kwargs'].get('reasoning_effort') != 'max'):
                     raise ValueError('Claude Code configuration differs from the selected model/provider/effort')
-            elif row['model'] == 'step-5-preview':
+            elif row['model'] == 'step-5-preview' or tokenplus:
                 coding_config = json.loads(coding_read(coding_root / 'config.json'))['agent']
-                if (provider != 'StepFun' or pointer.get('provider') != 'native' or row['effort'] != 'max' or
+                expected_provider, allowed_host = ('Z.ai', 'api.tokenplus.cn') if tokenplus else ('StepFun', 'api.stepfun.com')
+                if (provider != expected_provider or pointer.get('provider') != 'native' or row['effort'] != 'max' or
                         coding_config.get('import_path') != 'scripts.evaluation.native_agents:NativeAgent' or
                         coding_config.get('model_name') != row['model'] or
                         coding_config.get('kwargs', {}).get('version') != '2.1.309' or
                         coding_config.get('kwargs', {}).get('reasoning_effort') != 'max' or
-                        'api.stepfun.com' not in coding_config.get('extra_allowed_hosts', [])):
-                    raise ValueError('StepFun native coding model/provider/version/effort differs')
+                        allowed_host not in coding_config.get('extra_allowed_hosts', [])):
+                    raise ValueError('Native coding model/provider/version/effort differs')
+                if frozen_regrade:
+                    original = safe_path(trial_root, result['original_native_result'])
+                    coding_result = json.loads(source(original))
+                    if (coding_result['id'] != result['id'] or result['id'] != pointer['native_UUID']
+                            or coding_result['config']['agent']['model_name'] != row['model']):
+                        raise ValueError('Frozen-submission regrade original coding identity differs')
+                    extra_agent_files['original-coding/result.json'] = original
+                    extra_source_hashes['original-coding/result.json'] = inventory[original.relative_to(output).as_posix()]
             harness_path = coding_root / 'agent/harness.json'
             if harness_path.exists():
                 harness = json.loads(coding_read(harness_path))
@@ -352,8 +397,15 @@ def prepare(final, package, base_package=None):
                     stream.append(json.loads(line))
                 except json.JSONDecodeError:
                     pass  # CLI progress lines are not JSON events.
+            glm_resumed = (tokenplus and coding_model == 'z-ai/glm-5.3' and row['task'] == 'budgeted-bimetric-retrieval'
+                           and row['primary_trajectory_sha256'] == GLM_RESUMED_USAGE_SHA256)
             tokens, requests, extra_usage, start, finish, completed, usage_note = claude_usage(
-                sessions, stream, raw['session_id'], row['model'], raw['agent']['version'])
+                sessions, stream, raw['session_id'], coding_model, raw['agent']['version'],
+                request_model=row['model'] if tokenplus else None, receipts_only=glm_resumed)
+            if glm_resumed and (tokens['input_tokens'] != raw['final_metrics']['total_prompt_tokens']
+                                or tokens['output_tokens'] != raw['final_metrics']['total_completion_tokens']
+                                or tokens['cached_input_tokens'] != raw['final_metrics']['total_cached_tokens']):
+                raise ValueError('GLM resumed usage differs from the archived complete receipts')
             starts, finishes = [start] if start else [], [finish] if finish else []
             start, finish, seconds, time_basis = coding_time(coding_result, starts, finishes)
             if extra_agent_files:
@@ -422,7 +474,6 @@ def prepare(final, package, base_package=None):
                             else inventory[path.relative_to(output).as_posix()])
                 if item['bytes'] != expected['bytes'] or (item['source_sha256'] and item['source_sha256'] != expected['sha256']):
                     raise ValueError(f'Exported evidence differs from source inventory: {group}/{item["name"]}')
-        model = entry_model(row)
         info = metadata['models'][model]
         if info.get('inference_provider'):
             if provider != 'OpenRouter':
@@ -431,6 +482,8 @@ def prepare(final, package, base_package=None):
         entry = {'id': entry_id, 'model': model, 'name': NAMES[model], 'effort': row['effort'],
                  'agent': agent, 'agent_version': raw['agent']['version'], 'provider': provider,
                  'release_date': info['release_date'], 'release_date_source': info['source']}
+        if tokenplus:
+            entry['provider_route'] = 'TokenPlus (SiliconFlow)'
         if entry_id in entries and entries[entry_id] != entry:
             raise ValueError('Mixed agent configurations in one model entry')
         entries[entry_id] = entry
@@ -444,10 +497,14 @@ def prepare(final, package, base_package=None):
         fm = raw.get('final_metrics', {})
         if agent == 'Codex' and any(tokens[k] != fm.get(f) for k, f in [('input_tokens', 'total_prompt_tokens'), ('output_tokens', 'total_completion_tokens')]):
             usage_note += ' The ATIF summary lags the final receipt; totals include that recorded response.'
-        config = {'agent': agent, 'version': raw['agent']['version'], 'model': row['model'],
+        config = {'agent': agent, 'version': raw['agent']['version'], 'model': coding_model,
                   'effort': row['effort'], 'provider': provider,
                   'run_mode': 'regrade' if extra_agent_files else pointer.get('mode') or 'native',
                   'task_commit': pointer.get('source_revision'), 'verifier_commit': pointer.get('source_revision')}
+        if tokenplus:
+            config.update(provider_route=entry['provider_route'], request_model=row['model'])
+        if frozen_regrade:
+            config.update(run_mode='frozen_submission_regrade', verifier_commit=result['grader_revision'])
         if extra_agent_files:
             config.update(coding_source_trial_id=coding_result['id'], grading_trial_id=result['id'])
         trial = {'id': trial_id, 'entry': entry_id, 'task': row['task'], 'score': score, 'valid': True,
@@ -458,7 +515,7 @@ def prepare(final, package, base_package=None):
                  'trajectory_sha256': digest(trajectory), 'reward_sha256': digest(reward_bytes),
                  'reward': sanitize(reward, public), 'redacted_fields': redactions}
         apply_agent_time_override(trial)
-        if model != row['model']:
+        if model != coding_model:
             if not pointer.get('actual_model_substitution') or pointer.get('requested_scoreboard_model') != model:
                 raise ValueError('Model substitution lacks explicit archive provenance')
             substitution = next(s for s in policy['model_substitutions'] if
@@ -466,7 +523,7 @@ def prepare(final, package, base_package=None):
             trial['model_substitution'] = substitution
         write(destination / 'evaluation.json', {k: trial[k] for k in ('score', 'reward', 'configuration', 'qualification')})
         snapshot['trials'].append(trial)
-        usage_rows.append({'task': row['task'], 'model': row['model'], 'effort': row['effort'],
+        usage_rows.append({'task': row['task'], 'model': coding_model, 'effort': row['effort'],
                            **({'agent': agent} if row['model'].startswith('deepseek/') else {}),
                            'primary_trajectory_sha256': digest(trajectory), 'requests': requests})
         if extra_usage is not None:

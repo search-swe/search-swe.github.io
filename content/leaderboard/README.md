@@ -1,8 +1,30 @@
 # Leaderboard data and publication
 
-The current homepage contains **47 tasks (24 CPU, 23 GPU), fourteen leaderboard
-settings across twelve models, and 658 selected trials**. Hy4 uses high effort;
-the other thirteen settings use max.
+The current homepage contains **47 tasks (24 CPU, 23 GPU), sixteen leaderboard
+settings across fourteen models, and 752 selected trials**. Hy4 uses high effort and
+the other fifteen settings use max.
+
+GLM 5.3 and GLM 5.3 Flash each add 47 tasks using Claude Code 2.1.309 / max.
+The provider column displays **Z.ai**. The entry and trial configuration record
+SiliconFlow TokenPlus and the explicit `?provider=z-ai` request model. Mean scores
+are **18.3592699115** and **16.3564352232**, respectively. All 24,274 archived
+source files passed size and SHA-256 checks.
+
+GLM 5.3 accepts text only. On `composed-image-search`, `layout-page-search`,
+`same-place-image-search`, `sketch-text-search` and `visual-document-qa`, Claude
+Code stopped when its Read tool attempted to pass an image. These five selected
+zeros are labeled on the leaderboard and trial pages with the archived
+adjudication. Seven regrades retain their original coding time and usage.
+On GLM 5.3 `budgeted-bimetric-retrieval`, the complete deduplicated receipts
+match the archived ATIF totals and include earlier calls omitted from the final
+CLI invocation's usage counter. All original coding durations are available.
+
+Costs use [Z.ai standard USD API prices](https://docs.z.ai/guides/overview/pricing)
+per million input/cache-read/output tokens of **$1.40/$0.26/$4.40** for GLM 5.3
+and **$0.15/$0.03/$0.50** for Flash. TokenPlus billing is separate. The current
+package is `.build/hf-trajectories-glm53-tokenplus/`, appended to the verified
+Step 5 package with its 658 existing trials. The active immutable HF revision
+is in [`storage.json`](storage.json).
 
 Step 5 Preview / Claude Code 2.1.309 / max adds 47/47 tasks with provider
 **StepFun**, mean score **19.4745596453**, **800,569,286 tokens**, and
@@ -162,7 +184,7 @@ and [DeepSeek endpoint list](https://openrouter.ai/api/v1/models/deepseek/deepse
 Scores, tokens, configurations and payloads for all 235 earlier trials are
 unchanged; the seven duration assignments above update their timing summaries.
 
-The current public package is `.build/hf-trajectories-step5/`: **314,927 files**,
+The preceding Step 5 public package is `.build/hf-trajectories-step5/`: **314,927 files**,
 approximately **11.59 GiB**, with 658 ATIF trajectories and 669 original
 session JSONL exports. Step 5 adds 28,659 trial files, excluding shared metadata.
 Prepare and publish it with `publish_final_results.py`, using
@@ -178,12 +200,13 @@ approximately **9.45 GiB**, with 564 ATIF trajectories
 and 573 original session JSONL exports (235 Codex, 291 Claude Code, 47 Pi). Credentials are redacted and host paths
 normalized. Large binary artifacts remain listed without content downloads.
 Source execution jobs remain unchanged.
-The current default package is `.build/hf-trajectories-step5/`; `.build/hf-trajectories-current/` remains the older 235-trial append base.
+The current default package is `.build/hf-trajectories-glm53-tokenplus/`.
+`.build/hf-trajectories-current/` remains the older 235-trial append base.
 
 The active HF directory is **`releases/current/`**, independent of model names or
 publication dates. Full commit SHAs identify immutable versions. The verified
 revision is recorded in [`storage.json`](storage.json) and the private receipt
-`.build/hf-trajectories-step5-uploaded.json`. The website pins that SHA rather
+`.build/hf-trajectories-glm53-tokenplus-uploaded.json`. The website pins that SHA rather
 than reading the mutable `main` branch.
 The Step 5 publication uses the immutable revision
 [`a4d445dc0b8f8324fbc959fe57885c5474c7b939`](https://huggingface.co/datasets/search-swe/trajectories/commit/a4d445dc0b8f8324fbc959fe57885c5474c7b939).
@@ -223,7 +246,7 @@ the current verified package as the base, and use a fresh output package:
 
 ```bash
 python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-step5 \
+  --base-package .build/hf-trajectories-glm53-tokenplus \
   --package .build/hf-trajectories-next --upload
 ```
 
@@ -263,9 +286,9 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   are used. Missing original end timestamps remain missing; regrade time is never
   substituted. Eight reviewed runs use the maintainer-assigned 7200-second
   coding budget, with provenance in `agent_time_basis` and exact source trajectory
-  hashes in the importer. All 658 selected trials have a reported duration,
+  hashes in the importer. All 752 selected trials have a reported duration,
   including the eight previously recovered original timings, three MiMo coding
-  durations and all 47 Hy4 and 47 Step 5 durations.
+  durations and all Hy4, Step 5 and GLM durations.
 - Total tokens in the main leaderboard sum input (including cache) + output
   across the selected All / CPU / GPU task set, not a per-task average. Entry rows
   show Input Tokens, Output Tokens and Cached Tokens; trial summaries show the
@@ -274,7 +297,7 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   time. Verifier/task-internal API usage is excluded. Regrading uses original
   coding usage once. Missing values remain missing.
 - Cost sums selected coding responses at the frozen official USD API rates in
-  `official-pricing.json`, updated 2026-11-18. The OpenAI models use standard
+  `official-pricing.json`, updated 2026-11-19. The OpenAI models use standard
   processing, 30-minute cache writes and per-request context tiers above 272,000
   input tokens. Kimi K3.1 Pro uses standard USD rates: input/write $2, read $0.20
   and output $10 per million tokens. Kimi K3 uses input/write $3, read $0.30
@@ -445,9 +468,9 @@ unchanged; exported JSON contains no local host source paths in its metadata.
 
 ```bash
 python -m unittest discover -s scripts -p 'test_*.py'
-python scripts/import_final_results.py --package .build/hf-trajectories-step5 --check
+python scripts/import_final_results.py --package .build/hf-trajectories-glm53-tokenplus --check
 python scripts/build_leaderboard.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-step5.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-glm53-tokenplus.usage.json --check
 python scripts/build_tasks.py --check
 node --check leaderboard.js
 node --check leaderboard-pareto.js
@@ -457,9 +480,9 @@ node --check trial-files.js
 ```
 
 With Playwright available in the Node module search path and the preview server
-running, run `HF_PACKAGE=.build/hf-trajectories-step5 node scripts/test_leaderboard_browser.cjs`. Set
+running, run `HF_PACKAGE=.build/hf-trajectories-glm53-tokenplus node scripts/test_leaderboard_browser.cjs`. Set
 `LEADERBOARD_ORIGIN` to use a different local server address.
-Run `HF_PACKAGE=.build/hf-trajectories-step5 node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
+Run `HF_PACKAGE=.build/hf-trajectories-glm53-tokenplus node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
 Run `node scripts/test_leaderboard_costs_browser.cjs` for cost sorting, chart/table
 parity across hardware scopes, keyboard tabs, links, empty states and mobile layout.
 

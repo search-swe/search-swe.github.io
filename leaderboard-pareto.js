@@ -173,7 +173,7 @@
         const sides = px > width * .6 ? [-1, 1] : [1, -1];
         const options = [];
         // Keep names local to their marker; crowded names remain available in the legend.
-        for (const offset of [4, 0, 8, -4, 12, -8, 16, -12, 20, -16, 24, -20, 28, -24, 32, -28, 36]) {
+        for (const offset of [4, 0, 8, -4, 12, -8, 16, -12, 20, -16, 24, -20, 28, -24, 32, -28, 36, -32, 40, -36, 44]) {
           for (const side of sides) {
             label.setAttribute('x', px + side * 18);
             label.setAttribute('y', py + offset);

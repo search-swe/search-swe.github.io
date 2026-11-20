@@ -84,8 +84,8 @@ const money = value => value.toLocaleString('en-US', {style: 'currency', currenc
       assert.equal(await page.locator('.pareto-tooltip').isVisible(), false, 'Leaving the dot for its name hides the tooltip');
     }
     await page.locator('#filter').fill('glm');
-    assert.equal(await page.locator('.pareto-point').count(), 0);
-    assert.equal(await page.locator('#pareto-empty').isVisible(), true);
+    assert.equal(await page.locator('.pareto-point').count(), 2);
+    assert.equal(await page.locator('#pareto-empty').isVisible(), false);
     await page.locator('#filter').fill('terra');
     assert.equal(await page.locator('.pareto-point').count(), 1);
     assert.equal(await page.locator('.pareto-point').getAttribute('data-frontier'), 'true');

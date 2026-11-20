@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "checked_at": "2026-11-18",
+  "checked_at": "2026-11-19",
   "models": {
     "openai/gpt-6-luna": {
       "release_date": "2026-09-22",
@@ -75,6 +75,18 @@
       "source": "https://www.stepfun.com/news/step-5-preview",
       "provider": "StepFun",
       "provider_basis": "All 47 selected native Claude Code runs use step-5-preview with api.stepfun.com allowed; original coding configuration and native receipts verified."
+    },
+    "z-ai/glm-5.3": {
+      "release_date": "2026-08-18",
+      "source": "https://docs.z.ai/release-notes/new-released",
+      "provider": "Z.ai",
+      "provider_basis": "The selected Claude Code configuration uses SiliconFlow TokenPlus with the request model z-ai/glm-5.3?provider=z-ai."
+    },
+    "z-ai/glm-5.3-flash": {
+      "release_date": "2026-08-26",
+      "source": "https://docs.z.ai/release-notes/new-released",
+      "provider": "Z.ai",
+      "provider_basis": "The selected Claude Code configuration uses SiliconFlow TokenPlus with the request model z-ai/glm-5.3-flash?provider=z-ai."
     }
   }
 }

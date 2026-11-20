@@ -31,13 +31,14 @@ def normalized(usage, aggregate=False):
     return dict(zip(TOKEN_FIELDS[:-1], (inp, cached, written, output, thinking, inp + output)))
 
 
-def claude_usage(sessions, stream, session_id, model, version):
+def claude_usage(sessions, stream, session_id, model, version, *, request_model=None, receipts_only=False):
     """Deduplicate streaming blocks across main/subagent sessions; reconcile final totals.
 
     Final modelUsage includes compaction/background calls absent from the transcript.
     Their aggregate remainder can only be priced with a flat (not per-request tiered)
     model tariff. Missing final counters fall back to deduplicated recorded usage.
     """
+    request_model = request_model or model
     requests, states, partial, placeholders = {}, [], {}, set()
     for events in sessions:
         for event in events:
@@ -76,7 +77,7 @@ def claude_usage(sessions, stream, session_id, model, version):
                 raise ValueError('Conflicting Claude Code streaming usage')
             requests[key] = usage
     init = [e for e in stream if e.get('type') == 'system' and e.get('subtype') == 'init']
-    if (not init or any(e.get('session_id') != session_id or e.get('model') != model
+    if (not init or any(e.get('session_id') != session_id or e.get('model') != request_model
             or e.get('claude_code_version') != version for e in init) or not requests):
         raise ValueError('Claude Code stream identity/model/version mismatch')
     results = [e for e in stream if e.get('type') == 'result']
@@ -86,13 +87,13 @@ def claude_usage(sessions, stream, session_id, model, version):
     # and reconcile its last result with the final saved state, without summing.
     previous = None
     for result in results:
-        if result.get('session_id', session_id) != session_id or set(result['modelUsage']) != {model}:
+        if result.get('session_id', session_id) != session_id or set(result['modelUsage']) != {request_model}:
             raise ValueError('Unexpected session/model in Claude Code result')
-        current = normalized(result['modelUsage'][model], aggregate=True)
+        current = normalized(result['modelUsage'][request_model], aggregate=True)
         if previous and any(current[k] < previous[k] for k in current):
             raise ValueError('Regressing Claude Code resumed counters')
         previous = current
-    counters = [e['modelUsage'] for e in states + results[-1:]]
+    counters = [] if receipts_only else [e['modelUsage'] for e in states + results[-1:]]
     totals = Counter()
     for usage in requests.values():
         totals.update(usage)
@@ -101,9 +102,9 @@ def claude_usage(sessions, stream, session_id, model, version):
         raise ValueError('Incomplete Claude Code receipt requires a final aggregate counter')
     remainder = None
     if counters:
-        if any(set(c) != {model} for c in counters):
+        if any(set(c) != {request_model} for c in counters):
             raise ValueError('Unexpected model in Claude Code final counters')
-        complete = [normalized(c[model], aggregate=True) for c in counters]
+        complete = [normalized(c[request_model], aggregate=True) for c in counters]
         if any(c != complete[0] for c in complete):
             raise ValueError('Claude Code terminal and saved counters disagree')
         remainder = {k: complete[0][k] - totals[k] for k in TOKEN_FIELDS[:-1]}
@@ -129,6 +130,8 @@ def claude_usage(sessions, stream, session_id, model, version):
         note += ' Final modelUsage counters include background/compaction usage; recorded response count excludes calls without individual receipts.'
         if incomplete:
             note += ' An interrupted response lacks its reasoning breakdown; final counters include its usage, and the response count excludes this partial receipt.'
+    elif receipts_only:
+        note += ' The CLI counter covers only the final invocation. Complete recorded receipts match the archived ATIF totals.'
     else:
         note = RECORDED_USAGE_FALLBACK_NOTE
     if placeholders - requests.keys():

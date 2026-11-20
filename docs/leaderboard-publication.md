@@ -4,7 +4,32 @@
 从公开的 HF Dataset [`search-swe/trajectories`](https://huggingface.co/datasets/search-swe/trajectories)
 匿名按需读取。浏览器不需要 HF Token。
 
-## 当前更新：Step 5 Preview / Claude Code / max
+## 当前更新：GLM 5.3 与 GLM 5.3 Flash
+
+2026-11-19 新增 GLM 5.3 和 GLM 5.3 Flash，各 47 题，均为 Claude Code 2.1.309 / max。
+均分分别为 18.3592699115 和 16.3564352232。前端 Provider 显示 Z.ai，详情记录
+SiliconFlow TokenPlus 路由及请求模型的 `?provider=z-ai`。现为 14 个模型、16 个 settings、
+752 条结果。24,274 个源文件（103,578,605,907 bytes）通过大小和 SHA-256 校验。
+
+GLM 5.3 的 composed-image-search、layout-page-search、same-place-image-search、
+sketch-text-search 和 visual-document-qa 在 Claude Code 尝试读取图片后停止，
+按已归档裁定计 0 分，并在榜单与试验详情标注。两组共 7 条重评分复用原编码耗时和用量。
+两组各 47 题均有原始耗时。GLM 5.3 的 budgeted-bimetric-retrieval 使用和 ATIF
+总计一致的去重会话回执，覆盖最终 CLI 调用之前的记录。
+
+总用量和参考费用分别为 GLM 5.3 的 580,262,443 tokens / $191.41086788，以及
+Flash 的 663,177,282 tokens / $24.80453692。费用采用 [智谱官方 USD 标准价](https://docs.z.ai/guides/overview/pricing)。
+本地包为 `.build/hf-trajectories-glm53-tokenplus`，基线为 `.build/hf-trajectories-step5`。
+官网引用的不可变 HF 版本以 `content/leaderboard/storage.json` 为准。
+
+```bash
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-step5 --package .build/hf-trajectories-glm53-tokenplus --upload
+```
+
+续传用 `scripts/append_hf_trajectories.py` 及相同参数。下一次追加使用
+`.build/hf-trajectories-glm53-tokenplus` 作为基线。
+
+## 历史更新：Step 5 Preview / Claude Code / max
 
 2026-11-18 新增 Step 5 Preview / Claude Code 2.1.309 / max，Provider 为 StepFun，
 覆盖 47/47 题，平均 19.4745596453。现为 12 个模型、14 个 settings、658 条结果。
@@ -274,7 +299,7 @@ python scripts/normalize_hf_layout.py --source-package .build/hf-trajectories-lu
 完成模型选择、元数据及导入配置更新后，以最近的已验证包为基线，指定新的本地包：
 
 ```bash
-python scripts/publish_final_results.py --base-package .build/hf-trajectories-step5 --package .build/hf-trajectories-next --upload
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-glm53-tokenplus --package .build/hf-trajectories-next --upload
 ```
 
 不带 `--upload` 只准备本地预览。增量上传只新增 trial，保留 `releases/current/`
@@ -285,8 +310,8 @@ python scripts/publish_final_results.py --base-package .build/hf-trajectories-st
 ## 本地重建与审计
 
 ```bash
-python scripts/import_final_results.py --package .build/hf-trajectories-step5 --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-step5.usage.json --check
+python scripts/import_final_results.py --package .build/hf-trajectories-glm53-tokenplus --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-glm53-tokenplus.usage.json --check
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/build_tasks.py --check
 python scripts/build_leaderboard.py --production --check
@@ -296,7 +321,7 @@ python scripts/build_leaderboard.py --production --check
 若源归档已经变化，应指定新的 `--package` 路径，不覆盖旧包。恢复生产配置可使用：
 
 ```bash
-python scripts/upload_hf_release.py --package .build/hf-trajectories-step5 --verify-revision <FULL_HF_SHA>
+python scripts/upload_hf_release.py --package .build/hf-trajectories-glm53-tokenplus --verify-revision <FULL_HF_SHA>
 ```
 
 评分沿 `FINAL_RESULT.json` 的最终 reward 指针读取，原生 reward × 100 必须
@@ -523,7 +548,7 @@ releases/current/
 ```bash
 PYTHONPATH=scripts python -m unittest \
   scripts/test_publication.py scripts/test_leaderboard.py scripts/test_trial_files.py
-HF_PACKAGE=.build/hf-trajectories-step5 NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
+HF_PACKAGE=.build/hf-trajectories-glm53-tokenplus NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
 ```
 
 浏览器检查使用另一个真实 HTTP origin 提供公开发布包，验证匿名跨域加载、

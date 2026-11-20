@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "as_of": "2026-11-18",
+  "as_of": "2026-11-19",
   "currency": "USD",
   "unit": "USD per million tokens",
   "policy": "Official real-time USD API list prices, using DeepSeek off-peak rates for all selected requests as a fixed comparison basis. Cache-write and context-tier rates are model-specific. No batch, fast-mode, account or regional adjustments.",
@@ -184,6 +184,28 @@
         "output": "2.70"
       },
       "note": "Official standard USD pay-as-you-go rates. Cache-miss input includes cache population; output includes reasoning and final text. Current cache-hit list rate is $0.10 per million, excluding subscriptions and grandfathered/account discounts. Recorded responses and available final counters count once; unrecorded usage is not estimated."
+    },
+    "z-ai/glm-5.3": {
+      "official_model": "glm-5.3",
+      "source": "https://docs.z.ai/guides/overview/pricing",
+      "rates": {
+        "input": "1.40",
+        "cached_input": "0.26",
+        "cache_write_input": "1.40",
+        "output": "4.40"
+      },
+      "note": "Z.ai standard USD API rates, used for comparison. Cache-miss tokens use the input rate. The estimate does not represent a TokenPlus invoice."
+    },
+    "z-ai/glm-5.3-flash": {
+      "official_model": "glm-5.3-flash",
+      "source": "https://docs.z.ai/guides/overview/pricing",
+      "rates": {
+        "input": "0.15",
+        "cached_input": "0.03",
+        "cache_write_input": "0.15",
+        "output": "0.50"
+      },
+      "note": "Z.ai standard USD API rates, used for comparison. Cache-miss tokens use the input rate. The estimate does not represent a TokenPlus invoice."
     }
   }
 }

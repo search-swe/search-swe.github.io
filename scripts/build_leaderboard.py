@@ -71,7 +71,7 @@ def page(title, body, kind, data, snapshot):
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)} — Search-SWE</title><meta name="description" content="Search-SWE evaluation results and real coding agent trajectories.">
 <link rel="icon" href="/assets/logo.png"><link rel="preload" href="/assets/fonts/Geist.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/home-sections.css?v=8"><link rel="stylesheet" href="/leaderboard.css?v=26">
-{'<script src="/leaderboard-pareto.js?v=7" defer></script>' if kind == 'leaderboard' else ''}<script src="/leaderboard.js?v=9" defer></script>{'<script src="/trajectory-viewer.js?v=10" defer></script><script src="/trial-files.js?v=4" defer></script>' if kind == 'trial' else ''}</head>
+{'<script src="/leaderboard-pareto.js?v=8" defer></script>' if kind == 'leaderboard' else ''}<script src="/leaderboard.js?v=9" defer></script>{'<script src="/trajectory-viewer.js?v=10" defer></script><script src="/trial-files.js?v=4" defer></script>' if kind == 'trial' else ''}</head>
 <body id="top" data-page="{kind}"><a class="skip-link" href="#main-content">Skip to content</a>
 <header class="home-header"><div class="home-header-inner"><a class="home-brand" href="/"><img src="/assets/logo.png" width="32" height="32" alt=""><span>Search-SWE</span></a>
 <nav class="home-nav" aria-label="Main navigation"><a href="/">Overview</a><a href="/evaluation/">Run</a><a href="/leaderboard/" aria-current="page">Leaderboard</a><a href="/tasks/">Tasks</a><a href="https://github.com/VectorSpaceLab/Search-SWE" target="_blank" rel="noreferrer">GitHub ↗</a></nav></div></header>
@@ -119,6 +119,24 @@ def substitution_note(trials, detailed=False):
     return ''.join(notes)
 
 
+def image_input_failed(trial):
+    return (trial.get('qualification') or {}).get('qualification_flag') == 'user_adjudicated_image_input_failure_zero'
+
+
+def image_input_note(trials, detailed=False):
+    failures = [t for t in trials if image_input_failed(t)]
+    if not failures:
+        return ''
+    if detailed:
+        text = ('GLM 5.3 accepts text only. Claude Code stopped after its Read tool tried to pass an image '
+                'to the model. This trial is scored as 0.')
+    else:
+        link = f'<a href="/leaderboard/entries/{esc(failures[0]["entry"])}/">GLM 5.3</a>'
+        text = (f'{link} scored 0 on {len(failures)} tasks after an attempt to read an image stopped the coding run. '
+                'The model accepts text only.')
+    return f'<p class="methodology image-input-note">{text}</p>'
+
+
 def sort_heading(label, key, css='', active=False):
     direction = 'descending' if active else 'none'
     arrow = '↓' if active else '↕'
@@ -147,7 +165,7 @@ def leaderboard(snapshot):
 <section id="panel-table" role="tabpanel" aria-labelledby="view-table"><div class="table-frame"><table class="leaderboard-table"><caption class="sr-only">Model leaderboard</caption><thead><tr><th>Rank</th><th>Model</th><th>Agent</th>{sort_heading('Mean task score (%)', 'score', active=True)}{sort_heading('Release Date', 'date', 'release-date')}<th class="coverage">Tasks</th>{sort_heading('Total tokens', 'tokens', 'token-cell')}{sort_heading('Cost', 'cost', 'cost-cell numeric')}</tr></thead><tbody>{''.join(rows)}</tbody></table><p class="empty-state" hidden>No matching models. Try a different search.</p></div></section>
 <section id="panel-pareto" class="pareto-panel" role="tabpanel" aria-labelledby="view-pareto" hidden><div class="pareto-heading"><div class="pareto-axis-control"><h2><label for="pareto-x">Score vs.</label></h2><select id="pareto-x" aria-label="Pareto x-axis"><option value="cost">Cost</option><option value="tokens">Tokens</option><option value="time">Time</option></select></div><span class="pareto-key">Pareto frontier</span></div><div id="pareto-chart" class="pareto-chart"></div><p id="pareto-empty" class="empty-state" hidden>No matching models with recorded cost data.</p><div id="pareto-legend" class="pareto-legend" aria-label="Models in the chart"></div><p id="pareto-note" class="pareto-note"></p></section>
 <div class="table-caption"><span id="scope-caption">All {len(snapshot['tasks'])} tasks · one selected evaluation per model, harness and task</span><a href="{esc(snapshot.get('download_url', '/content/leaderboard/releases/' + snapshot['id'] + '.json'))}" download>Download results JSON ↓</a></div>
-{substitution_note(snapshot['trials'])}{methodology()}{cost_note(snapshot)}'''
+{substitution_note(snapshot['trials'])}{image_input_note(snapshot['trials'])}{methodology()}{cost_note(snapshot)}'''
     return page('Leaderboard', body, 'leaderboard', snapshot, snapshot)
 
 
@@ -164,18 +182,23 @@ def entry_page(entry, snapshot):
         ])
         provider = trial['configuration'].get('provider') or '—'
         provider_label = provider.removesuffix(' (via OpenRouter)')
-        rows.append(f'''<tr data-trial="{trial['id']}" data-href="/leaderboard/trials/{trial['id']}/"><td><a class="task-title" href="/leaderboard/trials/{trial['id']}/">{esc(task['name'])}</a></td>
-<td class="hardware-cell"><span class="hardware">{task['hardware'].upper()}</span></td><td class="agent-cell">{esc(trial['configuration']['agent'])} <span class="inline-meta">(v{esc(trial['configuration']['version'].removeprefix('v'))})</span></td><td class="provider-cell" title="{esc(provider)}">{esc(provider_label)}</td><td class="score-cell numeric"><span class="score-value">{trial['score']:.1f}</span></td><td class="duration-cell numeric" title="Agent execution time">{esc(duration(trial['agent_seconds']))}</td>{token_cells}<td class="cost-cell numeric">{money(trial.get('cost_usd'))}</td><td class="trajectory-cell"><a href="/leaderboard/trials/{trial['id']}/">Trace →</a></td></tr>''')
+        route = trial['configuration'].get('provider_route')
+        provider_title = f'{provider} via {route}' if route else provider
+        image_note = '<br><span class="fineprint image-input-status">Image input error</span>' if image_input_failed(trial) else ''
+        rows.append(f'''<tr data-trial="{trial['id']}" data-href="/leaderboard/trials/{trial['id']}/"><td><a class="task-title" href="/leaderboard/trials/{trial['id']}/">{esc(task['name'])}</a>{image_note}</td>
+<td class="hardware-cell"><span class="hardware">{task['hardware'].upper()}</span></td><td class="agent-cell">{esc(trial['configuration']['agent'])} <span class="inline-meta">(v{esc(trial['configuration']['version'].removeprefix('v'))})</span></td><td class="provider-cell" title="{esc(provider_title)}">{esc(provider_label)}</td><td class="score-cell numeric"><span class="score-value">{trial['score']:.1f}</span></td><td class="duration-cell numeric" title="Agent execution time">{esc(duration(trial['agent_seconds']))}</td>{token_cells}<td class="cost-cell numeric">{money(trial.get('cost_usd'))}</td><td class="trajectory-cell"><a href="/leaderboard/trials/{trial['id']}/">Trace →</a></td></tr>''')
     sorts = [('task', 'Hardware, then task')]
     for key, label in [('score', 'Score'), ('time', 'Agent time'), ('input', 'Input tokens'), ('output', 'Output tokens'), ('cached', 'Cached tokens'), ('tokens', 'Total tokens'), ('cost', 'Cost')]:
         sorts.extend([(f'{key}-desc', f'{label}: highest first'), (f'{key}-asc', f'{label}: lowest first')])
     provider = entry.get('provider', '')
     route_note = (' <span class="dot">·</span> ' + esc(provider.removesuffix(' (via OpenRouter)')) + ' via OpenRouter'
                   if provider.endswith(' (via OpenRouter)') else '')
+    if entry.get('provider_route'):
+        route_note = f' <span class="dot">·</span> {esc(provider)} via {esc(entry["provider_route"])}'
     body = f'''<nav class="breadcrumbs"><a id="back-leaderboard" href="/leaderboard/">← Leaderboard</a><span>/ Evaluation entry</span></nav>
 <h1>{esc(entry['name'])}</h1><div class="entry-meta"><p class="entry-subtitle">reasoning effort {esc(entry['effort'])}{route_note} <span class="dot">·</span> Last Updated <time datetime="{snapshot['observed_at'][:10]}">{snapshot['observed_at'][:10]}</time></p>
 <div class="id-line"><code>{entry['model']}</code><button class="copy-button" data-copy="{entry['model']}" hidden>Copy model ID</button></div></div>
-{substitution_note(trials)}<div class="section-heading"><h2>Task results</h2><a href="/tasks/">Task catalog ↗</a></div>
+{substitution_note(trials)}{image_input_note(trials)}<div class="section-heading"><h2>Task results</h2><a href="/tasks/">Task catalog ↗</a></div>
 {controls('Search tasks…', sorts)}
 <div class="table-frame"><table class="entry-table"><caption class="sr-only">Task results for {esc(entry['name'])}</caption><thead><tr><th>Task</th><th class="hardware-cell">Hardware</th><th class="agent-cell">Agent</th><th class="provider-cell">Provider</th>{sort_heading('Task score (%)', 'score', 'score-cell numeric')}{sort_heading('Agent time', 'time', 'duration-cell numeric')}{sort_heading('Input Tokens', 'input', 'input-tokens numeric')}{sort_heading('Output Tokens', 'output', 'output-tokens numeric')}{sort_heading('Cached Tokens', 'cached', 'cached-tokens numeric')}{sort_heading('Cost', 'cost', 'cost-cell numeric')}<th class="trajectory-cell">Trajectory</th></tr></thead><tbody>{''.join(rows)}</tbody></table><p class="empty-state" hidden>No matching tasks. Try a different search.</p></div>
 <p class="table-caption" id="scope-caption">{len(trials)} selected evaluations · valid zero scores included</p>{methodology(task_scores=True)}{cost_note(snapshot)}'''
@@ -220,7 +243,7 @@ def trial_page(trial, entry, snapshot, siblings):
     body = f'''<nav class="breadcrumbs"><a href="/leaderboard/">Leaderboard</a><span>/</span><a id="back-entry" href="/leaderboard/entries/{entry['id']}/">{esc(entry['name'])}</a><span>/ Trial</span></nav>
 <div class="eyebrow">{task['hardware'].upper()} TASK <span class="status-valid">Valid result</span></div><h1 class="trial-title">{esc(task['title'])}</h1>
 <p class="entry-subtitle">{esc('Claude Opus 5' if trial.get('model_substitution') else entry['name'])} <span class="dot">·</span> {esc(configuration['agent'])} <span class="inline-meta">(v{esc(configuration['version'].removeprefix('v'))})</span> <span class="dot">·</span> reasoning effort {esc(configuration['effort'])}</p>
-{substitution_note([trial], detailed=True)}
+{substitution_note([trial], detailed=True)}{image_input_note([trial], detailed=True)}
 <div class="trial-links"><a href="/tasks/{task['name']}/">Task description ↗</a>{revision}<button id="copy-page" class="copy-button" hidden>Copy link</button><span class="adjacent">{adjacent}</span></div>
 {metrics([('stat-score','Task score (%)',f"{trial['score']:.1f}"),*token_metrics,('stat-time','Agent time',esc(duration(trial['agent_seconds']))),('stat-cost','Cost',money(trial.get('cost_usd'))),('stat-steps','Recorded steps',f"{trial['steps']:,}")], token_detail)}
 {cost_note(snapshot)}
