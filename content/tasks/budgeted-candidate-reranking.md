@@ -15,6 +15,8 @@ Rerank 100 fixed BM25 candidates using a frozen local model and **2,048 weighted
 
 Frozen Qwen3-1.7B, offline. One GPU with a 24 GiB total device-memory cap. Each query has 2,048 weighted tokens: input tokens plus four times output tokens. Reserve maximum output before calls. Across five measurements, median local-strategy time must be at most one second and median trusted-response time at most 90 seconds; individual execution caps are two and 120 seconds, respectively. No fine-tuning, extra models or candidate expansion.
 
+See the [Linux cgroup requirements](https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/runtime.md#linux-cgroups) for the resource evidence required on cgroup v1 and v2 hosts.
+
 ## Public input and output contract
 
 ### Inputs

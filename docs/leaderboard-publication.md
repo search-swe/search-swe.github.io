@@ -6,7 +6,7 @@
 
 ## 当前更新：PR #3 的 Sonnet 5.5 与 Gemini 4 Argon
 
-两组各 47 题，均分分别为 38.42 和 34.02。主榜 Provider 为 Vertex AI。
+两组各 47 题，均分分别为 38.42 和 34.02。条目详情的 Provider 为 Vertex AI。
 Sonnet 使用 Claude Code 2.1.309 / max。Argon 使用 Antigravity CLI 1.5.2 / high。
 贡献者提供 91 条选定轨迹。Sonnet 的 `rust-bm25-search` 和两组的
 `large-scale-formula-retrieval` 使用归档中的 OpenRouter 补跑，逐题保留实际路由。

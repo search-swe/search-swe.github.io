@@ -15,6 +15,8 @@ Search 1.5 million vectors with **one query CPU**, **512 MiB RAM** and a **64 Mi
 
 Offline; 16 CPUs for construction, one logical CPU shared by every online process. Build: 150 seconds; each invocation: 0.5 seconds including cold service startup and protected output capture. The 512 MiB cgroup includes descendants, runtime overhead and file cache. The `/task/index` 64 MiB tmpfs also consumes this memory.
 
+See the [Linux cgroup requirements](https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/runtime.md#linux-cgroups) for the resource evidence required on cgroup v1 and v2 hosts.
+
 ## Public input and output contract
 
 ### Inputs
@@ -31,11 +33,11 @@ Derive all corpus-dependent state during the measured build. All final generated
 
 A is mean latency-gated Accuracy@3 over 20 hidden queries: each requires valid captured output within 0.5 seconds and a relevant top-three hit. Require `A>=0.95`; otherwise reward is zero. After this gate, reward is `A*min(1,0.030/L95)`.
 
-L95 is the 19th sorted end-to-end duration. Failed launches/timeouts contribute 0.5 seconds; other durations include output capture and are capped at 0.5. Five independent rounds each rebuild from an empty workspace, clear processes and IPC state, and query the same 20 items without warmup. Select the round with the median P95 and use both its accuracy and latency; do not pool the rounds. Query-result caches do not carry between rounds, and the OS file cache is not flushed. Build failure, invalid/oversized index, final OOM, resource or integrity failure zeros the task.
+L95 is the 19th sorted end-to-end duration. Failed launches/timeouts contribute 0.5 seconds; other durations include output capture and are capped at 0.5. Five independent rounds each rebuild from an empty workspace, clear processes and IPC state, and query the same 20 items without warmup. Select the round with the median P95 and use both its accuracy and latency; do not pool the rounds. Query-result caches do not carry between rounds, and the OS file cache is not flushed. A failed build, invalid or oversized index, confirmed OOM, or submission resource violation earns zero. Missing required resource evidence invalidates the measurement.
 
 A separate integrity audit must accept the trajectory and submission. Audit-service failures invalidate the measurement; a valid rejection gives zero reward.
 
-See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/ed7544f4aeb1fe8a072edc77ece1f2f4a742bfda/tasks/memory-constrained-dense-retrieval/instruction.md),
-[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/ed7544f4aeb1fe8a072edc77ece1f2f4a742bfda/tasks/memory-constrained-dense-retrieval/README.md)
-and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/ed7544f4aeb1fe8a072edc77ece1f2f4a742bfda/tasks/memory-constrained-dense-retrieval/task.toml)
+See the [full instructions](https://github.com/VectorSpaceLab/Search-SWE/blob/bec6079118beb85e1b46ad6d9de6b96e6b22ea4e/tasks/memory-constrained-dense-retrieval/instruction.md),
+[task documentation](https://github.com/VectorSpaceLab/Search-SWE/blob/bec6079118beb85e1b46ad6d9de6b96e6b22ea4e/tasks/memory-constrained-dense-retrieval/README.md)
+and [runtime configuration](https://github.com/VectorSpaceLab/Search-SWE/blob/bec6079118beb85e1b46ad6d9de6b96e6b22ea4e/tasks/memory-constrained-dense-retrieval/task.toml)
 for the complete contract at the synchronized benchmark revision.

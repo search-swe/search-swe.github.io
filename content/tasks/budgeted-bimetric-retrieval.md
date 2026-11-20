@@ -15,6 +15,8 @@ Search 250,000 passages with cheap vectors, **20 expensive distance evaluations*
 
 Offline CPU retrieval. Development divides the 16 CPUs/32 GiB between solver (15/31) and scorer (1/1); verification shares the full allocation. Build and reloads share 3,600 seconds. Each query must meet a two-second median complete-response time across five measurements, with a three-second execution cap per measurement, including service calls and output. Storage includes fixed assets, submission, index and caches.
 
+See the [Linux cgroup requirements](https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/runtime.md#linux-cgroups) for the resource evidence required on cgroup v1 and v2 hosts.
+
 ## Public input and output contract
 
 ### Inputs

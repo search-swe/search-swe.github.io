@@ -13,8 +13,8 @@ Reviewed again on 2026-11-13 against benchmark commit
 The task inventory was reviewed again on 2026-11-20 against benchmark commit
 [`bec6079`](https://github.com/VectorSpaceLab/Search-SWE/commit/bec6079118beb85e1b46ad6d9de6b96e6b22ea4e).
 The Query-side Encoder Alignment and Scientific-Paper QA pages use that commit
-for the updated verifier limits and judge behavior. Other settings retain their
-earlier pinned source links.
+for the updated verifier limits and judge behavior. Six task pages also link to
+the current Linux cgroup requirements.
 Check the invoked verifier and scoring constants as well as instructions when
 updating timing repetitions, judge aggregation, reference values and failure rules.
 Published leaderboard results remain tied to their recorded evaluation snapshots;

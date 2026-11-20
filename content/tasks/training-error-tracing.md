@@ -15,6 +15,8 @@ Find modified training records linked to generation errors using **one GPU**, **
 
 Four-hour development, fixed compact Qwen2.5-7B diagnostic probe, offline submission. Preparation: 1,800 seconds; each query execution: ten seconds. A separate retrieval ranker may be trained during development, but the probe/tokenizer remain fixed and verification cannot train.
 
+See the [Linux cgroup requirements](https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/runtime.md#linux-cgroups) for the resource evidence required on cgroup v1 and v2 hosts.
+
 ## Public input and output contract
 
 ### Inputs
@@ -31,7 +33,7 @@ Return `query_id` and up to ten unique training `ids`. Each hidden request is re
 
 P@10 is returned modified-record hits divided by ten, not Average Precision and not proof of token-level causation. Every repetition must reach group-macro P@10 >=0.98 and every group >=0.80. After these gates, reward is `0.2+0.8*clip(log(C/0.9)/log(0.5/0.9),0,1)`, where `C=(T/Tcontrol)*(M/Mcontrol)`.
 
-T aggregates per-query median times, then groups equally. M is sampled peak GPU usage over preparation/queries with a 1 GiB floor. Candidate and control each prepare once and run five independently shuffled passes in the same verifier. The primary evaluation has 9,900 seconds within an 11,400-second verifier envelope. Smaller than 10% combined-cost improvement earns only the 0.2 milestone; twofold cost reduction earns full credit. Invalid/late outputs score zero within quality denominators; preparation/resource failure zeros the task. Failed control is an infrastructure error.
+T aggregates per-query median times, then groups equally. M is sampled peak GPU usage over preparation/queries with a 1 GiB floor. Candidate and control each prepare once and run five independently shuffled passes in the same verifier. The primary evaluation has 9,900 seconds within an 11,400-second verifier envelope. Smaller than 10% combined-cost improvement earns only the 0.2 milestone; twofold cost reduction earns full credit. Invalid or late outputs score zero within quality denominators. A submission preparation failure or resource violation earns zero. Missing required resource evidence or a failed control invalidates the measurement.
 
 A separate integrity audit must accept the trajectory and submission. Audit-service failures invalidate the measurement; a valid rejection gives zero reward.
 

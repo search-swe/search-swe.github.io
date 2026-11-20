@@ -46,6 +46,7 @@
       <div class="task-prose"><h2 id="runtime-and-requirements">Runtime and requirements</h2>
 <ul><li><strong>Agent budget</strong>: <code>2 hours</code></li><li><strong>Compute</strong>: <code>16</code> CPUs, <code>32 GiB</code> RAM, <code>64 GiB</code> storage; <code>0</code> GPU(s)</li></ul>
 <p>Offline CPU retrieval. Development divides the 16 CPUs/32 GiB between solver (15/31) and scorer (1/1); verification shares the full allocation. Build and reloads share 3,600 seconds. Each query must meet a two-second median complete-response time across five measurements, with a three-second execution cap per measurement, including service calls and output. Storage includes fixed assets, submission, index and caches.</p>
+<p>See the <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/runtime.md#linux-cgroups">Linux cgroup requirements</a> for the resource evidence required on cgroup v1 and v2 hosts.</p>
 <h2 id="public-input-and-output-contract">Public input and output contract</h2>
 <h3 id="inputs">Inputs</h3>
 <p><code>/task/public/</code> contains <code>corpus.parquet</code>, 384-dimensional <code>cheap.f32</code>, configuration and 500 development queries/qrels. Task-local IDs are <code>doc0</code>, <code>doc1</code>, etc. The private service holds 4,096-dimensional expensive vectors; they and model weights are inaccessible.</p>

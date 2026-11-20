@@ -15,6 +15,8 @@ Find 10,000 high-scoring feasible compounds in a **12.4-million-combination libr
 
 Offline, one GPU. Preparation/loading and recovery share 3,600 seconds; every query must meet a two-second median complete-response time across five measurements, with a three-second execution cap per measurement, including GPU synchronization. Training is optional during development and forbidden in verification.
 
+See the [Linux cgroup requirements](https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/runtime.md#linux-cgroups) for the resource evidence required on cgroup v1 and v2 hosts.
+
 ## Public input and output contract
 
 ### Inputs

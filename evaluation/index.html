@@ -51,7 +51,7 @@
       <aside class="evaluation-requirements" aria-labelledby="requirements-title">
         <h2 id="requirements-title">Before you start</h2>
         <div>
-          <p>Python 3.12+, Git and native Linux x86_64 with <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/runtime.md#prerequisites" target="_blank" rel="noreferrer">local rootful Docker</a>. GPU tasks need an NVIDIA GPU, a CUDA 13.0-compatible driver and Container Toolkit. Check the <a href="../tasks/">selected tasks</a> for resources; some also need <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/runtime.md#bounded-task-storage" target="_blank" rel="noreferrer">sudo and FUSE</a>. Run <code>search-swe doctor</code> to check the host.</p>
+          <p>Python 3.12+, Git and native Linux x86_64 with <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/runtime.md#prerequisites" target="_blank" rel="noreferrer">local rootful Docker</a>. GPU tasks need an NVIDIA GPU, a CUDA 13.0-compatible driver and Container Toolkit. Check the <a href="../tasks/">selected tasks</a> for resources. Some tasks also require <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/runtime.md#bounded-task-storage" target="_blank" rel="noreferrer">sudo and FUSE</a> or have specific <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/runtime.md#linux-cgroups" target="_blank" rel="noreferrer">cgroup v1 and v2 requirements</a>. Run <code>search-swe doctor</code> to check the host.</p>
           <p>Enabled OpenRouter submission keys require a fixed <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/submission-models.md" target="_blank" rel="noreferrer">model allowlist</a>: <strong>47 models</strong> for the shared key, <strong>17</strong> for reasoning-query-rewriting. Apply it in OpenRouter before entering the key. Coding-agent and judge keys use separate model access.</p>
           <p>The CLI checks these restrictions before saving settings or running tasks. Checks send short API requests; accepted requests may incur small charges.</p>
         </div>
@@ -79,7 +79,8 @@
               <pre><code>search-swe run</code></pre>
               <p>The wizard finds your checkout or helps you clone one to <code>~/Search-SWE</code> or a custom path, then remembers its location.</p>
               <p>Choose your agent, provider, model and reasoning effort, enter missing keys, then select tasks and configure their services. Codex, Claude Code and Pi support integrated OpenRouter and direct routes, or <code>--provider native</code> for their Harbor adapters.</p>
-              <p>Other registered Harbor agents, including Gemini CLI, Antigravity, OpenCode and OpenHands, use native mode. Run <code>search-swe agents</code> to discover agents and their trajectory support, or <code>search-swe agents --agent NAME --json</code> for routes, versions and native settings. See the <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/agents.md#harbor-native-agents" target="_blank" rel="noreferrer">native agent guide</a> for credentials and <code>--agent-config</code>.</p>
+              <p>Antigravity CLI supports native mode and <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/agents.md#antigravity-cli-through-openrouter" target="_blank" rel="noreferrer">OpenRouter</a> with CLI 0.3.1 or later and a compatible checkout. <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/agents.md#claude-code-and-codex-subscriptions" target="_blank" rel="noreferrer">Claude Code and Codex subscriptions</a> use native mode with <code>--agent-config</code>.</p>
+              <p>Registered Harbor agents such as Gemini CLI, OpenCode and OpenHands use <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/agents.md#harbor-native-agents" target="_blank" rel="noreferrer">native mode</a>. Run <code>search-swe agents --agent NAME --json</code> to check an agent’s routes, version options and trajectory support.</p>
               <p class="evaluation-hint"><strong>Default setting:</strong> Codex + OpenRouter + GPT-6 Luna (max).</p>
               <p class="evaluation-hint">See <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/agents.md" target="_blank" rel="noreferrer">supported agents and providers</a>. For Pi, <code>search-swe pi-models</code> lists providers and their model counts; add <code>--provider NAME</code> for exact model IDs.</p>
             </div>
@@ -140,9 +141,14 @@ npx skills update run-searchswe-evaluation -p</code></pre>
 
       <section id="results" class="evaluation-results" aria-labelledby="results-title">
         <h2 id="results-title">Read the results</h2>
-        <p>Both workflows save results in the selected checkout:</p>
+        <p>Both workflows save results in the selected checkout by default.</p>
         <pre><code>jobs/evaluations/&lt;run&gt;/</code></pre>
-        <p>Open the printed path and follow <code>run.json</code> to each task’s results and logs. Check Harbor scores and verifier health; process completion alone does not mean a passing score.</p>
+        <p>Open the printed path and follow <code>run.json</code> to the task scores, logs and verifier status. A valid zero is a completed result. A setup failure is marked <code>failed</code>, and a verifier failure is marked <code>invalid-measurement</code>.</p>
+        <h3 id="regrade">Regrade a saved trial</h3>
+        <p>Use CLI 0.3.1 or later with a compatible checkout and the original Harbor trial directory. The preview checks the saved files and verifier settings.</p>
+        <pre><code>search-swe regrade /path/to/original-trial --dry-run
+search-swe regrade /path/to/original-trial</code></pre>
+        <p>Only the verifier runs. It keeps the original trial and writes the new result under <code>jobs/regrades/</code> by default. Large-scale Formula Retrieval requires a full run because it uses development-phase memory evidence. <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/cli.md#regrade-a-recorded-trial" target="_blank" rel="noreferrer">Regrade guide</a></p>
         <p id="construction">Harbor isolates coding and verification. Scores reflect held-out search quality, correctness, resource limits and evaluation integrity.</p>
         <a class="evaluation-results-link" href="../leaderboard/">Explore published scores and trajectories <span aria-hidden="true">→</span></a>
       </section>

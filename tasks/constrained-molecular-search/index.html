@@ -46,6 +46,7 @@
       <div class="task-prose"><h2 id="runtime-and-requirements">Runtime and requirements</h2>
 <ul><li><strong>Agent budget</strong>: <code>6 hours</code></li><li><strong>Compute</strong>: <code>16</code> CPUs, <code>32 GiB</code> RAM, <code>64 GiB</code> storage; <code>1</code> GPU(s)</li></ul>
 <p>Offline, one GPU. Preparation/loading and recovery share 3,600 seconds; every query must meet a two-second median complete-response time across five measurements, with a three-second execution cap per measurement, including GPU synchronization. Training is optional during development and forbidden in verification.</p>
+<p>See the <a href="https://github.com/VectorSpaceLab/Search-SWE/blob/main/docs/evaluation/runtime.md#linux-cgroups">Linux cgroup requirements</a> for the resource evidence required on cgroup v1 and v2 hosts.</p>
 <h2 id="public-input-and-output-contract">Public input and output contract</h2>
 <h3 id="inputs">Inputs</h3>
 <p><code>/task/library</code> contains 12,446,577 combinations; <code>/task/models</code> provides encoder, probe, factorizer and APEX weights. <code>/task/train</code> contains the labeled 1M library. Public development uses a separate 347,677-candidate pool and request budget 279. Final true docking scores/property tables are evaluator-only.</p>
