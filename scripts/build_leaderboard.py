@@ -101,8 +101,10 @@ def methodology(task_scores=False):
 
 
 def cost_note(snapshot):
-    community = (' Sonnet 5.5 uses Claude Code’s reported estimates. Antigravity CLI runs have no recorded cost.'
+    community = (' Sonnet 5.5 uses Claude Code’s reported estimates.'
                  if any('harness_reported_cost_usd' in trial for trial in snapshot['trials']) else '')
+    if any(trial.get('usage_evidence') for trial in snapshot['trials']):
+        community += ' Gemini 4 Argon uses the published November global rates.'
     return f'<p class="cost-note">Cost is estimated from recorded agent tokens at <a href="/content/leaderboard/official-pricing.json">official API rates</a> in USD ({snapshot["cost_methodology"]["as_of"]}; including model-specific cache writes and context rates). DeepSeek uses official off-peak rates for all requests.{community}</p>'
 
 
@@ -212,6 +214,8 @@ def entry_page(entry, snapshot):
 def trial_page(trial, entry, snapshot, siblings):
     trajectory_download = urljoin(trial['trajectory_url'], 'trajectory.json.gz')
     evaluation_download = urljoin(trial['trajectory_url'], 'evaluation.json')
+    usage_link = (f'<a href="{esc(urljoin(trial["trajectory_url"], "usage.json"))}" target="_blank" rel="noreferrer">Token usage (.json) ↗</a>'
+                  if trial.get('usage_evidence') else '')
     task = next(t for t in snapshot['tasks'] if t['name'] == trial['task'])
     index = siblings.index(trial)
     adjacent = ''.join(f'<a data-adjacent href="/leaderboard/trials/{siblings[i]["id"]}/">{label}</a>' for i, label in ((index - 1, '← Previous task'), (index + 1, 'Next task →')) if 0 <= i < len(siblings))
@@ -262,7 +266,7 @@ def trial_page(trial, entry, snapshot, siblings):
 <section id="panel-lock" role="tabpanel" aria-labelledby="tab-lock"><h2>Resolved configuration</h2>{files('lock')}</section>
 <section id="panel-log" role="tabpanel" aria-labelledby="tab-log"><h2>Trial log</h2>{files('log')}</section>
 <section id="panel-exception" role="tabpanel" aria-labelledby="tab-exception"><h2>Exceptions</h2>{files('exception')}</section>
-<section id="panel-artifacts" class="file-panel" role="tabpanel" aria-labelledby="tab-artifacts">{files('artifacts')}<details class="evidence-summary"><summary>Trajectory downloads &amp; provenance</summary><div class="download-links"><a href="{esc(trajectory_download)}" download>Exported ATIF trajectory (.json.gz) ↓</a><a href="{esc(evaluation_download)}" download>Final evaluation (.json) ↓</a></div><p>Public text redacts private values and normalizes host paths. Source hashes identify the original records.</p><dl class="detail-list"><div><dt>Trial ID</dt><dd><code>{trial['id']}</code></dd></div><div><dt>Source trajectory SHA-256</dt><dd><code>{trial['trajectory_sha256']}</code></dd></div><div><dt>Final reward SHA-256</dt><dd><code>{trial['reward_sha256']}</code></dd></div></dl></details></section>'''
+<section id="panel-artifacts" class="file-panel" role="tabpanel" aria-labelledby="tab-artifacts">{files('artifacts')}<details class="evidence-summary"><summary>Trajectory downloads &amp; provenance</summary><div class="download-links"><a href="{esc(trajectory_download)}" download>Exported ATIF trajectory (.json.gz) ↓</a><a href="{esc(evaluation_download)}" download>Final evaluation (.json) ↓</a>{usage_link}</div><p>Public text redacts private values and normalizes host paths. Source hashes identify the original records.</p><dl class="detail-list"><div><dt>Trial ID</dt><dd><code>{trial['id']}</code></dd></div><div><dt>Source trajectory SHA-256</dt><dd><code>{trial['trajectory_sha256']}</code></dd></div><div><dt>Final reward SHA-256</dt><dd><code>{trial['reward_sha256']}</code></dd></div></dl></details></section>'''
     return page(task['title'], body, 'trial', {'trial': trial, 'entry': entry}, snapshot)
 
 

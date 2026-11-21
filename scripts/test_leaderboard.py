@@ -148,11 +148,18 @@ class SnapshotTests(unittest.TestCase):
             self.assertEqual(build.stats(trials)['tokens'], None if None in totals else sum(totals))
             for trial in trials:
                 usage = trial['tokens']
-                if model == 'google/gemini-4-argon':
-                    self.assertTrue(all(value is None for value in usage.values()))
-                    continue
                 self.assertEqual(usage['input_tokens'] + usage['output_tokens'], usage['total_tokens'])
                 self.assertLessEqual(usage['cached_input_tokens'], usage['input_tokens'])
+
+    def test_argon_usage_includes_all_tasks_and_original_formula(self):
+        trials = [t for t in self.snapshot['trials'] if t['configuration']['model'] == 'google/gemini-4-argon']
+        self.assertEqual(len(trials), 47)
+        self.assertEqual(sum(t['tokens']['total_tokens'] for t in trials), 791_340_865)
+        self.assertEqual(sum(t['tokens']['response_count'] for t in trials), 6_470)
+        self.assertTrue(all(t['usage_evidence'] and t['tokens']['reasoning_output_tokens'] is None for t in trials))
+        formula = next(t for t in trials if t['task'] == 'large-scale-formula-retrieval')
+        self.assertEqual(formula['tokens']['total_tokens'], 13_226_203)
+        self.assertEqual(formula['tokens']['response_count'], 97)
 
     def test_generated_routes_and_no_script_injection(self):
         pages = build.generate()

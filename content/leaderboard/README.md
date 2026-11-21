@@ -9,12 +9,24 @@ Antigravity CLI 1.5.2 / high, with 47 scored tasks each. The means are **38.42**
 and **34.02**, respectively. The entries display Vertex AI. Sonnet's
 `rust-bm25-search` and both models' `large-scale-formula-retrieval` use the
 maintainer's OpenRouter reruns, with the route recorded per trial.
-Sonnet costs come from the Claude Code export. Antigravity does not report
-token or cost counters, so those cells display an em dash. Eight community
-coding durations use the span of recorded trajectory timestamps.
+Sonnet costs come from the Claude Code export. Eight community coding
+durations use the span of recorded trajectory timestamps.
 
-The current package is `.build/hf-trajectories-pr3/`. It appends 94 trials
-to the verified GLM package. Source revisions and local trial hashes are in
+Argon usage covers all 47 tasks and totals **791,340,865 tokens** across **6,470
+recorded calls**. Vertex AI contributes 46 trials. The OpenRouter Formula trial
+contributes 13,226,203 tokens. The viewer shows 6,431 matched model responses.
+Thirty-nine context compaction calls count toward totals and appear separately
+in each affected trajectory's `usage.json`. Sixteen contributor agent steps
+have no separate counters and display an em dash.
+
+The estimate is **$342.87 USD**, using the November global rates of $2.00
+per million uncached input tokens, $0.10 for cached reads, and $10.00 for
+output. It covers recorded coding calls. Sources are
+[Google Cloud pricing](https://cloud.google.com/model-garden/pricing) and
+[OpenRouter endpoints](https://openrouter.ai/google/gemini-4-argon/providers).
+
+The current package is `.build/hf-trajectories-pr3-argon-usage/`. The usage refresh updates the 47
+Argon trajectories on the published PR #3 package. Source revisions and local trial hashes are in
 [`community-source-evidence.json`](community-source-evidence.json).
 The active Hugging Face revision is in [`storage.json`](storage.json).
 
@@ -213,13 +225,13 @@ approximately **9.45 GiB**, with 564 ATIF trajectories
 and 573 original session JSONL exports (235 Codex, 291 Claude Code, 47 Pi). Credentials are redacted and host paths
 normalized. Large binary artifacts remain listed without content downloads.
 Source execution jobs remain unchanged.
-The current default package is `.build/hf-trajectories-pr3/`.
+The current default package is `.build/hf-trajectories-pr3-argon-usage/`.
 `.build/hf-trajectories-current/` remains the older 235-trial append base.
 
 The active HF directory is **`releases/current/`**, independent of model names or
 publication dates. Full commit SHAs identify immutable versions. The verified
 revision is recorded in [`storage.json`](storage.json) and the private receipt
-`.build/hf-trajectories-pr3-uploaded.json`. The website uses that immutable revision.
+`.build/hf-trajectories-pr3-argon-usage-uploaded.json`. The website uses that immutable revision.
 The Step 5 publication uses the immutable revision
 [`a4d445dc0b8f8324fbc959fe57885c5474c7b939`](https://huggingface.co/datasets/search-swe/trajectories/commit/a4d445dc0b8f8324fbc959fe57885c5474c7b939).
 The Hy4 publication uses the immutable revision
@@ -257,7 +269,7 @@ the current verified package as the base, and use a fresh output package:
 
 ```bash
 python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-pr3 \
+  --base-package .build/hf-trajectories-pr3-argon-usage \
   --package .build/hf-trajectories-next --upload
 ```
 
@@ -305,7 +317,7 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   time. Verifier/task-internal API usage is excluded. Regrading uses original
   coding usage once. Missing values remain missing.
 - Cost sums selected coding responses at the frozen official USD API rates in
-  `official-pricing.json`, updated 2026-11-19. The OpenAI models use standard
+  `official-pricing.json`, updated 2026-11-21. The OpenAI models use standard
   processing, 30-minute cache writes and per-request context tiers above 272,000
   input tokens. Kimi K3.1 Pro uses standard USD rates: input/write $2, read $0.20
   and output $10 per million tokens. Kimi K3 uses input/write $3, read $0.30
@@ -328,7 +340,8 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   receipts; their recorded complete-response count is zero and per-step output
   remains unknown. Final totals still cover their coding cost in full.
   The 47 Sonnet selections use the exported Claude Code cost estimates.
-  Antigravity leaves token and cost values unknown.
+  Argon uses native model-response and compaction counters, priced at the
+  published November global rates.
   This reporting policy applies to generated pages and `/leaderboard/results.json`;
   the verified HF snapshot and its original accounting notes remain unchanged.
   Only affected trial pages show a short fallback explanation in Agent details;
@@ -477,9 +490,9 @@ unchanged; exported JSON contains no local host source paths in its metadata.
 
 ```bash
 python -m unittest discover -s scripts -p 'test_*.py'
-python scripts/import_final_results.py --package .build/hf-trajectories-pr3 --check
+python scripts/import_final_results.py --package .build/hf-trajectories-pr3-argon-usage --check
 python scripts/build_leaderboard.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-pr3.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-pr3-argon-usage.usage.json --check
 python scripts/build_tasks.py --check
 node --check leaderboard.js
 node --check leaderboard-pareto.js
@@ -489,9 +502,9 @@ node --check trial-files.js
 ```
 
 With Playwright available in the Node module search path and the preview server
-running, run `HF_PACKAGE=.build/hf-trajectories-pr3 node scripts/test_leaderboard_browser.cjs`. Set
+running, run `HF_PACKAGE=.build/hf-trajectories-pr3-argon-usage node scripts/test_leaderboard_browser.cjs`. Set
 `LEADERBOARD_ORIGIN` to use a different local server address.
-Run `HF_PACKAGE=.build/hf-trajectories-pr3 node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
+Run `HF_PACKAGE=.build/hf-trajectories-pr3-argon-usage node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
 Run `node scripts/test_leaderboard_costs_browser.cjs` for cost sorting, chart/table
 parity across hardware scopes, keyboard tabs, links, empty states and mobile layout.
 

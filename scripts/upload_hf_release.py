@@ -32,7 +32,7 @@ def check_site_snapshot(package, manifest):
     return hashlib.sha256(source.read_bytes()).hexdigest()
 
 
-def append_tree(api, release, revision, base_revision, expected):
+def append_tree(api, release, revision, base_revision, expected, updated_trials=()):
     """An unchanged Git subtree attests every retained file in the verified base."""
     def tree(path, rev, recursive=False):
         return api.list_repo_tree(REPO_ID, path_in_repo=path, recursive=recursive,
@@ -43,25 +43,28 @@ def append_tree(api, release, revision, base_revision, expected):
     current = {p.path: p.tree_id for p in tree(prefix, revision)}
     directories = {p: prefix + '/' + p[len(prefix) + 1:].split('/', 1)[0]
                    for p in expected if p.startswith(prefix + '/')}
-    if set(current) != set(directories.values()) or any(current.get(p) != identity for p, identity in original.items()):
+    updated = {f'{prefix}/{trial}' for trial in updated_trials}
+    retained_dirs = set(original) - updated
+    if (not updated <= set(original) or set(current) != set(directories.values()) or
+            any(current.get(p) != original[p] for p in retained_dirs)):
         raise ValueError('Remote trial directories differ from the verified append')
-    print(f'Checked {len(original)} retained trial directories against {base_revision}.', flush=True)
+    print(f'Checked {len(retained_dirs)} retained trial directories against {base_revision}.', flush=True)
     remote = {}
     release_root = {p.path: p for p in tree(release, revision)}
     if set(release_root) != {prefix, release + '/snapshot.json'}:
         raise ValueError('Remote release root contains missing or unlisted files')
     remote[release + '/snapshot.json'] = release_root[release + '/snapshot.json']
-    added = set(current) - set(original)
+    changed = set(current) - retained_dirs
     with ThreadPoolExecutor(max_workers=8) as pool:
-        for count, files in enumerate(pool.map(lambda path: list(tree(path, revision, recursive=True)), sorted(added)), 1):
+        for count, files in enumerate(pool.map(lambda path: list(tree(path, revision, recursive=True)), sorted(changed)), 1):
             remote.update((p.path, p) for p in files if hasattr(p, 'blob_id'))
             if count % 25 == 0:
-                print(f'Enumerated {count}/{len(added)} added trial directories.', flush=True)
-    retained = {p for p, directory in directories.items() if directory in original}
+                print(f'Enumerated {count}/{len(changed)} changed trial directories.', flush=True)
+    retained = {p for p, directory in directories.items() if directory in retained_dirs}
     return remote, retained
 
 
-def verify_remote(api, package, manifest, revision, site_origin, include_metadata=True, base_revision=None):
+def verify_remote(api, package, manifest, revision, site_origin, include_metadata=True, base_revision=None, updated_trials=()):
     """Verify every file at a fixed commit, then exercise anonymous browser reads."""
     expected = dict(manifest['files'])
     if include_metadata:
@@ -70,7 +73,7 @@ def verify_remote(api, package, manifest, revision, site_origin, include_metadat
         expected.pop('README.md')
     release = manifest['release_path']
     if base_revision:
-        remote, retained = append_tree(api, release, revision, base_revision, expected)
+        remote, retained = append_tree(api, release, revision, base_revision, expected, updated_trials)
     else:
         remote = {item.path: item for item in api.list_repo_tree(REPO_ID, path_in_repo=release, recursive=True,
                                                                 revision=revision, repo_type='dataset')
@@ -101,6 +104,11 @@ def verify_remote(api, package, manifest, revision, site_origin, include_metadat
     first = read(package / trial_dir / 'manifest.json')['steps'][0]['chunk']
     samples = [f'{release}/snapshot.json', f'{trial_dir}/manifest.json',
                f'{trial_dir}/{first}', f'{trial_dir}/files/index.json', f'{trial_dir}/trajectory.json.gz']
+    if updated_trials:
+        changed_dir = f'{release}/trials/{sorted(updated_trials)[0]}'
+        changed_manifest = read(package / changed_dir / 'manifest.json')
+        samples.extend(f'{changed_dir}/{path}' for path in
+                       (changed_manifest['usage'], changed_manifest['download'], changed_manifest['steps'][0]['chunk']))
     # Include a larger plain JSON file to exercise the redirected/CDN path as well.
     samples.append(max((p for p in expected if p.endswith('.json')), key=lambda p: expected[p]['bytes']))
     for path in dict.fromkeys(samples):

@@ -4,13 +4,34 @@
 从公开的 HF Dataset [`search-swe/trajectories`](https://huggingface.co/datasets/search-swe/trajectories)
 匿名按需读取。浏览器不需要 HF Token。
 
-## 当前更新：PR #3 的 Sonnet 5.5 与 Gemini 4 Argon
+## 当前更新：Gemini 4 Argon 用量补录
+
+47 题共 791,340,865 tokens，费用估算为 $342.87。46 条 Vertex AI 试验使用
+[贡献者用量文件](https://huggingface.co/datasets/ubowang/search-swe-gemini-4-argon/tree/a3cd17876ca6456af39050089e242398c86864a6)，
+Formula 使用本地 OpenRouter 原生日志。6,431 条模型响应映射到轨迹步骤，
+39 条上下文压缩调用单独计入总量。16 个没有独立计数的步骤显示为未知。
+各轮的用量证据可通过单题的 `Token usage (.json)` 链接查看。
+
+费用按运行月份公布的全球实时价估算，每百万未缓存输入、缓存读取和输出
+分别为 $2.00、$0.10 和 $10.00。
+[Google Cloud 定价](https://cloud.google.com/model-garden/pricing) ·
+[OpenRouter 端点](https://openrouter.ai/google/gemini-4-argon/providers)
+
+```bash
+python scripts/publish_argon_usage.py --final-dir /path/to/final-trajectories --upload
+```
+
+当前基线是 `.build/hf-trajectories-pr3-argon-usage`。上传脚本只提交
+Argon 用量和发布元数据。榜单固定在核验通过的版本
+[`37607f68ec73eaaaee10daa4bbe01fd7afe69b31`](https://huggingface.co/datasets/search-swe/trajectories/commit/37607f68ec73eaaaee10daa4bbe01fd7afe69b31)。
+
+## 历史更新：PR #3 的 Sonnet 5.5 与 Gemini 4 Argon
 
 两组各 47 题，均分分别为 38.42 和 34.02。条目详情的 Provider 为 Vertex AI。
 Sonnet 使用 Claude Code 2.1.309 / max。Argon 使用 Antigravity CLI 1.5.2 / high。
 贡献者提供 91 条选定轨迹。Sonnet 的 `rust-bm25-search` 和两组的
 `large-scale-formula-retrieval` 使用归档中的 OpenRouter 补跑，逐题保留实际路由。
-Sonnet 费用使用 Claude Code 记录的估算。Argon 的 token 和费用显示为缺失。
+Sonnet 费用使用 Claude Code 记录的估算。Argon 用量见上方补录记录。
 8 条贡献者轨迹缺少完整的原始时间戳，耗时使用第一步至最后一步的记录，详情中注明估算依据。
 
 来源固定在 [PR #3](https://github.com/search-swe/search-swe.github.io/pull/3) 的第二轮复评
@@ -25,7 +46,7 @@ python scripts/download_pr3_results.py
 python scripts/publish_pr3_results.py --upload
 ```
 
-后续发布以 `.build/hf-trajectories-pr3` 为基线。发布包准备完毕后可沿用同一文件集续传。
+这次发布的续传使用同一文件集。
 
 ```bash
 python scripts/append_hf_trajectories.py --base-package .build/hf-trajectories-glm53-tokenplus --package .build/hf-trajectories-pr3 --published-base --upload
@@ -325,7 +346,7 @@ python scripts/normalize_hf_layout.py --source-package .build/hf-trajectories-lu
 完成模型选择、元数据及导入配置更新后，以最近的已验证包为基线，指定新的本地包：
 
 ```bash
-python scripts/publish_final_results.py --base-package .build/hf-trajectories-pr3 --package .build/hf-trajectories-next --upload
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-pr3-argon-usage --package .build/hf-trajectories-next --upload
 ```
 
 不带 `--upload` 只准备本地预览。增量上传只新增 trial，保留 `releases/current/`
@@ -336,8 +357,8 @@ python scripts/publish_final_results.py --base-package .build/hf-trajectories-pr
 ## 本地重建与审计
 
 ```bash
-python scripts/import_final_results.py --package .build/hf-trajectories-pr3 --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-pr3.usage.json --check
+python scripts/import_final_results.py --package .build/hf-trajectories-pr3-argon-usage --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-pr3-argon-usage.usage.json --check
 python -m unittest discover -s scripts -p 'test_*.py'
 python scripts/build_tasks.py --check
 python scripts/build_leaderboard.py --production --check
@@ -347,7 +368,7 @@ python scripts/build_leaderboard.py --production --check
 若源归档已经变化，应指定新的 `--package` 路径，不覆盖旧包。恢复生产配置可使用：
 
 ```bash
-python scripts/upload_hf_release.py --package .build/hf-trajectories-pr3 --verify-revision <FULL_HF_SHA>
+python scripts/upload_hf_release.py --package .build/hf-trajectories-pr3-argon-usage --verify-revision <FULL_HF_SHA>
 ```
 
 评分沿 `FINAL_RESULT.json` 的最终 reward 指针读取，原生 reward × 100 必须
@@ -574,7 +595,7 @@ releases/current/
 ```bash
 PYTHONPATH=scripts python -m unittest \
   scripts/test_publication.py scripts/test_leaderboard.py scripts/test_trial_files.py
-HF_PACKAGE=.build/hf-trajectories-pr3 NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
+HF_PACKAGE=.build/hf-trajectories-pr3-argon-usage NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
 ```
 
 浏览器检查使用另一个真实 HTTP origin 提供公开发布包，验证匿名跨域加载、

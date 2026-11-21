@@ -1,8 +1,8 @@
 {
-  "pricing_sha256": "35c7ea9b9dca66ef31cd596b1e9a847058bfb4bfadfbf1caae3eeed9aa1d4629",
+  "pricing_sha256": "2e3549be5da07037a38aec9106add998b21c3bdbff91246030a3e6289c79f7c4",
   "schema": 1,
-  "snapshot_id": "2026-11-20-selected-224b654c82",
-  "snapshot_sha256": "c970f5f137e3e0bed5e59589740689ce487b36e0d56d834c498cd8273a0dc4aa",
+  "snapshot_id": "2026-11-21-argon-usage-e5dc193ab0",
+  "snapshot_sha256": "363093ddf00dc2f0521c46c5f0d3aa86f4316353440606c155811e82d2e76e1c",
   "trials": {
     "agentic-search-claude-opus-5.5-claude-code-max-86cfc69e97be": {
       "cost_usd": "4.4698314",
@@ -25,8 +25,8 @@
       "response_count": 71
     },
     "agentic-search-gemini-4-argon-antigravity-cli-high-2871381ec4db": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "6.7426159",
+      "response_count": 187
     },
     "agentic-search-glm53-flash-tokenplus-zai-official-claude-code-max-913f1a1c6db3": {
       "cost_usd": "0.24123355",
@@ -97,8 +97,8 @@
       "response_count": 57
     },
     "agentic-search-vectorless-gemini-4-argon-antigravity-cli-high-1d0decd96e1b": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "8.8311211",
+      "response_count": 99
     },
     "agentic-search-vectorless-glm53-flash-tokenplus-zai-official-claude-code-max-a7aa5bc0f9b5": {
       "cost_usd": "0.32236375",
@@ -169,8 +169,8 @@
       "response_count": 69
     },
     "biomedical-graph-retrieval-gemini-4-argon-antigravity-cli-high-a4ec3732810c": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "6.5814439",
+      "response_count": 145
     },
     "biomedical-graph-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-acd2e25ed328": {
       "cost_usd": "0.31317441",
@@ -241,8 +241,8 @@
       "response_count": 97
     },
     "budgeted-bimetric-retrieval-gemini-4-argon-antigravity-cli-high-354ec74c4944": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "5.6161486",
+      "response_count": 102
     },
     "budgeted-bimetric-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-7a8bf012590a": {
       "cost_usd": "0.17505239",
@@ -313,8 +313,8 @@
       "response_count": 124
     },
     "budgeted-candidate-reranking-gemini-4-argon-antigravity-cli-high-f5250de69ac2": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "5.9354773",
+      "response_count": 78
     },
     "budgeted-candidate-reranking-glm53-flash-tokenplus-zai-official-claude-code-max-038d533971e0": {
       "cost_usd": "0.58146929",
@@ -385,8 +385,8 @@
       "response_count": 152
     },
     "chunqiu-temporal-retrieval-gemini-4-argon-antigravity-cli-high-087b4c03fc20": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "21.9906320",
+      "response_count": 412
     },
     "chunqiu-temporal-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-b7eb560441e7": {
       "cost_usd": "0.56792056",
@@ -457,8 +457,8 @@
       "response_count": 73
     },
     "code-context-retrieval-gemini-4-argon-antigravity-cli-high-7e4d1ec3106a": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "5.4432462",
+      "response_count": 98
     },
     "code-context-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-0dbb80a315ff": {
       "cost_usd": "0.56412027",
@@ -529,8 +529,8 @@
       "response_count": 146
     },
     "code-embedding-finetuning-gemini-4-argon-antigravity-cli-high-b3ad0cebc20f": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "13.1458712",
+      "response_count": 193
     },
     "code-embedding-finetuning-glm53-flash-tokenplus-zai-official-claude-code-max-a1a5af86c065": {
       "cost_usd": "0.34679468",
@@ -601,8 +601,8 @@
       "response_count": 88
     },
     "code-reranker-finetuning-gemini-4-argon-antigravity-cli-high-c8aa84a2b262": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "4.6232668",
+      "response_count": 84
     },
     "code-reranker-finetuning-glm53-flash-tokenplus-zai-official-claude-code-max-8249ea95c3dc": {
       "cost_usd": "0.33962798",
@@ -673,8 +673,8 @@
       "response_count": 99
     },
     "composed-image-search-gemini-4-argon-antigravity-cli-high-c989b018d817": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "3.6117883",
+      "response_count": 105
     },
     "composed-image-search-glm53-flash-tokenplus-zai-official-claude-code-max-53d337fea287": {
       "cost_usd": "0.43543851",
@@ -745,8 +745,8 @@
       "response_count": 228
     },
     "constrained-molecular-search-gemini-4-argon-antigravity-cli-high-3a1dcf6f8fc2": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "14.0954396",
+      "response_count": 206
     },
     "constrained-molecular-search-glm53-flash-tokenplus-zai-official-claude-code-max-a9bd489e3f7a": {
       "cost_usd": "1.08791964",
@@ -817,8 +817,8 @@
       "response_count": 164
     },
     "decision-model-training-gemini-4-argon-antigravity-cli-high-4bf10abb9f9d": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "8.2789636",
+      "response_count": 179
     },
     "decision-model-training-glm53-flash-tokenplus-zai-official-claude-code-max-ea93109c6e81": {
       "cost_usd": "0.63526591",
@@ -889,8 +889,8 @@
       "response_count": 139
     },
     "document-page-search-gemini-4-argon-antigravity-cli-high-97b2bbd391d8": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "6.9612004",
+      "response_count": 178
     },
     "document-page-search-glm53-flash-tokenplus-zai-official-claude-code-max-96f5023d9491": {
       "cost_usd": "0.53464935",
@@ -961,8 +961,8 @@
       "response_count": 104
     },
     "evolving-personal-memory-gemini-4-argon-antigravity-cli-high-60bd0f8d522b": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "8.3027333",
+      "response_count": 151
     },
     "evolving-personal-memory-glm53-flash-tokenplus-zai-official-claude-code-max-ea67089fdc0b": {
       "cost_usd": "0.41581298",
@@ -1033,8 +1033,8 @@
       "response_count": 112
     },
     "filtered-ann-retrieval-gemini-4-argon-antigravity-cli-high-990d2ea959c6": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "3.3719899",
+      "response_count": 50
     },
     "filtered-ann-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-a96d9c56f6f4": {
       "cost_usd": "0.48561405",
@@ -1105,8 +1105,8 @@
       "response_count": 93
     },
     "financial-report-qa-gemini-4-argon-antigravity-cli-high-66616bbca1b8": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "5.3176544",
+      "response_count": 95
     },
     "financial-report-qa-glm53-flash-tokenplus-zai-official-claude-code-max-26759b967955": {
       "cost_usd": "0.63228902",
@@ -1177,8 +1177,8 @@
       "response_count": 100
     },
     "icsi-meeting-memory-gemini-4-argon-antigravity-cli-high-bed1969bb6c2": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "6.2399383",
+      "response_count": 90
     },
     "icsi-meeting-memory-glm53-flash-tokenplus-zai-official-claude-code-max-d709e1f822ef": {
       "cost_usd": "0.35595473",
@@ -1249,8 +1249,8 @@
       "response_count": 88
     },
     "incremental-vector-search-gemini-4-argon-antigravity-cli-high-5bc302b1ecfa": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "6.4401791",
+      "response_count": 103
     },
     "incremental-vector-search-glm53-flash-tokenplus-zai-official-claude-code-max-07d5b6f28479": {
       "cost_usd": "0.49956119",
@@ -1321,8 +1321,8 @@
       "response_count": 123
     },
     "instruction-following-embedding-gemini-4-argon-antigravity-cli-high-ac8ac2ec5b69": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "3.5992639",
+      "response_count": 60
     },
     "instruction-following-embedding-glm53-flash-tokenplus-zai-official-claude-code-max-c08a6a7c0306": {
       "cost_usd": "0.28676469",
@@ -1393,8 +1393,8 @@
       "response_count": 103
     },
     "join-aware-table-retrieval-gemini-4-argon-antigravity-cli-high-6934647ec15b": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "3.2439899",
+      "response_count": 61
     },
     "join-aware-table-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-57e81ee60ddb": {
       "cost_usd": "0.25619264",
@@ -1465,8 +1465,8 @@
       "response_count": 207
     },
     "khmer-embedding-training-gemini-4-argon-antigravity-cli-high-1e0e3ae1777f": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "7.7144202",
+      "response_count": 130
     },
     "khmer-embedding-training-glm53-flash-tokenplus-zai-official-claude-code-max-12d7ef10a35f": {
       "cost_usd": "0.56737694",
@@ -1537,8 +1537,8 @@
       "response_count": 103
     },
     "large-scale-formula-retrieval-gemini-4-argon-antigravity-cli-high-866ce2ef3a76": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "7.5452566",
+      "response_count": 97
     },
     "large-scale-formula-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-7f0cbc374699": {
       "cost_usd": "0.35755454",
@@ -1609,8 +1609,8 @@
       "response_count": 165
     },
     "layout-page-search-gemini-4-argon-antigravity-cli-high-023e2616bd76": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "7.6758765",
+      "response_count": 186
     },
     "layout-page-search-glm53-flash-tokenplus-zai-official-claude-code-max-a767a1b94f96": {
       "cost_usd": "0.73383970",
@@ -1681,8 +1681,8 @@
       "response_count": 150
     },
     "legal-stance-retrieval-gemini-4-argon-antigravity-cli-high-b9e606d0f682": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "12.3102751",
+      "response_count": 187
     },
     "legal-stance-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-6cf01b48d92e": {
       "cost_usd": "0.71404839",
@@ -1753,8 +1753,8 @@
       "response_count": 207
     },
     "lightweight-query-retrieval-gemini-4-argon-antigravity-cli-high-fe55f48b50ad": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "7.3863341",
+      "response_count": 148
     },
     "lightweight-query-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-28236042f5d1": {
       "cost_usd": "0.43384488",
@@ -1825,8 +1825,8 @@
       "response_count": 110
     },
     "long-document-reranking-gemini-4-argon-antigravity-cli-high-0f8b940d6317": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "8.0357646",
+      "response_count": 158
     },
     "long-document-reranking-glm53-flash-tokenplus-zai-official-claude-code-max-c35efdc2a2cb": {
       "cost_usd": "0.41464703",
@@ -1897,8 +1897,8 @@
       "response_count": 80
     },
     "long-pdf-evidence-gemini-4-argon-antigravity-cli-high-ba0bfdac0dc3": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "4.8151956",
+      "response_count": 117
     },
     "long-pdf-evidence-glm53-flash-tokenplus-zai-official-claude-code-max-8cffb737d85c": {
       "cost_usd": "0.37708841",
@@ -1969,8 +1969,8 @@
       "response_count": 104
     },
     "long-pdf-evidence-vectorless-gemini-4-argon-antigravity-cli-high-da97ba187642": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "8.4823943",
+      "response_count": 157
     },
     "long-pdf-evidence-vectorless-glm53-flash-tokenplus-zai-official-claude-code-max-00abd4fd89a4": {
       "cost_usd": "0.33763445",
@@ -2041,8 +2041,8 @@
       "response_count": 50
     },
     "memory-constrained-dense-retrieval-gemini-4-argon-antigravity-cli-high-95516b662b4e": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "2.2793099",
+      "response_count": 62
     },
     "memory-constrained-dense-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-4e5e1241a35d": {
       "cost_usd": "0.36164162",
@@ -2113,8 +2113,8 @@
       "response_count": 169
     },
     "methodology-inspiration-retrieval-gemini-4-argon-antigravity-cli-high-3d43dc73a4bb": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "6.2791215",
+      "response_count": 176
     },
     "methodology-inspiration-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-edc176668d78": {
       "cost_usd": "0.89621178",
@@ -2185,8 +2185,8 @@
       "response_count": 82
     },
     "multilingual-vector-postprocessing-gemini-4-argon-antigravity-cli-high-9cbf938bcb8f": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "6.0687252",
+      "response_count": 88
     },
     "multilingual-vector-postprocessing-glm53-flash-tokenplus-zai-official-claude-code-max-e45c65e98847": {
       "cost_usd": "0.40101036",
@@ -2257,8 +2257,8 @@
       "response_count": 119
     },
     "narrative-clue-search-gemini-4-argon-antigravity-cli-high-6b614333d456": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "3.5017863",
+      "response_count": 81
     },
     "narrative-clue-search-glm53-flash-tokenplus-zai-official-claude-code-max-9e0132684742": {
       "cost_usd": "0.46571466",
@@ -2329,8 +2329,8 @@
       "response_count": 97
     },
     "negative-constraint-retrieval-gemini-4-argon-antigravity-cli-high-39da437731eb": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "4.0059734",
+      "response_count": 106
     },
     "negative-constraint-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-06cfc0725034": {
       "cost_usd": "0.66751466",
@@ -2401,8 +2401,8 @@
       "response_count": 157
     },
     "paper-metadata-retrieval-gemini-4-argon-antigravity-cli-high-e8bade2bd51d": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "7.4743398",
+      "response_count": 208
     },
     "paper-metadata-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-de5283f321a6": {
       "cost_usd": "0.51312382",
@@ -2473,8 +2473,8 @@
       "response_count": 55
     },
     "protein-text-bidirectional-retrieval-gemini-4-argon-antigravity-cli-high-437aa43f6d71": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "3.5944804",
+      "response_count": 64
     },
     "protein-text-bidirectional-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-889b89a5f0fe": {
       "cost_usd": "0.13814170",
@@ -2545,8 +2545,8 @@
       "response_count": 229
     },
     "quantity-aware-retrieval-gemini-4-argon-antigravity-cli-high-42dc63271fdf": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "22.9219099",
+      "response_count": 297
     },
     "quantity-aware-retrieval-glm53-flash-tokenplus-zai-official-claude-code-max-2f15588ad315": {
       "cost_usd": "0.84331430",
@@ -2617,8 +2617,8 @@
       "response_count": 89
     },
     "query-encoder-alignment-gemini-4-argon-antigravity-cli-high-ddd3e368dc68": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "9.7311060",
+      "response_count": 191
     },
     "query-encoder-alignment-glm53-flash-tokenplus-zai-official-claude-code-max-843e5f1e7bd7": {
       "cost_usd": "0.32943851",
@@ -2689,8 +2689,8 @@
       "response_count": 123
     },
     "reasoning-query-rewriting-gemini-4-argon-antigravity-cli-high-e81b335b505f": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "3.9737374",
+      "response_count": 110
     },
     "reasoning-query-rewriting-glm53-flash-tokenplus-zai-official-claude-code-max-1347e2d66539": {
       "cost_usd": "0.43003546",
@@ -2761,8 +2761,8 @@
       "response_count": 139
     },
     "rust-bm25-search-gemini-4-argon-antigravity-cli-high-3e8a2309834f": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "7.5294215",
+      "response_count": 142
     },
     "rust-bm25-search-glm53-flash-tokenplus-zai-official-claude-code-max-e2bbf06b0d6a": {
       "cost_usd": "1.44744627",
@@ -2833,8 +2833,8 @@
       "response_count": 101
     },
     "same-place-image-search-gemini-4-argon-antigravity-cli-high-55d03117f9e7": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "7.1882467",
+      "response_count": 176
     },
     "same-place-image-search-glm53-flash-tokenplus-zai-official-claude-code-max-beb646f88496": {
       "cost_usd": "0.42172190",
@@ -2905,8 +2905,8 @@
       "response_count": 164
     },
     "scientific-paper-qa-gemini-4-argon-antigravity-cli-high-afc2925adb03": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "5.8091801",
+      "response_count": 121
     },
     "scientific-paper-qa-glm53-flash-tokenplus-zai-official-claude-code-max-0b36d22bdb72": {
       "cost_usd": "0.34881845",
@@ -2977,8 +2977,8 @@
       "response_count": 107
     },
     "sketch-text-search-gemini-4-argon-antigravity-cli-high-7e30ab242af9": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "7.8468058",
+      "response_count": 127
     },
     "sketch-text-search-glm53-flash-tokenplus-zai-official-claude-code-max-bc698b70e54c": {
       "cost_usd": "0.75525271",
@@ -3049,8 +3049,8 @@
       "response_count": 132
     },
     "sparse-retrieval-pruning-gemini-4-argon-antigravity-cli-high-b380e3d32ffc": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "3.9096781",
+      "response_count": 87
     },
     "sparse-retrieval-pruning-glm53-flash-tokenplus-zai-official-claude-code-max-811bbcf9bd95": {
       "cost_usd": "0.57017705",
@@ -3121,8 +3121,8 @@
       "response_count": 182
     },
     "spoken-query-search-gemini-4-argon-antigravity-cli-high-0badc99f4918": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "6.1618519",
+      "response_count": 142
     },
     "spoken-query-search-glm53-flash-tokenplus-zai-official-claude-code-max-fc43d8702283": {
       "cost_usd": "0.58776751",
@@ -3193,8 +3193,8 @@
       "response_count": 101
     },
     "training-error-tracing-gemini-4-argon-antigravity-cli-high-aead4afc6b5b": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "8.7100430",
+      "response_count": 206
     },
     "training-error-tracing-glm53-flash-tokenplus-zai-official-claude-code-max-45ed1f611b01": {
       "cost_usd": "1.63610049",
@@ -3265,8 +3265,8 @@
       "response_count": 150
     },
     "video-moment-search-gemini-4-argon-antigravity-cli-high-13ce878427ea": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "7.0550202",
+      "response_count": 124
     },
     "video-moment-search-glm53-flash-tokenplus-zai-official-claude-code-max-40c99906fc66": {
       "cost_usd": "0.61383272",
@@ -3337,8 +3337,8 @@
       "response_count": 319
     },
     "visual-document-qa-gemini-4-argon-antigravity-cli-high-c278ebf487f5": {
-      "cost_usd": null,
-      "response_count": null
+      "cost_usd": "6.4926415",
+      "response_count": 106
     },
     "visual-document-qa-glm53-flash-tokenplus-zai-official-claude-code-max-02d7f9ad1c6b": {
       "cost_usd": "0.36401902",
@@ -3389,5 +3389,5 @@
       "response_count": 135
     }
   },
-  "usage_sha256": "14bd32bce809f7938a3df56acdb4aba152cdd9d4b7707fbacdf4416853d70004"
+  "usage_sha256": "8cacd17e251ae9ef1a86bdd16e508ee430ee6a4a5cd952a46065179f08302726"
 }

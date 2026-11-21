@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "as_of": "2026-11-19",
+  "as_of": "2026-11-21",
   "currency": "USD",
   "unit": "USD per million tokens",
-  "policy": "Official real-time USD API list prices, using DeepSeek off-peak rates for all selected requests as a fixed comparison basis. Cache-write and context-tier rates are model-specific. No batch, fast-mode, account or regional adjustments.",
+  "policy": "Official real-time USD API rates. DeepSeek uses off-peak rates as a fixed comparison basis. Argon uses the published November global introductory rates. Cache-write and context-tier rates are model-specific. No batch, fast-mode, account or regional adjustments.",
   "scope": "Selected coding agent model requests only; excludes verifier, task-internal APIs, infrastructure and unrelated runs. Recorded cache reads and writes are subsets of input. Reasoning is already included in output.",
   "models": {
     "openai/gpt-6-luna": {
@@ -195,6 +195,18 @@
         "output": "4.40"
       },
       "note": "Z.ai standard USD API rates, used for comparison. Cache-miss tokens use the input rate. The estimate does not represent a TokenPlus invoice."
+    },
+    "google/gemini-4-argon": {
+      "official_model": "gemini-4-argon",
+      "source": "https://cloud.google.com/model-garden/pricing",
+      "openrouter_source": "https://openrouter.ai/google/gemini-4-argon/providers",
+      "rates": {
+        "input": "2.00",
+        "cached_input": "0.10",
+        "cache_write_input": "2.00",
+        "output": "10.00"
+      },
+      "note": "November 2026 global introductory real-time rates for Vertex AI and standard OpenRouter endpoints. Implicit caching only. Output is priced once. The estimate uses recorded coding calls, including separate context compaction, and excludes account charges and unrecorded fees."
     },
     "z-ai/glm-5.3-flash": {
       "official_model": "glm-5.3-flash",

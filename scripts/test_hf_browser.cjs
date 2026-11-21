@@ -8,7 +8,7 @@ const {gunzipSync} = require('node:zlib');
 const {spawn, spawnSync} = require('node:child_process');
 const {chromium} = require('playwright');
 const root = path.resolve(__dirname, '..');
-const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-pr3'));
+const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-pr3-argon-usage'));
 const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const manifest = JSON.parse(gunzipSync(fs.readFileSync(path.join(packageRoot, 'publication.json.gz'))));
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'content/leaderboard/release.json')));
@@ -58,6 +58,29 @@ const server = http.createServer((req, res) => {
       const reward = JSON.parse(await page.locator('#panel-verifier .file-text').innerText());
       assert(Math.abs((typeof reward === 'number' ? reward : reward.reward) * 100 - selected.score) < 1e-7);
     }
+    const argonPage = await browser.newPage();
+    for (const task of ['agentic-search', 'large-scale-formula-retrieval']) {
+      const selected = snapshot.trials.find(t => t.task === task && t.configuration.model === 'google/gemini-4-argon');
+      const usage = JSON.parse(fs.readFileSync(path.join(packageRoot, manifest.release_path, 'trials', selected.id, 'usage.json')));
+      const response = usage.responses.find(row => row.atif_step_id !== null);
+      await argonPage.goto(`${origin}/leaderboard/trials/${selected.id}/#step-${response.atif_step_id}`);
+      const step = argonPage.locator(`#step-${response.atif_step_id}`);
+      await step.waitFor();
+      const counts = await step.locator('.step-usage [data-tokens]').evaluateAll(nodes => nodes.map(node => Number(node.dataset.tokens)));
+      assert.deepEqual(counts, [response.input_tokens + response.cache_read_tokens,
+        response.cache_read_tokens, response.output_tokens]);
+      await argonPage.getByRole('tab', {name: 'Artifacts'}).click();
+      await argonPage.getByText('Trajectory downloads & provenance', {exact: true}).click();
+      const usageLink = argonPage.getByRole('link', {name: 'Token usage (.json)', exact: false});
+      assert.equal(await usageLink.getAttribute('target'), '_blank');
+      const link = await usageLink.getAttribute('href');
+      const [popup] = await Promise.all([argonPage.waitForEvent('popup'), usageLink.click()]);
+      await popup.waitForLoadState('domcontentloaded');
+      assert.equal(popup.url(), link);
+      assert.deepEqual(JSON.parse(await popup.locator('body').innerText()), usage);
+      await popup.close();
+    }
+    await argonPage.close();
     const sol = snapshot.entries.find(e => e.model === 'gpt-6.1-sol');
     for (const entry of snapshot.entries.filter(e => e.model.startsWith('xiaomi/mimo-v2.6-') || ['gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017', 'kimi-k3'].includes(e.model))) {
       const provider = entry.model.startsWith('xiaomi/') ? 'Xiaomi (via OpenRouter)' : entry.model === 'gpt-6-astra' ? 'OpenAI' : entry.model === 'kimi-k3' ? 'Moonshot AI' : 'DeepSeek (via OpenRouter)';

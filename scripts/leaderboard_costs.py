@@ -25,6 +25,8 @@ def sha256(value):
 
 def request_cost(usage, model):
     for key in TOKEN_FIELDS:
+        if key == 'reasoning_output_tokens' and key in usage and usage[key] is None:
+            continue  # Optional breakdown of output, which is already priced in full.
         if type(usage.get(key)) is not int or usage[key] < 0:
             raise ValueError(f'Missing or invalid token count: {key}')
     inp, cached, written = (usage[k] for k in TOKEN_FIELDS[:3])
@@ -91,16 +93,18 @@ def calculate(snapshot, usage, prices):
             raise ValueError('Missing requests or a response assigned to multiple trials')
         all_ids.update(unique)
         totals, cost = Counter(), Decimal(0)
-        for tokens in unique.values():
-            cost += request_cost(tokens, prices['models'][config['model']])
-            totals.update({key: tokens[key] for key in TOKEN_FIELDS})
-        if row.get('aggregate_remainder') is not None:
-            model = prices['models'][config['model']]
+        measured = list(unique.values())
+        model = prices['models'][config['model']]
+        remainder = row.get('aggregate_remainder')
+        if remainder is not None:
             if model.get('long_context'):
                 raise ValueError('Aggregate usage cannot be priced with per-request context tiers')
-            remainder = row['aggregate_remainder']
-            cost += request_cost(remainder, model)
-            totals.update({key: remainder[key] for key in TOKEN_FIELDS})
+            measured.append(remainder)
+        for tokens in measured:
+            cost += request_cost(tokens, model)
+            totals.update({key: tokens[key] for key in TOKEN_FIELDS if tokens[key] is not None})
+        if any(tokens['reasoning_output_tokens'] is None for tokens in measured):
+            totals['reasoning_output_tokens'] = None
         totals['response_count'] = len(unique)
         if any(totals[k] != trial['tokens'].get(k) for k in (*TOKEN_FIELDS, 'response_count')):
             raise ValueError(f'Usage disagrees with selected trial totals: {trial["id"]}')

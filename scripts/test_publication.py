@@ -93,11 +93,12 @@ class StorageTests(unittest.TestCase):
             self.assertIn(prefix + f'trials/{trial["id"]}/{file}', html)
         download = json.loads(pages[build.ROOT / 'leaderboard/results.json'])
         self.assertEqual(download['cost_methodology']['type'], 'estimated')
-        for trial in download['trials']:
-            if trial['configuration']['model'] == 'google/gemini-4-argon':
-                self.assertIsNone(trial['cost_usd'])
-            else:
-                self.assertGreaterEqual(trial['cost_usd'], 0)
+        self.assertTrue(all(t['cost_usd'] >= 0 for t in download['trials']))
+        argon = [t for t in download['trials'] if t['configuration']['model'] == 'google/gemini-4-argon']
+        self.assertAlmostEqual(sum(t['cost_usd'] for t in argon), 342.8718593)
+        for trial in argon:
+            html = pages[build.ROOT / f'leaderboard/trials/{trial["id"]}/index.html']
+            self.assertIn(prefix + f'trials/{trial["id"]}/usage.json', html)
         self.assertTrue(all(t['trajectory_url'].startswith(prefix) for t in download['trials']))
 
     def test_no_production_fallback_to_local_or_mutable_remote_data(self):

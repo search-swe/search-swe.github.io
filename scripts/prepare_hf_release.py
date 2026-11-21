@@ -40,6 +40,8 @@ def referenced_files(release, snapshot, retained=()):
         add(base, 'evaluation.json')
         add(base, manifest['download'])
         add(base, manifest['search'])
+        if manifest.get('usage'):
+            add(base, manifest['usage'])
         ids = []
         for chunk in dict.fromkeys(s['chunk'] for s in manifest['steps']):
             for step in read(add(base, chunk)):

@@ -47,6 +47,10 @@ class CostTests(unittest.TestCase):
         for model, value in expected.items():
             self.assertEqual(costs.request_cost(usage, self.prices['models'][model]), Decimal(value))
 
+    def test_argon_prices_output_once_when_reasoning_breakdown_is_missing(self):
+        usage = {**tokens(1000000, 800000, 0, 100000), 'reasoning_output_tokens': None}
+        self.assertEqual(costs.request_cost(usage, self.prices['models']['google/gemini-4-argon']), Decimal('1.48'))
+
     def fixture(self):
         usage = tokens()
         trial = {'id': 'trial', 'task': 'task', 'configuration': {'model': 'openai/gpt-6-luna', 'effort': 'max'},
