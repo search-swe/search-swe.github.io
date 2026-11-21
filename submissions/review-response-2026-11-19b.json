@@ -1,0 +1,167 @@
+{
+  "review": "PR#3 comment https://github.com/search-swe/search-swe.github.io/pull/3#issuecomment-7013193625 (@hanhainebula, 2026-11-19T15:13Z)",
+  "generated": "2026-11-19",
+  "method": "search-swe regrade (verify-only on saved original submissions; coding not re-run)",
+  "search_swe_cli": "0.3.1",
+  "verifier_revision": "bec6079118beb85e1b46ad6d9de6b96e6b22ea4e",
+  "upstream_fixes_used": [
+    "VectorSpaceLab/Search-SWE PR#55 cgroup v1/v2 compatibility",
+    "VectorSpaceLab/Search-SWE PR#53 query-encoder portable verifier/calibration"
+  ],
+  "judge_env": "Per the comment: VERIFIER_OPENAI_API_KEY set to the deepseek-capable OpenRouter key (==ANSWER_JUDGE_API_KEY) and VERIFIER_OPENAI_BASE_URL=https://openrouter.ai/api/v1; CLI 0.3.1 maps these to OPENAI_*/base for the verifier, so no manual --verifier-env was needed. Dry-run reported 'Missing verifier settings: none' for all 5.",
+  "host_notes": [
+    "Argon trials' result.json/config.json had bare (unquoted) [REDACTED] where booleans (force_build/delete) belong; repaired on a hard-linked overlay (force_build/delete=true per the sonnet reference); originals left unmodified.",
+    "The 3 cgroup-enforcing tasks (constrained-molecular-search x2, budgeted-candidate-reranking) run their verifier container as root, which writes verifier/ as root mode 700; harbor (verifier.py:227 reward_json_path.exists()) hit a transient EACCES on the root->user chown. Re-ran those 3 with the CLI as root so harbor can stat the files -> clean 'completed'. query-encoder does not use that container and completed as the user.",
+    "Argon constrained-molecular additionally needed its agent trajectory JSON repaired (2 structurally-bare [REDACTED] tokens) so the in-verifier integrity_gate could json.loads it; without the repair it crashed with JSONDecodeError and scored 0.0."
+  ],
+  "hf_commits": {
+    "claude-sonnet-5-5": "e0758f61d434f416627c20b74f97e3948a3d23f7",
+    "gemini-4-argon": "76b0a0e6c349e57dbaab09888ab8732b0cf321c8"
+  },
+  "provisional_means": {
+    "claude-sonnet-5-5": {
+      "equal_weight_mean_47": 36.89,
+      "mean_over_resolved_45": 38.52,
+      "pending": [
+        "large-scale-formula-retrieval",
+        "rust-bm25-search"
+      ]
+    },
+    "gemini-4-argon": {
+      "equal_weight_mean_47": 34.02,
+      "mean_over_resolved_46": 34.76,
+      "pending": [
+        "large-scale-formula-retrieval"
+      ]
+    }
+  },
+  "left_out_maintainer_side": [
+    "gemini-4-argon large-scale-formula-retrieval",
+    "claude-sonnet-5-5 rust-bm25-search",
+    "claude-sonnet-5-5 large-scale-formula-retrieval"
+  ],
+  "records": [
+    {
+      "model": "claude-sonnet-5-5",
+      "task": "query-encoder-alignment",
+      "original_trial_id": "query-encoder-alignment__7M4cETf",
+      "regrade_trial_dir": "query-encoder-alignment__regrade_623a4b87f320",
+      "regrade_trial_uuid": "37d216bc-1b3c-4379-a444-7e3ca34f95e7",
+      "status": "completed",
+      "measurement_valid": true,
+      "new_reward": 52.5,
+      "reward_raw": 0.525,
+      "integrity_judge": null,
+      "report_valid": null,
+      "submission_sha256": null,
+      "ran_as_root": false,
+      "disposition": "reevaluated_recovered",
+      "evidence": "evidence/query-encoder-alignment/regrade/",
+      "note": ""
+    },
+    {
+      "model": "gemini-4-argon",
+      "task": "query-encoder-alignment",
+      "original_trial_id": "query-encoder-alignment__yUnmYuE",
+      "regrade_trial_dir": "query-encoder-alignment__regrade_08f35ada0009",
+      "regrade_trial_uuid": "7c494fe0-3401-4430-83a5-7e629853447f",
+      "status": "completed",
+      "measurement_valid": true,
+      "new_reward": 47.5,
+      "reward_raw": 0.475,
+      "integrity_judge": null,
+      "report_valid": null,
+      "submission_sha256": null,
+      "ran_as_root": false,
+      "disposition": "reevaluated_recovered",
+      "evidence": "evidence/query-encoder-alignment/regrade/",
+      "note": ""
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "task": "constrained-molecular-search",
+      "original_trial_id": "constrained-molecular-search__yfaRDio",
+      "regrade_trial_dir": "constrained-molecular-search__regrade_9675d0a30749",
+      "regrade_trial_uuid": "e35b50ec-a4a2-4f6f-8a21-1af7cf155942",
+      "status": "completed",
+      "measurement_valid": true,
+      "new_reward": 22.93,
+      "reward_raw": 0.22933000000000003,
+      "integrity_judge": 1.0,
+      "report_valid": true,
+      "submission_sha256": {
+        "chem.py": "4802e28126d1433a68fb761b11d698835c0b718d2b7c0020ffb0b3228a0206c4",
+        "retriever.py": "1cbfb95c4e1101d991d65ca0defd036178d0f209e11ca57fd1de79e55158b19c",
+        "infer.py": "3ec25d00e1012e557d97792f1353f3507c1c681b9ed9ba0647256ba0386bd700",
+        "NOTES.md": "7f99408847c5f1955911b47823523456e428a516be308babd4854ff71fade4b5",
+        "models.py": "b7a1c81bc9911eb5e53e3e86e4d95461354d7623b0c8d66ab2a8b4a3e8ee4402",
+        "build.py": "29ff872522aca10cf4a9441f1dd07d2ed9c9401d083df18466ec2bf2bbf80f43",
+        "selection.py": "2b6c920dbb7f46ed901441bd110c4cc4bea0b64d20761633bf2f840e2ed5d307",
+        "library_tables.py": "2bb2d8a0d6cd5d7828316816ca833e7438609365e227809a82cea11a2de43b27",
+        "tables/calib.npz": "b212eb504c0c9cf3b634471d4c30bbfe13040e006d04fec1b6a0d39779027fe4",
+        "models/member_tfm_2.pt": "e7d8002077afb4852fa61faf9e5005dd0a35d4d10e0231c71c49fe6aee13a587",
+        "models/member_mpnn_1.pt": "f074b46f33c27f3b93368d66c3a3802e88149c626f1223606527ae4897af4c4c",
+        "models/member_mpnn_2.pt": "854f591eed0d95e5347ad0ab16a0e56d58a08086dacfddc358281309ed2d1c5f",
+        "models/member_tfm_4.pt": "2ce1c9a390a697dafc97d693fd5904542cfa85a54def5291024ba73f02334261",
+        "models/member_mpnn_3.pt": "0b019eb7d4ea22b4dcca3ea49f247b59ee9497e1eb0834c7a39b830eada10b45",
+        "models/member_tfm_3.pt": "7808e03c67b1fa7d3856e9a47fc3d95adf0b4236f61536a1e91877b1713b859a",
+        "models/member_tfm_1.pt": "5e8fed1f1216ebf9913debe12ad677b7938ac31581f5cd9f2703414b0d2c542f",
+        "models_dev/member_mpnn_a.pt": "24f35c7c167756c38cb7e051c67e5ad1d015635e7e0ea993e7d15e042c99e922",
+        "models_dev/member_tfm_a.pt": "608b31592126dcb6e1a60e2b58632aa90e54e7a3cfb27b908931c0b57af6bf2e",
+        "tables/T/lsig.npy": "83bed5bc40d3fa10cb8aa7ae4e76d0106325ddfdd8cb46c9c050be903206ddfe",
+        "tables/T/meta.json": "fc6269a99c65a17cae22ce6625e0a3c2b46e46c99f02ce9a5fab81ecb80e7a4d",
+        "tables/T/props.npy": "a454a60f2aab3696c2fee43f56b326d7b3c06ebfbf36169cc66d1a426628076f",
+        "tables/T/mu.npy": "cb1c80901f3ef879fd76c6f83ff950b5356ef506c2efade2a9ddb5ae04ec7eb1"
+      },
+      "ran_as_root": true,
+      "disposition": "reevaluated_recovered",
+      "evidence": "evidence/constrained-molecular-search/regrade/",
+      "note": "ran as root to avoid harbor verifier.py reward.json stat race (cgroup container writes as root)"
+    },
+    {
+      "model": "gemini-4-argon",
+      "task": "constrained-molecular-search",
+      "original_trial_id": "constrained-molecular-search__JeQEvXr",
+      "regrade_trial_dir": "constrained-molecular-search__regrade_0268593b4ffb",
+      "regrade_trial_uuid": "562a483f-498f-4e2b-bdec-f41d07de438c",
+      "status": "completed",
+      "measurement_valid": true,
+      "new_reward": 18.57,
+      "reward_raw": 0.185735,
+      "integrity_judge": 1.0,
+      "report_valid": true,
+      "submission_sha256": {
+        "retriever.py": "c1c07d562c8c6dd9b19d5cec73eb678bec4c7373626eeeb8d9b850ddc09b3192",
+        "NOTICE.md": "a96e4cd254a7b0538b3ed00d82330d1907d719109fddcfeee7b5ec2196f4f2f3",
+        "LICENSE-APEX": "c84442114f4da9b2593efa430845e11a0605b0c16259feb906661bc0bd504fb8",
+        "LICENSE-APEX-TOPK.md": "df113d891c33ff3a4277c03cfaa0a52dde2ee93a8400670853cdf204dfd086d0",
+        "artifacts/finetuned_gnn.pt": "3eba6ef42a6f0994ca25075667cabffa12b39103642d230434331677466261f9",
+        "artifacts/ensemble_bundle.pt": "8f0421c19d3fa1c491df540ec3ccb855a4965c926cbfdc26d5856084126ee358",
+        "index_12m/properties.npy": "e37b272cf91277170ae97b1c36df7272559e95530a0403eff99c49cb59ae85f7",
+        "index_12m/scores.npy": "32e0fa34959a8aa0c489fe4c5eec1b701dc6c18720485de8cf8e379e28184dee"
+      },
+      "ran_as_root": true,
+      "disposition": "reevaluated_recovered",
+      "evidence": "evidence/constrained-molecular-search/regrade/",
+      "note": "ran as root to avoid harbor verifier.py reward.json stat race (cgroup container writes as root); argon trajectory JSON repaired (2 bare [REDACTED] tokens) so integrity_gate could parse"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "task": "budgeted-candidate-reranking",
+      "original_trial_id": "budgeted-candidate-reranking__6nmMaWv",
+      "regrade_trial_dir": "budgeted-candidate-reranking__regrade_3f2ed1452abf",
+      "regrade_trial_uuid": "4988e86c-c9e9-4a27-8eee-a942a9c2f394",
+      "status": "completed",
+      "measurement_valid": true,
+      "new_reward": 29.54,
+      "reward_raw": 0.2954020583905854,
+      "integrity_judge": 1.0,
+      "report_valid": null,
+      "submission_sha256": null,
+      "ran_as_root": true,
+      "disposition": "reevaluated_recovered",
+      "evidence": "evidence/budgeted-candidate-reranking/regrade/",
+      "note": "ran as root to avoid harbor verifier.py reward.json stat race (cgroup container writes as root)"
+    }
+  ]
+}
