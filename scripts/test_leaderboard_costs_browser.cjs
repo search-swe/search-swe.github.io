@@ -101,19 +101,6 @@ const compare = direction => (a, b) => a == null ? (b == null ? 0 : 1) :
     for (const scope of ['cpu', 'gpu', 'all']) {
       await page.locator(`[data-scope="${scope}"]`).click();
       const expected = new Map(totals(scope).map(e => [e.id, e]));
-      const labels = await page.locator('.pareto-point-label:visible').evaluateAll(nodes => nodes.map(node => {
-        const {x, y, width, height} = node.getBoundingClientRect();
-        return {x, y, width, height};
-      }));
-      assert.equal(labels.length, axisCount('cost'));
-      assert(!labels.some((a, i) => labels.slice(i + 1).some(b =>
-        a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y)));
-      assert(await page.locator('.pareto-point-label:visible').evaluateAll(nodes => nodes.every(node => {
-        const box = node.getBBox(), px = Number(node.dataset.pointX), py = Number(node.dataset.pointY);
-        const dx = Math.max(box.x - px, px - box.x - box.width, 0);
-        const dy = Math.max(box.y - py, py - box.y - box.height, 0);
-        return Math.hypot(dx, dy) <= 40;
-      })), 'Names must remain beside their own markers');
       const points = await page.locator('.pareto-point').evaluateAll(nodes => nodes.map(n => ({id: n.dataset.entry, cost: Number(n.dataset.cost), score: Number(n.dataset.score)})));
       for (const point of points) {
         assert(Math.abs(point.cost - expected.get(point.id).cost) < 1e-9);
@@ -133,6 +120,21 @@ const compare = direction => (a, b) => a == null ? (b == null ? 0 : 1) :
           frontier: n.dataset.frontier === 'true', x: Number(n.querySelector('.pareto-dot').getAttribute('cx')),
         })));
         assert.equal(points.length, expected.length);
+        const labels = await page.locator('.pareto-point-label:visible').evaluateAll(nodes => nodes.map(node => {
+          const {x, y, width, height} = node.getBBox();
+          const px = Number(node.dataset.pointX), py = Number(node.dataset.pointY);
+          const dx = Math.max(x - px, px - x - width, 0);
+          const dy = Math.max(y - py, py - y - height, 0);
+          return {x, y, width, height, distance: Math.hypot(dx, dy)};
+        }));
+        assert.equal(labels.length, points.length);
+        assert(labels.every(label => label.distance <= 40), 'Names must remain beside their own markers');
+        assert(labels.filter(label => label.distance <= 14).length >= labels.length * 2 / 3,
+          'Most names must sit directly beside their markers');
+        assert(!labels.some((a, i) => labels.slice(i + 1).some(b =>
+          Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x) > 1.05 &&
+          Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y) > 1.05)),
+        'Names must remain legible where their bounds meet');
         const ticks = await page.locator('.pareto-tick-x').evaluateAll(nodes => nodes.map(node => ({
           value: Number(node.dataset.value), x: Number(node.getAttribute('x')),
         })));

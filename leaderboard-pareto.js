@@ -63,7 +63,8 @@
 
     // Search hides models, but does not turn a dominated model into a frontier point.
     const frontierIds = new Set(frontier(eligible, axis).map(e => e.id));
-    const width = Math.max(300, chart.clientWidth), height = width < 600 ? 330 : 520;
+    const width = Math.max(300, chart.clientWidth);
+    const height = window.matchMedia('(max-width: 600px)').matches ? 330 : 520;
     const left = 58, right = width - 32, top = 42, bottom = height - 54;
     const maxValue = Math.max(...eligible.map(e => e[axis] / metric.unit));
     const ticks = linearTicks(maxValue, width < 600 ? 3 : 5);
@@ -97,6 +98,8 @@
     if (line.length > 1) {
       svg.append(svgNode('path', {class: 'pareto-frontier', d: line.map((e, i) => `${i ? 'L' : 'M'}${x(e[axis])},${y(e.score)}`).join(' ')}));
     }
+    const leaders = svgNode('g', {'stroke': '#a3adb9', 'pointer-events': 'none', 'aria-hidden': 'true'});
+    svg.append(leaders);
     const tooltip = document.createElement('div');
     tooltip.className = 'pareto-tooltip';
     tooltip.hidden = true;
@@ -117,9 +120,7 @@
       if (onFrontier) link.append(svgNode('circle', {cx: x(entry[axis]), cy: y(entry.score), r: 11, fill: color, opacity: '.13', class: 'pareto-halo'}));
       const dot = svgNode('circle', {cx: x(entry[axis]), cy: y(entry.score), r: 6, fill: color, class: 'pareto-dot'});
       link.append(dot);
-      const end = x(entry[axis]) > width * .6;
-      const pointLabel = svgNode('text', {x: x(entry[axis]) + (end ? -18 : 18), y: y(entry.score) + 4,
-        'text-anchor': end ? 'end' : 'start', class: 'pareto-point-label',
+      const pointLabel = svgNode('text', {x: x(entry[axis]), y: y(entry.score), class: 'pareto-point-label',
         'data-entry': entry.id, 'data-frontier': onFrontier, 'data-point-x': x(entry[axis]),
         'data-point-y': y(entry.score), 'aria-hidden': 'true'}, entry.name);
       const showTooltip = () => {
@@ -140,7 +141,7 @@
       link.addEventListener('focus', showTooltip);
       dot.addEventListener('mouseleave', () => { tooltip.hidden = true; });
       link.addEventListener('blur', () => { tooltip.hidden = true; });
-      svg.append(link, pointLabel);
+      svg.append(pointLabel, link);
 
       const item = document.createElement('a');
       item.href = entry.url;
@@ -161,65 +162,106 @@
     chart.replaceChildren(svg, tooltip);
     legend.replaceChildren(legendItems);
     function layoutLabels() {
-      // Keep nearby model labels apart; the legend retains every model on crowded charts.
-      const occupied = visible.map(e => ({x: x(e[axis]) - 8, y: y(e.score) - 8, width: 16, height: 16}));
-      const overlaps = (a, b) => a.x < b.x + b.width + 1 && a.x + a.width + 1 > b.x &&
-        a.y < b.y + b.height + 1 && a.y + a.height + 1 > b.y;
+      const points = visible.map(e => ({id: e.id, x: x(e[axis]), y: y(e.score)}));
+      const markers = points.map(p => ({x: p.x - 8, y: p.y - 8, width: 16, height: 16}));
+      const overlaps = (a, b, gap) => a.x < b.x + b.width + gap && a.x + a.width + gap > b.x &&
+        a.y < b.y + b.height + gap && a.y + a.height + gap > b.y;
+      const distance = (box, px, py) => Math.hypot(
+        Math.max(box.x - px, px - box.x - box.width, 0),
+        Math.max(box.y - py, py - box.y - box.height, 0)
+      );
       const labels = [...svg.querySelectorAll('.pareto-point-label')].map(label => {
         label.style.display = '';
         const size = label.getBBox();
         if (!size.width) return null; // Point labels are hidden on mobile.
         const px = Number(label.dataset.pointX), py = Number(label.dataset.pointY);
-        const sides = px > width * .6 ? [-1, 1] : [1, -1];
+        const baseline = Number(label.getAttribute('y')) - size.y;
+        const centeredY = py - size.height / 2;
         const options = [];
-        // Keep names local to their marker; crowded names remain available in the legend.
-        for (const offset of [4, 0, 8, -4, 12, -8, 16, -12, 20, -16, 24, -20, 28, -24, 32, -28, 36, -32, 40, -36, 44]) {
-          for (const side of sides) {
-            label.setAttribute('x', px + side * 18);
-            label.setAttribute('y', py + offset);
-            label.setAttribute('text-anchor', side === 1 ? 'start' : 'end');
-            const box = label.getBBox();
-            if (box.x >= left && box.x + box.width <= right && box.y >= top && box.y + box.height <= bottom &&
-                !occupied.some(other => overlaps(box, other))) {
-              options.push({x: px + side * 18, y: py + offset, anchor: side === 1 ? 'start' : 'end', box});
-            }
+        const neighbors = points.filter(p => p.id !== label.dataset.entry);
+        const add = (x, y, alignmentPenalty) => {
+          const box = {x, y, width: size.width, height: size.height};
+          if (x < left || x + box.width > right || y < top || y + box.height > bottom ||
+              markers.some(marker => overlaps(box, marker, 1))) return;
+          const gap = distance(box, px, py);
+          const dx = Math.max(x, Math.min(x + box.width, px)) - px;
+          const dy = Math.max(y, Math.min(y + box.height, py)) - py;
+          const ambiguous = neighbors.some(p => distance(box, p.x, p.y) + 1 < gap);
+          const crossed = gap > 16 && neighbors.some(p => {
+            const along = ((p.x - px) * dx + (p.y - py) * dy) / (gap * gap);
+            return along > 0 && along < 1 && Math.hypot(p.x - px - along * dx, p.y - py - along * dy) < 8;
+          });
+          if (crossed) return;
+          const leader = gap > 16 ? {
+            x1: px + dx * 7 / gap, y1: py + dy * 7 / gap,
+            x2: px + dx * (1 - 2 / gap), y2: py + dy * (1 - 2 / gap),
+          } : null;
+          const leaderBox = leader && {
+            x: Math.min(leader.x1, leader.x2), y: Math.min(leader.y1, leader.y2),
+            width: Math.abs(leader.x1 - leader.x2), height: Math.abs(leader.y1 - leader.y2),
+          };
+          options.push({box, leader, leaderBox, gap, rank: gap + alignmentPenalty + (ambiguous ? 10 : 0)});
+        };
+        const verticalAnchors = new Set([.5, .25, .75, 0, 1].map(fraction =>
+          Math.max(left, Math.min(right - size.width, px - size.width * fraction))));
+        for (const markerGap of [11, 17, 23]) {
+          for (let offset = -42; offset <= 42; offset += 3.5) {
+            add(px + markerGap, centeredY + offset, Math.abs(offset) / 4);
+            add(px - markerGap - size.width, centeredY + offset, Math.abs(offset) / 4);
+          }
+          for (const labelX of verticalAnchors) {
+            add(labelX, py - markerGap - size.height, 3);
+            add(labelX, py + markerGap, 3);
           }
         }
-        return {label, options, width: size.width};
-      }).filter(Boolean).sort((a, b) => a.options.length - b.options.length || b.width - a.width);
+        options.sort((a, b) => a.rank - b.rank);
+        return {label, baseline, options};
+      }).filter(Boolean).sort((a, b) => a.options.length - b.options.length);
       const choices = [];
+      const occupied = [];
+      const conflicts = (a, b, spacing) => overlaps(a.box, b.box, spacing) ||
+        (a.leaderBox && overlaps(a.leaderBox, b.box, 1)) ||
+        (b.leaderBox && overlaps(a.box, b.leaderBox, 1));
       let attempts = 0;
-      const fit = remaining => {
+      const fit = (remaining, limit, spacing) => {
         if (!remaining.length) return true;
         let next, available;
         for (const index of remaining) {
-          const free = labels[index].options.filter(option => !occupied.some(other => overlaps(option.box, other)));
+          const free = labels[index].options.filter(option => option.gap <= limit &&
+            !occupied.some(other => conflicts(option, other, spacing)));
           if (!free.length) return false;
           if (!available || free.length < available.length) { next = index; available = free; }
         }
         for (const option of available) {
-          if (++attempts > 10000) return false;
-          occupied.push(option.box);
+          if (++attempts > 3000) return false;
+          occupied.push(option);
           choices[next] = option;
-          if (fit(remaining.filter(index => index !== next))) return true;
+          if (fit(remaining.filter(index => index !== next), limit, spacing)) return true;
           occupied.pop();
         }
         return false;
       };
-      // Try local alternatives before hiding a name; cap work for dense charts.
-      if (!fit(labels.map((_, index) => index))) {
-        occupied.length = visible.length;
+      // Widen the search only when nearby placements cannot fit all names.
+      const indices = labels.map((_, index) => index);
+      // In dense areas, allow up to one pixel of label-box overlap.
+      const placed = [13, 18, 24, 32, 40].some(limit => [1, -1].some(spacing => {
+        attempts = 0;
+        return fit(indices, limit, spacing);
+      }));
+      if (!placed) {
+        // Keep readable labels in the plot and leave every name available in the legend.
         labels.forEach(({options}, index) => {
-          choices[index] = options.find(option => !occupied.some(other => overlaps(option.box, other)));
-          if (choices[index]) occupied.push(choices[index].box);
+          choices[index] = options.find(option => !occupied.some(other => conflicts(option, other, -1)));
+          if (choices[index]) occupied.push(choices[index]);
         });
       }
-      labels.forEach(({label}, index) => {
+      leaders.replaceChildren();
+      labels.forEach(({label, baseline}, index) => {
         const chosen = choices[index];
         if (!chosen) { label.style.display = 'none'; return; }
-        label.setAttribute('x', chosen.x);
-        label.setAttribute('y', chosen.y);
-        label.setAttribute('text-anchor', chosen.anchor);
+        label.setAttribute('x', chosen.box.x);
+        label.setAttribute('y', chosen.box.y + baseline);
+        if (chosen.leader) leaders.append(svgNode('line', chosen.leader));
       });
     }
     layoutLabels();
