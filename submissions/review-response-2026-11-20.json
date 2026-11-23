@@ -1,0 +1,61 @@
+{
+  "review": "PR search-swe/search-swe.github.io#3 comment 7032165652 (@hanhainebula, 2026-11-20T06:21Z): recover token usage for the 46 selected Vertex AI Argon trials",
+  "generated": "2026-11-21",
+  "status": "done",
+  "source": "native agent/antigravity-cli.trajectory.jsonl of each selected trial (saved runs; no re-run)",
+  "uploaded": {
+    "dataset": "ubowang/search-swe-gemini-4-argon",
+    "revision": "a3cd17876ca6456af39050089e242398c86864a6",
+    "files": [
+      "usage.json",
+      "usage_responses.jsonl"
+    ]
+  },
+  "coverage": {
+    "selected_trials": 46,
+    "per_response_full": 46,
+    "aggregate_only": 0,
+    "missing_or_partial": [],
+    "excluded": [
+      "large-scale-formula-retrieval (pending maintainer rerun; usage handled on your side per your note)"
+    ],
+    "batches": {
+      "argon-full-20261111-005939": 28,
+      "argon-rerun-429-20261113-055829": 17,
+      "argon-rerun-bounded": 1
+    }
+  },
+  "per_response": {
+    "file": "usage_responses.jsonl",
+    "records": 6373,
+    "schema": [
+      "task",
+      "selected_trial_id",
+      "type",
+      "native_step_index",
+      "atif_step_id",
+      "created_at",
+      "input_tokens",
+      "cache_read_tokens",
+      "output_tokens"
+    ],
+    "atif_step_id_match": "6335/6335 PLANNER_RESPONSE matched to trajectories/<task>/trajectory.json step_id (100%); CHECKPOINT->null"
+  },
+  "token_semantics": {
+    "input_excludes_cache": "input_tokens = fresh (non-cached) prompt tokens only; cache_read_tokens separate; full prompt = input+cache_read; billable per call = input+cache_read+output",
+    "events_with_tokens": "only PLANNER_RESPONSE and CHECKPOINT carry tokens (verified 0 token-bearing events outside those two types across all 46 trials)",
+    "checkpoint_handling": "CHECKPOINT = agy context-compaction call; a real model call included as its own record, NOT a cumulative total; not double-counted; atif_step_id=null"
+  },
+  "cost": {
+    "available": false,
+    "currency": null,
+    "reason": "agy native/Vertex-ADC route records no cost (no field in harness.json or native trajectory); Vertex billing not returned per call",
+    "how_to_derive": "token counts x Vertex Gemini pricing (input/cached-input/output), USD"
+  },
+  "grand_total": {
+    "input_tokens": 84052615,
+    "cache_read_tokens": 684181727,
+    "output_tokens": 9880320,
+    "total_tokens": 778114662
+  }
+}

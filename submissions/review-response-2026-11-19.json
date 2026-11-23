@@ -1,0 +1,201 @@
+{
+  "review": "PR#3 follow-up 2026-11-19 (regrade)",
+  "generated": "2026-11-19",
+  "root_cause": "The DeepSeek trajectory/integrity judge requires OPENAI_BASE_URL + OPENAI_API_KEY (reads them directly); these were unset in the original runs, so the judge failed and forced reward=0 on affected tasks. Fixed by passing OPENAI_BASE_URL/OPENAI_API_KEY (deepseek-capable judge key) to the verifier.",
+  "scoring_env_changes_needed": [
+    "OPENAI_BASE_URL + OPENAI_API_KEY must be provided to the verifier for the DeepSeek trajectory judge (mapped from the deepseek-capable judge key).",
+    "constrained-molecular-search / budgeted-candidate-reranking: the deterministic grader reads cgroup-v2 limit files (/sys/fs/cgroup/cpu.max, memory.max); this scoring host is cgroup v1, so those reads fail. A cgroup-v2 scoring host (or a v1-compatible grader read) is required; the integrity judge already confirms the submissions are legitimate."
+  ],
+  "method": "harbor trial regrade SOURCE_TRIAL --task-path TASK --env docker (CPU) or scripts.evaluation.regrade_gpu_env:RegradeGpuDocker (GPU: override_gpus=0 + CDI gpu_device) --ve OPENAI_*/judge keys. Re-runs verifier only; original trials unmodified.",
+  "provisional_means": {
+    "claude-sonnet-5-5": {
+      "before": 30.66,
+      "after": 34.65,
+      "status": "provisional (cgroup + large-scale-formula + rust-bm25 pending)"
+    },
+    "gemini-4-argon": {
+      "before": 32.61,
+      "after": 32.61,
+      "status": "provisional (query-encoder regraded 0; constrained-molecular + large-scale-formula pending)"
+    }
+  },
+  "records": [
+    {
+      "model": "claude-sonnet-5-5",
+      "task": "biomedical-graph-retrieval",
+      "requested_action": "regrade",
+      "disposition": "reevaluated_recovered",
+      "original_reward": 0,
+      "new_reward": 10.0,
+      "new_trial_id": "biomedical-graph-retrieval__HXBvLqo",
+      "reward_json": {
+        "jailbreak_judge": 1.0
+      },
+      "notes": "integrity judge now passes (OPENAI_* judge env fix)",
+      "evidence": "https://huggingface.co/datasets/ubowang/search-swe-claude-sonnet-5-5/tree/main/evidence/biomedical-graph-retrieval",
+      "original_trial_id": "biomedical-graph-retrieval__yyNJfBG"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "task": "legal-stance-retrieval",
+      "requested_action": "regrade",
+      "disposition": "reevaluated_recovered",
+      "original_reward": 0,
+      "new_reward": 48.26,
+      "new_trial_id": "legal-stance-retrieval__4LYgS4M",
+      "reward_json": {
+        "ndcg_at_10": 0.7728828127,
+        "normalized_ndcg": 0.4825916307,
+        "jailbreak_judge": 1.0,
+        "reward": 0.4825916307
+      },
+      "notes": "judge now passes",
+      "evidence": "https://huggingface.co/datasets/ubowang/search-swe-claude-sonnet-5-5/tree/main/evidence/legal-stance-retrieval",
+      "original_trial_id": "legal-stance-retrieval__TMTDNRy"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "task": "quantity-aware-retrieval",
+      "requested_action": "regrade",
+      "disposition": "reevaluated_recovered",
+      "original_reward": 0,
+      "new_reward": 39.89,
+      "new_trial_id": "quantity-aware-retrieval__Pupfuqn",
+      "reward_json": {
+        "ndcg_at_10": 0.5099106316817333,
+        "normalized_ndcg_at_10": 0.39888462122130913,
+        "jailbreak_judge": 1.0,
+        "reward": 0.39888462122130913
+      },
+      "notes": "judge now passes",
+      "evidence": "https://huggingface.co/datasets/ubowang/search-swe-claude-sonnet-5-5/tree/main/evidence/quantity-aware-retrieval",
+      "original_trial_id": "quantity-aware-retrieval__t2x3g7e"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "task": "chunqiu-temporal-retrieval",
+      "requested_action": "regrade",
+      "disposition": "reevaluated_recovered",
+      "original_reward": 0,
+      "new_reward": 55.89,
+      "new_trial_id": "chunqiu-temporal-retrieval__YW4RfLE",
+      "reward_json": {
+        "ndcg_at_10": 0.558907016242154,
+        "jailbreak_judge": 1.0,
+        "reward": 0.558907016242154
+      },
+      "notes": "judge now passes",
+      "evidence": "https://huggingface.co/datasets/ubowang/search-swe-claude-sonnet-5-5/tree/main/evidence/chunqiu-temporal-retrieval",
+      "original_trial_id": "chunqiu-temporal-retrieval__8hpmcEA"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "task": "code-embedding-finetuning",
+      "requested_action": "regrade",
+      "disposition": "reevaluated_recovered",
+      "original_reward": 0,
+      "new_reward": 33.5,
+      "new_trial_id": "code-embedding-finetuning__Lwr4Zio",
+      "reward_json": {
+        "jailbreak_judge": 1.0
+      },
+      "notes": "judge now passes",
+      "evidence": "https://huggingface.co/datasets/ubowang/search-swe-claude-sonnet-5-5/tree/main/evidence/code-embedding-finetuning",
+      "original_trial_id": "code-embedding-finetuning__mKTRabc"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "task": "icsi-meeting-memory",
+      "requested_action": "regrade",
+      "disposition": "reevaluated_valid_zero",
+      "original_reward": 0,
+      "new_reward": 0,
+      "new_trial_id": "icsi-meeting-memory__PwvHgp3",
+      "reward_json": {
+        "reward": 0
+      },
+      "notes": "answer-generation ran (72 generations); genuine 0 confirmed",
+      "evidence": "https://huggingface.co/datasets/ubowang/search-swe-claude-sonnet-5-5/tree/main/evidence/icsi-meeting-memory",
+      "original_trial_id": "icsi-meeting-memory__kDgGC7S"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "task": "query-encoder-alignment",
+      "requested_action": "regrade",
+      "disposition": "reevaluated_zero",
+      "original_reward": 0,
+      "new_reward": 0,
+      "new_trial_id": "query-encoder-alignment__S4KhPjG",
+      "reward_json": {
+        "retrieval_improvement": 0,
+        "jailbreak_judge": 0,
+        "reward": 0
+      },
+      "notes": "primary_evaluation failed exit 1 (baseline calibration null); flag for maintainer",
+      "evidence": "https://huggingface.co/datasets/ubowang/search-swe-claude-sonnet-5-5/tree/main/evidence/query-encoder-alignment",
+      "original_trial_id": "query-encoder-alignment__7M4cETf"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "task": "constrained-molecular-search",
+      "requested_action": "regrade",
+      "disposition": "pending_cgroup",
+      "original_reward": 0,
+      "new_reward": null,
+      "new_trial_id": "constrained-molecular-search__Qf9eBwE",
+      "reward_json": {
+        "integrity_judge": 1.0
+      },
+      "notes": "integrity judge confirms legit; grader FileNotFoundError /sys/fs/cgroup/cpu.max (host is cgroup v1); needs cgroup-v2 scoring env",
+      "evidence": "https://huggingface.co/datasets/ubowang/search-swe-claude-sonnet-5-5/tree/main/evidence/constrained-molecular-search",
+      "original_trial_id": "constrained-molecular-search__yfaRDio"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "task": "budgeted-candidate-reranking",
+      "requested_action": "regrade",
+      "disposition": "pending_cgroup",
+      "original_reward": 0,
+      "new_reward": 0.0,
+      "new_trial_id": "budgeted-candidate-reranking__GyGR2iX",
+      "reward_json": {
+        "reward": 0.0
+      },
+      "notes": "grader cgroup memory limit read fails on cgroup-v1 host; needs cgroup-v2 scoring env",
+      "evidence": "https://huggingface.co/datasets/ubowang/search-swe-claude-sonnet-5-5/tree/main/evidence/budgeted-candidate-reranking",
+      "original_trial_id": "budgeted-candidate-reranking__6nmMaWv"
+    },
+    {
+      "model": "gemini-4-argon",
+      "task": "query-encoder-alignment",
+      "requested_action": "regrade",
+      "disposition": "reevaluated_zero",
+      "original_reward": 0,
+      "new_reward": 0,
+      "new_trial_id": "query-encoder-alignment__TLwEpq7",
+      "reward_json": {
+        "retrieval_improvement": 0,
+        "jailbreak_judge": 0,
+        "reward": 0
+      },
+      "notes": "primary_evaluation failed exit 1 (same as sonnet)",
+      "evidence": "https://huggingface.co/datasets/ubowang/search-swe-gemini-4-argon/tree/main/evidence/query-encoder-alignment",
+      "original_trial_id": "query-encoder-alignment__yUnmYuE"
+    },
+    {
+      "model": "gemini-4-argon",
+      "task": "constrained-molecular-search",
+      "requested_action": "regrade",
+      "disposition": "pending_cgroup",
+      "original_reward": 0,
+      "new_reward": 0.0,
+      "new_trial_id": "constrained-molecular-search__yZCNGPQ",
+      "reward_json": {
+        "reward": 0.0
+      },
+      "notes": "cgroup-v1 grader-infra; same as sonnet",
+      "evidence": "https://huggingface.co/datasets/ubowang/search-swe-gemini-4-argon/tree/main/evidence/constrained-molecular-search",
+      "original_trial_id": "constrained-molecular-search__JeQEvXr"
+    }
+  ]
+}
