@@ -163,17 +163,6 @@
       },
       "note": "Official standard real-time USD API list rates, uniform across context lengths. Implicit cache population is part of ordinary input; selected receipts have no separate cache-write tokens. No subscription, batch or third-party routing discount. Recorded responses and available final counters counted once; unrecorded usage is not estimated."
     },
-    "tencent/hy4": {
-      "official_model": "hy4",
-      "source": "https://www.tencentcloud.com/document/product/1300/78937",
-      "rates": {
-        "input": "0.834",
-        "cached_input": "0.042",
-        "cache_write_input": "0.834",
-        "output": "2.501"
-      },
-      "note": "Official standard USD list rates, uniform across context lengths; temporary promotions and account discounts excluded. Cache hits use reported receipt buckets. Implicit cache population uses the ordinary input rate; selected receipts have no separate cache writes. Available final modelUsage counters include background/compaction usage once. This is a comparable estimate, not an internal-endpoint or OpenRouter bill."
-    },
     "step-5-preview": {
       "official_model": "step-5-preview",
       "source": "https://platform.stepfun.ai/docs/en/guides/pricing/details",

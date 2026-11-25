@@ -1,8 +1,8 @@
 {
-  "pricing_sha256": "2e3549be5da07037a38aec9106add998b21c3bdbff91246030a3e6289c79f7c4",
+  "pricing_sha256": "9e7bb54dd9a1cdb63ebccf9b8aad47c0a805e37f882227ef8bb1ef5df93a56f8",
   "schema": 1,
-  "snapshot_id": "2026-11-21-argon-usage-e5dc193ab0",
-  "snapshot_sha256": "363093ddf00dc2f0521c46c5f0d3aa86f4316353440606c155811e82d2e76e1c",
+  "snapshot_id": "2026-11-25-selected-a23aebc64e",
+  "snapshot_sha256": "6cb3c6ead173a4c8fb2c63e5cbaf5ccc7f64cbeb3adb9e8585fac53d24fa2e97",
   "trials": {
     "agentic-search-claude-opus-5.5-claude-code-max-86cfc69e97be": {
       "cost_usd": "4.4698314",
@@ -51,10 +51,6 @@
     "agentic-search-gpt-6.1-terra-max-150a9ba01374": {
       "cost_usd": "7.14979120",
       "response_count": 319
-    },
-    "agentic-search-hy4-claude-code-high-f20cf2ee7cd1": {
-      "cost_usd": "6.733302977",
-      "response_count": 209
     },
     "agentic-search-kimi-k3-claude-code-max-10931adb0532": {
       "cost_usd": "4.0955790",
@@ -124,10 +120,6 @@
       "cost_usd": "6.60276555",
       "response_count": 269
     },
-    "agentic-search-vectorless-hy4-claude-code-high-5d8d0119449f": {
-      "cost_usd": "6.239940183",
-      "response_count": 202
-    },
     "agentic-search-vectorless-kimi-k3-claude-code-max-ae016be676cd": {
       "cost_usd": "3.6329058",
       "response_count": 98
@@ -195,10 +187,6 @@
     "biomedical-graph-retrieval-gpt-6.1-terra-max-f32cc31af6f8": {
       "cost_usd": "2.14174170",
       "response_count": 134
-    },
-    "biomedical-graph-retrieval-hy4-claude-code-high-a37581b5c9ee": {
-      "cost_usd": "5.668419513",
-      "response_count": 244
     },
     "biomedical-graph-retrieval-kimi-k3-claude-code-max-aba5a3c9854a": {
       "cost_usd": "4.8706236",
@@ -268,10 +256,6 @@
       "cost_usd": "2.06527540",
       "response_count": 202
     },
-    "budgeted-bimetric-retrieval-hy4-claude-code-high-f265bcfda4ce": {
-      "cost_usd": "0.909189469",
-      "response_count": 93
-    },
     "budgeted-bimetric-retrieval-kimi-k3-claude-code-max-c36cc30d7de2": {
       "cost_usd": "2.9060676",
       "response_count": 69
@@ -339,10 +323,6 @@
     "budgeted-candidate-reranking-gpt-6.1-terra-max-dca631e57a7c": {
       "cost_usd": "3.72019425",
       "response_count": 297
-    },
-    "budgeted-candidate-reranking-hy4-claude-code-high-25f84cfa1645": {
-      "cost_usd": "4.205015839",
-      "response_count": 149
     },
     "budgeted-candidate-reranking-kimi-k3-claude-code-max-045dec0494c9": {
       "cost_usd": "4.5757992",
@@ -412,10 +392,6 @@
       "cost_usd": "6.60707020",
       "response_count": 235
     },
-    "chunqiu-temporal-retrieval-hy4-claude-code-high-7b741a2b355b": {
-      "cost_usd": "0.973584452",
-      "response_count": 63
-    },
     "chunqiu-temporal-retrieval-kimi-k3-claude-code-max-05444fa51462": {
       "cost_usd": "9.1108836",
       "response_count": 159
@@ -483,10 +459,6 @@
     "code-context-retrieval-gpt-6.1-terra-max-263168344363": {
       "cost_usd": "1.50699025",
       "response_count": 118
-    },
-    "code-context-retrieval-hy4-claude-code-high-3f932579354b": {
-      "cost_usd": "1.241178544",
-      "response_count": 0
     },
     "code-context-retrieval-kimi-k3-claude-code-max-f79ca9287546": {
       "cost_usd": "4.1947236",
@@ -556,10 +528,6 @@
       "cost_usd": "10.28097225",
       "response_count": 356
     },
-    "code-embedding-finetuning-hy4-claude-code-high-2e9b7bbd265c": {
-      "cost_usd": "2.118828584",
-      "response_count": 247
-    },
     "code-embedding-finetuning-kimi-k3-claude-code-max-399a32995bbc": {
       "cost_usd": "3.0335058",
       "response_count": 63
@@ -627,10 +595,6 @@
     "code-reranker-finetuning-gpt-6.1-terra-max-dcdb6e334588": {
       "cost_usd": "9.85027395",
       "response_count": 433
-    },
-    "code-reranker-finetuning-hy4-claude-code-high-5fa890cfc41b": {
-      "cost_usd": "1.836176455",
-      "response_count": 0
     },
     "code-reranker-finetuning-kimi-k3-claude-code-max-70deada8af47": {
       "cost_usd": "3.8708058",
@@ -700,10 +664,6 @@
       "cost_usd": "2.54105220",
       "response_count": 177
     },
-    "composed-image-search-hy4-claude-code-high-25961e2a76df": {
-      "cost_usd": "2.641492140",
-      "response_count": 167
-    },
     "composed-image-search-kimi-k3-claude-code-max-eeb8e78cea7f": {
       "cost_usd": "2.6052606",
       "response_count": 68
@@ -771,10 +731,6 @@
     "constrained-molecular-search-gpt-6.1-terra-max-8228c83bc686": {
       "cost_usd": "9.98780435",
       "response_count": 359
-    },
-    "constrained-molecular-search-hy4-claude-code-high-8e83e21f67dc": {
-      "cost_usd": "3.251521075",
-      "response_count": 277
     },
     "constrained-molecular-search-kimi-k3-claude-code-max-f901fce358a4": {
       "cost_usd": "10.6935984",
@@ -844,10 +800,6 @@
       "cost_usd": "7.18395795",
       "response_count": 349
     },
-    "decision-model-training-hy4-claude-code-high-fec357b8299d": {
-      "cost_usd": "1.735479641",
-      "response_count": 0
-    },
     "decision-model-training-kimi-k3-claude-code-max-9814a687784a": {
       "cost_usd": "12.3345786",
       "response_count": 126
@@ -915,10 +867,6 @@
     "document-page-search-gpt-6.1-terra-max-dc7975a38ea7": {
       "cost_usd": "5.70292920",
       "response_count": 272
-    },
-    "document-page-search-hy4-claude-code-high-d8c4ae0adf5b": {
-      "cost_usd": "6.035905612",
-      "response_count": 222
     },
     "document-page-search-kimi-k3-claude-code-max-114ba2448526": {
       "cost_usd": "3.6173946",
@@ -988,10 +936,6 @@
       "cost_usd": "2.41363935",
       "response_count": 147
     },
-    "evolving-personal-memory-hy4-claude-code-high-a7fa1a42756f": {
-      "cost_usd": "6.966918693",
-      "response_count": 206
-    },
     "evolving-personal-memory-kimi-k3-claude-code-max-a7b4064b7827": {
       "cost_usd": "9.3720594",
       "response_count": 222
@@ -1059,10 +1003,6 @@
     "filtered-ann-retrieval-gpt-6.1-terra-max-18834233b069": {
       "cost_usd": "5.38937740",
       "response_count": 361
-    },
-    "filtered-ann-retrieval-hy4-claude-code-high-e8bb627ad4b2": {
-      "cost_usd": "6.076043667",
-      "response_count": 181
     },
     "filtered-ann-retrieval-kimi-k3-claude-code-max-d5e2b89110a8": {
       "cost_usd": "6.4628088",
@@ -1132,10 +1072,6 @@
       "cost_usd": "1.70603885",
       "response_count": 124
     },
-    "financial-report-qa-hy4-claude-code-high-82cddcb6f098": {
-      "cost_usd": "4.203430247",
-      "response_count": 125
-    },
     "financial-report-qa-kimi-k3-claude-code-max-8d3e9d348a0a": {
       "cost_usd": "5.3064600",
       "response_count": 104
@@ -1203,10 +1139,6 @@
     "icsi-meeting-memory-gpt-6.1-terra-max-63d6ae04a88b": {
       "cost_usd": "8.35870965",
       "response_count": 301
-    },
-    "icsi-meeting-memory-hy4-claude-code-high-530476f802d0": {
-      "cost_usd": "0.771383055",
-      "response_count": 71
     },
     "icsi-meeting-memory-kimi-k3-claude-code-max-5ba4b1590912": {
       "cost_usd": "3.7335090",
@@ -1276,10 +1208,6 @@
       "cost_usd": "9.38861995",
       "response_count": 321
     },
-    "incremental-vector-search-hy4-claude-code-high-54303e603069": {
-      "cost_usd": "0.117769201",
-      "response_count": 11
-    },
     "incremental-vector-search-kimi-k3-claude-code-max-21a5bc7c512a": {
       "cost_usd": "7.5999222",
       "response_count": 131
@@ -1347,10 +1275,6 @@
     "instruction-following-embedding-gpt-6.1-terra-max-728c1e97cbea": {
       "cost_usd": "1.44949600",
       "response_count": 142
-    },
-    "instruction-following-embedding-hy4-claude-code-high-684968b165ad": {
-      "cost_usd": "1.101213500",
-      "response_count": 146
     },
     "instruction-following-embedding-kimi-k3-claude-code-max-e243355ffde7": {
       "cost_usd": "3.9527454",
@@ -1420,10 +1344,6 @@
       "cost_usd": "2.08352370",
       "response_count": 166
     },
-    "join-aware-table-retrieval-hy4-claude-code-high-11eec5ff3561": {
-      "cost_usd": "0.794941114",
-      "response_count": 86
-    },
     "join-aware-table-retrieval-kimi-k3-claude-code-max-d06485b1ad47": {
       "cost_usd": "2.0490474",
       "response_count": 51
@@ -1491,10 +1411,6 @@
     "khmer-embedding-training-gpt-6.1-terra-max-29d00a4929ef": {
       "cost_usd": "9.46457190",
       "response_count": 355
-    },
-    "khmer-embedding-training-hy4-claude-code-high-5a96ab027c71": {
-      "cost_usd": "1.765514334",
-      "response_count": 199
     },
     "khmer-embedding-training-kimi-k3-claude-code-max-7940f5adef36": {
       "cost_usd": "9.9910656",
@@ -1564,10 +1480,6 @@
       "cost_usd": "3.33229060",
       "response_count": 185
     },
-    "large-scale-formula-retrieval-hy4-claude-code-high-21cac2603227": {
-      "cost_usd": "2.271993343",
-      "response_count": 206
-    },
     "large-scale-formula-retrieval-kimi-k3-claude-code-max-3c28b41fbd57": {
       "cost_usd": "6.8068860",
       "response_count": 100
@@ -1635,10 +1547,6 @@
     "layout-page-search-gpt-6.1-terra-max-36ca36848ea7": {
       "cost_usd": "1.13820550",
       "response_count": 114
-    },
-    "layout-page-search-hy4-claude-code-high-5fb5540d563a": {
-      "cost_usd": "1.423221806",
-      "response_count": 149
     },
     "layout-page-search-kimi-k3-claude-code-max-a35c2b173f8c": {
       "cost_usd": "2.7521874",
@@ -1708,10 +1616,6 @@
       "cost_usd": "17.85949030",
       "response_count": 1231
     },
-    "legal-stance-retrieval-hy4-claude-code-high-7e4c0d630285": {
-      "cost_usd": "1.552396753",
-      "response_count": 182
-    },
     "legal-stance-retrieval-kimi-k3-claude-code-max-0efda6c72ecd": {
       "cost_usd": "8.3842356",
       "response_count": 153
@@ -1779,10 +1683,6 @@
     "lightweight-query-retrieval-gpt-6.1-terra-max-7a4bb7bff0cd": {
       "cost_usd": "9.13157910",
       "response_count": 368
-    },
-    "lightweight-query-retrieval-hy4-claude-code-high-8de40eabe51f": {
-      "cost_usd": "2.919402585",
-      "response_count": 314
     },
     "lightweight-query-retrieval-kimi-k3-claude-code-max-1bda2b1c9599": {
       "cost_usd": "5.2895598",
@@ -1852,10 +1752,6 @@
       "cost_usd": "5.37296305",
       "response_count": 337
     },
-    "long-document-reranking-hy4-claude-code-high-64f61fea5d51": {
-      "cost_usd": "4.758765054",
-      "response_count": 165
-    },
     "long-document-reranking-kimi-k3-claude-code-max-717235b85775": {
       "cost_usd": "3.8179716",
       "response_count": 89
@@ -1923,10 +1819,6 @@
     "long-pdf-evidence-gpt-6.1-terra-max-9ba81475d7d5": {
       "cost_usd": "9.68058065",
       "response_count": 346
-    },
-    "long-pdf-evidence-hy4-claude-code-high-41eac025be1e": {
-      "cost_usd": "6.483433100",
-      "response_count": 213
     },
     "long-pdf-evidence-kimi-k3-claude-code-max-7500b9201595": {
       "cost_usd": "5.0137710",
@@ -1996,10 +1888,6 @@
       "cost_usd": "5.27938750",
       "response_count": 241
     },
-    "long-pdf-evidence-vectorless-hy4-claude-code-high-8056514fc28a": {
-      "cost_usd": "5.142413653",
-      "response_count": 180
-    },
     "long-pdf-evidence-vectorless-kimi-k3-claude-code-max-17ac07e475a6": {
       "cost_usd": "2.8237872",
       "response_count": 62
@@ -2067,10 +1955,6 @@
     "memory-constrained-dense-retrieval-gpt-6.1-terra-max-2cf218d13fcf": {
       "cost_usd": "0.99790245",
       "response_count": 85
-    },
-    "memory-constrained-dense-retrieval-hy4-claude-code-high-b0ca92579f34": {
-      "cost_usd": "1.643214503",
-      "response_count": 155
     },
     "memory-constrained-dense-retrieval-kimi-k3-claude-code-max-f266449d775b": {
       "cost_usd": "4.1836932",
@@ -2140,10 +2024,6 @@
       "cost_usd": "3.93221000",
       "response_count": 217
     },
-    "methodology-inspiration-retrieval-hy4-claude-code-high-dc6763dc7248": {
-      "cost_usd": "1.129608981",
-      "response_count": 134
-    },
     "methodology-inspiration-retrieval-kimi-k3-claude-code-max-6aa156dfe210": {
       "cost_usd": "6.8052198",
       "response_count": 155
@@ -2211,10 +2091,6 @@
     "multilingual-vector-postprocessing-gpt-6.1-terra-max-1436011c64f6": {
       "cost_usd": "2.54485375",
       "response_count": 190
-    },
-    "multilingual-vector-postprocessing-hy4-claude-code-high-42d854b21033": {
-      "cost_usd": "1.952273497",
-      "response_count": 225
     },
     "multilingual-vector-postprocessing-kimi-k3-claude-code-max-d6961d4e8ca4": {
       "cost_usd": "9.7144356",
@@ -2284,10 +2160,6 @@
       "cost_usd": "2.38806230",
       "response_count": 202
     },
-    "narrative-clue-search-hy4-claude-code-high-51c6686d3533": {
-      "cost_usd": "3.837850669",
-      "response_count": 154
-    },
     "narrative-clue-search-kimi-k3-claude-code-max-a6dc5d57ee8b": {
       "cost_usd": "6.9510444",
       "response_count": 145
@@ -2355,10 +2227,6 @@
     "negative-constraint-retrieval-gpt-6.1-terra-max-d531e23177a8": {
       "cost_usd": "1.71255035",
       "response_count": 98
-    },
-    "negative-constraint-retrieval-hy4-claude-code-high-ebe36d7efc49": {
-      "cost_usd": "3.711501329",
-      "response_count": 118
     },
     "negative-constraint-retrieval-kimi-k3-claude-code-max-40fcad1df122": {
       "cost_usd": "5.7396030",
@@ -2428,10 +2296,6 @@
       "cost_usd": "3.83748470",
       "response_count": 199
     },
-    "paper-metadata-retrieval-hy4-claude-code-high-7686f58be198": {
-      "cost_usd": "7.023212525",
-      "response_count": 276
-    },
     "paper-metadata-retrieval-kimi-k3-claude-code-max-a7db00d9c0a0": {
       "cost_usd": "9.3882720",
       "response_count": 179
@@ -2499,10 +2363,6 @@
     "protein-text-bidirectional-retrieval-gpt-6.1-terra-max-50ed4c91fc25": {
       "cost_usd": "2.44345925",
       "response_count": 174
-    },
-    "protein-text-bidirectional-retrieval-hy4-claude-code-high-5a8faab69ae8": {
-      "cost_usd": "0.471097721",
-      "response_count": 41
     },
     "protein-text-bidirectional-retrieval-kimi-k3-claude-code-max-d9504c71a6be": {
       "cost_usd": "1.1941362",
@@ -2572,10 +2432,6 @@
       "cost_usd": "10.98618620",
       "response_count": 384
     },
-    "quantity-aware-retrieval-hy4-claude-code-high-ec64402d15e6": {
-      "cost_usd": "1.824553825",
-      "response_count": 203
-    },
     "quantity-aware-retrieval-kimi-k3-claude-code-max-b2e949b0029d": {
       "cost_usd": "9.8273160",
       "response_count": 144
@@ -2643,10 +2499,6 @@
     "query-encoder-alignment-gpt-6.1-terra-max-f83dad6ae6c5": {
       "cost_usd": "1.20606095",
       "response_count": 121
-    },
-    "query-encoder-alignment-hy4-claude-code-high-e66884452aab": {
-      "cost_usd": "1.232241328",
-      "response_count": 145
     },
     "query-encoder-alignment-kimi-k3-claude-code-max-d0a36f781267": {
       "cost_usd": "14.3040084",
@@ -2716,10 +2568,6 @@
       "cost_usd": "2.88384640",
       "response_count": 218
     },
-    "reasoning-query-rewriting-hy4-claude-code-high-5eb3cff15da8": {
-      "cost_usd": "5.296423864",
-      "response_count": 194
-    },
     "reasoning-query-rewriting-kimi-k3-claude-code-max-0320502a72da": {
       "cost_usd": "4.8684900",
       "response_count": 109
@@ -2787,10 +2635,6 @@
     "rust-bm25-search-gpt-6.1-terra-max-15d212759500": {
       "cost_usd": "1.38752435",
       "response_count": 127
-    },
-    "rust-bm25-search-hy4-claude-code-high-3750132c40a6": {
-      "cost_usd": "2.115261673",
-      "response_count": 0
     },
     "rust-bm25-search-kimi-k3-claude-code-max-0e243cef748a": {
       "cost_usd": "9.2921580",
@@ -2860,10 +2704,6 @@
       "cost_usd": "2.23693355",
       "response_count": 156
     },
-    "same-place-image-search-hy4-claude-code-high-b8f0b0e6705e": {
-      "cost_usd": "5.616607072",
-      "response_count": 168
-    },
     "same-place-image-search-kimi-k3-claude-code-max-3c9f8f8b68cd": {
       "cost_usd": "4.0676526",
       "response_count": 75
@@ -2931,10 +2771,6 @@
     "scientific-paper-qa-gpt-6.1-terra-max-0a865499d5ed": {
       "cost_usd": "3.90512805",
       "response_count": 241
-    },
-    "scientific-paper-qa-hy4-claude-code-high-ffb3bb12a0ea": {
-      "cost_usd": "1.397558602",
-      "response_count": 191
     },
     "scientific-paper-qa-kimi-k3-claude-code-max-893d1c68548a": {
       "cost_usd": "5.8510818",
@@ -3004,10 +2840,6 @@
       "cost_usd": "2.11404145",
       "response_count": 147
     },
-    "sketch-text-search-hy4-claude-code-high-849e3576efb1": {
-      "cost_usd": "4.772168859",
-      "response_count": 512
-    },
     "sketch-text-search-kimi-k3-claude-code-max-d4d9e457cda0": {
       "cost_usd": "9.9530370",
       "response_count": 192
@@ -3075,10 +2907,6 @@
     "sparse-retrieval-pruning-gpt-6.1-terra-max-ad1c58a8a8c3": {
       "cost_usd": "4.31573075",
       "response_count": 241
-    },
-    "sparse-retrieval-pruning-hy4-claude-code-high-5b6ceaea0380": {
-      "cost_usd": "1.330617268",
-      "response_count": 105
     },
     "sparse-retrieval-pruning-kimi-k3-claude-code-max-36e0de88e904": {
       "cost_usd": "7.3516902",
@@ -3148,10 +2976,6 @@
       "cost_usd": "3.91347640",
       "response_count": 225
     },
-    "spoken-query-search-hy4-claude-code-high-8bce909ce9fc": {
-      "cost_usd": "1.735086041",
-      "response_count": 174
-    },
     "spoken-query-search-kimi-k3-claude-code-max-793db2a489d5": {
       "cost_usd": "8.5457166",
       "response_count": 176
@@ -3219,10 +3043,6 @@
     "training-error-tracing-gpt-6.1-terra-max-113dd54e9a8f": {
       "cost_usd": "8.68793800",
       "response_count": 604
-    },
-    "training-error-tracing-hy4-claude-code-high-621a819fb5a2": {
-      "cost_usd": "1.312510753",
-      "response_count": 111
     },
     "training-error-tracing-kimi-k3-claude-code-max-eb1df7e6cf60": {
       "cost_usd": "5.0500830",
@@ -3292,10 +3112,6 @@
       "cost_usd": "1.54314110",
       "response_count": 116
     },
-    "video-moment-search-hy4-claude-code-high-25f26ca07b39": {
-      "cost_usd": "1.784049293",
-      "response_count": 225
-    },
     "video-moment-search-kimi-k3-claude-code-max-c8c1c1b570b2": {
       "cost_usd": "8.6018148",
       "response_count": 158
@@ -3364,10 +3180,6 @@
       "cost_usd": "3.87873440",
       "response_count": 221
     },
-    "visual-document-qa-hy4-claude-code-high-31e6af73b8a6": {
-      "cost_usd": "5.765523964",
-      "response_count": 217
-    },
     "visual-document-qa-kimi-k3-claude-code-max-3f6d24183df4": {
       "cost_usd": "5.5947282",
       "response_count": 127
@@ -3389,5 +3201,5 @@
       "response_count": 135
     }
   },
-  "usage_sha256": "8cacd17e251ae9ef1a86bdd16e508ee430ee6a4a5cd952a46065179f08302726"
+  "usage_sha256": "76b08cad9559c4d1182e110288c058c6a4bcdab811bb52f9669703963e61ac0f"
 }

@@ -64,12 +64,6 @@
       "provider_basis": "The evaluation operator confirmed the applied provider allowlist on 2026-11-17. Its intersection with the official OpenRouter model endpoints contains only Xiaomi. Native configurations use OpenRouter.",
       "provider_source": "https://openrouter.ai/api/v1/models/xiaomi/mimo-v2.6-pro/endpoints"
     },
-    "tencent/hy4": {
-      "release_date": "2026-11-04",
-      "source": "https://www.tencent.com/tencent-launches-hy4-joining-the-ranks-of-the-worlds-leading-open-source-ai-models/",
-      "provider": "Tencent",
-      "provider_basis": "Maintainer-approved Tencent label for the combined 43-task community export and four locally selected OpenRouter trials. Original transport configuration remains in the source evidence."
-    },
     "step-5-preview": {
       "release_date": "2026-09-20",
       "source": "https://www.stepfun.com/news/step-5-preview",

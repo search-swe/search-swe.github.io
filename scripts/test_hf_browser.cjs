@@ -8,7 +8,7 @@ const {gunzipSync} = require('node:zlib');
 const {spawn, spawnSync} = require('node:child_process');
 const {chromium} = require('playwright');
 const root = path.resolve(__dirname, '..');
-const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-pr3-argon-usage'));
+const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-without-hy4'));
 const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const manifest = JSON.parse(gunzipSync(fs.readFileSync(path.join(packageRoot, 'publication.json.gz'))));
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'content/leaderboard/release.json')));
@@ -119,27 +119,6 @@ const server = http.createServer((req, res) => {
     const timedRegrade = snapshot.trials.find(t => t.task === 'instruction-following-embedding' && t.configuration.model === 'xiaomi/mimo-v2.6-flash');
     assert(Math.abs(timedRegrade.agent_seconds - 7201.244785) < 1e-6);
     assert.equal(timedRegrade.agent_status, 'AgentTimeoutError');
-    const hy4 = snapshot.entries.find(e => e.model === 'tencent/hy4');
-    assert.equal(hy4.effort, 'high');
-    assert.equal(hy4.provider, 'Tencent');
-    await page.goto(`${origin}/leaderboard/entries/${hy4.id}/`);
-    assert.deepEqual(await page.locator('tbody .provider-cell').allTextContents(), Array(47).fill('Tencent'));
-    assert(!(await page.locator('.entry-subtitle').innerText()).includes('OpenRouter'));
-    for (const task of ['code-context-retrieval', 'code-reranker-finetuning', 'decision-model-training', 'rust-bm25-search']) {
-      const selected = snapshot.trials.find(t => t.entry === hy4.id && t.task === task);
-      const trialRoot = path.join(packageRoot, manifest.release_path, 'trials', selected.id);
-      const atif = JSON.parse(gunzipSync(fs.readFileSync(path.join(trialRoot, 'trajectory.json.gz'))));
-      const inventory = JSON.parse(fs.readFileSync(path.join(trialRoot, 'files/index.json')));
-      assert.equal(atif.agent.version, '2.1.309');
-      assert.equal(atif.final_metrics.total_completion_tokens, selected.tokens.output_tokens);
-      assert(selected.tokens.output_tokens > 0);
-      assert.equal(selected.tokens.response_count, 0);
-      assert(atif.steps.filter(s => s.source === 'agent' && s.metrics).every(s => s.metrics.completion_tokens === null));
-      assert(inventory.groups.agent.some(f => f.name === 'claude-code-cli-output.json' && f.download && f.parts.length));
-      assert(!inventory.groups.agent.some(f => f.name.endsWith('.jsonl')));
-      await page.goto(`${origin}/leaderboard/trials/${selected.id}/`);
-      await page.locator('.trajectory-step').first().waitFor();
-    }
     const step5 = snapshot.entries.find(e => e.model === 'step-5-preview');
     assert.equal(step5.agent_version, '2.1.309');
     assert.equal(step5.effort, 'max');

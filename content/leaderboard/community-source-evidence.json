@@ -1,34 +1,5 @@
 {
   "schema": 1,
-  "hy4": {
-    "accepted_at": "2026-11-17T15:00:20.686259+00:00",
-    "archive_sha256": "d9ef9d9c7a7d3d5377d1ac27ee6a2f2872bff9b2363f841154fb489379ecfc8a",
-    "index_sha256": "30ca51fa640696ba48b9fbd954e0acd4cc40044f9cfc9a4ba7ce73190a2dbe3f",
-    "manifest_sha256": "f8010ec292b89514102abf276e8f1e4f046a9055517c467a0f111f001ccb98c3",
-    "native_model_alias": "hy4",
-    "model": "tencent/hy4",
-    "agent": "Claude Code",
-    "version": "2.1.309",
-    "effort": "high",
-    "local_trials": {
-      "budgeted-bimetric-retrieval": {
-        "trajectory_sha256": "9b3b7ba67a43c996fd895d1ce2185b9acc50e1103e656513593978a58cb32a2e",
-        "file_manifest_sha256": "4853b0862f6750d53b11b4793052241cac40e2c1a5c706002cbebdae9aca5231"
-      },
-      "incremental-vector-search": {
-        "trajectory_sha256": "b171ddcab039b8c8b3e60dcca6c8b93d4a7dfb5ad886ece077a3dc8fae975ecc",
-        "file_manifest_sha256": "2fac21cf1ec6c1b8e4189041c1f77a587fefcb05c27f0a21c3aeb0f315d56f75"
-      },
-      "large-scale-formula-retrieval": {
-        "trajectory_sha256": "d81aa6490a1894bc82b42f66d4218678224618abf4644d92653c8ca1c6663464",
-        "file_manifest_sha256": "885dac63263fb02aeedab4ccafd56fced9dd664e06c425c25899425c3eb9be37"
-      },
-      "memory-constrained-dense-retrieval": {
-        "trajectory_sha256": "ddfe170cf3713d35a28964d464eeb167d49112855e8809536c11fab49a044f13",
-        "file_manifest_sha256": "fc89709cd4577f458516b6a57234c505ced521a5ffb5c54f8f57a02268fa34d7"
-      }
-    }
-  },
   "pr3": {
     "pull_request": "https://github.com/search-swe/search-swe.github.io/pull/3",
     "head": "f233c45807c957c502ee18a77a2cc9b2c0554638",

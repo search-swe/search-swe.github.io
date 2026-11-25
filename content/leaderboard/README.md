@@ -1,8 +1,8 @@
 # Leaderboard data and publication
 
-The current homepage contains **47 tasks (24 CPU, 23 GPU), eighteen leaderboard
-settings across sixteen models, and 846 selected trials**. Hy4 and Gemini 4 Argon
-use high effort. The other sixteen settings use max.
+The current homepage contains **47 tasks (24 CPU, 23 GPU), seventeen leaderboard
+settings across fifteen models, and 799 selected trials**. Gemini 4 Argon uses
+high effort. The other sixteen settings use max.
 
 PR #3 adds Claude Sonnet 5.5 / Claude Code 2.1.309 / max and Gemini 4 Argon /
 Antigravity CLI 1.5.2 / high, with 47 scored tasks each. The means are **38.42**
@@ -25,8 +25,8 @@ output. It covers recorded coding calls. Sources are
 [Google Cloud pricing](https://cloud.google.com/model-garden/pricing) and
 [OpenRouter endpoints](https://openrouter.ai/google/gemini-4-argon/providers).
 
-The current package is `.build/hf-trajectories-pr3-argon-usage/`. The usage refresh updates the 47
-Argon trajectories on the published PR #3 package. Source revisions and local trial hashes are in
+The current package is `.build/hf-trajectories-without-hy4/`. It retains the 47
+Argon trajectories from the PR #3 usage refresh. Source revisions and local trial hashes are in
 [`community-source-evidence.json`](community-source-evidence.json).
 The active Hugging Face revision is in [`storage.json`](storage.json).
 
@@ -71,22 +71,6 @@ StepFun's official standard USD rates per million input/cache-read/output tokens
 are **$1.00/$0.10/$2.70**. Cache population uses the ordinary input rate; reasoning
 is already included in output. Subscription and account discounts are excluded.
 Source: [StepFun API pricing](https://platform.stepfun.ai/docs/en/guides/pricing/details).
-
-Hy4 / Claude Code 2.1.309 / high covers 47/47 tasks, combining the reviewed
-43-task community export with four selected local trials. Its mean score is
-**21.5478648705**, with **795,131,123 tokens** and **$143.890236356** estimated cost.
-Provider is **Tencent** throughout the entry and task rows. All 47 original
-coding durations are available. Final cumulative counters take precedence over
-response summaries, adding 10,260,191 tokens missing from the original export.
-Four CLI-only tasks retain their complete transcripts: derived ATIF versions and
-final totals are repaired, while missing per-step output counts stay unknown.
-No per-response IDs or token allocations are invented. Source hashes are frozen
-in `community-source-evidence.json`; the original execution records are retained.
-
-Hy4 uses Tencent's standard USD list rates per million input/cache-read/output
-tokens of **$0.834/$0.042/$2.501**, excluding temporary promotions and account
-discounts. Cache hits use reported buckets, and reasoning is included in output.
-Source: [Tencent Cloud model pricing](https://www.tencentcloud.com/document/product/1300/78937).
 
 The previous additions were MiMo-V2.6-Flash / Claude Code 2.1.309 / OpenRouter /
 max (mean 15.2727619964) and MiMo-V2.6-Pro with the same configuration
@@ -212,31 +196,21 @@ unchanged; the seven duration assignments above update their timing summaries.
 The preceding Step 5 public package is `.build/hf-trajectories-step5/`: **314,927 files**,
 approximately **11.59 GiB**, with 658 ATIF trajectories and 669 original
 session JSONL exports. Step 5 adds 28,659 trial files, excluding shared metadata.
-Prepare and publish it with `publish_final_results.py`, using
-`.build/hf-trajectories-hy4/` as `--base-package` and `--upload` to publish.
-Subsequent native imports must retain this verified package with `--base-package`
-to preserve the community trials and their immutable payloads.
-
-The preceding Hy4 package was `.build/hf-trajectories-hy4/`: **286,268 files**,
-approximately **10.48 GiB**, with 611 ATIF trajectories and 619 original sessions.
 
 The preceding MiMo package was `.build/hf-trajectories-mimo/`: **267,627 files**,
 approximately **9.45 GiB**, with 564 ATIF trajectories
 and 573 original session JSONL exports (235 Codex, 291 Claude Code, 47 Pi). Credentials are redacted and host paths
 normalized. Large binary artifacts remain listed without content downloads.
 Source execution jobs remain unchanged.
-The current default package is `.build/hf-trajectories-pr3-argon-usage/`.
+The current default package is `.build/hf-trajectories-without-hy4/`.
 `.build/hf-trajectories-current/` remains the older 235-trial append base.
 
 The active HF directory is **`releases/current/`**, independent of model names or
 publication dates. Full commit SHAs identify immutable versions. The verified
 revision is recorded in [`storage.json`](storage.json) and the private receipt
-`.build/hf-trajectories-pr3-argon-usage-uploaded.json`. The website uses that immutable revision.
+`.build/hf-trajectories-without-hy4-uploaded.json`. The website uses that immutable revision.
 The Step 5 publication uses the immutable revision
 [`a4d445dc0b8f8324fbc959fe57885c5474c7b939`](https://huggingface.co/datasets/search-swe/trajectories/commit/a4d445dc0b8f8324fbc959fe57885c5474c7b939).
-The Hy4 publication uses the immutable revision
-[`75abb07ad387c478060ece8d216a854ffdfdf2c4`](https://huggingface.co/datasets/search-swe/trajectories/commit/75abb07ad387c478060ece8d216a854ffdfdf2c4). Its full verification receipt is
-`.build/hf-trajectories-hy4-uploaded.json`.
 
 The preceding MiMo publication was
 [`16c6a5e364e2a09609cf85df85484795dcbbe4e8`](https://huggingface.co/datasets/search-swe/trajectories/commit/16c6a5e364e2a09609cf85df85484795dcbbe4e8).
@@ -269,7 +243,7 @@ the current verified package as the base, and use a fresh output package:
 
 ```bash
 python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-pr3-argon-usage \
+  --base-package .build/hf-trajectories-without-hy4 \
   --package .build/hf-trajectories-next --upload
 ```
 
@@ -295,7 +269,7 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
 ## Data and statistics
 
 - Native selections come from `final-trajectories/INDEX.csv` and each
-  `FINAL_RESULT.json`. Hy4 and the two PR #3 entries also use reviewed community
+  `FINAL_RESULT.json`. The two PR #3 entries also use reviewed community
   selections bound by `community-source-evidence.json`.
 - Native reward × 100 equals the selected task score. Selection scores already
   use 0–100 and must not be scaled again. Every task has equal weight; CPU and
@@ -307,7 +281,7 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   are used. Missing original end timestamps remain missing; regrade time is never
   substituted. Eight reviewed runs use the maintainer-assigned 7200-second
   coding budget, with provenance in `agent_time_basis` and exact source trajectory
-  hashes in the importer. All 846 selected trials have a reported duration.
+  hashes in the importer. All 799 selected trials have a reported duration.
   Eight PR #3 trials use the span of their recorded trajectory timestamps.
 - Total tokens in the main leaderboard sum input (including cache) + output
   across the selected All / CPU / GPU task set, not a per-task average. Entry rows
@@ -336,9 +310,6 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   deduplicated recorded responses as the final reported token totals and the
   basis for estimated cost. Unrecorded usage is not estimated. Aggregate
   remainders are priced only with a flat tariff; no extra response IDs are invented.
-  Four Hy4 CLI-only trials use their final modelUsage totals without individual
-  receipts; their recorded complete-response count is zero and per-step output
-  remains unknown. Final totals still cover their coding cost in full.
   The 47 Sonnet selections use the exported Claude Code cost estimates.
   Argon uses native model-response and compaction counters, priced at the
   published November global rates.
@@ -490,9 +461,9 @@ unchanged; exported JSON contains no local host source paths in its metadata.
 
 ```bash
 python -m unittest discover -s scripts -p 'test_*.py'
-python scripts/import_final_results.py --package .build/hf-trajectories-pr3-argon-usage --check
+python scripts/import_final_results.py --package .build/hf-trajectories-without-hy4 --check
 python scripts/build_leaderboard.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-pr3-argon-usage.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-without-hy4.usage.json --check
 python scripts/build_tasks.py --check
 node --check leaderboard.js
 node --check leaderboard-pareto.js
@@ -502,9 +473,9 @@ node --check trial-files.js
 ```
 
 With Playwright available in the Node module search path and the preview server
-running, run `HF_PACKAGE=.build/hf-trajectories-pr3-argon-usage node scripts/test_leaderboard_browser.cjs`. Set
+running, run `HF_PACKAGE=.build/hf-trajectories-without-hy4 node scripts/test_leaderboard_browser.cjs`. Set
 `LEADERBOARD_ORIGIN` to use a different local server address.
-Run `HF_PACKAGE=.build/hf-trajectories-pr3-argon-usage node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
+Run `HF_PACKAGE=.build/hf-trajectories-without-hy4 node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
 Run `node scripts/test_leaderboard_costs_browser.cjs` for cost sorting, chart/table
 parity across hardware scopes, keyboard tabs, links, empty states and mobile layout.
 
