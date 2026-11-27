@@ -263,12 +263,15 @@ def trial_page(trial, entry, snapshot, siblings):
             usage_note = 'AgentTimeoutError: final token usage unavailable; totals use recorded responses.'
     notes = ''.join(f'<p>{esc(note)}</p>' for note in (trial.get('agent_time_basis'), usage_note) if note)
     qualification = trial.get('qualification')
-    review_note = ''
-    if qualification and 'reviewed_reward' in qualification:
-        review_note = (f'<p class="cost-note score-review-note">The raw grader reward was {trial["reward"]["reward"]:g}. '
-                       f'The reviewed score is {trial["score"]:g} out of 100. {esc(qualification["review_note"])}</p>')
     qualification_html = (f'<details class="evidence-summary"><summary>Recorded qualification notes</summary><pre class="json-block">{esc(json.dumps(qualification, indent=2, ensure_ascii=False))}</pre></details>'
                           if qualification else '')
+    verifier_html = (files('verifier') + qualification_html +
+                     f'<noscript><p>Final selected score: {trial["score"]:.4f} / 100</p>'
+                     f'<pre class="json-block">{esc(json.dumps(trial["reward"], indent=2, ensure_ascii=False))}</pre></noscript>')
+    if qualification and 'reviewed_reward' in qualification:
+        reward = esc(qualification['reviewed_reward'])
+        verifier_html = (f'<dl class="detail-list"><div><dt>Final reward</dt><dd>{reward}</dd></div></dl>'
+                         f'<details class="evidence-summary"><summary>Verifier files</summary>{verifier_html}</details>')
     body = f'''<nav class="breadcrumbs"><a href="/leaderboard/">Leaderboard</a><span>/</span><a id="back-entry" href="/leaderboard/entries/{entry['id']}/">{esc(entry['name'])}</a><span>/ Trial</span></nav>
 <div class="eyebrow">{task['hardware'].upper()} TASK <span class="status-valid">Valid result</span></div><h1 class="trial-title">{esc(task['title'])}</h1>
 <p class="entry-subtitle">{esc(coding_name)} <span class="dot">·</span> {esc(configuration['agent'])} <span class="inline-meta">(v{esc(configuration['version'].removeprefix('v'))})</span> <span class="dot">·</span> reasoning effort {esc(configuration['effort'])}</p>
@@ -282,7 +285,7 @@ def trial_page(trial, entry, snapshot, siblings):
 <p id="trace-status" class="trace-status" role="status">Loading trajectory…</p><div class="trajectory-feed"><button id="load-earlier" hidden>Load earlier steps</button><div id="step-content" class="step-content"></div><div id="trace-more" class="trace-more"><button id="load-next" hidden>Load more steps</button><p id="feed-status" role="status"></p></div></div></section>
 <section id="panel-agent" class="file-panel" role="tabpanel" aria-labelledby="tab-agent">{files('agent')}
 <details class="evidence-summary"><summary>Coding time &amp; token usage</summary><dl class="detail-list"><div><dt>Original agent completion</dt><dd>{esc(trial['agent_status'] or 'Not recorded')}</dd></div><div><dt>Coding started</dt><dd>{esc(trial['started_at'] or '—')}</dd></div><div><dt>Coding finished</dt><dd>{esc(trial['finished_at'] or '—')}</dd></div>{token_rows}</dl>{notes}<p class="fineprint">Input includes cached input; output is counted once. Auxiliary reasoning counts are shown as recorded. Regrading does not repeat coding usage.</p></details></section>
-<section id="panel-verifier" class="file-panel" role="tabpanel" aria-labelledby="tab-verifier">{review_note}{files('verifier')}{qualification_html}<noscript><p>Final selected score: {trial['score']:.4f} / 100</p><pre class="json-block">{esc(json.dumps(trial['reward'],indent=2,ensure_ascii=False))}</pre></noscript></section>
+<section id="panel-verifier" class="file-panel" role="tabpanel" aria-labelledby="tab-verifier">{verifier_html}</section>
 <section id="panel-config" role="tabpanel" aria-labelledby="tab-config"><h2>Configuration</h2><details class="evidence-summary"><summary>Evaluation settings summary</summary><pre class="json-block">{esc(json.dumps(configuration,indent=2))}</pre></details>{files('config')}</section>
 <section id="panel-lock" role="tabpanel" aria-labelledby="tab-lock"><h2>Resolved configuration</h2>{files('lock')}</section>
 <section id="panel-log" role="tabpanel" aria-labelledby="tab-log"><h2>Trial log</h2>{files('log')}</section>

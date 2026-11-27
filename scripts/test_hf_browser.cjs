@@ -129,9 +129,13 @@ const server = http.createServer((req, res) => {
     const reviewed = snapshot.trials.find(t => t.entry === fable.id && t.task === 'training-error-tracing');
     await page.goto(`${origin}/leaderboard/trials/${reviewed.id}/?tab=verifier`);
     assert.equal(await page.locator('#stat-score').innerText(), '100.0');
-    assert.match(await page.locator('#panel-verifier .score-review-note').innerText(), /raw grader reward was 0.*reviewed score is 100/);
-    await page.locator('#panel-verifier .file-preview-footer').getByText('Complete file', {exact: true}).waitFor();
-    assert.equal(JSON.parse(await page.locator('#panel-verifier .file-text').innerText()).reward, 0);
+    const verifier = page.locator('#panel-verifier');
+    assert.equal(await verifier.locator('dl dd').innerText(), '1.0');
+    await verifier.locator('.file-text').waitFor({state: 'attached'});
+    assert.equal(await verifier.locator('.file-text').isVisible(), false);
+    await verifier.getByText('Verifier files', {exact: true}).click();
+    await verifier.locator('.file-preview-footer').getByText('Complete file', {exact: true}).waitFor();
+    assert.equal(JSON.parse(await verifier.locator('.file-text').innerText()).reward, 0);
     const step5 = snapshot.entries.find(e => e.model === 'step-5-preview');
     assert.equal(step5.agent_version, '2.1.309');
     assert.equal(step5.effort, 'max');
