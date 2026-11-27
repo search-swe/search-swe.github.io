@@ -19,18 +19,21 @@ def main():
     parser.add_argument('--final-dir', type=Path, default=DEFAULT_FINAL)
     parser.add_argument('--package', type=Path, default=DEFAULT_PACKAGE)
     parser.add_argument('--base-package', type=Path, help='Append only new trials to this verified package')
+    parser.add_argument('--published-base', action='store_true', help='Reuse payloads from a verified HF upload receipt')
     parser.add_argument('--upload', action='store_true')
     parser.add_argument('--workers', type=int, default=4, help='Standalone uploader workers; append uses SDK adaptive batches')
     args = parser.parse_args()
     if args.workers < 1:
         parser.error('--workers must be positive')
     package = args.package.resolve()
-    snapshot, manifest = prepare(args.final_dir, package, args.base_package)
+    snapshot, manifest = prepare(args.final_dir, package, args.base_package, published_base=args.published_base)
     install_preview(package, snapshot, manifest)
     uploader = 'append_hf_trajectories.py' if args.base_package else 'upload_hf_release.py'
     command = [sys.executable, str(ROOT / 'scripts' / uploader), '--package', str(package)]
     if args.base_package:
         command.extend(['--base-package', str(args.base_package.resolve())])
+        if args.published_base:
+            command.append('--published-base')
     else:
         command.extend(['--workers', str(args.workers)])
     if args.upload:

@@ -85,7 +85,7 @@ def main():
         return
     api = authenticated_api()
     api.whoami()
-    info = api.repo_info(REPO_ID, repo_type='dataset')
+    info = api.repo_info(REPO_ID, repo_type='dataset', expand=['sha', 'private', 'gated'])
     if info.private or info.gated:
         raise ValueError('The dataset must be public and non-gated')
     revision = info.sha
@@ -106,7 +106,7 @@ def main():
             print('Uploading new trial directories with resumable Xet batches; committed files are skipped.', flush=True)
             api.upload_folder(repo_id=REPO_ID, folder_path=package, repo_type='dataset', revision='main',
                               allow_patterns=additions, commit_message=f'Add {len(additions)} Search-SWE trajectories: {manifest["snapshot_id"]}')
-            revision = api.repo_info(REPO_ID, repo_type='dataset').sha
+            revision = api.repo_info(REPO_ID, repo_type='dataset', expand=['sha']).sha
         print(f'Payload upload finished at {revision}; verifying every remote payload before publication.', flush=True)
         if not metadata_matches(api, base_package, base, revision):
             raise ValueError('Remote publication changed during upload; metadata was not replaced')

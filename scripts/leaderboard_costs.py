@@ -50,18 +50,22 @@ def request_cost(usage, model):
 
 def calculate(snapshot, usage, prices):
     """Join by selected task/model/effort and verify provenance and all totals."""
+    def usage_key(task, config):
+        model = config['model']
+        harness = config.get('agent', 'Codex') if model.startswith('deepseek/') else ''
+        return (task, model, config['effort'], harness, config.get('fallback_from'))
+
     rows = {}
     excluded = set(snapshot.get('selection', {}).get('excluded_models', []))
     for row in usage['rows']:
         if row['model'] in excluded:
             continue
-        key = (row['task'], row['model'], row['effort'], row.get('agent', 'Codex' if row['model'].startswith('deepseek/') else ''))
+        key = usage_key(row['task'], row)
         if key in rows:
             raise ValueError(f'Duplicate usage selection: {key}')
         rows[key] = row
     def trial_key(t):
-        c = t['configuration']
-        return (t['task'], c['model'], c['effort'], c.get('agent', 'Codex') if c['model'].startswith('deepseek/') else '')
+        return usage_key(t['task'], t['configuration'])
     expected = {trial_key(t)
                 for t in snapshot['trials']}
     if set(rows) != expected:
@@ -93,17 +97,23 @@ def calculate(snapshot, usage, prices):
             raise ValueError('Missing requests or a response assigned to multiple trials')
         all_ids.update(unique)
         totals, cost = Counter(), Decimal(0)
-        measured = list(unique.values())
         model = prices['models'][config['model']]
+        measured = [(receipt, model) for receipt in unique.values()]
         remainder = row.get('aggregate_remainder')
         if remainder is not None:
             if model.get('long_context'):
                 raise ValueError('Aggregate usage cannot be priced with per-request context tiers')
-            measured.append(remainder)
-        for tokens in measured:
-            cost += request_cost(tokens, model)
+            measured.append((remainder, model))
+        fallback_usage = row.get('fallback_from_usage')
+        if fallback_usage is not None:
+            fallback_model = prices['models'][config['fallback_from']]
+            if fallback_model.get('long_context'):
+                raise ValueError('Fallback aggregate usage requires a flat tariff')
+            measured.append((fallback_usage, fallback_model))
+        for tokens, tariff in measured:
+            cost += request_cost(tokens, tariff)
             totals.update({key: tokens[key] for key in TOKEN_FIELDS if tokens[key] is not None})
-        if any(tokens['reasoning_output_tokens'] is None for tokens in measured):
+        if any(tokens['reasoning_output_tokens'] is None for tokens, _ in measured):
             totals['reasoning_output_tokens'] = None
         totals['response_count'] = len(unique)
         if any(totals[k] != trial['tokens'].get(k) for k in (*TOKEN_FIELDS, 'response_count')):

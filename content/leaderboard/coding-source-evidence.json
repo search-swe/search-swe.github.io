@@ -295,6 +295,110 @@
           "sha256": "8171c3c721fcaeeedcb208bc1f5e116bf3a3413cc2bfa56fa472227f429f8f6a"
         }
       }
+    },
+    {
+      "task": "budgeted-candidate-reranking",
+      "setting": "claude-fable-5.2-claude-code-direct-max",
+      "purpose": "fable_verified_original_coding",
+      "trajectory_sha256": "237f104c096e365190135b04bb0761cb744d464a4efdca0006ba14133ef573e8",
+      "source_trial_id": "ac8295c4-f3ba-4c69-bdb5-53f42e7da57f",
+      "source_trial_relative_path": "release/fable52-cc-max-23-20261124/budgeted-candidate-reranking/attempt-1/budgeted-candidate-reranking/2026-11-25__19-56-52/budgeted-candidate-reranking__4SoCiFx",
+      "files": {
+        "result.json": {
+          "bytes": 5338,
+          "sha256": "7b2986f07ddb2fa5875541ce1703df0f14e954e49db77e844c382e426102a3b9"
+        },
+        "config.json": {
+          "bytes": 1707,
+          "sha256": "ab445bf12e47da81db94a22b8bc0f798748a78e8c458391648bf37282992c8bf"
+        },
+        "agent/harness.json": {
+          "bytes": 705,
+          "sha256": "af2d0afd98729a993ad7ad2d9db2523d187c253bfb11cbcd64558f87cfe152c2"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 2052014,
+          "sha256": "b2a9c84659cf07f66afe3f004291bdf3c3e287f528b8dc174e1595380f228362"
+        }
+      }
+    },
+    {
+      "task": "constrained-molecular-search",
+      "setting": "claude-fable-5.2-claude-code-direct-max",
+      "purpose": "fable_verified_original_coding",
+      "trajectory_sha256": "cc73854efb21bea9e035dd553d6d435297c654c8210d657ea7e369a8eaa81d8c",
+      "source_trial_id": "8b0f3097-e1bc-4e0f-8126-bc6ceb730516",
+      "source_trial_relative_path": "release/fable52-cc-max-23-20261124/constrained-molecular-search/attempt-1/constrained-molecular-search/2026-11-26__01-16-02/constrained-molecular-search__RFfbBqo",
+      "files": {
+        "result.json": {
+          "bytes": 7885,
+          "sha256": "a7e77506a905f002d14c51d300ce65b1e7e47159701bb21b6cbe5710842fa51a"
+        },
+        "config.json": {
+          "bytes": 1705,
+          "sha256": "ff7be9c3e887ed766a88bb6e8f15c5f78058e75fb05ef53cefef4f913d162e1c"
+        },
+        "agent/harness.json": {
+          "bytes": 705,
+          "sha256": "a57920f33ace5c6db5dfa07d3912f1ed4ec58383c4aea912c4bda5f906e89412"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 1702760,
+          "sha256": "983f2863c93bc93fbc5b0ae7346ac9e762045494bf5a1071e68325cf47ef08ba"
+        }
+      }
+    },
+    {
+      "task": "memory-constrained-dense-retrieval",
+      "setting": "claude-fable-5.2-claude-code-direct-max",
+      "purpose": "fable_verified_original_coding",
+      "trajectory_sha256": "dfc69eb50a8725af7799530605201e7043fec72de1f55e2a91a6d7776766978c",
+      "source_trial_id": "0362dba6-cf07-4946-aac4-932250bee2ae",
+      "source_trial_relative_path": "release/fable52-cc-max-23-20261124/memory-constrained-dense-retrieval/attempt-1/memory-constrained-dense-retrieval/2026-11-26__07-57-33/memory-constrained-dense-retriev__mxfQNm2",
+      "files": {
+        "result.json": {
+          "bytes": 5656,
+          "sha256": "c81aefb0a2e91eeade0b77f6bb78ab22017e69988bf0efce0eb742a810f850d4"
+        },
+        "config.json": {
+          "bytes": 1637,
+          "sha256": "cf4a95c3a3da10a02a7ef870b8052984a4ed19f1743cb0cf567a1d5d5a237734"
+        },
+        "agent/harness.json": {
+          "bytes": 705,
+          "sha256": "c142a5cb8260bcf15a23f7e88cc4547229d9656706c7ce44154c9d36c4390497"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 2396380,
+          "sha256": "c05950b0a1301689af55bbbdcaddd758994cac2d2938e9e3f990e0ed4ddd7133"
+        }
+      }
+    },
+    {
+      "task": "negative-constraint-retrieval",
+      "setting": "claude-fable-5.2-claude-code-direct-max",
+      "purpose": "fable_verified_original_coding",
+      "trajectory_sha256": "d4a53aa35da5505f54176e29b4ba0f3cd73db249f555e6292dec53c36f1e5ad5",
+      "source_trial_id": "b6a1dea2-9edc-4bd6-814d-988b38afc8a6",
+      "source_trial_relative_path": "release/fable52-cc-max-23-20261124/negative-constraint-retrieval/attempt-2/negative-constraint-retrieval/2026-11-25__20-27-59/negative-constraint-retrieval__5rKa37K",
+      "files": {
+        "result.json": {
+          "bytes": 5325,
+          "sha256": "9d2dfd8b6b47a287bd69cd668cbb592b7aad14fe0539e2157efa63e0f94b2e7d"
+        },
+        "config.json": {
+          "bytes": 1580,
+          "sha256": "b790f4a57051eb09c36fd88b1c3c176f9e6db6f1f75300fbf055034cb384b4c8"
+        },
+        "agent/harness.json": {
+          "bytes": 705,
+          "sha256": "b773c46bfc88ac726b0d3b36667dd3f5ed85f8af0e1de2b4d4ac5024b04fc616"
+        },
+        "agent/claude-code.txt": {
+          "bytes": 2512737,
+          "sha256": "d860039227d1f9b5b02417a91fe9685af9a7995e0dde18a101f2678d673dc996"
+        }
+      }
     }
   ]
 }

@@ -18,6 +18,19 @@ SECRET_KEY = re.compile(r'(?:^|_)(?:api_key|access_token|auth_token|password|sec
 PART_CHARS = 48_000
 
 
+def load_session_event(line):
+    try:
+        return json.loads(line)
+    except json.JSONDecodeError:
+        # Two numeric Claude Code fields have a bare redaction marker in some archives.
+        if isinstance(line, bytes):
+            line = line.decode('utf-8')
+        repaired = re.sub(r'("(?:max_tokens|durationMs)"\s*:\s*)\[REDACTED\]', r'\1"[REDACTED: archive value]"', line)
+        if repaired == line:
+            raise
+        return json.loads(repaired)
+
+
 def sanitize(value, scrub, key=''):
     """Keep configuration structure but never export environment values."""
     if key in {'env', 'environment_variables'} and isinstance(value, dict):
@@ -115,7 +128,7 @@ def export_files(source_trial, final_verifier, output, scrub, write, check=False
                 if not line:
                     continue
                 try:
-                    lines.append(json.dumps(sanitize(json.loads(line), scrub), ensure_ascii=False) + '\n')
+                    lines.append(json.dumps(sanitize(load_session_event(line), scrub), ensure_ascii=False) + '\n')
                 except json.JSONDecodeError:
                     lines.append(scrub(line) + '\n')
             value = ''.join(lines)

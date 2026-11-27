@@ -27,6 +27,8 @@ NAMES = {
     "kimi-k3.1-pro": "Kimi K3.1 Pro",
     "kimi-k3": "Kimi K3",
     "anthropic/claude-opus-5.5": "Claude Opus 5.5",
+    "anthropic/claude-opus-5": "Claude Opus 5",
+    "anthropic/claude-fable-5.2": "Claude Fable 5.2",
     "deepseek/deepseek-v4.1-flash-1017": "DeepSeek V4.1 Flash 1017",
     "xiaomi/mimo-v2.6-flash": "MiMo-V2.6-Flash",
     "xiaomi/mimo-v2.6-pro": "MiMo-V2.6-Pro",
@@ -94,6 +96,10 @@ def scrub(text):
     """Conservative credential-pattern redaction, also applied to downloads."""
     text = re.sub(r"\b(?:sk-(?:or-v1-)?[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{20,})\b",
                   "[REDACTED: credential]", text)
+    text = re.sub(r"(?<![A-Za-z0-9_-])eyJ[A-Za-z0-9_-]{7,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{12,}",
+                  "[REDACTED: signed token]", text)
+    text = re.sub(r"""(?i)(\bJINA_API_KEY[\\'" \t]*[:=][\\'" \t]*)[A-Za-z0-9][A-Za-z0-9._~%+/@=-]{17,}""",
+                  r"\1[REDACTED: credential]", text)
     text = re.sub(r"(?i)(Bearer\s+)[A-Za-z0-9._-]{20,}", r"\1[REDACTED: credential]", text)
     return text
 

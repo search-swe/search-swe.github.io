@@ -4,11 +4,21 @@
 从公开的 HF Dataset [`search-swe/trajectories`](https://huggingface.co/datasets/search-swe/trajectories)
 匿名按需读取。浏览器不需要 HF Token。
 
-## 当前发布
+## 当前发布：Claude Fable 5.2
 
-现行发布包为 `.build/hf-trajectories-without-hy4`，包含 47 道题、15 个模型、
-17 个评测设定和 799 条轨迹。HY4 已从榜单和 Hugging Face 的 `main` 下架。
-官网引用的版本记录在 `content/leaderboard/storage.json`，下一次发布以现行包为基线。
+Claude Fable 5.2 / Claude Code 2.1.309 / max 使用 Anthropic 直连，覆盖 47 道题，
+均分 52.7252430204。分子搜索触发生物安全回退，选中轨迹由 Opus 5 完成，复评分
+17.6659。榜单和轨迹详情注明实际模型。初始 Fable 请求及后续 Opus 用量分别按官方价格估算。
+`sparse-retrieval-pruning` 的最终累计用量缺失，使用已记录的去重响应。
+`training-error-tracing` 采用归档复核确认的 100 分，详情记录自动汇总值及裁判结论。
+
+现行发布包为 `.build/hf-trajectories-fable52`，包含 16 个模型、18 个评测设定和 846 条轨迹。
+当前官网构建所用的 HF 版本记录在 `content/leaderboard/storage.json`。
+
+## 历史更新：HY4 下架
+
+2026-11-25 下架后，发布包 `.build/hf-trajectories-without-hy4` 包含 799 条轨迹。
+该包是本次 Fable 5.2 发布的基线。
 
 ## 历史更新：Gemini 4 Argon 用量补录
 
@@ -313,7 +323,7 @@ python scripts/normalize_hf_layout.py --source-package .build/hf-trajectories-lu
 完成模型选择、元数据及导入配置更新后，以最近的已验证包为基线，指定新的本地包：
 
 ```bash
-python scripts/publish_final_results.py --base-package .build/hf-trajectories-without-hy4 --package .build/hf-trajectories-next --upload
+python scripts/publish_final_results.py --base-package .build/hf-trajectories-fable52 --package .build/hf-trajectories-next --upload
 ```
 
 不带 `--upload` 只准备本地预览。增量上传只新增 trial，保留 `releases/current/`
@@ -562,7 +572,7 @@ releases/current/
 ```bash
 PYTHONPATH=scripts python -m unittest \
   scripts/test_publication.py scripts/test_leaderboard.py scripts/test_trial_files.py
-HF_PACKAGE=.build/hf-trajectories-without-hy4 NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
+HF_PACKAGE=.build/hf-trajectories-fable52 NODE_PATH=/path/to/playwright/node_modules node scripts/test_hf_browser.cjs
 ```
 
 浏览器检查使用另一个真实 HTTP origin 提供公开发布包，验证匿名跨域加载、

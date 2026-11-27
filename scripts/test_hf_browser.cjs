@@ -8,7 +8,7 @@ const {gunzipSync} = require('node:zlib');
 const {spawn, spawnSync} = require('node:child_process');
 const {chromium} = require('playwright');
 const root = path.resolve(__dirname, '..');
-const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-without-hy4'));
+const packageRoot = path.resolve(process.env.HF_PACKAGE || path.join(root, '.build/hf-trajectories-fable52'));
 const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const manifest = JSON.parse(gunzipSync(fs.readFileSync(path.join(packageRoot, 'publication.json.gz'))));
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'content/leaderboard/release.json')));
@@ -119,6 +119,19 @@ const server = http.createServer((req, res) => {
     const timedRegrade = snapshot.trials.find(t => t.task === 'instruction-following-embedding' && t.configuration.model === 'xiaomi/mimo-v2.6-flash');
     assert(Math.abs(timedRegrade.agent_seconds - 7201.244785) < 1e-6);
     assert.equal(timedRegrade.agent_status, 'AgentTimeoutError');
+    const fable = snapshot.entries.find(e => e.model === 'anthropic/claude-fable-5.2');
+    await page.goto(`${origin}/leaderboard/entries/${fable.id}/`);
+    assert.deepEqual(await page.locator('tbody .provider-cell').allTextContents(), Array(47).fill('Anthropic'));
+    await page.locator('.model-substitution-note a').click();
+    assert.match(await page.locator('.entry-subtitle').innerText(), /^Claude Opus 5 ·/);
+    assert.match(await page.locator('.model-substitution-note').innerText(), /automatic model fallback.*Opus 5 after a biology-safety refusal/);
+    await page.locator('.trajectory-step').first().waitFor();
+    const reviewed = snapshot.trials.find(t => t.entry === fable.id && t.task === 'training-error-tracing');
+    await page.goto(`${origin}/leaderboard/trials/${reviewed.id}/?tab=verifier`);
+    assert.equal(await page.locator('#stat-score').innerText(), '100.0');
+    assert.match(await page.locator('#panel-verifier .score-review-note').innerText(), /raw grader reward was 0.*reviewed score is 100/);
+    await page.locator('#panel-verifier .file-preview-footer').getByText('Complete file', {exact: true}).waitFor();
+    assert.equal(JSON.parse(await page.locator('#panel-verifier .file-text').innerText()).reward, 0);
     const step5 = snapshot.entries.find(e => e.model === 'step-5-preview');
     assert.equal(step5.agent_version, '2.1.309');
     assert.equal(step5.effort, 'max');
@@ -187,6 +200,7 @@ const server = http.createServer((req, res) => {
     const fallbackManifest = JSON.parse(fs.readFileSync(path.join(packageRoot, manifest.release_path, 'trials', fallback.id, 'evaluation.json')));
     assert.equal(fallbackManifest.configuration.model, 'anthropic/claude-opus-5');
     assert.equal(fallbackManifest.score, 19.5839);
+
     assert.deepEqual(errors, []);
     await browser.close(); browser = null;
     const status = await new Promise(resolve => {

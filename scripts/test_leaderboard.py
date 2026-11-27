@@ -131,9 +131,10 @@ class SnapshotTests(unittest.TestCase):
                     'xiaomi/mimo-v2.6-flash': 15.272761996392159, 'xiaomi/mimo-v2.6-pro': 18.630222644023586,
                     'step-5-preview': 19.47455964531325,
                     'z-ai/glm-5.3': 18.35926991146622, 'z-ai/glm-5.3-flash': 16.356435223177584,
-                    'anthropic/claude-sonnet-5.5': 38.42, 'google/gemini-4-argon': 34.02}
+                    'anthropic/claude-sonnet-5.5': 38.42, 'google/gemini-4-argon': 34.02,
+                    'anthropic/claude-fable-5.2': 52.72524302040524}
         self.assertEqual(len(snapshot['tasks']), 47)
-        self.assertEqual(len(snapshot['trials']), 799)
+        self.assertEqual(len(snapshot['trials']), 846)
         self.assertEqual({entry['model'] for entry in snapshot['entries']}, set(expected))
         for entry in snapshot['entries']:
             trials = [t for t in snapshot['trials'] if t['entry'] == entry['id']]
@@ -161,9 +162,32 @@ class SnapshotTests(unittest.TestCase):
         self.assertEqual(formula['tokens']['total_tokens'], 13_226_203)
         self.assertEqual(formula['tokens']['response_count'], 97)
 
+    def test_fable_direct_result_and_fallback_attribution(self):
+        model = 'anthropic/claude-fable-5.2'
+        entry = next(e for e in self.snapshot['entries'] if e['model'] == model)
+        self.assertEqual((entry['provider'], entry['agent'], entry['agent_version'], entry['effort']),
+                         ('Anthropic', 'Claude Code', '2.1.309', 'max'))
+        trials = [t for t in self.snapshot['trials'] if t['entry'] == entry['id']]
+        self.assertTrue(all(t['agent_seconds'] is not None and t['configuration']['provider'] == 'Anthropic'
+                            for t in trials))
+        fallback, = [t for t in trials if t.get('model_substitution')]
+        self.assertEqual(fallback['task'], 'constrained-molecular-search')
+        self.assertAlmostEqual(fallback['score'], 17.6659)
+        self.assertEqual(fallback['configuration']['model'], 'anthropic/claude-opus-5')
+        self.assertEqual(fallback['configuration']['fallback_from'], model)
+        self.assertEqual(fallback['model_substitution']['refusal_attempts'], 1)
+        self.assertTrue(all(t['configuration']['model'] == model for t in trials if t is not fallback))
+        self.assertIn('For Claude Fable 5.2,', build.substitution_note([fallback]))
+        self.assertIn('switched automatically to Opus 5', build.substitution_note([fallback]))
+        self.assertIn('switched from Claude Fable 5.2 to Claude Opus 5', build.substitution_note([fallback], detailed=True))
+        reviewed = next(t for t in trials if t['task'] == 'training-error-tracing')
+        self.assertEqual(reviewed['score'], 100)
+        self.assertEqual(reviewed['reward']['reward'], 0)
+        self.assertEqual(reviewed['qualification']['judge_verdict'], 'yes')
+
     def test_generated_routes_and_no_script_injection(self):
         pages = build.generate()
-        self.assertEqual(len(pages), 819)  # 818 pages plus the cost-enriched download.
+        self.assertEqual(len(pages), 867)  # 866 pages plus the cost-enriched download.
         for trial in self.snapshot['trials']:
             self.assertIn(build.ROOT / f'leaderboard/trials/{trial["id"]}/index.html', pages)
         rendered = build.page('<script>', '<p>test</p>', 'trial', {'message': '</script><script>alert(1)'}, self.snapshot)
@@ -234,7 +258,8 @@ class SnapshotTests(unittest.TestCase):
             self.assertEqual(html.count('>Z.ai</td>'), 47)
 
     def test_opus_fallback_keeps_actual_model_and_discloses_substitution(self):
-        trials = [t for t in self.snapshot['trials'] if t.get('model_substitution')]
+        trials = [t for t in self.snapshot['trials'] if
+                  t.get('model_substitution', {}).get('requested_model') == 'anthropic/claude-opus-5.5']
         self.assertEqual(len(trials), 1)
         trial = trials[0]
         self.assertEqual(trial['task'], 'constrained-molecular-search')

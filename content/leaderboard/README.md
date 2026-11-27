@@ -1,8 +1,16 @@
 # Leaderboard data and publication
 
-The current homepage contains **47 tasks (24 CPU, 23 GPU), seventeen leaderboard
-settings across fifteen models, and 799 selected trials**. Gemini 4 Argon uses
-high effort. The other sixteen settings use max.
+The current homepage contains **47 tasks (24 CPU, 23 GPU), eighteen leaderboard
+settings across sixteen models, and 846 selected trials**. Gemini 4 Argon uses
+high effort. The other seventeen settings use max.
+
+Claude Fable 5.2 / Claude Code 2.1.309 / max covers all 47 tasks, with Anthropic
+as the direct provider and a mean score of **52.7252430204**. For
+`constrained-molecular-search`, Claude Code switched the session to Opus 5
+after a biology-safety refusal. Its verified score of **17.6659** is included in
+the Fable entry, and the leaderboard and trial page disclose the substitution.
+The price estimate applies each model's standard Anthropic tariff to its
+recorded usage, including Fable's initial prompt usage on that trial.
 
 PR #3 adds Claude Sonnet 5.5 / Claude Code 2.1.309 / max and Gemini 4 Argon /
 Antigravity CLI 1.5.2 / high, with 47 scored tasks each. The means are **38.42**
@@ -25,7 +33,7 @@ output. It covers recorded coding calls. Sources are
 [Google Cloud pricing](https://cloud.google.com/model-garden/pricing) and
 [OpenRouter endpoints](https://openrouter.ai/google/gemini-4-argon/providers).
 
-The current package is `.build/hf-trajectories-without-hy4/`. It retains the 47
+The current package is `.build/hf-trajectories-fable52/`. It retains the 47
 Argon trajectories from the PR #3 usage refresh. Source revisions and local trial hashes are in
 [`community-source-evidence.json`](community-source-evidence.json).
 The active Hugging Face revision is in [`storage.json`](storage.json).
@@ -202,13 +210,13 @@ approximately **9.45 GiB**, with 564 ATIF trajectories
 and 573 original session JSONL exports (235 Codex, 291 Claude Code, 47 Pi). Credentials are redacted and host paths
 normalized. Large binary artifacts remain listed without content downloads.
 Source execution jobs remain unchanged.
-The current default package is `.build/hf-trajectories-without-hy4/`.
+The current default package is `.build/hf-trajectories-fable52/`.
 `.build/hf-trajectories-current/` remains the older 235-trial append base.
 
 The active HF directory is **`releases/current/`**, independent of model names or
 publication dates. Full commit SHAs identify immutable versions. The verified
 revision is recorded in [`storage.json`](storage.json) and the private receipt
-`.build/hf-trajectories-without-hy4-uploaded.json`. The website uses that immutable revision.
+`.build/hf-trajectories-fable52-uploaded.json`. The website uses that immutable revision.
 The Step 5 publication uses the immutable revision
 [`a4d445dc0b8f8324fbc959fe57885c5474c7b939`](https://huggingface.co/datasets/search-swe/trajectories/commit/a4d445dc0b8f8324fbc959fe57885c5474c7b939).
 
@@ -243,7 +251,7 @@ the current verified package as the base, and use a fresh output package:
 
 ```bash
 python scripts/publish_final_results.py \
-  --base-package .build/hf-trajectories-without-hy4 \
+  --base-package .build/hf-trajectories-fable52 \
   --package .build/hf-trajectories-next --upload
 ```
 
@@ -281,7 +289,7 @@ Narrow screens scroll the table horizontally instead of shrinking its text.
   are used. Missing original end timestamps remain missing; regrade time is never
   substituted. Eight reviewed runs use the maintainer-assigned 7200-second
   coding budget, with provenance in `agent_time_basis` and exact source trajectory
-  hashes in the importer. All 799 selected trials have a reported duration.
+  hashes in the importer. All 846 selected trials have a reported duration.
   Eight PR #3 trials use the span of their recorded trajectory timestamps.
 - Total tokens in the main leaderboard sum input (including cache) + output
   across the selected All / CPU / GPU task set, not a per-task average. Entry rows
@@ -461,9 +469,9 @@ unchanged; exported JSON contains no local host source paths in its metadata.
 
 ```bash
 python -m unittest discover -s scripts -p 'test_*.py'
-python scripts/import_final_results.py --package .build/hf-trajectories-without-hy4 --check
+python scripts/import_final_results.py --package .build/hf-trajectories-fable52 --check
 python scripts/build_leaderboard.py --check
-python scripts/leaderboard_costs.py --usage .build/hf-trajectories-without-hy4.usage.json --check
+python scripts/leaderboard_costs.py --usage .build/hf-trajectories-fable52.usage.json --check
 python scripts/build_tasks.py --check
 node --check leaderboard.js
 node --check leaderboard-pareto.js
@@ -473,9 +481,9 @@ node --check trial-files.js
 ```
 
 With Playwright available in the Node module search path and the preview server
-running, run `HF_PACKAGE=.build/hf-trajectories-without-hy4 node scripts/test_leaderboard_browser.cjs`. Set
+running, run `HF_PACKAGE=.build/hf-trajectories-fable52 node scripts/test_leaderboard_browser.cjs`. Set
 `LEADERBOARD_ORIGIN` to use a different local server address.
-Run `HF_PACKAGE=.build/hf-trajectories-without-hy4 node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
+Run `HF_PACKAGE=.build/hf-trajectories-fable52 node scripts/test_hf_browser.cjs` for cross-origin trajectory downloads and provider labels.
 Run `node scripts/test_leaderboard_costs_browser.cjs` for cost sorting, chart/table
 parity across hardware scopes, keyboard tabs, links, empty states and mobile layout.
 

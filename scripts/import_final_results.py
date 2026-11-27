@@ -9,17 +9,19 @@ import argparse
 import csv
 import json
 import math
+import os
+import re
 import shutil
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
-from export_trial_files import export_files, sanitize
+from export_trial_files import export_files, load_session_event, sanitize
 from import_results import ROOT, NAMES, TOKEN_FIELDS, digest, encode, export_trajectory, read, scrub, write
 from leaderboard_costs import calculate
 from prepare_hf_release import finalize, referenced_files
 from publication import CURRENT_RELEASE, DEFAULT_PACKAGE, PublicText, load_package, safe_path
-from claude_code_usage import claude_usage
+from claude_code_usage import claude_usage, normalized
 from pi_usage import pi_usage
 
 
@@ -33,6 +35,11 @@ def default_final_dir():
 
 
 TOKENPLUS_MODELS = ('z-ai/glm-5.3', 'z-ai/glm-5.3-flash')
+FABLE_MODEL = 'anthropic/claude-fable-5.2'
+FABLE_REQUEST = 'claude-fable-5-2'
+FABLE_SETTING = 'claude-fable-5.2-claude-code-direct-max'
+OPUS_FALLBACK = 'anthropic/claude-opus-5'
+FABLE_REVIEWED_SCORE = 'judge_timed_out_at_900s_with_yes_verdict_in_process_log'
 TOKENPLUS_SETTINGS = {
     'z-ai/glm-5.3?provider=z-ai': 'glm53-tokenplus-zai-official-claude-code-max',
     'z-ai/glm-5.3-flash?provider=z-ai': 'glm53-flash-tokenplus-zai-official-claude-code-max',
@@ -42,7 +49,7 @@ GLM_IMAGE_ERRORS = frozenset({'composed-image-search', 'layout-page-search', 'sa
 GLM_RESUMED_USAGE_SHA256 = '64aa8c420fffef818c50720d760d76cc0bee22cc91eb3c33340acbfbf80d1721'
 MODELS = ('openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'gpt-6.1-sol', 'kimi-k3.1-pro',
           'anthropic/claude-opus-5.5', 'gpt-6-astra', 'deepseek/deepseek-v4.1-flash-1017', 'kimi-k3',
-          'xiaomi/mimo-v2.6-flash', 'xiaomi/mimo-v2.6-pro', 'step-5-preview', *TOKENPLUS_MODELS)
+          'xiaomi/mimo-v2.6-flash', 'xiaomi/mimo-v2.6-pro', 'step-5-preview', *TOKENPLUS_MODELS, FABLE_MODEL)
 DEFAULT_FINAL = default_final_dir()
 CONTENT = ROOT / 'content/leaderboard'
 COMMUNITY_MODELS = ('tencent/hy4', 'anthropic/claude-sonnet-5.5', 'google/gemini-4-argon')
@@ -59,6 +66,10 @@ AGENT_TIME_BUDGET_ASSIGNMENTS = {
 
 
 def entry_model(row):
+    if row['model'] == FABLE_REQUEST:
+        if row.get('model_label') != FABLE_SETTING:
+            raise ValueError('Unselected Fable configuration')
+        return FABLE_MODEL
     if row['model'] in TOKENPLUS_SETTINGS:
         return row['model'].removesuffix('?provider=z-ai')
     if row['model'] == 'anthropic/claude-opus-5':
@@ -82,8 +93,9 @@ def setting_key(row):
 def selected_rows(final, tasks):
     with (final / 'INDEX.csv').open() as source:
         rows = [r for r in csv.DictReader(source)
-                if (r['model'] in (*MODELS, 'anthropic/claude-opus-5') and r['model'] not in TOKENPLUS_MODELS
-                    or (r['model'] in TOKENPLUS_SETTINGS and TOKENPLUS_SETTINGS[r['model']] == r['model_label']))
+                if (r['model'] in (*MODELS, OPUS_FALLBACK) and r['model'] not in (*TOKENPLUS_MODELS, FABLE_MODEL)
+                    or (r['model'] in TOKENPLUS_SETTINGS and TOKENPLUS_SETTINGS[r['model']] == r['model_label'])
+                    or (r['model'] == FABLE_REQUEST and r['model_label'] == FABLE_SETTING))
                 and (not r['model'].startswith('deepseek/') or r.get('model_label') in DEEPSEEK_SETTINGS)]
     keys = [(r['task'], setting_key(r)) for r in rows]
     settings = [m for m in MODELS if not m.startswith('deepseek/')] + list(DEEPSEEK_SETTINGS)
@@ -109,7 +121,9 @@ def original_claude_source(pointer, row, trajectory, jobs=None):
     evidence = evidence[0]
     step5_source = (row.get('model') == 'step-5-preview' and
                     evidence.get('purpose') == 'step5_verified_original_coding')
-    if not step5_source and (pointer.get('actual_agent') != 'nop' or not pointer.get('no_new_coding')):
+    fable_source = (row.get('model') == FABLE_REQUEST and pointer.get('mode') == 'regrade' and
+                    evidence.get('purpose') == 'fable_verified_original_coding')
+    if not (step5_source or fable_source) and (pointer.get('actual_agent') != 'nop' or not pointer.get('no_new_coding')):
         raise ValueError('Original coding supplements require an explicit NoP regrade')
     root = (Path(pointer['coding_source_original_trial']).resolve() if pointer.get('coding_source_original_trial')
             else safe_path(jobs or DEFAULT_FINAL.parent, evidence['source_trial_relative_path']))
@@ -123,6 +137,65 @@ def original_claude_source(pointer, row, trajectory, jobs=None):
             (pointer.get('coding_source_UUID') and result['id'] != pointer['coding_source_UUID'])):
         raise ValueError('Original coding UUID differs from the reviewed source')
     return root, files, result
+
+
+def fable_usage(sessions, stream, session_id, actual_model):
+    """Verify the direct max session and account for the refused request separately."""
+    requests = [e['params'] for events in sessions for e in events if e.get('type') == 'api-request']
+    if (not requests or {p['model'] for p in requests} != {FABLE_REQUEST, actual_model} or
+            any(p.get('output_config', {}).get('effort') != 'max' for p in requests)):
+        raise ValueError('Fable request models or thinking effort differ from the archive')
+    if actual_model == FABLE_REQUEST:
+        return claude_usage(sessions, stream, session_id, actual_model, '2.1.309'), None
+
+    fallback = [e for e in stream if e.get('type') == 'system' and e.get('subtype') == 'model_refusal_fallback']
+    if len(fallback) != 1 or any(fallback[0].get(k) != v for k, v in {
+            'session_id': session_id, 'original_model': FABLE_REQUEST, 'fallback_model': actual_model,
+            'scope': 'session', 'trigger': 'refusal', 'api_refusal_category': 'bio'}.items()):
+        raise ValueError('Missing native Fable biology-safety fallback')
+    initial_usage = []
+    for event in [*stream, *(e for events in sessions for e in events if e.get('type') == 'cost-state')]:
+        if event.get('type') == 'system' and event.get('subtype') == 'init':
+            if event.get('model') != FABLE_REQUEST:
+                raise ValueError('Unexpected initial model for the Fable fallback')
+            event['model'] = actual_model
+        if event.get('type') in {'result', 'cost-state'}:
+            usage = event['modelUsage']
+            if set(usage) != {FABLE_REQUEST, actual_model}:
+                raise ValueError('Fable fallback requires counters for both models')
+            initial_usage.append(normalized(usage.pop(FABLE_REQUEST), aggregate=True))
+    if len(initial_usage) != 2 or initial_usage[0] != initial_usage[1] or initial_usage[0]['output_tokens']:
+        raise ValueError('Fable refusal usage differs between the CLI and session counters')
+    result = claude_usage(sessions, stream, session_id, actual_model, '2.1.309')
+    result[0].update({key: result[0][key] + value for key, value in initial_usage[0].items()})
+    return result, initial_usage[0]
+
+
+def fable_reviewed_reward(pointer, source, root, reward_path, result_bytes, reward, score):
+    """Bind the reviewed score to the primary metric and the frozen judge verdict."""
+    review = json.loads(source(safe_path(root, pointer['qualification_archive'])))
+    judge_path = safe_path(reward_path.parent, Path(review['judge_log_path']).name)
+    judge = source(judge_path)
+    events = [json.loads(line) for line in judge.split(b'\n') if line.startswith(b'{')]
+    answers = [e['item']['text'] for e in events if e.get('type') == 'item.completed'
+               and e['item'].get('type') == 'agent_message']
+    gate = json.loads(source(reward_path.parent / 'reward-details.json'))['final_gate']
+    primary = reward['tracing_improvement']
+    if (review['kind'] != 'fable_judge_failure_regrade_final' or review['status'] != 'valid' or
+            review['diagnosis'] != 'verified_regrade_manual_judge_timeout_confirmed' or
+            review['manual_judge_timeout_confirmed'] is not True or review['coding_api_calls'] != 0 or
+            review['primary_reward_key'] != 'tracing_improvement' or
+            review['native_result_sha256'] != digest(result_bytes) or review['judge_log_sha256'] != digest(judge) or
+            reward['reward'] != 0 or reward['jailbreak_judge'] != 0 or
+            gate['primary_valid'] is not True or review['score'] != score or
+            not math.isclose(score, primary * 100, abs_tol=1e-7) or
+            events[-1]['type'] != 'turn.completed' or not answers or
+            re.findall(r'"score"\s*:\s*"(yes|no)"', answers[-1]) != ['yes']):
+        raise ValueError('Reviewed Fable score lacks its final primary and judge evidence')
+    return {'native_reward': 0, 'reviewed_reward': primary, 'judge_verdict': 'yes',
+            'judge_log_sha256': digest(judge),
+            'review_note': 'The final judge process recorded a yes verdict at the timeout boundary. '
+                           'The reviewed score uses the verified primary result.'}
 
 
 def coding_session(trial_root):
@@ -207,8 +280,10 @@ def apply_agent_time_override(trial):
                                         'selected regrade has no coding timing; regrade duration excluded.')
 
 
-def prepare(final, package, base_package=None):
+def prepare(final, package, base_package=None, published_base=False):
     final, package = final.resolve(), package.resolve()
+    if published_base and base_package is None:
+        raise ValueError('A verified base package is required')
     catalog = read(ROOT / 'content/tasks/catalog.json')
     rows = selected_rows(final, {t['name'] for t in catalog})
     if len(catalog) != 47:
@@ -235,13 +310,20 @@ def prepare(final, package, base_package=None):
     release_id = policy['updated_at'] + '-selected-' + digest(encode(source_hashes))[:10]
     # Appending retains the physical corpus directory. Immutable commit URLs keep
     # the previously published snapshot available without duplicating its remote payloads.
-    release_path = load_package(base_package, check_content=False)['release_path'] if base_package else CURRENT_RELEASE
+    retained_files = None
+    if published_base:
+        from append_hf_trajectories import published_base_payloads
+        base_manifest, retained_files = published_base_payloads(base_package)
+    elif base_package:
+        base_manifest = load_package(base_package, check_content=False)
+    release_path = base_manifest['release_path'] if base_package else CURRENT_RELEASE
     if (package / 'publication.json.gz').exists():
-        manifest = load_package(package)
+        manifest = load_package(package, retained=retained_files)
         if manifest['source_hashes'] != source_hashes or manifest['release_path'] != release_path:
             raise ValueError('Package has different source records; use a new --package directory')
         snapshot = read(package / manifest['release_path'] / 'snapshot.json')
-        referenced_files(package / manifest['release_path'], snapshot)
+        referenced_files(package / manifest['release_path'], snapshot,
+                         (p.removeprefix(release_path + '/') for p in (retained_files or {})))
         return snapshot, manifest
     # Retrying an interrupted export is safe only in this exact release directory.
     if package.exists() and any(p.name != 'releases' for p in package.iterdir()):
@@ -260,17 +342,29 @@ def prepare(final, package, base_package=None):
     if base_package:
         base_snapshot = read(base_package / release_path / 'snapshot.json')
         base_usage = read(base_package.with_suffix('.usage.json'))
-        previous = {(t['task'], t['configuration']['model'], t['configuration']['agent']): t for t in base_snapshot['trials']}
+        previous = {(t['task'], t['configuration'].get('fallback_from', t['configuration']['model']),
+                     t['configuration']['agent']): t for t in base_snapshot['trials']}
         entries.update({e['id']: e for e in base_snapshot['entries']})
         usage_rows.extend(base_usage['rows'])
         # Reuse immutable payloads, including their original redaction/export
         # format. Re-importing old trials would change published evidence bytes.
-        shutil.copytree(base_package / release_path / 'trials', package / release_path / 'trials', dirs_exist_ok=True)
+        if published_base:
+            def link_file(source, target):
+                if not Path(target).exists():
+                    os.link(source, target)
+                elif not os.path.samefile(source, target):
+                    raise ValueError('Retained package payload differs from the verified base')
+                return target
+        else:
+            link_file = shutil.copy2
+        shutil.copytree(base_package / release_path / 'trials', package / release_path / 'trials',
+                        copy_function=link_file, dirs_exist_ok=True)
     for number, row in enumerate(rows, 1):
         harness = 'Pi' if row['model_label'].endswith('-pi-max') else ('Claude Code' if '-claude-code-' in row['model_label'] else 'Codex')
         tokenplus = row['model'] in TOKENPLUS_SETTINGS
+        fable = row['model'] == FABLE_REQUEST
         model = entry_model(row)
-        coding_model = model if tokenplus else row['model']
+        coding_model = model if tokenplus or fable else row['model']
         old = previous.get((row['task'], coding_model, harness))
         if old:
             if (old['trajectory_sha256'] != row['primary_trajectory_sha256'] or
@@ -307,11 +401,15 @@ def prepare(final, package, base_package=None):
         reward = json.loads(reward_bytes)
         native = reward['reward'] if isinstance(reward, dict) else reward
         score = float(row['score'])
+        reviewed = (fable and row['task'] == 'training-error-tracing' and
+                    pointer.get('qualification_flag') == FABLE_REVIEWED_SCORE)
         if (not math.isfinite(score) or not 0 <= score <= 100 or
                 not math.isclose(score, float(pointer['score']), abs_tol=1e-8) or
-                not math.isclose(score, 100 * float(native), abs_tol=1e-7)):
+                (not reviewed and not math.isclose(score, 100 * float(native), abs_tol=1e-7))):
             raise ValueError('Selected score disagrees with the final native reward')
-        result = json.loads(source(safe_path(root, pointer['selected_result'])))
+        result_bytes = source(safe_path(root, pointer['selected_result']))
+        result = json.loads(result_bytes)
+        review_evidence = fable_reviewed_reward(pointer, source, root, reward_path, result_bytes, reward, score) if reviewed else {}
         if result['task_name'].removeprefix('search-swe/') != row['task']:
             raise ValueError('Native result refers to another task')
         adjudicated_image = (tokenplus and coding_model == 'z-ai/glm-5.3' and row['task'] in GLM_IMAGE_ERRORS)
@@ -340,9 +438,21 @@ def prepare(final, package, base_package=None):
             if not math.isclose(float(native_result_reward), float(native), abs_tol=1e-9):
                 raise ValueError('Native result and selected reward differ')
         raw = json.loads(trajectory)
-        if raw['agent']['model_name'] != ('openrouter/' + coding_model if harness == 'Pi' else coding_model):
+        selected = settings[(row['task'], row['model'], row['model_label'])]['selection']
+        fable_fallback = fable and raw['agent']['model_name'] == 'claude-opus-5'
+        if fable_fallback:
+            if (row['task'] != 'constrained-molecular-search' or
+                    selected.get('actual_model_id') != 'claude-opus-5' or
+                    selected.get('actual_model_substitution') is not True or
+                    selected.get('model_fallback_kind') != 'model_refusal_fallback' or
+                    pointer.get('qualification_flag') != 'OFFICIAL_MODEL_REFUSAL_FALLBACK_OPUS5_ACCEPTED'):
+                raise ValueError('Fable fallback lacks explicit archive approval')
+            coding_model = OPUS_FALLBACK
+        request_model = raw['agent']['model_name'] if fable_fallback else row['model'] if fable else coding_model
+        if raw['agent']['model_name'] != ('openrouter/' + coding_model if harness == 'Pi' else request_model):
             raise ValueError('Selected trajectory model differs')
         extra_usage = None
+        fallback_usage = None
         extra_agent_files = {}
         extra_source_hashes = {}
         coding_result = result
@@ -353,17 +463,17 @@ def prepare(final, package, base_package=None):
             step5_original = row['model'] == 'step-5-preview' and any(
                 e['task'] == row['task'] and e['setting'] == row['model_label']
                 for e in read(CONTENT / 'coding-source-evidence.json')['trials'])
-            if step5_original or (pointer.get('no_new_coding') and not any((trial_root / 'agent/sessions').rglob('*.jsonl'))):
+            fable_original = fable and not (trial_root / 'agent/claude-code.txt').is_file()
+            if step5_original or fable_original or (pointer.get('no_new_coding') and not any((trial_root / 'agent/sessions').rglob('*.jsonl'))):
                 coding_root, coding_inventory, coding_result = original_claude_source(pointer, row, trajectory, final.parent)
                 def coding_read(path):
                     return verified_bytes(path, coding_inventory[path.relative_to(coding_root).as_posix()])
-                exported_originals = ({'result.json', 'config.json', 'agent/harness.json'} if step5_original
-                                      else set(coding_inventory))
+                exported_originals = {'result.json', 'config.json', 'agent/harness.json'} if step5_original else set(coding_inventory)
                 extra_agent_files = {'original-coding/' + relative: coding_root / relative
                                      for relative in coding_inventory if relative in exported_originals}
                 extra_source_hashes = {'original-coding/' + relative: expected
                                        for relative, expected in coding_inventory.items()}
-            provider = 'OpenRouter' if pointer.get('provider') == 'openrouter' else metadata['models'][coding_model]['provider']
+            provider = 'OpenRouter' if pointer.get('provider') == 'openrouter' else metadata['models'][model if fable else coding_model]['provider']
             if (raw['agent']['name'] != 'claude-code' or raw['agent']['version'] != '2.1.309' or
                     (provider == 'OpenRouter' and (pointer.get('provider') != 'openrouter' or row['effort'] != 'max')) or
                     (row['model'].startswith('kimi-') and provider != 'Moonshot AI')):
@@ -393,15 +503,31 @@ def prepare(final, package, base_package=None):
                         raise ValueError('Frozen-submission regrade original coding identity differs')
                     extra_agent_files['original-coding/result.json'] = original
                     extra_source_hashes['original-coding/result.json'] = inventory[original.relative_to(output).as_posix()]
+            elif fable:
+                if (provider != 'Anthropic' or pointer.get('provider') != 'direct' or row['effort'] != 'max' or
+                        selected.get('provider') != 'direct' or selected.get('agent') != 'claude-code' or
+                        selected.get('agent_version') != '2.1.309' or selected.get('reasoning_effort') != 'max'):
+                    raise ValueError('Fable provider or harness differs from the confirmed configuration')
+                if fable_original or pointer.get('mode') != 'regrade':
+                    coding_config = json.loads(coding_read(coding_root / 'config.json'))['agent']
+                    if (coding_config.get('name') != 'scripts.evaluation.harbor_agents:ManagedClaudeCode' or
+                            coding_config.get('model_name') != FABLE_REQUEST or
+                            coding_config.get('kwargs', {}).get('version') != '2.1.309' or
+                            coding_config.get('kwargs', {}).get('reasoning_effort') != 'max' or
+                            'api.anthropic.com' not in coding_config.get('extra_allowed_hosts', [])):
+                        raise ValueError('Fable native request is not the selected direct Claude Code max configuration')
             harness_path = coding_root / 'agent/harness.json'
             if harness_path.exists():
                 harness = json.loads(coding_read(harness_path))
                 if harness['actual_version'] != '2.1.309' or harness['requested_version'] != '2.1.309':
                     raise ValueError('Claude Code installed harness version differs')
-            session_paths = sorted((coding_root / 'agent/sessions').rglob('*.jsonl'))
+            session_paths = sorted(((trial_root if fable else coding_root) / 'agent/sessions').rglob('*.jsonl'))
             if not any(p.stem == raw['session_id'] for p in session_paths):
                 raise ValueError('Original Claude Code main session missing')
-            sessions = [[json.loads(line) for line in coding_read(p).splitlines() if line.strip()] for p in session_paths]
+            if fable:
+                sessions = [[load_session_event(line) for line in source(p).split(b'\n') if line.strip()] for p in session_paths]
+            else:
+                sessions = [[json.loads(line) for line in coding_read(p).splitlines() if line.strip()] for p in session_paths]
             stream = []
             for line in coding_read(coding_root / 'agent/claude-code.txt').splitlines():
                 try:
@@ -410,9 +536,14 @@ def prepare(final, package, base_package=None):
                     pass  # CLI progress lines are not JSON events.
             glm_resumed = (tokenplus and coding_model == 'z-ai/glm-5.3' and row['task'] == 'budgeted-bimetric-retrieval'
                            and row['primary_trajectory_sha256'] == GLM_RESUMED_USAGE_SHA256)
-            tokens, requests, extra_usage, start, finish, completed, usage_note = claude_usage(
-                sessions, stream, raw['session_id'], coding_model, raw['agent']['version'],
-                request_model=row['model'] if tokenplus else None, receipts_only=glm_resumed)
+            if fable:
+                usage, fallback_usage = fable_usage(sessions, stream, raw['session_id'], request_model)
+            else:
+                usage = claude_usage(sessions, stream, raw['session_id'], coding_model, raw['agent']['version'],
+                                    request_model=row['model'] if tokenplus else None, receipts_only=glm_resumed)
+            tokens, requests, extra_usage, start, finish, completed, usage_note = usage
+            if fallback_usage:
+                usage_note += ' Includes the recorded Fable prompt usage before the session switched to Opus 5.'
             if glm_resumed and (tokens['input_tokens'] != raw['final_metrics']['total_prompt_tokens']
                                 or tokens['output_tokens'] != raw['final_metrics']['total_completion_tokens']
                                 or tokens['cached_input_tokens'] != raw['final_metrics']['total_cached_tokens']):
@@ -498,9 +629,9 @@ def prepare(final, package, base_package=None):
         if entry_id in entries and entries[entry_id] != entry:
             raise ValueError('Mixed agent configurations in one model entry')
         entries[entry_id] = entry
-        selected = settings[(row['task'], row['model'], row['model_label'])]['selection']
         qualification = {k: selected.get(k) or pointer.get(k) for k in
                          ('qualification_flag', 'judge_semantic_quality_flag', 'qualification_limitations')}
+        qualification.update(review_evidence)
         if pointer.get('source_profile_and_coding_qualification_provenance'):
             qualification['coding_source_provenance'] = pointer['source_profile_and_coding_qualification_provenance']
         qualification = sanitize({k: v for k, v in qualification.items() if v}, public)
@@ -514,6 +645,10 @@ def prepare(final, package, base_package=None):
                   'task_commit': pointer.get('source_revision'), 'verifier_commit': pointer.get('source_revision')}
         if tokenplus:
             config.update(provider_route=entry['provider_route'], request_model=row['model'])
+        if fable:
+            config['request_model'] = FABLE_REQUEST
+        if fable_fallback:
+            config['fallback_from'] = FABLE_MODEL
         if frozen_regrade:
             config.update(run_mode='frozen_submission_regrade', verifier_commit=result['grader_revision'])
         if extra_agent_files:
@@ -527,10 +662,10 @@ def prepare(final, package, base_package=None):
                  'reward': sanitize(reward, public), 'redacted_fields': redactions}
         apply_agent_time_override(trial)
         if model != coding_model:
-            if not pointer.get('actual_model_substitution') or pointer.get('requested_scoreboard_model') != model:
+            if not fable_fallback and (not pointer.get('actual_model_substitution') or pointer.get('requested_scoreboard_model') != model):
                 raise ValueError('Model substitution lacks explicit archive provenance')
             substitution = next(s for s in policy['model_substitutions'] if
-                                s['task'] == row['task'] and s['actual_model'] == row['model'] and s['requested_model'] == model)
+                                s['task'] == row['task'] and s['actual_model'] == coding_model and s['requested_model'] == model)
             trial['model_substitution'] = substitution
         write(destination / 'evaluation.json', {k: trial[k] for k in ('score', 'reward', 'configuration', 'qualification')})
         snapshot['trials'].append(trial)
@@ -539,6 +674,8 @@ def prepare(final, package, base_package=None):
                            'primary_trajectory_sha256': digest(trajectory), 'requests': requests})
         if extra_usage is not None:
             usage_rows[-1]['aggregate_remainder'] = extra_usage
+        if fallback_usage is not None:
+            usage_rows[-1].update(fallback_from=FABLE_MODEL, fallback_from_usage=fallback_usage)
         print(f'Prepared {number:3}/{len(rows)}: {row["task"]} / {row["model_label"]}', flush=True)
     retained = [t for t in previous.values() if t['configuration']['model'] in community_models]
     if {(t['task'], t['configuration']['model']) for t in retained} != {
@@ -550,7 +687,7 @@ def prepare(final, package, base_package=None):
     usage = {'schema': 1, 'rows': usage_rows}
     write(package.with_suffix('.usage.json'), usage)
     calculate(snapshot, usage, read(CONTENT / 'official-pricing.json'))
-    manifest = finalize(package, snapshot, release_path)
+    manifest = finalize(package, snapshot, release_path, retained=retained_files)
     return snapshot, manifest
 
 

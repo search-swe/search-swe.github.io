@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from import_final_results import MODELS, DEEPSEEK_SETTINGS, TOKENPLUS_MODELS, TOKENPLUS_SETTINGS, coding_provider, coding_session, coding_time, entry_model, original_claude_source, selected_rows, session_usage
+from import_final_results import MODELS, DEEPSEEK_SETTINGS, FABLE_MODEL, FABLE_REQUEST, FABLE_SETTING, TOKENPLUS_MODELS, TOKENPLUS_SETTINGS, coding_provider, coding_session, coding_time, entry_model, original_claude_source, selected_rows, session_usage
 from import_results import export_trajectory, read
 
 
@@ -55,7 +55,9 @@ class CurrentArchiveTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             rows = [{'task': t, 'model': m, 'model_label': ''}
-                    for t in ['one', 'two'] for m in MODELS if not m.startswith('deepseek/') and m not in TOKENPLUS_MODELS]
+                    for t in ['one', 'two'] for m in MODELS if not m.startswith('deepseek/') and m not in (*TOKENPLUS_MODELS, FABLE_MODEL)]
+            rows.extend({'task': t, 'model': FABLE_REQUEST, 'model_label': FABLE_SETTING} for t in ['one', 'two'])
+            rows.append({'task': 'one', 'model': FABLE_REQUEST, 'model_label': 'fable-non-direct'})
             rows.extend({'task': t, 'model': m, 'model_label': setting}
                         for t in ['one', 'two'] for m, setting in TOKENPLUS_SETTINGS.items())
             rows.append({'task': 'one', 'model': TOKENPLUS_MODELS[0], 'model_label': 'unrouted-glm'})

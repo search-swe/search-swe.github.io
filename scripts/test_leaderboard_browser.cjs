@@ -8,7 +8,7 @@ const origin = process.env.LEADERBOARD_ORIGIN || 'http://127.0.0.1:7788';
 const snapshot = JSON.parse(fs.readFileSync(path.join(root, 'leaderboard/results.json')));
 const read = name => {
   const file = /^https?:/.test(name)
-    ? path.join(path.resolve(root, process.env.HF_PACKAGE || '.build/hf-trajectories-without-hy4'),
+    ? path.join(path.resolve(root, process.env.HF_PACKAGE || '.build/hf-trajectories-fable52'),
       new URL(name).pathname.replace(/^\/datasets\/search-swe\/trajectories\/resolve\/[a-f0-9]{40}(?=\/)/, ''))
     : path.join(root, name);
   return JSON.parse(fs.readFileSync(file));
@@ -32,7 +32,7 @@ const read = name => {
     assert.deepEqual(await page.locator('.score-value').allTextContents(), ranked.map(e => e.score.toFixed(1)));
     assert.deepEqual(await page.locator('tbody .coverage').allTextContents(), Array(snapshot.entries.length).fill('47 / 47'));
     assert(!requests.some(url => url.includes('/traces/')));
-    assert.equal(await page.locator('.model-name').first().innerText(), 'Claude Opus 5.5 (max)');
+    assert.equal(await page.locator('.model-name').first().innerText(), 'Claude Fable 5.2 (max)');
     assert.equal(await page.locator('.agent-cell').first().innerText(), 'Claude Code (v2.1.309)');
     assert(!(await page.locator('tbody').innerText()).includes('OpenRouter'));
     for (const key of ['score', 'date', 'tokens']) {

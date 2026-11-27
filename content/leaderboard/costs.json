@@ -1,9 +1,13 @@
 {
-  "pricing_sha256": "9e7bb54dd9a1cdb63ebccf9b8aad47c0a805e37f882227ef8bb1ef5df93a56f8",
+  "pricing_sha256": "79e91a15dd6def061d7b0320bae05153e815a4e2962926c0758278d2726941e9",
   "schema": 1,
-  "snapshot_id": "2026-11-25-selected-a23aebc64e",
-  "snapshot_sha256": "6cb3c6ead173a4c8fb2c63e5cbaf5ccc7f64cbeb3adb9e8585fac53d24fa2e97",
+  "snapshot_id": "2026-11-26-selected-0156192559",
+  "snapshot_sha256": "4d21512a43c69cb3f95f36d02322c3098bc052a223f5247dd5687805c3057736",
   "trials": {
+    "agentic-search-claude-fable-5.2-claude-code-direct-max-92a7e0b35537": {
+      "cost_usd": "16.2325314",
+      "response_count": 106
+    },
     "agentic-search-claude-opus-5.5-claude-code-max-86cfc69e97be": {
       "cost_usd": "4.4698314",
       "response_count": 54
@@ -71,6 +75,10 @@
     "agentic-search-step-5-preview-claude-code-max-71000dd199a2": {
       "cost_usd": "0.8669810",
       "response_count": 88
+    },
+    "agentic-search-vectorless-claude-fable-5.2-claude-code-direct-max-441b4a931a43": {
+      "cost_usd": "16.3118846",
+      "response_count": 122
     },
     "agentic-search-vectorless-claude-opus-5.5-claude-code-max-b86d26efb97d": {
       "cost_usd": "6.4205018",
@@ -140,6 +148,10 @@
       "cost_usd": "2.2195207",
       "response_count": 157
     },
+    "biomedical-graph-retrieval-claude-fable-5.2-claude-code-direct-max-da07d6e10039": {
+      "cost_usd": "17.6131742",
+      "response_count": 109
+    },
     "biomedical-graph-retrieval-claude-opus-5.5-claude-code-max-a43e334b275d": {
       "cost_usd": "4.9146776",
       "response_count": 67
@@ -207,6 +219,10 @@
     "biomedical-graph-retrieval-step-5-preview-claude-code-max-b8f02e39d7a7": {
       "cost_usd": "1.4208747",
       "response_count": 99
+    },
+    "budgeted-bimetric-retrieval-claude-fable-5.2-claude-code-direct-max-81f9b9eed006": {
+      "cost_usd": "14.4375600",
+      "response_count": 78
     },
     "budgeted-bimetric-retrieval-claude-opus-5.5-claude-code-max-ca51574c5de5": {
       "cost_usd": "6.0373980",
@@ -276,6 +292,10 @@
       "cost_usd": "0.7546712",
       "response_count": 65
     },
+    "budgeted-candidate-reranking-claude-fable-5.2-claude-code-direct-max-f49afdb569c3": {
+      "cost_usd": "15.6877540",
+      "response_count": 127
+    },
     "budgeted-candidate-reranking-claude-opus-5.5-claude-code-max-0778ebf4b611": {
       "cost_usd": "6.0626426",
       "response_count": 114
@@ -343,6 +363,10 @@
     "budgeted-candidate-reranking-step-5-preview-claude-code-max-20c73912762b": {
       "cost_usd": "0.9796386",
       "response_count": 81
+    },
+    "chunqiu-temporal-retrieval-claude-fable-5.2-claude-code-direct-max-13fd1e3b7c33": {
+      "cost_usd": "69.0471744",
+      "response_count": 306
     },
     "chunqiu-temporal-retrieval-claude-opus-5.5-claude-code-max-d1c4a1455cd5": {
       "cost_usd": "14.4633710",
@@ -412,6 +436,10 @@
       "cost_usd": "3.2678376",
       "response_count": 234
     },
+    "code-context-retrieval-claude-fable-5.2-claude-code-direct-max-f6a3e0d1633c": {
+      "cost_usd": "16.7263224",
+      "response_count": 100
+    },
     "code-context-retrieval-claude-opus-5.5-claude-code-max-bdf6467a7091": {
       "cost_usd": "6.1760912",
       "response_count": 68
@@ -479,6 +507,10 @@
     "code-context-retrieval-step-5-preview-claude-code-max-415189c04552": {
       "cost_usd": "2.5808294",
       "response_count": 204
+    },
+    "code-embedding-finetuning-claude-fable-5.2-claude-code-direct-max-af75fd1de3e7": {
+      "cost_usd": "28.6172696",
+      "response_count": 234
     },
     "code-embedding-finetuning-claude-opus-5.5-claude-code-max-facc836bb496": {
       "cost_usd": "5.8027074",
@@ -548,6 +580,10 @@
       "cost_usd": "2.5272948",
       "response_count": 214
     },
+    "code-reranker-finetuning-claude-fable-5.2-claude-code-direct-max-f266f8b80f23": {
+      "cost_usd": "39.5768588",
+      "response_count": 148
+    },
     "code-reranker-finetuning-claude-opus-5.5-claude-code-max-b10c04eeb056": {
       "cost_usd": "21.2885022",
       "response_count": 103
@@ -615,6 +651,10 @@
     "code-reranker-finetuning-step-5-preview-claude-code-max-f32ac7dbe2c3": {
       "cost_usd": "3.3559215",
       "response_count": 295
+    },
+    "composed-image-search-claude-fable-5.2-claude-code-direct-max-b89cef267337": {
+      "cost_usd": "16.2844848",
+      "response_count": 113
     },
     "composed-image-search-claude-opus-5.5-claude-code-max-44687ff86305": {
       "cost_usd": "6.6462642",
@@ -684,6 +724,10 @@
       "cost_usd": "1.6036785",
       "response_count": 126
     },
+    "constrained-molecular-search-claude-fable-5.2-claude-code-direct-max-895d96b69ccc": {
+      "cost_usd": "16.92817685",
+      "response_count": 124
+    },
     "constrained-molecular-search-claude-opus-5.5-claude-code-max-6e703bd1e81d": {
       "cost_usd": "25.16832525",
       "response_count": 189
@@ -751,6 +795,10 @@
     "constrained-molecular-search-step-5-preview-claude-code-max-2007a84fb986": {
       "cost_usd": "4.9416280",
       "response_count": 350
+    },
+    "decision-model-training-claude-fable-5.2-claude-code-direct-max-cfd353a334a9": {
+      "cost_usd": "43.7317846",
+      "response_count": 267
     },
     "decision-model-training-claude-opus-5.5-claude-code-max-f2068ed9442f": {
       "cost_usd": "29.9976106",
@@ -820,6 +868,10 @@
       "cost_usd": "3.9804818",
       "response_count": 310
     },
+    "document-page-search-claude-fable-5.2-claude-code-direct-max-84ce0138fe8f": {
+      "cost_usd": "16.8307450",
+      "response_count": 108
+    },
     "document-page-search-claude-opus-5.5-claude-code-max-d587a9912257": {
       "cost_usd": "7.8425986",
       "response_count": 124
@@ -887,6 +939,10 @@
     "document-page-search-step-5-preview-claude-code-max-95155eca2b31": {
       "cost_usd": "3.7346584",
       "response_count": 285
+    },
+    "evolving-personal-memory-claude-fable-5.2-claude-code-direct-max-b00295f10b60": {
+      "cost_usd": "20.1096912",
+      "response_count": 121
     },
     "evolving-personal-memory-claude-opus-5.5-claude-code-max-1ab711f3fa24": {
       "cost_usd": "5.0970390",
@@ -956,6 +1012,10 @@
       "cost_usd": "3.7688481",
       "response_count": 253
     },
+    "filtered-ann-retrieval-claude-fable-5.2-claude-code-direct-max-933f8a521183": {
+      "cost_usd": "13.5198582",
+      "response_count": 64
+    },
     "filtered-ann-retrieval-claude-opus-5.5-claude-code-max-575914a1488a": {
       "cost_usd": "5.8632750",
       "response_count": 49
@@ -1023,6 +1083,10 @@
     "filtered-ann-retrieval-step-5-preview-claude-code-max-969cbb89bd43": {
       "cost_usd": "2.6514397",
       "response_count": 101
+    },
+    "financial-report-qa-claude-fable-5.2-claude-code-direct-max-f49339ffbfc5": {
+      "cost_usd": "16.9129178",
+      "response_count": 77
     },
     "financial-report-qa-claude-opus-5.5-claude-code-max-017ba9d861e0": {
       "cost_usd": "3.9334978",
@@ -1092,6 +1156,10 @@
       "cost_usd": "2.1444908",
       "response_count": 171
     },
+    "icsi-meeting-memory-claude-fable-5.2-claude-code-direct-max-f4ae7647d878": {
+      "cost_usd": "22.5317432",
+      "response_count": 28
+    },
     "icsi-meeting-memory-claude-opus-5.5-claude-code-max-5654014db4ac": {
       "cost_usd": "3.1090026",
       "response_count": 42
@@ -1159,6 +1227,10 @@
     "icsi-meeting-memory-step-5-preview-claude-code-max-fdcf21bb3a8c": {
       "cost_usd": "1.0577002",
       "response_count": 69
+    },
+    "incremental-vector-search-claude-fable-5.2-claude-code-direct-max-8cdb7907a88b": {
+      "cost_usd": "22.7213510",
+      "response_count": 73
     },
     "incremental-vector-search-claude-opus-5.5-claude-code-max-e76f4beabf10": {
       "cost_usd": "5.8810366",
@@ -1228,6 +1300,10 @@
       "cost_usd": "3.6988869",
       "response_count": 245
     },
+    "instruction-following-embedding-claude-fable-5.2-claude-code-direct-max-0b21ffa2c6fd": {
+      "cost_usd": "18.9212458",
+      "response_count": 97
+    },
     "instruction-following-embedding-claude-opus-5.5-claude-code-max-3f71cf9bda16": {
       "cost_usd": "5.3352530",
       "response_count": 81
@@ -1295,6 +1371,10 @@
     "instruction-following-embedding-step-5-preview-claude-code-max-893d1be56068": {
       "cost_usd": "1.7041746",
       "response_count": 154
+    },
+    "join-aware-table-retrieval-claude-fable-5.2-claude-code-direct-max-ca8e754aed0e": {
+      "cost_usd": "7.1682046",
+      "response_count": 49
     },
     "join-aware-table-retrieval-claude-opus-5.5-claude-code-max-dd5c84974f0c": {
       "cost_usd": "2.7843918",
@@ -1364,6 +1444,10 @@
       "cost_usd": "1.0971001",
       "response_count": 100
     },
+    "khmer-embedding-training-claude-fable-5.2-claude-code-direct-max-4317a16ed875": {
+      "cost_usd": "43.7020072",
+      "response_count": 303
+    },
     "khmer-embedding-training-claude-opus-5.5-claude-code-max-50de383f5810": {
       "cost_usd": "12.5092694",
       "response_count": 192
@@ -1431,6 +1515,10 @@
     "khmer-embedding-training-step-5-preview-claude-code-max-682dff132c3b": {
       "cost_usd": "2.7756056",
       "response_count": 223
+    },
+    "large-scale-formula-retrieval-claude-fable-5.2-claude-code-direct-max-75cf2d63e732": {
+      "cost_usd": "19.2241686",
+      "response_count": 71
     },
     "large-scale-formula-retrieval-claude-opus-5.5-claude-code-max-cfb10de9f270": {
       "cost_usd": "7.2490888",
@@ -1500,6 +1588,10 @@
       "cost_usd": "2.8229735",
       "response_count": 181
     },
+    "layout-page-search-claude-fable-5.2-claude-code-direct-max-1e1530b11931": {
+      "cost_usd": "29.8146198",
+      "response_count": 209
+    },
     "layout-page-search-claude-opus-5.5-claude-code-max-ded87aa844a3": {
       "cost_usd": "12.1888112",
       "response_count": 147
@@ -1567,6 +1659,10 @@
     "layout-page-search-step-5-preview-claude-code-max-ea3ae528e2a7": {
       "cost_usd": "3.1635810",
       "response_count": 271
+    },
+    "legal-stance-retrieval-claude-fable-5.2-claude-code-direct-max-cd56077a3c06": {
+      "cost_usd": "40.9234774",
+      "response_count": 288
     },
     "legal-stance-retrieval-claude-opus-5.5-claude-code-max-956e3728bb7e": {
       "cost_usd": "30.3562446",
@@ -1636,6 +1732,10 @@
       "cost_usd": "3.3588559",
       "response_count": 268
     },
+    "lightweight-query-retrieval-claude-fable-5.2-claude-code-direct-max-132b1bcad44d": {
+      "cost_usd": "55.3023670",
+      "response_count": 324
+    },
     "lightweight-query-retrieval-claude-opus-5.5-claude-code-max-d91d8684b107": {
       "cost_usd": "23.2663576",
       "response_count": 207
@@ -1703,6 +1803,10 @@
     "lightweight-query-retrieval-step-5-preview-claude-code-max-f2c615408f48": {
       "cost_usd": "3.2989703",
       "response_count": 259
+    },
+    "long-document-reranking-claude-fable-5.2-claude-code-direct-max-d5ffdcf22310": {
+      "cost_usd": "15.5674622",
+      "response_count": 96
     },
     "long-document-reranking-claude-opus-5.5-claude-code-max-89394e427511": {
       "cost_usd": "8.5436356",
@@ -1772,6 +1876,10 @@
       "cost_usd": "1.3904012",
       "response_count": 114
     },
+    "long-pdf-evidence-claude-fable-5.2-claude-code-direct-max-abfa6de9c1ff": {
+      "cost_usd": "16.4321772",
+      "response_count": 113
+    },
     "long-pdf-evidence-claude-opus-5.5-claude-code-max-f4d9166bfadc": {
       "cost_usd": "7.1094058",
       "response_count": 108
@@ -1839,6 +1947,10 @@
     "long-pdf-evidence-step-5-preview-claude-code-max-6b895299e5f9": {
       "cost_usd": "1.3926252",
       "response_count": 123
+    },
+    "long-pdf-evidence-vectorless-claude-fable-5.2-claude-code-direct-max-654464cf4746": {
+      "cost_usd": "15.9575986",
+      "response_count": 119
     },
     "long-pdf-evidence-vectorless-claude-opus-5.5-claude-code-max-e8db0d2913ec": {
       "cost_usd": "4.0837078",
@@ -1908,6 +2020,10 @@
       "cost_usd": "1.3735166",
       "response_count": 116
     },
+    "memory-constrained-dense-retrieval-claude-fable-5.2-claude-code-direct-max-19681d684e26": {
+      "cost_usd": "18.5844700",
+      "response_count": 83
+    },
     "memory-constrained-dense-retrieval-claude-opus-5.5-claude-code-max-1fd4f2cefef9": {
       "cost_usd": "7.4591504",
       "response_count": 64
@@ -1975,6 +2091,10 @@
     "memory-constrained-dense-retrieval-step-5-preview-claude-code-max-6e0bef267410": {
       "cost_usd": "1.2261351",
       "response_count": 79
+    },
+    "methodology-inspiration-retrieval-claude-fable-5.2-claude-code-direct-max-5cb63533df19": {
+      "cost_usd": "48.7897678",
+      "response_count": 298
     },
     "methodology-inspiration-retrieval-claude-opus-5.5-claude-code-max-76be64b8e0ce": {
       "cost_usd": "24.2616526",
@@ -2044,6 +2164,10 @@
       "cost_usd": "4.7487045",
       "response_count": 361
     },
+    "multilingual-vector-postprocessing-claude-fable-5.2-claude-code-direct-max-c69a55809d23": {
+      "cost_usd": "38.5913238",
+      "response_count": 146
+    },
     "multilingual-vector-postprocessing-claude-opus-5.5-claude-code-max-6f41d0a59090": {
       "cost_usd": "9.7178346",
       "response_count": 106
@@ -2111,6 +2235,10 @@
     "multilingual-vector-postprocessing-step-5-preview-claude-code-max-ce65b0de64b1": {
       "cost_usd": "1.3608573",
       "response_count": 94
+    },
+    "narrative-clue-search-claude-fable-5.2-claude-code-direct-max-2b9dd69301bd": {
+      "cost_usd": "11.1823114",
+      "response_count": 59
     },
     "narrative-clue-search-claude-opus-5.5-claude-code-max-149995cece5b": {
       "cost_usd": "6.5363872",
@@ -2180,6 +2308,10 @@
       "cost_usd": "2.0474692",
       "response_count": 162
     },
+    "negative-constraint-retrieval-claude-fable-5.2-claude-code-direct-max-d36d442c289e": {
+      "cost_usd": "19.1550916",
+      "response_count": 87
+    },
     "negative-constraint-retrieval-claude-opus-5.5-claude-code-max-58d98d1d4518": {
       "cost_usd": "9.5601342",
       "response_count": 111
@@ -2247,6 +2379,10 @@
     "negative-constraint-retrieval-step-5-preview-claude-code-max-8c2f0a0d7886": {
       "cost_usd": "2.9935030",
       "response_count": 238
+    },
+    "paper-metadata-retrieval-claude-fable-5.2-claude-code-direct-max-4c537637cd0c": {
+      "cost_usd": "35.1064874",
+      "response_count": 112
     },
     "paper-metadata-retrieval-claude-opus-5.5-claude-code-max-a47528a6abcb": {
       "cost_usd": "4.0457848",
@@ -2316,6 +2452,10 @@
       "cost_usd": "1.7408319",
       "response_count": 133
     },
+    "protein-text-bidirectional-retrieval-claude-fable-5.2-claude-code-direct-max-ef3c30f417d5": {
+      "cost_usd": "8.1513774",
+      "response_count": 49
+    },
     "protein-text-bidirectional-retrieval-claude-opus-5.5-claude-code-max-6aa04e4b75c0": {
       "cost_usd": "4.1192266",
       "response_count": 83
@@ -2383,6 +2523,10 @@
     "protein-text-bidirectional-retrieval-step-5-preview-claude-code-max-43c324cad10e": {
       "cost_usd": "0.6094782",
       "response_count": 63
+    },
+    "quantity-aware-retrieval-claude-fable-5.2-claude-code-direct-max-71a892db42ef": {
+      "cost_usd": "38.5997198",
+      "response_count": 257
     },
     "quantity-aware-retrieval-claude-opus-5.5-claude-code-max-58024ae716d1": {
       "cost_usd": "30.3032268",
@@ -2452,6 +2596,10 @@
       "cost_usd": "3.2308004",
       "response_count": 244
     },
+    "query-encoder-alignment-claude-fable-5.2-claude-code-direct-max-d4155ee63d92": {
+      "cost_usd": "24.4858118",
+      "response_count": 107
+    },
     "query-encoder-alignment-claude-opus-5.5-claude-code-max-f034475de7eb": {
       "cost_usd": "12.9439692",
       "response_count": 129
@@ -2519,6 +2667,10 @@
     "query-encoder-alignment-step-5-preview-claude-code-max-65d723d8a818": {
       "cost_usd": "2.9722035",
       "response_count": 223
+    },
+    "reasoning-query-rewriting-claude-fable-5.2-claude-code-direct-max-f3d8baf7751f": {
+      "cost_usd": "15.5783312",
+      "response_count": 101
     },
     "reasoning-query-rewriting-claude-opus-5.5-claude-code-max-23465d28f21b": {
       "cost_usd": "4.6012424",
@@ -2588,6 +2740,10 @@
       "cost_usd": "0.7514568",
       "response_count": 72
     },
+    "rust-bm25-search-claude-fable-5.2-claude-code-direct-max-c0f60aee8753": {
+      "cost_usd": "21.1566212",
+      "response_count": 77
+    },
     "rust-bm25-search-claude-opus-5.5-claude-code-max-3f222c83726a": {
       "cost_usd": "15.1871636",
       "response_count": 99
@@ -2655,6 +2811,10 @@
     "rust-bm25-search-step-5-preview-claude-code-max-f6dea8734f54": {
       "cost_usd": "6.8574993",
       "response_count": 441
+    },
+    "same-place-image-search-claude-fable-5.2-claude-code-direct-max-6c106b85654f": {
+      "cost_usd": "14.7263564",
+      "response_count": 93
     },
     "same-place-image-search-claude-opus-5.5-claude-code-max-5e0b1666aad3": {
       "cost_usd": "6.7404676",
@@ -2724,6 +2884,10 @@
       "cost_usd": "1.6492969",
       "response_count": 154
     },
+    "scientific-paper-qa-claude-fable-5.2-claude-code-direct-max-d682b48c490e": {
+      "cost_usd": "16.3164640",
+      "response_count": 78
+    },
     "scientific-paper-qa-claude-opus-5.5-claude-code-max-a730a5940796": {
       "cost_usd": "5.9200260",
       "response_count": 91
@@ -2791,6 +2955,10 @@
     "scientific-paper-qa-step-5-preview-claude-code-max-43082712f618": {
       "cost_usd": "1.7534753",
       "response_count": 153
+    },
+    "sketch-text-search-claude-fable-5.2-claude-code-direct-max-ad9358327cbf": {
+      "cost_usd": "43.9600002",
+      "response_count": 284
     },
     "sketch-text-search-claude-opus-5.5-claude-code-max-30f1305b3b48": {
       "cost_usd": "11.2343282",
@@ -2860,6 +3028,10 @@
       "cost_usd": "3.2000064",
       "response_count": 268
     },
+    "sparse-retrieval-pruning-claude-fable-5.2-claude-code-direct-max-b591a7cea43b": {
+      "cost_usd": "13.9189556",
+      "response_count": 50
+    },
     "sparse-retrieval-pruning-claude-opus-5.5-claude-code-max-9af8d711968b": {
       "cost_usd": "20.1127336",
       "response_count": 102
@@ -2927,6 +3099,10 @@
     "sparse-retrieval-pruning-step-5-preview-claude-code-max-3f905550b5aa": {
       "cost_usd": "3.2316844",
       "response_count": 185
+    },
+    "spoken-query-search-claude-fable-5.2-claude-code-direct-max-1940388f7e32": {
+      "cost_usd": "14.4270674",
+      "response_count": 77
     },
     "spoken-query-search-claude-opus-5.5-claude-code-max-cde8a51e57c4": {
       "cost_usd": "7.5480870",
@@ -2996,6 +3172,10 @@
       "cost_usd": "2.2435773",
       "response_count": 169
     },
+    "training-error-tracing-claude-fable-5.2-claude-code-direct-max-65c063462f41": {
+      "cost_usd": "39.4588820",
+      "response_count": 176
+    },
     "training-error-tracing-claude-opus-5.5-claude-code-max-ba26d9ce597a": {
       "cost_usd": "17.9510230",
       "response_count": 128
@@ -3064,6 +3244,10 @@
       "cost_usd": "5.7933920",
       "response_count": 346
     },
+    "video-moment-search-claude-fable-5.2-claude-code-direct-max-03abd14d194a": {
+      "cost_usd": "34.5868312",
+      "response_count": 314
+    },
     "video-moment-search-claude-opus-5.5-claude-code-max-0c3eb1614a3d": {
       "cost_usd": "12.3901012",
       "response_count": 170
@@ -3131,6 +3315,10 @@
     "video-moment-search-step-5-preview-claude-code-max-fc60f7760409": {
       "cost_usd": "3.0955107",
       "response_count": 262
+    },
+    "visual-document-qa-claude-fable-5.2-claude-code-direct-max-2a3d5a3ba70a": {
+      "cost_usd": "10.6830104",
+      "response_count": 77
     },
     "visual-document-qa-claude-opus-5.5-claude-code-max-26c605c3a702": {
       "cost_usd": "5.5085412",
@@ -3201,5 +3389,5 @@
       "response_count": 135
     }
   },
-  "usage_sha256": "76b08cad9559c4d1182e110288c058c6a4bcdab811bb52f9669703963e61ac0f"
+  "usage_sha256": "894de7cd943123064e10e916ad8b313607585ac3bc5ed9ffbc98e3466471a423"
 }

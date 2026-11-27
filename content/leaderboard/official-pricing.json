@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "as_of": "2026-11-21",
+  "as_of": "2026-11-26",
   "currency": "USD",
   "unit": "USD per million tokens",
   "policy": "Official real-time USD API rates. DeepSeek uses off-peak rates as a fixed comparison basis. Argon uses the published November global introductory rates. Cache-write and context-tier rates are model-specific. No batch, fast-mode, account or regional adjustments.",
@@ -207,6 +207,17 @@
         "output": "0.50"
       },
       "note": "Z.ai standard USD API rates, used for comparison. Cache-miss tokens use the input rate. The estimate does not represent a TokenPlus invoice."
+    },
+    "anthropic/claude-fable-5.2": {
+      "official_model": "Claude Fable 5.2",
+      "source": "https://platform.claude.com/docs/en/about-claude/pricing#model-pricing",
+      "rates": {
+        "input": "8",
+        "cached_input": "0.20",
+        "cache_write_input": "10",
+        "output": "40"
+      },
+      "note": "Standard Anthropic USD API price with five-minute cache writes. The selected biology-safety fallback uses the Opus 5 tariff for Opus usage and the Fable 5.2 tariff for the initial Fable request."
     }
   }
 }

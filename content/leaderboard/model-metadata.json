@@ -91,6 +91,12 @@
       "provider": "Vertex AI",
       "release_date": "2026-10-13",
       "source": "https://openrouter.ai/google/gemini-4-argon"
+    },
+    "anthropic/claude-fable-5.2": {
+      "release_date": "2026-11-09",
+      "source": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+      "provider": "Anthropic",
+      "provider_basis": "Selected Claude Code runs used the direct Anthropic endpoint."
     }
   }
 }
